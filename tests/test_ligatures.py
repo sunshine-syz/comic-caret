@@ -104,6 +104,22 @@ LIGATED = {
               "asciitilde.end.low"],
     "~~strike~~": ["asciitilde.sta", "asciitilde.end", "s", "t", "r", "i", "k", "e",
                    "asciitilde.sta", "asciitilde.end"],
+    # Pipes and tightened pairs
+    "|>": ["LIG", "bar_greater.liga"],
+    "<|": ["LIG", "less_bar.liga"],
+    "||": ["bar.tight_r", "bar.tight_l"],
+    "a || b": ["a", "space", "bar.tight_r", "bar.tight_l", "space", "b"],
+    "::": ["colon.tight_r", "colon.tight_l"],
+    "a::b": ["a", "colon.tight_r", "colon.tight_l", "b"],
+    "...": ["period.tight_r", "period", "period.tight_l"],
+    "&&": ["ampersand.tight_r", "ampersand.tight_l"],
+    "++": ["plus.tight_r", "plus.tight_l"],
+    "//": ["slash.tight_r", "slash.tight_l"],
+    "/*": ["slash.tight_r", "asterisk.tight_l"],
+    "*/": ["asterisk.tight_r", "slash.tight_l"],
+    "<<": ["less.tight_r", "less.tight_l"],
+    ">>": ["greater.tight_r", "greater.tight_l"],
+    "??": ["question.tight_r", "question.tight_l"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -117,6 +133,9 @@ PLAIN = [
     ">>=", "<<=", "<=-", "=<=",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
+    # Pairs touching another operator
+    "<<<<<<<", ">>>>>>>", "////", "///", "/**", "||=", "&&=", "??=",
+    "a::<T>", "https://", "....", "..", "|||", "<||", "|>>",
 ]
 
 

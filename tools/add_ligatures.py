@@ -50,7 +50,8 @@ RUNS = {
     "equal": (Bar((200, 350), (135, 228), (143, 219)), Bar((200, 350), (318, 410), (326, 403))),
     "underscore": (Bar((200, 350), (-100, -5), (-92, -14)),),
     # The crossbars stick out past the slanted verticals, each by a different amount.
-    "numbersign": (Bar((100, 440), (170, 262), (178, 255)), Bar((150, 465), (408, 502), (415, 494))),
+    "numbersign": (Bar((100, 440), (170, 262), (178, 255)),
+                   Bar((150, 465), (408, 502), (415, 494))),
 }
 
 # ~ is a wave: a fall from crest to trough and its mirror image, each 174 wide, repeat. Three
@@ -79,7 +80,16 @@ ARM_ENDS = {"greater": ((115, 510), (115, 28)),   # centres of the upper and low
 HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
+# |> <|: the head at 115 %, touching a bar cut to its height.
+PIPE_HEAD_SCALE = 1.15
+PIPE_BAR_EDGE = {"greater": 270 - ADVANCE, "less": 830 - ADVANCE}  # references' outer edge
+PIPE_TOUCH = 20        # overlap of the arm ends and the bar
+
 COLON_LIFT = 38        # raises the colon's centre (234) to the = centre (272)
+
+# How far each glyph moves toward its partner in a tightened pair.
+TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
+         "less": 40, "greater": 40, "question": 60, "bar": 100}
 
 
 def outline(font, name):
@@ -137,7 +147,8 @@ def tilde_pieces(font):
     mid_low = to_edge(to_edge(waves(rise_before, rise), first, -OVERLAP, TROUGH_PROFILE),
                       last, ADVANCE + OVERLAP, CREST_PROFILE)
     end_low = to_edge(waves(rise_before, finish), first, -OVERLAP, TROUGH_PROFILE)
-    mid = geo.snap_edge(geo.snap_edge(geo.mirrored_y(mid_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE),
+    mid = geo.mirrored_y(mid_low, TILDE_MIDDLE)
+    mid = geo.snap_edge(geo.snap_edge(mid, -OVERLAP, CREST_PROFILE),
                         ADVANCE + OVERLAP, TROUGH_PROFILE)
     end = geo.snap_edge(geo.mirrored_y(end_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE)
     return {"asciitilde.sta": sta, "asciitilde.mid": mid, "asciitilde.end": end,
@@ -221,6 +232,21 @@ def or_equal(font, name, tip):
     return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, 0))
 
 
+def pipe(font, name, tip):
+    """|> or <| as a triangle: the head at 115 % with its arm ends on a bar cut to its height."""
+    arrow = head(font, name, tip, PIPE_HEAD_SCALE)
+    hx0, hy0, hx1, hy1 = arrow.boundingBox()
+    bar = geo.trim(outline(font, "bar"), y0=hy0, y1=hy1)
+    bx0, _, bx1, _ = bar.boundingBox()
+    if name == "greater":  # |>: the bar in the first cell, the head pointing right
+        bar = geo.transformed(bar, psMat.translate(PIPE_BAR_EDGE[name] - bx0, 0))
+        arrow = geo.transformed(arrow, psMat.translate(bar.boundingBox()[2] - PIPE_TOUCH - hx0, 0))
+    else:                  # <|: the bar in the second cell, the head pointing left
+        bar = geo.transformed(bar, psMat.translate(PIPE_BAR_EDGE[name] - bx1, 0))
+        arrow = geo.transformed(arrow, psMat.translate(bar.boundingBox()[0] + PIPE_TOUCH - hx1, 0))
+    return geo.union(bar, arrow)
+
+
 def build(font, head_scale=HEAD_SCALE):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -233,6 +259,11 @@ def build(font, head_scale=HEAD_SCALE):
     glyphs["colon.eq"] = [("colon", 0, COLON_LIFT)]
     glyphs["less_equal.liga"] = or_equal(font, "less", LESS_TIP)
     glyphs["greater_equal.liga"] = or_equal(font, "greater", GREATER_TIP)
+    glyphs["bar_greater.liga"] = pipe(font, "greater", GREATER_TIP)
+    glyphs["less_bar.liga"] = pipe(font, "less", LESS_TIP)
+    for name, shift in TIGHT.items():
+        glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
+        glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
     return glyphs
 
 
@@ -308,6 +339,7 @@ def main():
         tmp.unlink()
         sys.exit(f"{sfd} is unchanged.")
     os.replace(tmp, sfd)
+
 
 if __name__ == "__main__":
     main()

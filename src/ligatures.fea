@@ -18,7 +18,12 @@ languagesystem latn dflt;
   underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
-  exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga];
+  exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  bar_greater.liga less_bar.liga
+  colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
+  asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r
+  colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
+  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l];
 
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
@@ -47,6 +52,18 @@ lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_excl
 lookup lig_colon_eq { sub colon by colon.eq; } lig_colon_eq;
 lookup lig_less_equal { sub equal by less_equal.liga; } lig_less_equal;
 lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
+lookup lig_bar_greater { sub greater by bar_greater.liga; } lig_bar_greater;
+lookup lig_less_bar { sub bar by less_bar.liga; } lig_less_bar;
+lookup lig_tight_r {
+  sub [colon period ampersand plus slash asterisk less greater question bar]
+   by [colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
+       asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r];
+} lig_tight_r;
+lookup lig_tight_l {
+  sub [colon period ampersand plus slash asterisk less greater question bar]
+   by [colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
+       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l];
+} lig_tight_l;
 
 feature calt {
 
@@ -134,5 +151,52 @@ feature calt {
     sub asciitilde.mid asciitilde' lookup lig_end_low;
     sub asciitilde' lookup lig_sta asciitilde;
   } lig_runs;
+
+  # 5. Pipes.
+  lookup lig_pipes {
+    ignore sub @Op bar' greater;
+    ignore sub bar' greater @Op;
+    sub bar' lookup lig_spacer greater' lookup lig_bar_greater;
+    ignore sub @Op less' bar;
+    ignore sub less' bar @Op;
+    sub less' lookup lig_spacer bar' lookup lig_less_bar;
+    ignore sub @Op bar' bar;
+    ignore sub bar' bar @Op;
+    sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
+  } lig_pipes;
+
+  # 6. Tightened pairs, and ... with the middle period left in place.
+  lookup lig_tight {
+    ignore sub @Op period' period period;
+    ignore sub period' period period @Op;
+    sub period' lookup lig_tight_r period period' lookup lig_tight_l;
+    ignore sub @Op colon' colon;
+    ignore sub colon' colon @Op;
+    sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
+    ignore sub @Op ampersand' ampersand;
+    ignore sub ampersand' ampersand @Op;
+    sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l;
+    ignore sub @Op plus' plus;
+    ignore sub plus' plus @Op;
+    sub plus' lookup lig_tight_r plus' lookup lig_tight_l;
+    ignore sub @Op slash' slash;
+    ignore sub slash' slash @Op;
+    sub slash' lookup lig_tight_r slash' lookup lig_tight_l;
+    ignore sub @Op slash' asterisk;
+    ignore sub slash' asterisk @Op;
+    sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l;
+    ignore sub @Op asterisk' slash;
+    ignore sub asterisk' slash @Op;
+    sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
+    ignore sub @Op less' less;
+    ignore sub less' less @Op;
+    sub less' lookup lig_tight_r less' lookup lig_tight_l;
+    ignore sub @Op greater' greater;
+    ignore sub greater' greater @Op;
+    sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
+    ignore sub @Op question' question;
+    ignore sub question' question @Op;
+    sub question' lookup lig_tight_r question' lookup lig_tight_l;
+  } lig_tight;
 
 } calt;
