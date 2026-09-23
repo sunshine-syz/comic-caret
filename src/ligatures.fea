@@ -16,7 +16,7 @@ languagesystem latn dflt;
   LIG colon.eq
   hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end
   less.arrow greater.arrow less.darrow greater.darrow
-  exclam_equal.liga exclam_equal_equal.liga];
+  exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga];
 
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
@@ -32,6 +32,8 @@ lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
 lookup lig_colon_eq { sub colon by colon.eq; } lig_colon_eq;
+lookup lig_less_equal { sub equal by less_equal.liga; } lig_less_equal;
+lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
 
 feature calt {
 
@@ -93,5 +95,15 @@ feature calt {
     rsub [equal.sta]' [equal greater] by equal;
     rsub [less.darrow]' [equal] by less;
   } lig_equal_unwind;
+
+  # 3. <= >=, exactly two characters; <== and <=> were taken as arrows above.
+  lookup lig_or_equal {
+    ignore sub @Op less' equal;
+    ignore sub less' equal @Op;
+    sub less' lookup lig_spacer equal' lookup lig_less_equal;
+    ignore sub @Op greater' equal;
+    ignore sub greater' equal @Op;
+    sub greater' lookup lig_spacer equal' lookup lig_greater_equal;
+  } lig_or_equal;
 
 } calt;

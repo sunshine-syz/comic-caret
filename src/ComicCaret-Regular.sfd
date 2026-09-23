@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790184983
+ModificationTime: 1790185031
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -63,14 +63,61 @@ Lookup: 1 0 0 "lig_spacer" { "lig_spacer subtable"  } []
 Lookup: 1 0 0 "lig_exclam_equal" { "lig_exclam_equal subtable"  } []
 Lookup: 1 0 0 "lig_exclam_equal_equal" { "lig_exclam_equal_equal subtable"  } []
 Lookup: 1 0 0 "lig_colon_eq" { "lig_colon_eq subtable"  } []
+Lookup: 1 0 0 "lig_less_equal" { "lig_less_equal subtable"  } []
+Lookup: 1 0 0 "lig_greater_equal" { "lig_greater_equal subtable"  } []
 Lookup: 6 0 0 "lig_not_equal" { "lig_not_equal contextual 0"  "lig_not_equal contextual 1"  "lig_not_equal contextual 2"  "lig_not_equal contextual 3"  "lig_not_equal contextual 4"  "lig_not_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_colon_equal" { "lig_colon_equal contextual 0"  "lig_colon_equal contextual 1"  "lig_colon_equal contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_hyphen_unwind" { "lig_hyphen_unwind contextual 0"  "lig_hyphen_unwind contextual 1"  "lig_hyphen_unwind contextual 2"  "lig_hyphen_unwind contextual 3"  "lig_hyphen_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_build contextual 1"  "lig_equal_build contextual 2"  "lig_equal_build contextual 3"  "lig_equal_build contextual 4"  "lig_equal_build contextual 5"  "lig_equal_build contextual 6"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 MarkAttachClasses: 1
 DEI: 91125
+ChainSub2: glyph "lig_or_equal contextual 5" 0 0 0 1
+ String: 13 greater equal
+ BString: 0 
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_greater_equal"
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 4" 0 0 0 1
+ 1 0 2
+  Coverage: 7 greater
+  FCoverage: 5 equal
+  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+ 0
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 3" 0 0 0 1
+ 1 1 1
+  Coverage: 7 greater
+  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 5 equal
+ 0
+EndFPST
+ChainSub2: glyph "lig_or_equal contextual 2" 0 0 0 1
+ String: 10 less equal
+ BString: 0 
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_less_equal"
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 1" 0 0 0 1
+ 1 0 2
+  Coverage: 4 less
+  FCoverage: 5 equal
+  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+ 0
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 0" 0 0 0 1
+ 1 1 1
+  Coverage: 4 less
+  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 5 equal
+ 0
+EndFPST
 ReverseChain2: revcov "lig_equal_unwind contextual 4" 0 0 0 1
  1 0 1
   Coverage: 11 less.darrow
@@ -241,13 +288,13 @@ ChainSub2: coverage "lig_colon_equal contextual 1" 0 0 0 1
  1 0 2
   Coverage: 5 colon
   FCoverage: 5 equal
-  FCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_colon_equal contextual 0" 0 0 0 1
  1 1 1
   Coverage: 5 colon
-  BCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -263,13 +310,13 @@ ChainSub2: coverage "lig_not_equal contextual 4" 0 0 0 1
  1 0 2
   Coverage: 6 exclam
   FCoverage: 5 equal
-  FCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_not_equal contextual 3" 0 0 0 1
  1 1 1
   Coverage: 6 exclam
-  BCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -287,13 +334,13 @@ ChainSub2: coverage "lig_not_equal contextual 1" 0 0 0 1
   Coverage: 6 exclam
   FCoverage: 5 equal
   FCoverage: 5 equal
-  FCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_not_equal contextual 0" 0 0 0 1
  1 1 2
   Coverage: 6 exclam
-  BCoverage: 291 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga
+  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
   FCoverage: 5 equal
  0
@@ -322,7 +369,7 @@ BlueScale 9 0.0291667
 BlueShift 2 10
 EndPrivate
 TeXData: 1 0 0 576716 288358 192238 488639 1048576 192238 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
-BeginChars: 65553 634
+BeginChars: 65555 636
 
 StartChar: .notdef
 Encoding: 65536 -1 0
@@ -1958,6 +2005,8 @@ SplineSet
  81 215 92 218 107 218 c 0
  108 218 110 218 111 218 c 0
 EndSplineSet
+Substitution2: "lig_greater_equal subtable" greater_equal.liga
+Substitution2: "lig_less_equal subtable" less_equal.liga
 Substitution2: "lig_exclam_equal_equal subtable" exclam_equal_equal.liga
 Substitution2: "lig_exclam_equal subtable" exclam_equal.liga
 Substitution2: "lig_spacer subtable" LIG
@@ -15784,6 +15833,147 @@ VStem: 218 120<87.3786 211.704 337.143 461.704> 220 111<336.33 401.623 402.376 4
 LayerCount: 2
 Fore
 Refer: 27 58 N 1 0 0 1 0 38 2
+EndChar
+
+StartChar: less_equal.liga
+Encoding: 65553 -1 634
+Width: 550
+VWidth: 0
+Flags: W
+LayerCount: 2
+Fore
+SplineSet
+-101 277 m 1
+ -46 248 45 201 58 193 c 0
+ 73 183 88 172 103 161 c 0
+ 118 150 132 140 146 131 c 0
+ 173 114 197 100 221 90 c 0
+ 243 80 258 72 266 63 c 0
+ 271 58 274 52 275 46 c 0
+ 275 42 275 37 274 33 c 0
+ 270 23 264 15 253 8 c 0
+ 248 5 240 2 233 1 c 0
+ 230 1 226 0 221 0 c 0
+ 215 0 208 1 201 2 c 0
+ 179 5 152 17 118 36 c 0
+ 91 52 73 63 53 77 c 0
+ 34 91 14 105 -7 120 c 0
+ -145 193 -189 217 -219 233 c 1
+ -244 237 l 1
+ -250 244 -253 252 -253 261 c 0
+ -253 264 -252 266 -252 269 c 0
+ -253 271 -253 272 -253 274 c 0
+ -254 278 -254 282 -254 286 c 0
+ -254 291 -254 295 -253 299 c 1
+ -241 301 l 1
+ -238 306 -233 309 -227 312 c 0
+ -191 331 -153 350 -1 426 c 0
+ 18 437 35 449 53 459 c 0
+ 71 469 88 481 105 489 c 0
+ 136 505 166 521 195 532 c 0
+ 206 536 216 538 224 538 c 0
+ 226 538 228 538 229 538 c 0
+ 235 537 241 534 245 529 c 0
+ 257 518 263 508 267 497 c 0
+ 268 493 268 490 268 487 c 0
+ 268 486 268 484 268 483 c 0
+ 267 477 264 470 259 465 c 0
+ 251 455 235 446 212 434 c 0
+ 187 422 161 408 142 399 c 0
+ 127 392 111 383 96 375 c 0
+ 80 367 67 359 52 352 c 0
+ 40 346 -49 303 -101 277 c 1
+-227 145 m 0
+ -186 125 -147 107 184 -50 c 0
+ 220 -66 244 -78 260 -85 c 0
+ 274 -92 282 -100 284 -109 c 0
+ 284 -110 284 -112 284 -113 c 0
+ 284 -120 282 -127 280 -134 c 0
+ 276 -143 270 -150 262 -156 c 0
+ 258 -159 254 -160 249 -160 c 0
+ 243 -160 235 -158 227 -154 c 0
+ 219 -150 209 -145 193 -138 c 0
+ 177 -132 160 -125 140 -117 c 0
+ -175 33 -193 41 -213 49 c 0
+ -232 57 -247 65 -261 71 c 0
+ -276 78 -283 87 -284 97 c 0
+ -284 99 -284 101 -284 103 c 0
+ -284 110 -283 117 -280 124 c 0
+ -276 134 -271 141 -262 147 c 0
+ -258 150 -254 151 -249 151 c 0
+ -243 151 -235 149 -227 145 c 0
+EndSplineSet
+EndChar
+
+StartChar: greater_equal.liga
+Encoding: 65554 -1 635
+Width: 550
+VWidth: 0
+Flags: W
+LayerCount: 2
+Fore
+SplineSet
+217 305 m 1
+ 242 301 l 1
+ 247 293 250 285 250 274 c 0
+ 250 272 250 271 250 269 c 0
+ 251 267 251 266 251 264 c 0
+ 252 260 252 256 252 252 c 0
+ 252 247 252 243 251 239 c 1
+ 239 237 l 1
+ 235 232 231 229 225 226 c 0
+ 189 207 151 188 -1 112 c 0
+ -20 101 -37 89 -55 79 c 0
+ -73 69 -90 57 -107 49 c 0
+ -138 33 -168 17 -197 6 c 0
+ -208 2 -218 -0 -226 -0 c 0
+ -228 -0 -230 -0 -231 0 c 0
+ -238 1 -243 4 -248 9 c 0
+ -259 20 -265 30 -269 41 c 0
+ -270 45 -270 48 -270 51 c 0
+ -270 52 -270 54 -270 55 c 0
+ -270 61 -266 68 -262 73 c 0
+ -253 83 -237 92 -214 104 c 0
+ -189 116 -163 130 -144 139 c 0
+ -129 146 -113 155 -98 163 c 0
+ -83 171 -69 179 -54 186 c 0
+ -42 192 47 235 99 261 c 1
+ 43 290 -48 337 -60 345 c 0
+ -76 355 -91 366 -105 377 c 0
+ -120 388 -134 398 -148 407 c 0
+ -174 424 -199 438 -223 448 c 0
+ -245 458 -260 466 -268 475 c 0
+ -273 480 -276 486 -277 492 c 0
+ -277 493 -277 494 -277 496 c 0
+ -277 499 -277 502 -276 505 c 0
+ -273 515 -266 523 -255 530 c 0
+ -250 533 -243 536 -236 537 c 0
+ -232 537 -228 538 -224 538 c 0
+ -218 538 -211 537 -203 536 c 0
+ -181 533 -154 521 -121 502 c 0
+ -93 486 -75 474 -55 460 c 0
+ -36 446 -16 434 4 419 c 0
+ 143 346 187 321 217 305 c 1
+258 74 m 0
+ 218 55 179 35 -151 -124 c 0
+ -186 -142 -210 -153 -225 -161 c 0
+ -234 -165 -242 -167 -248 -167 c 0
+ -252 -167 -256 -167 -259 -165 c 0
+ -267 -161 -272 -154 -277 -147 c 0
+ -280 -139 -282 -132 -282 -123 c 0
+ -282 -122 -282 -120 -282 -118 c 0
+ -282 -108 -274 -100 -258 -92 c 0
+ -251 -89 -240 -84 -225 -75 c 0
+ -210 -67 -194 -58 -175 -48 c 0
+ 139 104 156 113 175 123 c 0
+ 193 133 209 140 222 147 c 0
+ 231 151 238 153 244 153 c 0
+ 249 153 253 151 257 149 c 0
+ 265 144 271 137 276 128 c 0
+ 280 121 282 114 282 105 c 0
+ 282 104 282 102 282 100 c 0
+ 282 90 274 82 258 74 c 0
+EndSplineSet
 EndChar
 EndChars
 EndSplineFont

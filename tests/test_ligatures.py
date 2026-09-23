@@ -84,6 +84,11 @@ LIGATED = {
     "!==": ["LIG", "LIG", "exclam_equal_equal.liga"],
     ":=": ["colon.eq", "equal"],
     "x:=1": ["x", "colon.eq", "equal", "one"],
+    # <= >=
+    "<=": ["LIG", "less_equal.liga"],
+    ">=": ["LIG", "greater_equal.liga"],
+    "a<=b": ["a", "LIG", "less_equal.liga", "b"],
+    "x >= y": ["x", "space", "LIG", "greater_equal.liga", "space", "y"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -94,6 +99,7 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
+    ">>=", "<<=", "<=-", "=<=",
 ]
 
 

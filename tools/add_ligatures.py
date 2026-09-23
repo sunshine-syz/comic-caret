@@ -6,6 +6,7 @@ Replaces every glyph and GSUB lookup an earlier run made, so running it again ch
 but ModificationTime.
 """
 import argparse
+import math
 import os
 import pathlib
 import re
@@ -58,6 +59,14 @@ BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
 SLASH_SCALE = 0.95
 EQUAL_MIDDLE = 275     # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
+
+# <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
+# their height, widening the angle from 374 to 530 like the references' angles.
+ANGLE_WIDTH_GAIN = 156
+ARM_ENDS = {"greater": ((115, 510), (115, 28)),   # centres of the upper and lower end caps
+            "less": ((435, 510), (435, 28))}
+HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
+BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
 COLON_LIFT = 38        # raises the colon's centre (234) to the = centre (272)
 
@@ -132,6 +141,46 @@ def not_equal(font, cells):
     return geo.union(bars, slash)
 
 
+def flatter_angle(font, name, tip):
+    """< or > with each arm turned flatter about the point and lengthened so its end keeps
+    its height, which widens the angle by ANGLE_WIDTH_GAIN."""
+    angle = outline(font, name)
+    outward = -1 if name == "greater" else 1  # from the point toward the arm ends
+    # Each half reaches 30 past the axis so the turned halves overlap instead of meeting at a
+    # shallow crossing, which removeOverlap turns into a self-intersection.
+    halves = (geo.trim(angle, y0=AXIS - 30), geo.trim(angle, y1=AXIS + 30))
+    arms = []
+    for (end_x, end_y), half in zip(ARM_ENDS[name], halves):
+        dx, dy = end_x - tip, end_y - AXIS
+        new_dx = dx + outward * ANGLE_WIDTH_GAIN
+        old_direction, new_direction = math.atan2(dy, dx), math.atan2(dy, new_dx)
+        gain = math.hypot(new_dx, dy) - math.hypot(dx, dy)
+        # Lay the arm along +x from the point, lengthen its far half, then turn it into place.
+        flat = geo.transformed(half, geo.about(psMat.rotate(-old_direction), tip, AXIS))
+        flat = geo.stretch(flat, tip + 150, gain)
+        arms.append(geo.transformed(flat, geo.about(psMat.rotate(new_direction), tip, AXIS)))
+    return geo.union(*arms)
+
+
+def or_equal(font, name, tip):
+    """<= or >= as ⩽ ⩾: the flatter angle with a bar under its lower arm, centred on the
+    boundary between the two cells. The point stays on the axis, level with < >."""
+    outward = -1 if name == "greater" else 1
+    end_x, end_y = ARM_ENDS[name][1]
+    far = (end_x + outward * ANGLE_WIDTH_GAIN, end_y)
+    direction = math.atan2(far[1] - AXIS, far[0] - tip)
+    length = math.hypot(far[0] - tip, far[1] - AXIS)
+    bar = geo.stretch(outline(font, "hyphen"), 275, length - HYPHEN_SPAN - 20)
+    x0, y0, x1, y1 = bar.boundingBox()
+    drop = BAR_GAP / abs(math.cos(direction))
+    bar = geo.transformed(bar, psMat.compose(
+        psMat.compose(psMat.translate(-(x0 + x1) / 2, -(y0 + y1) / 2), psMat.rotate(direction)),
+        psMat.translate((tip + far[0]) / 2, (AXIS + far[1]) / 2 - drop)))
+    symbol = geo.union(flatter_angle(font, name, tip), bar)
+    x0, _, x1, _ = symbol.boundingBox()
+    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, 0))
+
+
 def build(font, head_scale=HEAD_SCALE):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -141,6 +190,8 @@ def build(font, head_scale=HEAD_SCALE):
     glyphs["exclam_equal.liga"] = not_equal(font, 2)
     glyphs["exclam_equal_equal.liga"] = not_equal(font, 3)
     glyphs["colon.eq"] = [("colon", 0, COLON_LIFT)]
+    glyphs["less_equal.liga"] = or_equal(font, "less", LESS_TIP)
+    glyphs["greater_equal.liga"] = or_equal(font, "greater", GREATER_TIP)
     return glyphs
 
 
