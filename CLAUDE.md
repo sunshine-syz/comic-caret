@@ -68,14 +68,23 @@ not affect this font.
 
 ## Designing glyphs
 
-- Before you place, size or redraw a glyph, compare it with Fira Code and Maple Mono
-  (`tools/compare_glyphs.py`) and follow what they agree on. Both are OFL: copy measurements,
-  never outlines.
+- Before you place, size or redraw a glyph, compare it with Fira Code, Maple Mono and Intel One
+  Mono (`tools/compare_glyphs.py`) and follow what they agree on. Where they differ on how
+  distinct a character should be, follow Intel One Mono, which was designed with low-vision
+  developers, and keep sizes and positions within the range the three cover. All three are OFL:
+  copy measurements, never outlines.
 - When the hand-drawn style calls for something else, say why in the commit message.
+- Draw new strokes in the font's own hand: round ends, the stem weight (about 90), the wobble.
+  Reuse an existing stroke where one fits; move and shorten strokes rather than scaling them.
+- Never make a counter narrower than the narrowest reference's, compared at the same letter
+  height.
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
   rotated about the cell center.
+- `tests/test_legibility.py` holds the rules for confusable characters, the colon and
+  semicolon, brackets and letter widths; read it before changing them.
 - The reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from the Fira
-  Code 6.2 release and Maple Mono 7.9 Regular (the Nerd Font build works too).
+  Code 6.2 release, Maple Mono 7.9 Regular (the Nerd Font build works too) and
+  `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`).
 
 ## Other
 
