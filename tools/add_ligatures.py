@@ -1,6 +1,6 @@
 """Build Comic Caret's coding ligatures into the SFD: the glyphs, then src/ligatures.fea.
 
-Usage: python3 tools/add_ligatures.py [SFD]
+Usage: python3 tools/add_ligatures.py [--head-scale S] [SFD]
 
 Replaces every glyph and GSUB lookup an earlier run made, so running it again changes nothing
 but ModificationTime.
@@ -25,7 +25,10 @@ FEA = ROOT / "src" / "ligatures.fea"
 
 ADVANCE = 550
 OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
+AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
+HEAD_SCALE = 1.0  # arrowheads relative to < >; chosen at the prototype checkpoint
+HEAD_SCALES = (0.85, 1.15)  # beyond this, stroke weight drifts from the rest of the font
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -45,6 +48,11 @@ RUNS = {
     "hyphen": (Bar((200, 350), (215, 325), (231, 310)),),
     "equal": (Bar((200, 350), (135, 228), (143, 219)), Bar((200, 350), (318, 410), (326, 403))),
 }
+
+# Arrowheads: the point of > and < sits on the axis at these x.
+GREATER_TIP, LESS_TIP = 462, 88
+SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
+BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
 
 
 def outline(font, name):
@@ -80,11 +88,30 @@ def run_pieces(font):
     return glyphs
 
 
-def build(font):
+def head(font, name, tip, scale):
+    return geo.transformed(outline(font, name), geo.about(psMat.scale(scale), tip, AXIS))
+
+
+def arrowheads(font, scale):
+    right, left = GREATER_TIP, LESS_TIP
+    return {
+        "less.arrow": geo.union(head(font, "less", left, scale),
+                                stroke(font, "hyphen", left + SHAFT_INTO_HEAD, ADVANCE + OVERLAP)),
+        "greater.arrow": geo.union(head(font, "greater", right, scale),
+                                   stroke(font, "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD)),
+        "less.darrow": geo.union(head(font, "less", left, scale),
+                                 stroke(font, "equal", left + BARS_INTO_HEAD, ADVANCE + OVERLAP)),
+        "greater.darrow": geo.union(head(font, "greater", right, scale),
+                                    stroke(font, "equal", -OVERLAP, right - BARS_INTO_HEAD)),
+    }
+
+
+def build(font, head_scale=HEAD_SCALE):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
     glyphs = {}
     glyphs.update(run_pieces(font))
+    glyphs.update(arrowheads(font, head_scale))
     return glyphs
 
 
@@ -138,15 +165,19 @@ def check(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
+    parser.add_argument("--head-scale", type=float, default=HEAD_SCALE,
+                        help="arrowhead size relative to < > (default %(default)s)")
     parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.check:
         return check(args.sfd)
+    if not HEAD_SCALES[0] <= args.head_scale <= HEAD_SCALES[1]:
+        parser.error(f"--head-scale must be within {HEAD_SCALES[0]}..{HEAD_SCALES[1]}")
 
     sfd = pathlib.Path(args.sfd)
     font = fontforge.open(str(sfd))
     remove_previous(font)
-    add_glyphs(font, build(font))
+    add_glyphs(font, build(font, args.head_scale))
     merge_features(font)
     # Validating in this process would write "Validated:" into the saved glyphs, so a fresh
     # process checks the saved copy before it replaces the SFD.
@@ -156,7 +187,6 @@ def main():
         tmp.unlink()
         sys.exit(f"{sfd} is unchanged.")
     os.replace(tmp, sfd)
-
 
 if __name__ == "__main__":
     main()

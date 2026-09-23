@@ -55,10 +55,38 @@ LIGATED = {
     "===": equals(3),
     "========": equals(8),
     "a==b": ["a"] + equals(2) + ["b"],
+    # Arrows, heads at either or both ends
+    "->": hyphens(2, right="greater.arrow"),
+    "-->": hyphens(3, right="greater.arrow"),
+    "--->": hyphens(4, right="greater.arrow"),
+    "------->": hyphens(8, right="greater.arrow"),
+    "<-": hyphens(2, left="less.arrow"),
+    "<--": hyphens(3, left="less.arrow"),
+    "<-----": hyphens(6, left="less.arrow"),
+    "<->": hyphens(3, "less.arrow", "greater.arrow"),
+    "<---->": hyphens(6, "less.arrow", "greater.arrow"),
+    "|->": ["bar"] + hyphens(2, right="greater.arrow"),
+    "x<-1": ["x"] + hyphens(2, left="less.arrow") + ["one"],
+    "=>": equals(2, right="greater.darrow"),
+    "==>": equals(3, right="greater.darrow"),
+    "====>": equals(5, right="greater.darrow"),
+    "<==": equals(3, left="less.darrow"),
+    "<====": equals(5, left="less.darrow"),
+    "<=>": equals(3, "less.darrow", "greater.darrow"),
+    "<====>": equals(6, "less.darrow", "greater.darrow"),
+    # A - and an = family side by side: each part joins on its own
+    "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
+    "=->": ["equal"] + hyphens(2, right="greater.arrow"),
+    "->=": hyphens(2, right="greater.arrow") + ["equal"],
 }
 
 # Input that must shape exactly as it does with calt off.
-PLAIN = ["-", "=", "a-b", "x=y", "- -", "= ="]
+PLAIN = [
+    "-", "=", "a-b", "x=y", "- -", "= =",
+    # Malformed arrows: a head pointing inward, doubled or in the middle, at any length
+    ">-", "-<", "=<", ">==", "==<", "->>", "<<-", "=>=", ">=>", "<=<",
+    "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
+]
 
 
 class LigatureShapingTest(unittest.TestCase):

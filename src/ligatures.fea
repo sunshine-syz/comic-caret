@@ -9,24 +9,59 @@
 languagesystem DFLT dflt;
 languagesystem latn dflt;
 
+# The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
+@HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
+@EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
+
 # Single substitutions, called from the chain rules below.
 lookup lig_sta { sub [hyphen equal] by [hyphen.sta equal.sta]; } lig_sta;
 lookup lig_mid { sub [hyphen equal] by [hyphen.mid equal.mid]; } lig_mid;
 lookup lig_end { sub [hyphen equal] by [hyphen.end equal.end]; } lig_end;
+lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
+lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
 
 feature calt {
 
-  # 2. Runs of - and =: a piece that continues from the glyph before, else a start.
+  # 2. Arrows and runs of - and =. Built left to right: a head, then pieces that continue
+  #    from the glyph before, then a closing head. The unwind lookups then walk right to
+  #    left and turn a malformed run back into plain glyphs, however long it is: a head or
+  #    end touching more of the run reverts, then every piece before a reverted glyph.
   lookup lig_hyphen_build {
-    sub [hyphen.sta hyphen.mid] hyphen' lookup lig_mid hyphen;
-    sub [hyphen.sta hyphen.mid] hyphen' lookup lig_end;
-    sub hyphen' lookup lig_sta hyphen;
+    ignore sub @HyphenRun less' hyphen;
+    sub less' lookup lig_arrow hyphen;
+    sub [less.arrow hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
+    sub [less.arrow hyphen.sta hyphen.mid] hyphen' lookup lig_end;
+    ignore sub @HyphenRun hyphen';
+    sub hyphen' lookup lig_sta [hyphen greater];
+    sub [hyphen.sta hyphen.mid] greater' lookup lig_arrow;
   } lig_hyphen_build;
 
+  lookup lig_hyphen_unwind {
+    rsub [greater.arrow]' [hyphen less greater] by greater;
+    rsub [hyphen.end]' [hyphen less greater] by hyphen;
+    rsub [hyphen.mid]' [hyphen greater] by hyphen;
+    rsub [hyphen.sta]' [hyphen greater] by hyphen;
+    rsub [less.arrow]' [hyphen] by less;
+  } lig_hyphen_unwind;
+
+  # A left-only = arrow needs two =, since <= alone is ≤. An = run right after ! or : stays
+  # plain, so !=== and :== show no join.
   lookup lig_equal_build {
-    sub [equal.sta equal.mid] equal' lookup lig_mid equal;
-    sub [equal.sta equal.mid] equal' lookup lig_end;
-    sub equal' lookup lig_sta equal;
+    ignore sub @EqualRun less' equal;
+    sub less' lookup lig_darrow equal [equal greater];
+    sub [less.darrow equal.sta equal.mid] equal' lookup lig_mid [equal greater];
+    sub [less.darrow equal.sta equal.mid] equal' lookup lig_end;
+    ignore sub [@EqualRun exclam colon] equal';
+    sub equal' lookup lig_sta [equal greater];
+    sub [equal.sta equal.mid] greater' lookup lig_darrow;
   } lig_equal_build;
+
+  lookup lig_equal_unwind {
+    rsub [greater.darrow]' [equal less greater] by greater;
+    rsub [equal.end]' [equal less greater] by equal;
+    rsub [equal.mid]' [equal greater] by equal;
+    rsub [equal.sta]' [equal greater] by equal;
+    rsub [less.darrow]' [equal] by less;
+  } lig_equal_unwind;
 
 } calt;

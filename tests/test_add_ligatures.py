@@ -41,6 +41,12 @@ class GeneratorTest(unittest.TestCase):
                     if add_ligatures.GENERATED.fullmatch(g.glyphname)}
         self.assertEqual(matching, set(add_ligatures.build(font)))
 
+    def test_rejects_head_scales_that_change_the_stroke_weight(self):
+        result = subprocess.run([sys.executable, str(GENERATOR), "--head-scale", "1.3",
+                                 "/nonexistent.sfd"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("--head-scale must be within", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
