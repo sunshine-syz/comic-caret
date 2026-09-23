@@ -1,0 +1,32 @@
+# Coding ligatures, merged into the SFD by tools/add_ligatures.py; rerun it after editing.
+#
+# The lookups in `feature calt` run in order, and an earlier one claims its glyphs first.
+# Every lookup is named lig_* so the generator can find and replace it.
+#
+# FontForge crashes while saving an `rsub` rule made only of bare glyph names, so each rsub
+# rule writes its input glyph as a one-glyph class.
+
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+# Single substitutions, called from the chain rules below.
+lookup lig_sta { sub [hyphen equal] by [hyphen.sta equal.sta]; } lig_sta;
+lookup lig_mid { sub [hyphen equal] by [hyphen.mid equal.mid]; } lig_mid;
+lookup lig_end { sub [hyphen equal] by [hyphen.end equal.end]; } lig_end;
+
+feature calt {
+
+  # 2. Runs of - and =: a piece that continues from the glyph before, else a start.
+  lookup lig_hyphen_build {
+    sub [hyphen.sta hyphen.mid] hyphen' lookup lig_mid hyphen;
+    sub [hyphen.sta hyphen.mid] hyphen' lookup lig_end;
+    sub hyphen' lookup lig_sta hyphen;
+  } lig_hyphen_build;
+
+  lookup lig_equal_build {
+    sub [equal.sta equal.mid] equal' lookup lig_mid equal;
+    sub [equal.sta equal.mid] equal' lookup lig_end;
+    sub equal' lookup lig_sta equal;
+  } lig_equal_build;
+
+} calt;
