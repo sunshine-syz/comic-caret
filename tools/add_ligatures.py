@@ -28,7 +28,7 @@ ADVANCE = 550
 OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
 AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
-HEAD_SCALE = 1.0  # arrowheads relative to < >; chosen at the prototype checkpoint
+HEAD_SCALE = 1.1  # arrowheads relative to < >; chosen at the prototype checkpoint
 HEAD_SCALES = (0.85, 1.15)  # beyond this, stroke weight drifts from the rest of the font
 
 # The names of everything this script makes, and of nothing else in the font.
