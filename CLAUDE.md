@@ -43,7 +43,8 @@ not affect this font.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
 - Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`), hhea = typo =
-  850/−350 with `USE_TYPO_METRICS`. Box-drawing verticals span −360…860.
+  850/−350 with `USE_TYPO_METRICS`. Box-drawing strokes overlap their neighbours: verticals
+  span −510…1010 (they meet up to 1.5 em line height), horizontals −10…560.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
   ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
   13 and 14.

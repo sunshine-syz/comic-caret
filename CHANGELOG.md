@@ -4,14 +4,16 @@
 - Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
 - `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font Mono", as OTF and TTF.
-- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
-- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left.
+- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ were full-size commas hanging far below their letters; they are now smaller and stay inside the line. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
+- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ and „ are centered too.
 - Added the no-break space (U+00A0), „, λ, Λ and Ꝛ.
 - Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
 - Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.
 - Cleaned up the outlines: self-intersections, reversed contours and missing extreme points are fixed in every glyph except ∄.
 - Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.
-- Box-drawing lines now end at the edges of the line instead of reaching into the lines above and below.
+- Box-drawing lines are straight and line up with each other, and they run a little past their cells so boxes stay closed at line spacings up to 1.5 em.
+- < > ≤ ≥ ← → × and ~ now sit on the same center line as - = +, so `->`, `<=`, `x<1` and `=~` line up. < > and ≤ ≥ are smaller, closer to the size of +.
+- The ogonek (Ą ą Ę ę Į į Ų ų) curls back under the point where it joins its letter, as in most fonts, and no longer sticks out of Ą and ą into the next character.
 - The font now sets its underline and strikethrough positions and thicknesses (the thicknesses were 0), and its PANOSE data marks it as monospaced.
 - Corrected the font's metadata. Its code-page and Unicode-block flags are now computed from the characters it contains: it declares the blocks it covers and no longer claims the Central European code page (cp1250). Its copyright notice and `LICENSE.md` list all five copyright holders.
 - The TTF turns on dropout control and ClearType symmetric smoothing, for better rendering on Windows.
