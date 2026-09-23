@@ -66,6 +66,10 @@ not affect this font.
 - `font.removeGlyph()` keeps the glyph's encoding slot; set `font.encoding = "UnicodeBmp"`
   afterwards or re-created glyphs land in new slots.
 - `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`.
+- Moving a few points of a contour can leave an extremum that `addExtrema("all")` won't add but
+  `validate()` flags (0x20); keep the points next to the moved ones where they are.
+- `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
+  `name, matrix, *_`. Assigning `(name, matrix)` pairs works.
 
 ## Designing glyphs
 
