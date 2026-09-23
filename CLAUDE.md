@@ -54,6 +54,6 @@ The baseline at HEAD was already this, so a later change did not cause it:
 - **Name records and version:** FontForge derives the shipped names (family, full, PostScript, `Version x.y.z`) and `head.fontRevision` from `FontName`/`FamilyName`/`FullName`/`Version:`. `LangName` holds only the license text and there is no `sfntRevision` line; adding either override brings back hand-synced duplicates.
 - **Duplicated metadata:** the SFD `Copyright:` field lists five copyright holders, while the license text in `LangName` and `LICENSE.md` list only the first two. Keep them in sync by hand.
 
-## README
+## Changelog
 
-`README.md` holds the user-facing changelog, with dated entries under "Changelog". New glyph sets or features get an entry there.
+`CHANGELOG.md` holds the user-facing changelog, newest release first; the README has none. New glyph sets, features and user-visible fixes get an entry there.
