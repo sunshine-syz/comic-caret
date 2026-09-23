@@ -17,13 +17,24 @@ NERD_FONTS = [ROOT / "build" / "nerd" / f"ComicCaretNerdFont-Regular.{ext}"
               for ext in ("otf", "ttf")]
 
 
-def shape(font, text, calt=True):
-    """[(glyph name, advance)] for `text` shaped with `font`."""
+def hb_shape(font, text, *options):
     result = subprocess.run(
-        ["hb-shape", "--output-format=json", f"--features={'+' if calt else '-'}calt",
+        ["hb-shape", "--output-format=json", *options,
          str(font), f"--text={text}"],  # --text= form: a leading '-' would read as an option
         capture_output=True, text=True, check=True)
-    return [(g["g"], g["ax"]) for g in json.loads(result.stdout)]
+    return json.loads(result.stdout)
+
+
+def shape(font, text, calt=True):
+    """[(glyph name, advance)] for `text` shaped with `font`."""
+    glyphs = hb_shape(font, text, f"--features={'+' if calt else '-'}calt")
+    return [(g["g"], g["ax"]) for g in glyphs]
+
+
+def extents(font, text):
+    """[(glyph name, x bearing, y bearing, width, height)] for `text` shaped with `font`."""
+    glyphs = hb_shape(font, text, "--show-extents")
+    return [(g["g"], g["xb"], g["yb"], g["w"], g["h"]) for g in glyphs]
 
 
 def names(font, text, calt=True):
@@ -191,6 +202,14 @@ class NerdFontTest(unittest.TestCase):
             for text in ("->", "<====>", "!=", ">=", "~~~", "::"):
                 with self.subTest(font=font.name, text=text):
                     self.assertEqual(names(font, text), LIGATED[text])
+
+    def test_patched_fonts_draw_the_current_ligatures(self):
+        # Git keeps no mtimes, so compare with the plain fonts, which LigatureShapingTest
+        # requires to be current: a stale build still shapes, but draws the old outlines.
+        text = " ".join(LIGATED)  # reaches every generated glyph
+        for nerd, plain in zip(NERD_FONTS, FONTS):
+            with self.subTest(font=nerd.name):
+                self.assertEqual(extents(nerd, text), extents(plain, text))
 
 
 if __name__ == "__main__":

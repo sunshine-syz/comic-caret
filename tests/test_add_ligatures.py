@@ -24,11 +24,22 @@ def without_timestamp(path):
             if not line.startswith("ModificationTime: ")]
 
 
-def widths_at(layer, y):
-    """Widths of the strokes a horizontal line at y crosses, left to right."""
+def spans_at_y(layer, y):
+    """(x0, x1) of each stroke a horizontal line at y crosses, left to right."""
     # A thin band rather than a line; strokes at the same slant gain the same extra width.
     band = geo.trim(layer, y0=y - 1, y1=y + 1)
-    return [x1 - x0 for x0, _, x1, _ in sorted(contour.boundingBox() for contour in band)]
+    return [(x0, x1) for x0, _, x1, _ in sorted(contour.boundingBox() for contour in band)]
+
+
+def spans_at_x(layer, x):
+    """(y0, y1) of each stroke a vertical line at x crosses, bottom to top."""
+    band = geo.trim(layer, x0=x - 1, x1=x + 1)
+    return sorted((y0, y1) for _, y0, _, y1 in (contour.boundingBox() for contour in band))
+
+
+def widths_at(layer, y):
+    """Widths of the strokes a horizontal line at y crosses, left to right."""
+    return [x1 - x0 for x0, x1 in spans_at_y(layer, y)]
 
 
 def flat_edges(layer, length):
@@ -65,6 +76,73 @@ class GeneratorTest(unittest.TestCase):
                                  "/nonexistent.sfd"], capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
         self.assertIn("--head-scale must be within", result.stderr)
+
+
+class MeasurementTest(unittest.TestCase):
+    """The generator's constants are measurements of - = _ # ~ < > | : and fail here once one
+    of those glyphs is redrawn. Without this, the generator would cut and snap the new
+    outlines at the old places, and every other check would pass."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(add_ligatures.SFD))
+
+    def only(self, spans, what):
+        self.assertEqual(len(spans), 1, f"expected one stroke {what}, got {spans}")
+        return spans[0]
+
+    def test_run_bars_meet_their_profiles_at_the_cuts(self):
+        for name, bars in add_ligatures.RUNS.items():
+            for bar in bars:
+                for cut in bar.cuts:
+                    with self.subTest(glyph=name, band=bar.band, cut=cut):
+                        y0, y1 = self.only([s for s in spans_at_x(self.font[name].foreground, cut)
+                                            if bar.band[0] <= s[0] and s[1] <= bar.band[1]],
+                                           "in the band")
+                        self.assertAlmostEqual(y0, bar.profile[0], delta=5)
+                        self.assertAlmostEqual(y1, bar.profile[1], delta=5)
+
+    def test_tilde_peaks_at_the_crest_and_dips_at_the_trough(self):
+        al, tilde = add_ligatures, self.font["asciitilde"].foreground
+        for x, profile, extreme in ((al.TILDE_CREST, al.CREST_PROFILE, 1),
+                                    (al.TILDE_TROUGH, al.TROUGH_PROFILE, 0)):
+            with self.subTest(x=x):
+                span = self.only(spans_at_x(tilde, x), f"at x {x}")
+                self.assertAlmostEqual(span[0], profile[0], delta=3)
+                self.assertAlmostEqual(span[1], profile[1], delta=3)
+                for beside in (x - 20, x + 20):
+                    edge = spans_at_x(tilde, beside)[0][extreme]
+                    self.assertTrue(edge <= span[1] if extreme else edge >= span[0])
+
+    def test_angles_have_their_point_and_arm_ends_where_the_constants_say(self):
+        al = add_ligatures
+        for name, tip in (("greater", al.GREATER_TIP), ("less", al.LESS_TIP)):
+            with self.subTest(glyph=name):
+                angle = self.font[name].foreground
+                x0, x1 = self.only(spans_at_y(angle, al.AXIS), "at the point")
+                self.assertAlmostEqual(x1 if name == "greater" else x0, tip, delta=2)
+                for end_x, end_y in al.ARM_ENDS[name]:
+                    self.assertTrue(any(a < end_x < b for a, b in spans_at_y(angle, end_y)),
+                                    f"{name} has no arm end at ({end_x}, {end_y})")
+
+    def test_colon_lift_centres_the_colon_on_the_equal_sign(self):
+        _, c0, _, c1 = self.font["colon"].boundingBox()
+        _, e0, _, e1 = self.font["equal"].boundingBox()
+        self.assertAlmostEqual((c0 + c1) / 2 + add_ligatures.COLON_LIFT, (e0 + e1) / 2, delta=2)
+
+    def test_hyphen_span_is_the_distance_between_its_cap_centres(self):
+        # Each round cap's centre sits half the stroke's height in from its end.
+        x0, y0, x1, y1 = self.font["hyphen"].boundingBox()
+        self.assertAlmostEqual((x1 - x0) - (y1 - y0), add_ligatures.HYPHEN_SPAN, delta=10)
+
+    def test_bar_span_lies_on_the_straight_part_of_the_bar(self):
+        bar = self.font["bar"].foreground
+        span = add_ligatures.BAR_SPAN
+        middle = self.only(widths_at(bar, sum(span) / 2), "in the middle")
+        for y in span:
+            with self.subTest(y=y):
+                self.assertAlmostEqual(self.only(widths_at(bar, y), f"at y {y}"), middle,
+                                       delta=0.05 * middle)
 
 
 class GlyphShapeTest(unittest.TestCase):

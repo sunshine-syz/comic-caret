@@ -83,4 +83,6 @@ not affect this font.
 - Ligatures are generated. `tools/add_ligatures.py` owns every glyph its `GENERATED` pattern
   matches (`LIG`, `*.sta`, `*.liga`, …) and every `lig_*` lookup, and rebuilds them from
   `src/ligatures.fea` on each run. Change them only there, then rerun it and `./build.sh`;
-  `tests/test_add_ligatures.py` fails while the SFD is out of date.
+  `tests/test_add_ligatures.py` fails while the SFD is out of date. Its constants are
+  measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until
+  `MeasurementTest` passes, then rerun it.
