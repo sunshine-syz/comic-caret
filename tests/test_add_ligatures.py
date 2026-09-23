@@ -13,7 +13,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
-import lig_geometry as geo
+from measure import spans_at_x, spans_at_y
 from project import ROOT, SFD
 
 GENERATOR = ROOT / "tools" / "add_ligatures.py"
@@ -23,19 +23,6 @@ PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 def without_timestamp(path):
     return [line for line in path.read_text(encoding="utf-8").splitlines()
             if not line.startswith("ModificationTime: ")]
-
-
-def spans_at_y(layer, y):
-    """(x0, x1) of each stroke a horizontal line at y crosses, left to right."""
-    # A thin band rather than a line; strokes at the same slant gain the same extra width.
-    band = geo.trim(layer, y0=y - 1, y1=y + 1)
-    return [(x0, x1) for x0, _, x1, _ in sorted(contour.boundingBox() for contour in band)]
-
-
-def spans_at_x(layer, x):
-    """(y0, y1) of each stroke a vertical line at x crosses, bottom to top."""
-    band = geo.trim(layer, x0=x - 1, x1=x + 1)
-    return sorted((y0, y1) for _, y0, _, y1 in (contour.boundingBox() for contour in band))
 
 
 def widths_at(layer, y):
