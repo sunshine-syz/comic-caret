@@ -10,6 +10,8 @@ Comic Caret is a fork of [Comic Shanns Mono](https://github.com/jesusmgg/comic-s
 - Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
 - `./build.sh --nerd` builds a Nerd Fonts patched copy, "ComicCaret Nerd Font Mono".
+- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflex on ĥ sat too high.
+- Added the no-break space (U+00A0) and „.
 
 ### Update 2023-03 (v1.3.0)
 - Added aditional characters, like ƿ and ∃.
