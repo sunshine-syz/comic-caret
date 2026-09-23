@@ -22,8 +22,9 @@ Builds $OUT.{otf,ttf} from $SOURCE.
 
   --nerd[=VARIANTS]  Also patch the OTF and TTF with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:
-                       mono     icons fit one cell; every glyph stays 550 wide (default)
-                       default  icons overhang into the next cell
+                       default  icons overhang into the next cell (default; the
+                                copies committed in $NERD_OUT/)
+                       mono     icons fit one cell; every glyph stays 550 wide
                        propo    icons keep their own advance widths (not monospaced)
 EOF
 }
@@ -60,7 +61,7 @@ fetch_patcher() {
 nerd_variants=
 for arg in "$@"; do
   case $arg in
-    --nerd) nerd_variants=mono ;;
+    --nerd) nerd_variants=default ;;
     --nerd=?*) nerd_variants=${arg#--nerd=} ;;
     -h | --help) usage; exit 0 ;;
     *) usage >&2; exit 2 ;;

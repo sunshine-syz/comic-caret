@@ -51,12 +51,13 @@ $ ./build.sh
 
 To also build [Nerd Fonts](https://www.nerdfonts.com/) patched copies, pass `--nerd`.
 The script downloads a pinned version of the Nerd Fonts patcher on first use (needs
-`curl` and `unzip`) and writes an otf and a ttf version to `build/nerd/`. Install only one
-of the two, since they share a font name:
+`curl` and `unzip`) and writes an otf and a ttf version to `build/nerd/`, which already
+holds prebuilt copies of ComicCaret Nerd Font. Install only one of the two, since they
+share a font name:
 
 ```
-$ ./build.sh --nerd                # Nerd Font Mono: icons fit one cell
-$ ./build.sh --nerd=mono,default   # also the variant whose icons overhang the next cell
+$ ./build.sh --nerd                # ComicCaret Nerd Font: icons overhang the next cell
+$ ./build.sh --nerd=default,mono   # also ComicCaret Nerd Font Mono: icons fit one cell
 ```
 
 The ligatures are generated. Don't edit their glyphs (`LIG`, `*.sta`, `*.liga` and the

@@ -9,7 +9,7 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 
 ```sh
 ./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
-./build.sh --nerd                       # also Nerd Font Mono copies -> build/nerd/
+./build.sh --nerd                       # also the Nerd Font copies committed in build/nerd/
 python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
