@@ -12,6 +12,7 @@
 - Corrected the font's metadata. It no longer claims the Central European code page (cp1250), which needs letters such as Ł that the font lacks. It now declares the Unicode blocks it actually covers, and its copyright notice and `LICENSE.md` list all five copyright holders.
 - The TTF turns on dropout control and ClearType symmetric smoothing, for better rendering on Windows.
 - Old Mac-only name records are gone, and building the same source twice now gives identical files.
+- Every outline point now sits on a whole font unit, which makes the OTF about 75% smaller.
 
 ## 1.3.0 (2023-03)
 - Added additional characters, like ƿ and ∃.
