@@ -12,10 +12,10 @@
 - Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.
 - Box-drawing lines now end at the edges of the line instead of reaching into the lines above and below.
 - The font now sets its underline and strikethrough positions and thicknesses (the thicknesses were 0), and its PANOSE data marks it as monospaced.
-- Corrected the font's metadata. It no longer claims the Central European code page (cp1250), which needs letters such as Ł that the font lacks. It now declares the Unicode blocks it actually covers, and its copyright notice and `LICENSE.md` list all five copyright holders.
+- Corrected the font's metadata. Its code-page and Unicode-block flags are now computed from the characters it contains: it declares the blocks it covers and no longer claims the Central European code page (cp1250). Its copyright notice and `LICENSE.md` list all five copyright holders.
 - The TTF turns on dropout control and ClearType symmetric smoothing, for better rendering on Windows.
 - Old Mac-only name records are gone, and building the same source twice now gives identical files.
-- Every outline point now sits on a whole font unit, which makes the OTF about 75% smaller.
+- Every outline point now sits on a whole font unit. With the other cleanups, both font files are about half the size they were in 1.3.0.
 
 ## 1.3.0 (2023-03)
 - Added additional characters, like ƿ and ∃.

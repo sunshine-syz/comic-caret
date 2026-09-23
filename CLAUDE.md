@@ -22,9 +22,11 @@ committed: both `fonts/` and the Nerd Fonts output in `build/` are gitignored. T
 produces unusable fonts" warning is about a monospace TTF `hmtx` bug; HarfBuzz reads correct
 550 advances from our patched output, so it does not apply here.
 
-Builds are reproducible: `build.sh` sets `SOURCE_DATE_EPOCH` to the SFD's last commit time,
+Builds are reproducible: `build.sh` sets `SOURCE_DATE_EPOCH` to the last commit's time,
 because FontForge writes the date into the unique ID (name ID 3). It generates with the flags
-`opentype` (keeps `GDEF`) and `no-mac-names`.
+`opentype` (keeps `GDEF`) and `no-mac-names`, and pins FontForge's `AutoHint` preference on.
+Every glyph's CFF hints are stored in the SFD: run `glyph.autoHint()` on glyphs you change, so
+no glyph carries the `H` (changed since hinted) flag and the SFD holds the hints that ship.
 
 There is no test suite. These are the checks in use:
 
@@ -54,7 +56,7 @@ The baseline at HEAD was already this, so a later change did not cause it:
 - **Metrics:** em 1000 (ascent 750 / descent 250). OS/2 cap height 668 and x-height 473 are the tops of `H` and `x`. **Every glyph, including `.notdef`, has advance width 550.** Keep that true for any glyph you add.
 - **Line box:** hhea = typo = 850/−350/0 with `USE_TYPO_METRICS`, so every platform uses the same 1.2 em line. Win ascent/descent are offsets of 0 from the bbox, so they follow the tallest and deepest glyph with no hand-synced numbers. Box-drawing verticals span the line box plus 10 units (−360…860); new box glyphs should match.
 - **Computed OS/2 bits:** the SFD has no `OS2CodePages`/`OS2UnicodeRanges` lines, so FontForge computes both from the cmap when it generates. Setting either from Python or Font Info hard-codes it again.
-- **TTF rendering:** the TTF is unhinted. The SFD carries a `prep` table (`TtTable: prep`) that turns on smart dropout control, and gasp v1 `0x000A`.
+- **TTF rendering:** the TTF is unhinted. The SFD carries a `prep` table (`TtTable: prep`) that turns on smart dropout control, and gasp v1 `0x000F`: without the grid-fit bits the rasterizer may skip `prep`.
 - **Glyph hygiene:** new or redrawn glyphs should have integer coordinates and pass FontForge Validate. Only ∄ still fails Validate (see the baseline above). `glyph.round()` can push a handle 1 unit past its segment's end points, which shows up as missing extrema (`0x20`), so validate after rounding.
 - **No OpenType layout yet:** the font has no GSUB/GPOS lookups and no kerning.
 - **Noisy diffs:** each save changes `ModificationTime` and can rewrite hint (`HStem`/`VStem`) and `Validated:` lines on glyphs that were touched.

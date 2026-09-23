@@ -80,14 +80,19 @@ if [[ -n $nerd_variants ]]; then
 fi
 
 mkdir -p "$(dirname "$OUT")"
-# FontForge stamps the build date into the unique ID (name ID 3). Use the source's last commit
-# instead, so building the same source on another day gives the same bytes.
-if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && git rev-parse -q --verify HEAD >/dev/null 2>&1; then
-  export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- "$SOURCE")
+# FontForge stamps the build date into the unique ID (name ID 3). Use the last commit's time
+# instead, so building the same commit on another day gives the same bytes. HEAD rather than
+# the SFD's last commit, because a shallow clone (the CI default) can't see the latter.
+if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && epoch=$(git log -1 --format=%ct 2>/dev/null) &&
+  [[ -n $epoch ]]; then
+  export SOURCE_DATE_EPOCH=$epoch
 fi
 # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
-# "no-mac-names" drops the platform-1 name records that nothing current reads.
+# "no-mac-names" drops the platform-1 name records that nothing current reads. Glyphs edited
+# since they were last hinted get autohinted while generating only if the user's AutoHint
+# preference allows it, so pin it to keep the OTF the same on every machine.
 GENERATE='import fontforge, sys
+fontforge.setPrefs("AutoHint", True)
 fontforge.open(sys.argv[1]).generate(sys.argv[2], flags=("opentype", "no-mac-names"))'
 # One process per format: generating the OTF first alters the in-memory outlines, so a
 # TTF generated after it in the same session gets a different glyf table.
