@@ -13,7 +13,7 @@ Requires Homebrew `fontforge` on `PATH`. Its Python module is also importable fr
 
 ```sh
 ./build.sh           # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
-./build.sh --nerd    # also Nerd Font Mono -> build/nerd/ (--nerd=mono,default,propo for more)
+./build.sh --nerd    # also Nerd Font Mono otf+ttf -> build/nerd/ (--nerd=mono,default,propo for more)
 ```
 
 Run `./build.sh` after every SFD change, before the checks below. Build outputs are never

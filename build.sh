@@ -20,7 +20,7 @@ Usage: ./build.sh [--nerd[=VARIANTS]]
 
 Builds $OUT.{otf,ttf} from $SOURCE.
 
-  --nerd[=VARIANTS]  Also patch the TTF with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
+  --nerd[=VARIANTS]  Also patch the OTF and TTF with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:
                        mono     icons fit one cell; every glyph stays 550 wide (default)
                        default  icons overhang into the next cell
@@ -100,10 +100,14 @@ if [[ -n $nerd_variants ]]; then
   mkdir -p "$NERD_OUT"
   for variant in "${variants[@]}"; do
     flag=$(nerd_flag "$variant")
-    # FontForge prints ~100 name-vs-codepoint notes while loading the icon fonts. Drop them
-    # so the patcher's own warnings stay visible; pipefail still reports a patcher failure.
-    fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete ${flag:+"$flag"} \
-      --quiet --no-progressbars --outputdir "$NERD_OUT" "$OUT.ttf" 2>&1 |
-      { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
+    # The patcher writes the input's format, so patching each build keeps the OTF's cubic
+    # outlines instead of converting the TTF.
+    for ext in otf ttf; do
+      # FontForge prints ~100 name-vs-codepoint notes while loading the icon fonts. Drop them
+      # so the patcher's own warnings stay visible; pipefail still reports a patcher failure.
+      fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete ${flag:+"$flag"} \
+        --quiet --no-progressbars --outputdir "$NERD_OUT" "$OUT.$ext" 2>&1 |
+        { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
+    done
   done
 fi

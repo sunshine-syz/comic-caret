@@ -3,7 +3,7 @@
 ## 2.0.0 (2026-09)
 - Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
-- `./build.sh --nerd` builds a Nerd Fonts patched copy, "ComicCaret Nerd Font Mono".
+- `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font Mono", as OTF and TTF.
 - Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflex on ĥ sat too high.
 - Added the no-break space (U+00A0) and „.
 - Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.

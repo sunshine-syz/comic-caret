@@ -23,9 +23,10 @@ Make sure that `fontforge` is installed and in your path. Then run `./build.sh`
 $ ./build.sh
 ```
 
-To also build a [Nerd Fonts](https://www.nerdfonts.com/) patched copy, pass `--nerd`.
+To also build [Nerd Fonts](https://www.nerdfonts.com/) patched copies, pass `--nerd`.
 The script downloads a pinned version of the Nerd Fonts patcher on first use (needs
-`curl` and `unzip`) and writes the result to `build/nerd/`:
+`curl` and `unzip`) and writes an otf and a ttf version to `build/nerd/`. Install only one
+of the two, since they share a font name:
 
 ```
 $ ./build.sh --nerd                # Nerd Font Mono: icons fit one cell
