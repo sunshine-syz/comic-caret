@@ -12,10 +12,15 @@ The whole font lives in one FontForge source file, `src/ComicShannsMono-Regular.
 Requires Homebrew `fontforge` on `PATH`. Its Python module is also importable from `python3`, and `hb-shape`/`hb-view` (HarfBuzz) are installed.
 
 ```sh
-./build.sh    # SFD -> fonts/ComicShannsMono-Regular.{otf,ttf}
+./build.sh           # SFD -> fonts/ComicShannsMono-Regular.{otf,ttf}
+./build.sh --nerd    # also Nerd Font Mono -> build/nerd/ (--nerd=mono,default,propo for more)
 ```
 
 Every SFD change should be followed by `./build.sh`, and both binaries committed with it.
+Nerd Fonts output in `build/` is gitignored and not committed. The patcher version is pinned by
+`NERD_FONTS_VERSION` + `NERD_FONTS_SHA256` in `build.sh`. The patcher's "Fontforge 20251009
+produces unusable fonts" warning is about a monospace TTF `hmtx` bug; HarfBuzz reads correct
+550 advances from our patched output, so it does not apply here.
 
 There is no test suite. These are the checks in use:
 

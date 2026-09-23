@@ -43,6 +43,15 @@ Make sure that `fontforge` is installed and in your path. Then run `./build.sh`
 $ ./build.sh
 ```
 
+To also build a [Nerd Fonts](https://www.nerdfonts.com/) patched copy, pass `--nerd`.
+The script downloads a pinned version of the Nerd Fonts patcher on first use (needs
+`curl` and `unzip`) and writes the result to `build/nerd/`:
+
+```
+$ ./build.sh --nerd                # Nerd Font Mono: icons fit one cell
+$ ./build.sh --nerd=mono,default   # also the variant whose icons overhang the next cell
+```
+
 ## What does it look like?
 Like if someone made a version of Comic Sans that is monospaced.
 
