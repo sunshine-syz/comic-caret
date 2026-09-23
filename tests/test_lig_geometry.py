@@ -84,6 +84,29 @@ class StretchSpanTest(unittest.TestCase):
         self.assertEqual(self.points(layer)[3], (600, 100))
 
 
+class RampTest(unittest.TestCase):
+    def test_runs_from_0_to_1_and_clamps(self):
+        self.assertEqual([geo.ramp(v, 0, 10) for v in (-5, 0, 5, 10, 15)], [0, 0, 0.5, 1, 1])
+
+    def test_runs_downhill_when_its_ends_are_swapped(self):
+        self.assertEqual(geo.ramp(2, 10, 0), 0.8)
+
+
+class DisplacedTest(unittest.TestCase):
+    def test_moves_points_sideways_by_the_field(self):
+        moved = geo.displaced(geo.rect(0, 0, 100, 50), lambda x, y: 10 * geo.ramp(x, 40, 60))
+        self.assertEqual(box(moved), (0, 0, 110, 50))
+
+    def test_never_moves_points_vertically(self):
+        moved = geo.displaced(geo.rect(0, 0, 100, 50), lambda x, y: y)
+        self.assertEqual(sorted(p.y for p in moved[0]), [0, 0, 50, 50])
+
+    def test_leaves_its_input_alone(self):
+        layer = geo.rect(0, 0, 100, 50)
+        geo.displaced(layer, lambda x, y: 10)
+        self.assertEqual(box(layer), (0, 0, 100, 50))
+
+
 class SnapEdgeTest(unittest.TestCase):
     def test_moves_corners_on_the_edge_to_the_nearest_height(self):
         contour = fontforge.contour()

@@ -1,4 +1,7 @@
-"""Outline operations that tools/add_ligatures.py builds ligature glyphs with.
+"""Outline operations for building glyphs from existing outlines.
+
+tools/add_ligatures.py builds the ligatures with them; displaced() with ramp() narrows letters
+by moving their strokes.
 
 Each function takes FontForge layers and returns a new layer, leaving its inputs alone;
 snap_edge is the exception and edits its argument in place. Outlines are clockwise, as in
@@ -103,6 +106,28 @@ def stretch_span(layer, x0, x1, dx):
                 point.x += dx
             elif point.x > x0:
                 point.x = x0 + (point.x - x0) * factor
+    return out
+
+
+def ramp(v, v0, v1):
+    """0 at v0, 1 at v1 and linear between, clamped beyond them; v0 > v1 runs downhill.
+
+    The building block of displaced()'s fields: a ramp in x across a stroke shortens it, a ramp
+    in y along a stroke re-angles it.
+    """
+    return min(1.0, max(0.0, (v - v0) / (v1 - v0)))
+
+
+def displaced(layer, dx):
+    """Every point, on-curve and control, moved right by dx(x, y); nothing moves vertically.
+
+    Where dx is the same across a stroke the stroke moves as it is; where it differs across a
+    stroke, the stroke's weight changes, which measure.thickness_change reports.
+    """
+    out = layer.dup()
+    for contour in out:
+        for point in contour:
+            point.x += dx(point.x, point.y)
     return out
 
 
