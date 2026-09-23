@@ -9,6 +9,32 @@ Build the font (see below), then install `fonts/ComicCaret-Regular.otf` or
 `fonts/ComicCaret-Regular.ttf` like any other font. For what changed between releases, see
 [CHANGELOG.md](CHANGELOG.md).
 
+## Ligatures
+
+Comic Caret joins common coding sequences into one symbol. Every character still takes its
+own cell, so columns line up and the cursor moves one character at a time.
+
+- Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`
+- Continuous lines of any length: `==` `--` `__` `##` `~~`
+- `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centred on the `=`
+- `|>` `<|` as triangles
+- Pairs pulled together: `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||`
+
+Sequences that run into other operators stay as separate characters, for example `->>`,
+`<<-`, `==<`, `<<=` or `https://`.
+
+The ligatures use the `calt` (contextual alternates) OpenType feature:
+
+| App | On | Off |
+|---|---|---|
+| VS Code | `"editor.fontLigatures": true` | `false` (the default) |
+| JetBrains IDEs | Settings → Editor → Font → Enable ligatures | Clear it (the default) |
+| iTerm2 | Settings → Profiles → Text → Use ligatures | Clear it (the default) |
+| kitty | On by default | `disable_ligatures always` |
+| WezTerm | On by default | `harfbuzz_features = { 'calt=0' }` |
+| Ghostty | On by default | `font-feature = -calt` |
+| Windows Terminal | On by default | `"font": { "features": { "calt": 0 } }` in the profile |
+
 ## Editing and Building
 
 The source of the font is in `src/ComicCaret-Regular.sfd`. You can open it
@@ -32,6 +58,10 @@ of the two, since they share a font name:
 $ ./build.sh --nerd                # Nerd Font Mono: icons fit one cell
 $ ./build.sh --nerd=mono,default   # also the variant whose icons overhang the next cell
 ```
+
+The ligatures are generated. Don't edit their glyphs (`LIG`, `*.sta`, `*.liga` and the
+like) in FontForge: change `tools/add_ligatures.py` or `src/ligatures.fea`, then run
+`python3 tools/add_ligatures.py` and `./build.sh`.
 
 ## What does it look like?
 Like if someone made a version of Comic Sans that is monospaced.

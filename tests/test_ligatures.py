@@ -13,6 +13,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 from add_ligatures import ADVANCE, GENERATED, SFD  # noqa: E402
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
+NERD_FONTS = [ROOT / "build" / "nerd" / f"ComicCaretNerdFont-Regular.{ext}"
+              for ext in ("otf", "ttf")]
 
 
 def shape(font, text, calt=True):
@@ -179,6 +181,16 @@ class LigatureShapingTest(unittest.TestCase):
                     if line.startswith("StartChar: ") and GENERATED.fullmatch(line.split()[1])}
         reached = {name for font in FONTS for text in LIGATED for name in names(font, text)}
         self.assertEqual(sorted(made - reached), [])
+
+
+class NerdFontTest(unittest.TestCase):
+    """The committed Nerd Fonts builds keep the ligatures through the patcher."""
+
+    def test_patched_fonts_keep_the_ligatures(self):
+        for font in NERD_FONTS:
+            for text in ("->", "<====>", "!=", ">=", "~~~", "::"):
+                with self.subTest(font=font.name, text=text):
+                    self.assertEqual(names(font, text), LIGATED[text])
 
 
 if __name__ == "__main__":

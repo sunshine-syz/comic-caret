@@ -10,13 +10,15 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 ```sh
 ./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
 ./build.sh --nerd                       # also Nerd Font Mono copies -> build/nerd/
+python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
+tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 ```
 
 Rebuild after every SFD change, then run the checks:
 
 ```sh
-python3 -m unittest discover tests  # font-wide SFD rules; known exceptions are listed in the test
+python3 -m unittest discover tests  # SFD rules and ligature shaping; known exceptions are in the tests
 hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
 uvx fontbakery check-universal fonts/ComicCaret-Regular.ttf  # expect 0 FAIL
 uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
@@ -52,7 +54,17 @@ not affect this font.
   generate from a fresh process.
 - `glyph.unicode = -1` switches the font to a `Custom` encoding; set
   `font.encoding = "UnicodeBmp"` afterwards.
-- Don't save from a process that validated every glyph; it writes `Validated:` into all of them.
+- Don't save from a process that validated glyphs; it writes `Validated:` into each one it
+  checked.
+- `font.mergeFeature()` prints feature-file errors to stderr and returns normally, merging
+  nothing; check that the lookups exist afterwards.
+- Saving crashes when an `rsub` rule is made only of bare glyph names; write the input glyph as
+  a one-glyph class (`[a]'`).
+- `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the
+  wrong region; cut with `layer.intersect()` against a box.
+- `font.removeGlyph()` keeps the glyph's encoding slot; set `font.encoding = "UnicodeBmp"`
+  afterwards or re-created glyphs land in new slots.
+- `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`.
 
 ## Designing glyphs
 
@@ -68,4 +80,7 @@ not affect this font.
 ## Other
 
 - Add user-visible changes to `CHANGELOG.md`.
-- The font has no GSUB/GPOS yet.
+- Ligatures are generated. `tools/add_ligatures.py` owns every glyph its `GENERATED` pattern
+  matches (`LIG`, `*.sta`, `*.liga`, …) and every `lig_*` lookup, and rebuilds them from
+  `src/ligatures.fea` on each run. Change them only there, then rerun it and `./build.sh`;
+  `tests/test_add_ligatures.py` fails while the SFD is out of date.
