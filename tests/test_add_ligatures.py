@@ -11,12 +11,13 @@ import unittest
 
 import fontforge
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "tools"))
-import add_ligatures  # noqa: E402
-import lig_geometry as geo  # noqa: E402
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+import add_ligatures
+import lig_geometry as geo
+from project import ROOT, SFD
 
 GENERATOR = ROOT / "tools" / "add_ligatures.py"
+PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 
 
 def without_timestamp(path):
@@ -58,24 +59,18 @@ class GeneratorTest(unittest.TestCase):
         # Fails when src/ligatures.fea or the generator changed without a rerun, or when a
         # generated glyph was edited by hand, as well as when a run is not repeatable.
         with tempfile.TemporaryDirectory() as tmp:
-            copy = pathlib.Path(tmp) / add_ligatures.SFD.name
-            shutil.copy(add_ligatures.SFD, copy)
+            copy = pathlib.Path(tmp) / SFD.name
+            shutil.copy(SFD, copy)
             subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(without_timestamp(copy), without_timestamp(add_ligatures.SFD))
+            self.assertEqual(without_timestamp(copy), without_timestamp(SFD))
 
     def test_generated_names_match_only_generated_glyphs(self):
         # The generator deletes every glyph whose name matches GENERATED before rebuilding, so
         # a hand-made glyph with such a name would silently disappear.
-        font = fontforge.open(str(add_ligatures.SFD))
+        font = fontforge.open(str(SFD))
         matching = {g.glyphname for g in font.glyphs()
                     if add_ligatures.GENERATED.fullmatch(g.glyphname)}
         self.assertEqual(matching, set(add_ligatures.build(font)))
-
-    def test_rejects_head_scales_outside_the_checked_range(self):
-        result = subprocess.run([sys.executable, str(GENERATOR), "--head-scale", "1.3",
-                                 "/nonexistent.sfd"], capture_output=True, text=True)
-        self.assertEqual(result.returncode, 2)
-        self.assertIn("--head-scale must be within", result.stderr)
 
 
 class MeasurementTest(unittest.TestCase):
@@ -85,7 +80,7 @@ class MeasurementTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(add_ligatures.SFD))
+        cls.font = fontforge.open(str(SFD))
 
     def only(self, spans, what):
         self.assertEqual(len(spans), 1, f"expected one stroke {what}, got {spans}")
@@ -116,7 +111,7 @@ class MeasurementTest(unittest.TestCase):
 
     def test_angles_have_their_point_and_arm_ends_where_the_constants_say(self):
         al = add_ligatures
-        for name, tip in (("greater", al.GREATER_TIP), ("less", al.LESS_TIP)):
+        for name, tip in al.TIP.items():
             with self.subTest(glyph=name):
                 angle = self.font[name].foreground
                 x0, x1 = self.only(spans_at_y(angle, al.AXIS), "at the point")
@@ -146,11 +141,9 @@ class MeasurementTest(unittest.TestCase):
 
 
 class GlyphShapeTest(unittest.TestCase):
-    PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
-
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(add_ligatures.SFD))
+        cls.font = fontforge.open(str(SFD))
 
     def mean_widths(self, name):
         """Mean stroke widths along the upper arm's height, left to right. Hand-drawn strokes
@@ -159,12 +152,12 @@ class GlyphShapeTest(unittest.TestCase):
         heights = range(add_ligatures.AXIS + 60, add_ligatures.AXIS + 161, 20)
         rows = [widths_at(self.font[name].foreground, y) for y in heights]
         self.assertEqual(len({len(row) for row in rows}), 1, f"{name}: strokes merge")
-        return [sum(column) / len(rows) for column in zip(*rows)]
+        return [sum(column) / len(rows) for column in zip(*rows, strict=True)]
 
     def test_enlarged_heads_are_no_heavier_than_the_angles(self):
         # Scaling > up would thicken its arms past the shaft or bar they join.
         for glyph, angle in {"greater.arrow": "greater", "less.arrow": "less",
-                             **self.PIPES}.items():
+                             **PIPES}.items():
             with self.subTest(glyph=glyph):
                 [arm] = self.mean_widths(angle)
                 strokes = self.mean_widths(glyph)
@@ -175,7 +168,7 @@ class GlyphShapeTest(unittest.TestCase):
 
     def test_pipe_bars_are_as_heavy_as_the_bar(self):
         [bar] = self.mean_widths("bar")
-        for pipe, angle in self.PIPES.items():
+        for pipe, angle in PIPES.items():
             with self.subTest(pipe=pipe):
                 strokes = self.mean_widths(pipe)
                 self.assertEqual(len(strokes), 2)
@@ -185,13 +178,13 @@ class GlyphShapeTest(unittest.TestCase):
     def test_pipe_bars_keep_their_round_ends(self):
         # Every stroke in the font ends round; a bar cut flat shows a straight horizontal
         # edge as wide as the stroke.
-        for pipe in self.PIPES:
+        for pipe in PIPES:
             with self.subTest(pipe=pipe):
                 self.assertEqual(flat_edges(self.font[pipe].foreground, 20), [])
 
     def test_pipe_corners_are_one_round_end(self):
         # An arm end beside the bar's end would leave two caps with a notch between them.
-        for pipe in self.PIPES:
+        for pipe in PIPES:
             layer = self.font[pipe].foreground
             _, bottom, _, top = layer.boundingBox()
             for y in (top - 4, top - 10, bottom + 4, bottom + 10):

@@ -1,0 +1,2 @@
+line-length = 100
+src = ["tools"]  # the tests import these modules by name

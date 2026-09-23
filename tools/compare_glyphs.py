@@ -16,10 +16,9 @@ import sys
 
 import fontforge
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-OURS = ROOT / "src" / "ComicCaret-Regular.sfd"
+from project import ADVANCE, ROOT, SFD
+
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"
-ADVANCE = 550
 
 
 @contextlib.contextmanager
@@ -45,8 +44,9 @@ class Font:
         self.sx = ADVANCE / self.font["H"].width
         self.anchor = self.cap if anchor == "cap" else self.xheight
         # FontForge may store hhea values as offsets from the em's ascent and descent.
-        self.line_top = self.font.hhea_ascent + (self.font.ascent if self.font.hhea_ascent_add else 0)
-        self.line_bottom = self.font.hhea_descent - (self.font.descent if self.font.hhea_descent_add else 0)
+        font = self.font
+        self.line_top = font.hhea_ascent + (font.ascent if font.hhea_ascent_add else 0)
+        self.line_bottom = font.hhea_descent - (font.descent if font.hhea_descent_add else 0)
 
     def set_target(self, target):
         self.sy = target / self.anchor
@@ -76,7 +76,8 @@ def main():
     parser.add_argument("fonts", nargs="*", help="fonts to compare; the first sets the scale")
     args = parser.parse_args()
 
-    paths = args.fonts or [OURS, *sorted(p for p in REFERENCE_DIR.glob("*") if p.suffix in (".otf", ".ttf"))]
+    references = sorted(p for p in REFERENCE_DIR.glob("*") if p.suffix in (".otf", ".ttf"))
+    paths = args.fonts or [SFD, *references]
     if len(paths) < 2:
         sys.exit(f"No reference fonts in {REFERENCE_DIR}; see \"Designing glyphs\" in CLAUDE.md.")
     fonts = [Font(path, args.anchor) for path in paths]
@@ -85,7 +86,8 @@ def main():
     width = max(len(font.name) for font in fonts)
 
     for font in fonts:
-        print(f"{font.name:{width}}  cap {font.cap * font.sy:4.0f}  x-height {font.xheight * font.sy:4.0f}"
+        print(f"{font.name:{width}}  cap {font.cap * font.sy:4.0f}"
+              f"  x-height {font.xheight * font.sy:4.0f}"
               f"  line box {font.line_bottom * font.sy:.0f}..{font.line_top * font.sy:.0f}")
     for char in args.text:
         print(f"\n{char} U+{ord(char):04X}")

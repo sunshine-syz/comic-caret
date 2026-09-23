@@ -8,9 +8,9 @@ import subprocess
 import sys
 import unittest
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "tools"))
-from add_ligatures import ADVANCE, GENERATED, SFD  # noqa: E402
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+from add_ligatures import GENERATED
+from project import ADVANCE, ROOT, SFD
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
 NERD_FONTS = [ROOT / "build" / "nerd" / f"ComicCaretNerdFont-Regular.{ext}"
@@ -207,7 +207,7 @@ class NerdFontTest(unittest.TestCase):
         # Git keeps no mtimes, so compare with the plain fonts, which LigatureShapingTest
         # requires to be current: a stale build still shapes, but draws the old outlines.
         text = " ".join(LIGATED)  # reaches every generated glyph
-        for nerd, plain in zip(NERD_FONTS, FONTS):
+        for nerd, plain in zip(NERD_FONTS, FONTS, strict=True):
             with self.subTest(font=nerd.name):
                 self.assertEqual(extents(nerd, text), extents(plain, text))
 

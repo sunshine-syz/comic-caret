@@ -1,6 +1,6 @@
 """Build Comic Caret's coding ligatures into the SFD: the glyphs, then src/ligatures.fea.
 
-Usage: python3 tools/add_ligatures.py [--head-scale S] [SFD]
+Usage: python3 tools/add_ligatures.py [SFD]
 
 Replaces every glyph and GSUB lookup an earlier run made, so running it again changes nothing
 but ModificationTime.
@@ -18,24 +18,18 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from lig_geometry import FAR
+from project import ADVANCE, ROOT, SFD, validation_errors
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-SFD = ROOT / "src" / "ComicCaret-Regular.sfd"
 FEA = ROOT / "src" / "ligatures.fea"
 
-ADVANCE = 550
 OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
 AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
-HEAD_SCALE = 1.1  # arrowheads relative to < >; chosen at the prototype checkpoint
-HEAD_SCALES = (0.85, 1.15)  # the sizes the heads were checked at
+HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' heads
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
                        r"|liga|tight_l|tight_r)")
-
-VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
 
 class Bar(NamedTuple):
@@ -62,8 +56,9 @@ TILDE_HALF = TILDE_TROUGH - TILDE_CREST
 CREST_PROFILE, TROUGH_PROFILE = (295, 394), (145, 243)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
-# Arrowheads: the point of > and < sits on the axis at these x.
-GREATER_TIP, LESS_TIP = 462, 88
+# The point of > and < sits on the axis at these x, and their arms run from it this way.
+TIP = {"greater": 462, "less": 88}
+OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
 ARM_SPAN = (150, 330)  # along an arm from the point: straight, clear of the join and cap
@@ -110,7 +105,7 @@ def stroke(font, name, x0=None, x1=None):
             layer = geo.stretch(layer, bar.cuts[0], -STRETCH, bar.band)
         if x1 is not None:
             layer = geo.stretch(layer, bar.cuts[1], STRETCH, bar.band)
-    layer = geo.trim(layer, -FAR if x0 is None else x0, FAR if x1 is None else x1)
+    layer = geo.trim(layer, -geo.FAR if x0 is None else x0, geo.FAR if x1 is None else x1)
     profile = [y for bar in bars for y in bar.profile]
     for x in (x0, x1):
         if x is not None:
@@ -171,11 +166,17 @@ def middle_at(layer, y):
     return (x0 + x1) / 2, y
 
 
-def longer_angle(font, name, tip, scale):
+def turned(layer, name, angle):
+    """`layer` rotated by `angle` about the point of < or >."""
+    return geo.transformed(layer, geo.about(psMat.rotate(angle), TIP[name], AXIS))
+
+
+def longer_angle(font, name, scale):
     """< or > with its arm ends `scale` times as high above and below the axis. Unlike scaling
     the glyph, lengthening the arms keeps their stroke weight."""
+    tip = TIP[name]
     arms = []
-    for (_, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name)):
+    for (_, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
         # The arms are drawn by hand, so the point-to-end line misses their axis by up to 5°;
         # stretching along it would skew them. Take the axis through two cross-sections, on
         # the straight part between the point and the end cap.
@@ -183,23 +184,23 @@ def longer_angle(font, name, tip, scale):
         (x0, y0), (x1, y1) = middle_at(half, AXIS + 0.3 * rise), middle_at(half, AXIS + 0.65 * rise)
         direction = math.atan2(y1 - y0, x1 - x0)
         gain = (scale - 1) * rise / math.sin(direction)
-        flat = geo.transformed(half, geo.about(psMat.rotate(-direction), tip, AXIS))
-        flat = geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
-        arms.append(geo.transformed(flat, geo.about(psMat.rotate(direction), tip, AXIS)))
+        # Lay the arm along +x from the point, lengthen its straight part, then turn it back.
+        flat = geo.stretch_span(turned(half, name, -direction),
+                                tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+        arms.append(turned(flat, name, direction))
     return geo.union(*arms)
 
 
-def arrowheads(font, scale):
-    right, left = GREATER_TIP, LESS_TIP
+def arrowheads(font):
+    def head(name, shaft, x0, x1):
+        return geo.union(longer_angle(font, name, HEAD_SCALE), stroke(font, shaft, x0, x1))
+
+    left, right = TIP["less"], TIP["greater"]
     return {
-        "less.arrow": geo.union(longer_angle(font, "less", left, scale),
-                                stroke(font, "hyphen", left + SHAFT_INTO_HEAD, ADVANCE + OVERLAP)),
-        "greater.arrow": geo.union(longer_angle(font, "greater", right, scale),
-                                   stroke(font, "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD)),
-        "less.darrow": geo.union(longer_angle(font, "less", left, scale),
-                                 stroke(font, "equal", left + BARS_INTO_HEAD, ADVANCE + OVERLAP)),
-        "greater.darrow": geo.union(longer_angle(font, "greater", right, scale),
-                                    stroke(font, "equal", -OVERLAP, right - BARS_INTO_HEAD)),
+        "less.arrow": head("less", "hyphen", left + SHAFT_INTO_HEAD, ADVANCE + OVERLAP),
+        "greater.arrow": head("greater", "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD),
+        "less.darrow": head("less", "equal", left + BARS_INTO_HEAD, ADVANCE + OVERLAP),
+        "greater.darrow": head("greater", "equal", -OVERLAP, right - BARS_INTO_HEAD),
     }
 
 
@@ -222,29 +223,28 @@ def not_equal(font, cells):
     return geo.union(bars, slash)
 
 
-def flatter_angle(font, name, tip):
+def flatter_angle(font, name):
     """< or > with each arm turned flatter about the point and lengthened so its end keeps
     its height, which widens the angle by ANGLE_WIDTH_GAIN."""
-    outward = -1 if name == "greater" else 1  # from the point toward the arm ends
+    tip = TIP[name]
     arms = []
-    for (end_x, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name)):
+    for (end_x, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
         dx, dy = end_x - tip, end_y - AXIS
-        new_dx = dx + outward * ANGLE_WIDTH_GAIN
+        new_dx = dx + OUTWARD[name] * ANGLE_WIDTH_GAIN
         old_direction, new_direction = math.atan2(dy, dx), math.atan2(dy, new_dx)
         gain = math.hypot(new_dx, dy) - math.hypot(dx, dy)
         # Lay the arm along +x from the point, lengthen its far half, then turn it into place.
-        flat = geo.transformed(half, geo.about(psMat.rotate(-old_direction), tip, AXIS))
-        flat = geo.stretch(flat, tip + 150, gain)
-        arms.append(geo.transformed(flat, geo.about(psMat.rotate(new_direction), tip, AXIS)))
+        flat = geo.stretch(turned(half, name, -old_direction), tip + ARM_SPAN[0], gain)
+        arms.append(turned(flat, name, new_direction))
     return geo.union(*arms)
 
 
-def or_equal(font, name, tip):
+def or_equal(font, name):
     """<= or >= as ⩽ ⩾: the flatter angle with a bar under its lower arm, centred on the
     boundary between the two cells. The point stays on the axis, level with < >."""
-    outward = -1 if name == "greater" else 1
+    tip = TIP[name]
     end_x, end_y = ARM_ENDS[name][1]
-    far = (end_x + outward * ANGLE_WIDTH_GAIN, end_y)
+    far = (end_x + OUTWARD[name] * ANGLE_WIDTH_GAIN, end_y)
     direction = math.atan2(far[1] - AXIS, far[0] - tip)
     length = math.hypot(far[0] - tip, far[1] - AXIS)
     bar = geo.stretch(outline(font, "hyphen"), 275, length - HYPHEN_SPAN - 20)
@@ -253,7 +253,7 @@ def or_equal(font, name, tip):
     bar = geo.transformed(bar, psMat.compose(
         psMat.compose(psMat.translate(-(x0 + x1) / 2, -(y0 + y1) / 2), psMat.rotate(direction)),
         psMat.translate((tip + far[0]) / 2, (AXIS + far[1]) / 2 - drop)))
-    symbol = geo.union(flatter_angle(font, name, tip), bar)
+    symbol = geo.union(flatter_angle(font, name), bar)
     x0, _, x1, _ = symbol.boundingBox()
     return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, 0))
 
@@ -268,9 +268,9 @@ def squeezed_bar(font, height):
     return geo.transformed(lying, psMat.rotate(math.pi / 2))
 
 
-def pipe(font, name, tip):
+def pipe(font, name):
     """|> or <| as a triangle: the enlarged head closed by a bar as tall as it."""
-    arrow = longer_angle(font, name, tip, PIPE_HEAD_SCALE)
+    arrow = longer_angle(font, name, PIPE_HEAD_SCALE)
     hx0, hy0, hx1, hy1 = arrow.boundingBox()
     bar = squeezed_bar(font, hy1 - hy0)
     bx0, by0, bx1, _ = bar.boundingBox()
@@ -283,20 +283,20 @@ def pipe(font, name, tip):
     return geo.union(bar, arrow)
 
 
-def build(font, head_scale=HEAD_SCALE):
+def build(font):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
     glyphs = {"LIG": []}  # the empty spacer before a .liga glyph
     glyphs.update(run_pieces(font))
     glyphs.update(tilde_pieces(font))
-    glyphs.update(arrowheads(font, head_scale))
+    glyphs.update(arrowheads(font))
     glyphs["exclam_equal.liga"] = not_equal(font, 2)
     glyphs["exclam_equal_equal.liga"] = not_equal(font, 3)
     glyphs["colon.eq"] = [("colon", 0, COLON_LIFT)]
-    glyphs["less_equal.liga"] = or_equal(font, "less", LESS_TIP)
-    glyphs["greater_equal.liga"] = or_equal(font, "greater", GREATER_TIP)
-    glyphs["bar_greater.liga"] = pipe(font, "greater", GREATER_TIP)
-    glyphs["less_bar.liga"] = pipe(font, "less", LESS_TIP)
+    glyphs["less_equal.liga"] = or_equal(font, "less")
+    glyphs["greater_equal.liga"] = or_equal(font, "greater")
+    glyphs["bar_greater.liga"] = pipe(font, "greater")
+    glyphs["less_bar.liga"] = pipe(font, "less")
     for name, shift in TIGHT.items():
         glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
         glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
@@ -331,7 +331,7 @@ def add_glyphs(font, glyphs):
 def merge_features(font):
     font.mergeFeature(str(FEA))
     # On a parse error FontForge prints to stderr and merges nothing, so check the result.
-    declared = re.findall(r"^\s*lookup\s+(lig_\w+)\s*\{", FEA.read_text(), re.M)
+    declared = re.findall(r"^\s*lookup\s+(lig_\w+)\s*\{", FEA.read_text(), re.MULTILINE)
     missing = sorted(set(declared) - set(font.gsub_lookups))
     if missing:
         sys.exit(f"{FEA.name} did not merge; missing lookups: {', '.join(missing)}")
@@ -340,12 +340,8 @@ def merge_features(font):
 def check(path):
     """Exit non-zero if a generated glyph in the SFD at `path` fails validate()."""
     font = fontforge.open(str(path))
-    failed = {}
-    for glyph in font.glyphs():
-        if GENERATED.fullmatch(glyph.glyphname):
-            flags = glyph.validate(True) & ~VALIDATED
-            if flags:
-                failed[glyph.glyphname] = hex(flags)
+    failed = {glyph.glyphname: hex(flags) for glyph in font.glyphs()
+              if GENERATED.fullmatch(glyph.glyphname) and (flags := validation_errors(glyph))}
     if failed:
         sys.exit(f"validate() failed: {failed}")
 
@@ -353,25 +349,21 @@ def check(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--head-scale", type=float, default=HEAD_SCALE,
-                        help="arrowhead size relative to < > (default %(default)s)")
     parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.check:
         return check(args.sfd)
-    if not HEAD_SCALES[0] <= args.head_scale <= HEAD_SCALES[1]:
-        parser.error(f"--head-scale must be within {HEAD_SCALES[0]}..{HEAD_SCALES[1]}")
 
     sfd = pathlib.Path(args.sfd)
     font = fontforge.open(str(sfd))
     remove_previous(font)
-    add_glyphs(font, build(font, args.head_scale))
+    add_glyphs(font, build(font))
     merge_features(font)
     # Validating in this process would write "Validated:" into the saved glyphs, so a fresh
     # process checks the saved copy before it replaces the SFD.
     tmp = sfd.with_name(f".{sfd.name}.tmp")
     font.save(str(tmp))
-    if subprocess.run([sys.executable, __file__, "--check", str(tmp)]).returncode:
+    if subprocess.run([sys.executable, __file__, "--check", str(tmp)], check=False).returncode:
         tmp.unlink()
         sys.exit(f"{sfd} is unchanged.")
     os.replace(tmp, sfd)

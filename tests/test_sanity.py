@@ -6,13 +6,15 @@ These assert rules every glyph must follow (see CLAUDE.md), not the shape of any
 Font Bakery and OTS check the built fonts separately; see CLAUDE.md for those commands.
 """
 import pathlib
+import sys
 import unicodedata
 import unittest
 
 import fontforge
 
-SFD = pathlib.Path(__file__).resolve().parent.parent / "src" / "ComicCaret-Regular.sfd"
-ADVANCE = 550
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+from project import ADVANCE, SFD, validation_errors
+
 LINE_TOP, LINE_BOTTOM = 850, -350  # hhea and typo ascender and descender
 
 # Known exceptions.
@@ -24,8 +26,6 @@ ABOVE_LINE = {"hcircumflex", "lacute", "asciicircum", "gcommaaccent"}
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
-
-VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
 
 def is_box_drawing(glyph):
@@ -91,7 +91,7 @@ class SanityTest(unittest.TestCase):
     def test_outlines_are_clean(self):
         # Covers non-integral points (0x80000), self-intersections, wrong direction, missing
         # extrema and the other validate() problems.
-        flags = {g.glyphname: g.validate(True) & ~VALIDATED for g in self.glyphs}
+        flags = {g.glyphname: validation_errors(g) for g in self.glyphs}
         self.assertEqual({n: hex(x) for n, x in flags.items() if x},
                          {n: hex(x) for n, x in VALIDATE_FLAGS.items()})
 

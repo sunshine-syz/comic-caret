@@ -10,7 +10,7 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-import lig_geometry as geo  # noqa: E402
+import lig_geometry as geo
 
 
 def box(layer):
