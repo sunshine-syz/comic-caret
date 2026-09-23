@@ -89,5 +89,42 @@ class ColonTest(unittest.TestCase):
                                delta=5)
 
 
+BRACKETS = {"parenleft": 320, "bracketleft": 290, "braceleft": 410}  # target ink widths
+PAIRS = {"parenright": "parenleft", "bracketright": "bracketleft", "braceright": "braceleft"}
+TURNED = (-1, 0, 0, -1, ADVANCE, 655)  # 180 degrees about (275, 327.5), the brackets' middle
+
+
+class BracketTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_brackets_share_one_height(self):
+        for name in (*BRACKETS, *PAIRS):
+            with self.subTest(glyph=name):
+                _, y0, _, y1 = self.font[name].boundingBox()
+                self.assertAlmostEqual(y0, -145, delta=5)
+                self.assertAlmostEqual(y1, 800, delta=5)
+
+    def test_closing_brackets_are_the_opening_ones_turned(self):
+        for right, left in PAIRS.items():
+            with self.subTest(glyph=right):
+                glyph = self.font[right]
+                self.assertEqual(len(glyph.foreground), 0)
+                self.assertEqual([(name, tuple(matrix)) for name, matrix, *_ in glyph.references],
+                                 [(left, TURNED)])
+
+    def test_brackets_are_centered_at_their_widths(self):
+        for name, width in BRACKETS.items():
+            with self.subTest(glyph=name):
+                self.assertAlmostEqual(center(self.font[name]), ADVANCE / 2, delta=5)
+                self.assertAlmostEqual(measure.ink_width(self.font[name].foreground), width,
+                                       delta=10)
+
+    def test_paren_is_as_heavy_as_a_stem(self):
+        [(x0, x1)] = measure.spans_at_y(self.font["parenleft"].foreground, 327)
+        self.assertAlmostEqual(x1 - x0, 90, delta=5)
+
+
 if __name__ == "__main__":
     unittest.main()
