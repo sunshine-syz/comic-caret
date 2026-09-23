@@ -13,6 +13,7 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
+python3 tools/proof_sheet.py OUTDIR     # review sheet: ours, the saved build, the references
 ```
 
 Rebuild after every SFD change, then run the checks:
