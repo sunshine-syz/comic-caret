@@ -82,7 +82,7 @@ PIPE_HEAD_SCALE = 1.15
 PIPE_BAR_EDGE = {"greater": 270 - ADVANCE, "less": 830 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
-COLON_LIFT = 38        # raises the colon's centre (234) to the = centre (272)
+COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
 # How far each glyph moves toward its partner in a tightened pair.
 TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
