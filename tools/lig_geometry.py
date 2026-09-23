@@ -88,6 +88,24 @@ def stretch(layer, cut, dx, band=(-FAR, FAR)):
     return out
 
 
+def stretch_span(layer, x0, x1, dx):
+    """The outline between the vertical lines x0 < x1 made dx longer, or shorter for dx < 0,
+    with everything beyond x1 moved along unchanged.
+
+    Unlike stretch, points inside the span are spaced out evenly rather than left behind, so
+    shortening never folds the outline. Keep the span on the straight part of a stroke.
+    """
+    factor = (x1 - x0 + dx) / (x1 - x0)
+    out = layer.dup()
+    for contour in out:
+        for point in contour:
+            if point.x > x1:
+                point.x += dx
+            elif point.x > x0:
+                point.x = x0 + (point.x - x0) * factor
+    return out
+
+
 def snap_edge(layer, x, profile):
     """Move the corners of the flat edge at x onto the nearest height in `profile`.
 

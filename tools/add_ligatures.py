@@ -29,7 +29,7 @@ OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
 AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 HEAD_SCALE = 1.1  # arrowheads relative to < >; chosen at the prototype checkpoint
-HEAD_SCALES = (0.85, 1.15)  # beyond this, stroke weight drifts from the rest of the font
+HEAD_SCALES = (0.85, 1.15)  # the sizes the heads were checked at
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -66,6 +66,7 @@ TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it 
 GREATER_TIP, LESS_TIP = 462, 88
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
+ARM_SPAN = (150, 330)  # along an arm from the point: straight, clear of the join and cap
 
 # != !==: the / at 95 %, centred on the bars.
 SLASH_SCALE = 0.95
@@ -80,10 +81,11 @@ ARM_ENDS = {"greater": ((115, 510), (115, 28)),   # centres of the upper and low
 HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
-# |> <|: the head at 115 %, touching a bar cut to its height.
+# |> <|: the head 115 % the size of > <, its arm ends over the round ends of a bar as tall
+# as the head, so each corner turns as one round stroke end.
 PIPE_HEAD_SCALE = 1.15
 PIPE_BAR_EDGE = {"greater": 270 - ADVANCE, "less": 830 - ADVANCE}  # references' outer edge
-PIPE_TOUCH = 20        # overlap of the arm ends and the bar
+BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
 COLON_LIFT = 38        # raises the colon's centre (234) to the = centre (272)
 
@@ -155,20 +157,48 @@ def tilde_pieces(font):
             "asciitilde.mid.low": mid_low, "asciitilde.end.low": end_low}
 
 
-def head(font, name, tip, scale):
-    return geo.transformed(outline(font, name), geo.about(psMat.scale(scale), tip, AXIS))
+def arm_halves(font, name):
+    """< or > split at the axis into its upper and lower arm."""
+    angle = outline(font, name)
+    # Each half reaches 30 past the axis so reshaped halves overlap instead of meeting at a
+    # shallow crossing, which removeOverlap turns into a self-intersection.
+    return geo.trim(angle, y0=AXIS - 30), geo.trim(angle, y1=AXIS + 30)
+
+
+def middle_at(layer, y):
+    """The middle of the stroke that the horizontal line at y crosses."""
+    x0, _, x1, _ = geo.trim(layer, y0=y - 1, y1=y + 1).boundingBox()
+    return (x0 + x1) / 2, y
+
+
+def longer_angle(font, name, tip, scale):
+    """< or > with its arm ends `scale` times as high above and below the axis. Unlike scaling
+    the glyph, lengthening the arms keeps their stroke weight."""
+    arms = []
+    for (_, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name)):
+        # The arms are drawn by hand, so the point-to-end line misses their axis by up to 5°;
+        # stretching along it would skew them. Take the axis through two cross-sections, on
+        # the straight part between the point and the end cap.
+        rise = end_y - AXIS
+        (x0, y0), (x1, y1) = middle_at(half, AXIS + 0.3 * rise), middle_at(half, AXIS + 0.65 * rise)
+        direction = math.atan2(y1 - y0, x1 - x0)
+        gain = (scale - 1) * rise / math.sin(direction)
+        flat = geo.transformed(half, geo.about(psMat.rotate(-direction), tip, AXIS))
+        flat = geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+        arms.append(geo.transformed(flat, geo.about(psMat.rotate(direction), tip, AXIS)))
+    return geo.union(*arms)
 
 
 def arrowheads(font, scale):
     right, left = GREATER_TIP, LESS_TIP
     return {
-        "less.arrow": geo.union(head(font, "less", left, scale),
+        "less.arrow": geo.union(longer_angle(font, "less", left, scale),
                                 stroke(font, "hyphen", left + SHAFT_INTO_HEAD, ADVANCE + OVERLAP)),
-        "greater.arrow": geo.union(head(font, "greater", right, scale),
+        "greater.arrow": geo.union(longer_angle(font, "greater", right, scale),
                                    stroke(font, "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD)),
-        "less.darrow": geo.union(head(font, "less", left, scale),
+        "less.darrow": geo.union(longer_angle(font, "less", left, scale),
                                  stroke(font, "equal", left + BARS_INTO_HEAD, ADVANCE + OVERLAP)),
-        "greater.darrow": geo.union(head(font, "greater", right, scale),
+        "greater.darrow": geo.union(longer_angle(font, "greater", right, scale),
                                     stroke(font, "equal", -OVERLAP, right - BARS_INTO_HEAD)),
     }
 
@@ -195,13 +225,9 @@ def not_equal(font, cells):
 def flatter_angle(font, name, tip):
     """< or > with each arm turned flatter about the point and lengthened so its end keeps
     its height, which widens the angle by ANGLE_WIDTH_GAIN."""
-    angle = outline(font, name)
     outward = -1 if name == "greater" else 1  # from the point toward the arm ends
-    # Each half reaches 30 past the axis so the turned halves overlap instead of meeting at a
-    # shallow crossing, which removeOverlap turns into a self-intersection.
-    halves = (geo.trim(angle, y0=AXIS - 30), geo.trim(angle, y1=AXIS + 30))
     arms = []
-    for (end_x, end_y), half in zip(ARM_ENDS[name], halves):
+    for (end_x, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name)):
         dx, dy = end_x - tip, end_y - AXIS
         new_dx = dx + outward * ANGLE_WIDTH_GAIN
         old_direction, new_direction = math.atan2(dy, dx), math.atan2(dy, new_dx)
@@ -232,18 +258,28 @@ def or_equal(font, name, tip):
     return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, 0))
 
 
+def squeezed_bar(font, height):
+    """| shortened to `height` along its straight middle, so it keeps its round ends."""
+    bar = outline(font, "bar")
+    _, y0, _, y1 = bar.boundingBox()
+    # stretch_span works along x, so lay the bar on its side and stand it up again.
+    lying = geo.transformed(bar, psMat.rotate(-math.pi / 2))
+    lying = geo.stretch_span(lying, *BAR_SPAN, height - (y1 - y0))
+    return geo.transformed(lying, psMat.rotate(math.pi / 2))
+
+
 def pipe(font, name, tip):
-    """|> or <| as a triangle: the head at 115 % with its arm ends on a bar cut to its height."""
-    arrow = head(font, name, tip, PIPE_HEAD_SCALE)
+    """|> or <| as a triangle: the enlarged head closed by a bar as tall as it."""
+    arrow = longer_angle(font, name, tip, PIPE_HEAD_SCALE)
     hx0, hy0, hx1, hy1 = arrow.boundingBox()
-    bar = geo.trim(outline(font, "bar"), y0=hy0, y1=hy1)
-    bx0, _, bx1, _ = bar.boundingBox()
-    if name == "greater":  # |>: the bar in the first cell, the head pointing right
-        bar = geo.transformed(bar, psMat.translate(PIPE_BAR_EDGE[name] - bx0, 0))
-        arrow = geo.transformed(arrow, psMat.translate(bar.boundingBox()[2] - PIPE_TOUCH - hx0, 0))
-    else:                  # <|: the bar in the second cell, the head pointing left
-        bar = geo.transformed(bar, psMat.translate(PIPE_BAR_EDGE[name] - bx1, 0))
-        arrow = geo.transformed(arrow, psMat.translate(bar.boundingBox()[0] + PIPE_TOUCH - hx1, 0))
+    bar = squeezed_bar(font, hy1 - hy0)
+    bx0, by0, bx1, _ = bar.boundingBox()
+    # The bar's outer edge goes where the references put it, and the arm ends' outer edge
+    # onto it; arm and bar are about equally heavy, so their round ends then coincide.
+    edge = PIPE_BAR_EDGE[name]
+    outer = bx0 if name == "greater" else bx1  # |> has its bar on the left, <| on the right
+    bar = geo.transformed(bar, psMat.translate(edge - outer, hy0 - by0))
+    arrow = geo.transformed(arrow, psMat.translate(edge - (hx0 if name == "greater" else hx1), 0))
     return geo.union(bar, arrow)
 
 

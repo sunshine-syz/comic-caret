@@ -55,6 +55,35 @@ class StretchTest(unittest.TestCase):
         self.assertEqual(box(layer), (0, 0, 100, 50))
 
 
+class StretchSpanTest(unittest.TestCase):
+    def arrow(self):
+        """A shaft from x 0 to 600 with a pointed end at 700 and a point halfway along."""
+        contour = fontforge.contour()
+        for x, y in ((0, 0), (0, 100), (300, 100), (600, 100), (700, 50), (600, 0)):
+            contour += fontforge.point(x, y)
+        contour.closed = True
+        layer = fontforge.layer()
+        layer += contour
+        return layer
+
+    def points(self, layer):
+        return [(round(p.x), round(p.y)) for p in layer[0]]
+
+    def test_moves_the_end_along_and_spaces_the_span_evenly(self):
+        self.assertEqual(self.points(geo.stretch_span(self.arrow(), 200, 500, 150)),
+                         [(0, 0), (0, 100), (350, 100), (750, 100), (850, 50), (750, 0)])
+
+    def test_shortens_without_folding(self):
+        # stretch() cannot shorten: the point at 300 would stay behind a cut end moved to 250.
+        self.assertEqual(self.points(geo.stretch_span(self.arrow(), 200, 500, -250)),
+                         [(0, 0), (0, 100), (217, 100), (350, 100), (450, 50), (350, 0)])
+
+    def test_leaves_its_input_alone(self):
+        layer = self.arrow()
+        geo.stretch_span(layer, 200, 500, 150)
+        self.assertEqual(self.points(layer)[3], (600, 100))
+
+
 class SnapEdgeTest(unittest.TestCase):
     def test_moves_corners_on_the_edge_to_the_nearest_height(self):
         contour = fontforge.contour()
