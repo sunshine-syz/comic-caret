@@ -54,6 +54,13 @@ GREATER_TIP, LESS_TIP = 462, 88
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
 
+# != !==: the / at 95 %, centred on the bars.
+SLASH_SCALE = 0.95
+EQUAL_MIDDLE = 275     # stretch line through the middle of the = bars
+EQUAL_PITCH = 326 - 143  # distance between the two = bars
+
+COLON_LIFT = 38        # raises the colon's centre (234) to the = centre (272)
+
 
 def outline(font, name):
     return font[name].foreground.dup()
@@ -106,12 +113,34 @@ def arrowheads(font, scale):
     }
 
 
+def not_equal(font, cells):
+    """!= over two cells or !== over three: = bars across all of them (three bars for !==, as
+    in both references) and a / centred on the span."""
+    span = ADVANCE * (cells - 1)
+    bars = geo.transformed(geo.stretch(outline(font, "equal"), EQUAL_MIDDLE, span),
+                           psMat.translate(-span, 0))
+    if cells == 3:
+        third = geo.transformed(geo.trim(bars, y1=AXIS), psMat.translate(0, -EQUAL_PITCH))
+        bars = geo.transformed(geo.union(bars, third), psMat.translate(0, EQUAL_PITCH / 2))
+    slash = outline(font, "slash")
+    sx0, sy0, sx1, sy1 = slash.boundingBox()
+    _, by0, _, by1 = bars.boundingBox()
+    centre = ((ADVANCE - span) / 2, (by0 + by1) / 2)
+    slash = geo.transformed(slash, psMat.compose(
+        geo.about(psMat.scale(SLASH_SCALE), (sx0 + sx1) / 2, (sy0 + sy1) / 2),
+        psMat.translate(centre[0] - (sx0 + sx1) / 2, centre[1] - (sy0 + sy1) / 2)))
+    return geo.union(bars, slash)
+
+
 def build(font, head_scale=HEAD_SCALE):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
-    glyphs = {}
+    glyphs = {"LIG": []}  # the empty spacer before a .liga glyph
     glyphs.update(run_pieces(font))
     glyphs.update(arrowheads(font, head_scale))
+    glyphs["exclam_equal.liga"] = not_equal(font, 2)
+    glyphs["exclam_equal_equal.liga"] = not_equal(font, 3)
+    glyphs["colon.eq"] = [("colon", 0, COLON_LIFT)]
     return glyphs
 
 

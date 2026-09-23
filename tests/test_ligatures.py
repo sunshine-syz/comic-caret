@@ -78,6 +78,12 @@ LIGATED = {
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
     "=->": ["equal"] + hyphens(2, right="greater.arrow"),
     "->=": hyphens(2, right="greater.arrow") + ["equal"],
+    # != !== :=
+    "!=": ["LIG", "exclam_equal.liga"],
+    "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
+    "!==": ["LIG", "LIG", "exclam_equal_equal.liga"],
+    ":=": ["colon.eq", "equal"],
+    "x:=1": ["x", "colon.eq", "equal", "one"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -86,6 +92,8 @@ PLAIN = [
     # Malformed arrows: a head pointing inward, doubled or in the middle, at any length
     ">-", "-<", "=<", ">==", "==<", "->>", "<<-", "=>=", ">=>", "<=<",
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
+    # ! or : before a longer = run, and fixed ligatures touching another operator
+    "!===", ":==", "!=!", "!=>", "=!=", "::=",
 ]
 
 

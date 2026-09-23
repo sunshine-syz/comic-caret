@@ -9,6 +9,15 @@
 languagesystem DFLT dflt;
 languagesystem latn dflt;
 
+# Every glyph that shows an operator character, plain or already substituted. The fixed
+# ligatures fire only when neither neighbour is in this class.
+@Op = [exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater
+  question bar asciitilde underscore
+  LIG colon.eq
+  hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end
+  less.arrow greater.arrow less.darrow greater.darrow
+  exclam_equal.liga exclam_equal_equal.liga];
+
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
@@ -19,8 +28,29 @@ lookup lig_mid { sub [hyphen equal] by [hyphen.mid equal.mid]; } lig_mid;
 lookup lig_end { sub [hyphen equal] by [hyphen.end equal.end]; } lig_end;
 lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
 lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
+lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
+lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
+lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
+lookup lig_colon_eq { sub colon by colon.eq; } lig_colon_eq;
 
 feature calt {
+
+  # 1. != !== := come first, so their = never join a run. Like every fixed ligature, they
+  #    need a non-operator on both sides, which also keeps !=== and :== plain.
+  lookup lig_not_equal {
+    ignore sub @Op exclam' equal equal;
+    ignore sub exclam' equal equal @Op;
+    sub exclam' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_exclam_equal_equal;
+    ignore sub @Op exclam' equal;
+    ignore sub exclam' equal @Op;
+    sub exclam' lookup lig_spacer equal' lookup lig_exclam_equal;
+  } lig_not_equal;
+
+  lookup lig_colon_equal {
+    ignore sub @Op colon' equal;
+    ignore sub colon' equal @Op;
+    sub colon' lookup lig_colon_eq equal;
+  } lig_colon_equal;
 
   # 2. Arrows and runs of - and =. Built left to right: a head, then pieces that continue
   #    from the glyph before, then a closing head. The unwind lookups then walk right to
