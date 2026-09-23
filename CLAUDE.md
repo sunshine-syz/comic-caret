@@ -42,15 +42,17 @@ hb-shape --output-format=json fonts/ComicCaret-Regular.otf --text='a='
 
 The baseline at HEAD was already this, so a later change did not cause it:
 - `other` is only `uni2204` (∄, self-intersecting, `0x4`).
-- `0x80000` is set on 177 glyphs. For most of them `glyph.round()` clears it, so it marks non-integral points. Glyphs you add should not raise either count.
+- `0x80000` is set on 175 glyphs. For most of them `glyph.round()` clears it, so it marks non-integral points. Glyphs you add should not raise either count.
 
 ## Working with the SFD
 
 - **Edit through FontForge** (GUI or `import fontforge`), not with text edits to glyph bodies. `Refer:` lines point at other glyphs by glyph index (`Refer: <gid> <unicode> ...`). Accented and derived glyphs are built from references to base glyphs (the "Replace with Reference" pass), so deleting or reordering glyphs by hand silently breaks composites. FontForge rewrites the indices when it saves.
 - **Metrics:** em 1000 (ascent 750 / descent 250), cap height 650, x-height 450. **Every glyph, including `.notdef`, has advance width 550.** Keep that true for any glyph you add.
+- **Line box:** hhea = typo = 850/−350/0 with `USE_TYPO_METRICS`, so every platform uses the same 1.2 em line. Win ascent/descent are offsets of 0 from the bbox, so they follow the tallest and deepest glyph with no hand-synced numbers. Box-drawing verticals span the line box plus 10 units (−360…860); new box glyphs should match.
 - **Glyph hygiene:** new or redrawn glyphs should have integer coordinates and pass FontForge Validate. Recent history is mostly cleanup of these two problems, and it is not finished (see the baseline above).
 - **No OpenType layout yet:** the font has no GSUB/GPOS lookups and no kerning.
 - **Noisy diffs:** each save changes `ModificationTime` and can rewrite hint (`HStem`/`VStem`) and `Validated:` lines on glyphs that were touched.
+- **Python pitfalls:** assigning `glyph.foreground` drops per-point hint masks (validate flags `0x800000` when stems overlap); `glyph.autoHint()` restores them. `glyph.transform()` shifts `vwidth` too. After editing a base glyph, generate from a fresh process, because composites keep stale bounds in the same session.
 - **Name records and version:** FontForge derives the shipped names (family, full, PostScript, `Version x.y.z`) and `head.fontRevision` from `FontName`/`FamilyName`/`FullName`/`Version:`. `LangName` holds only the license text and there is no `sfntRevision` line; adding either override brings back hand-synced duplicates.
 - **Duplicated metadata:** the SFD `Copyright:` field lists five copyright holders, while the license text in `LangName` and `LICENSE.md` list only the first two. Keep them in sync by hand.
 
