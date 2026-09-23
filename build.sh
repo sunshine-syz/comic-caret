@@ -80,10 +80,19 @@ if [[ -n $nerd_variants ]]; then
 fi
 
 mkdir -p "$(dirname "$OUT")"
+# FontForge stamps the build date into the unique ID (name ID 3). Use the source's last commit
+# instead, so building the same source on another day gives the same bytes.
+if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && git rev-parse -q --verify HEAD >/dev/null 2>&1; then
+  export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- "$SOURCE")
+fi
+# Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
+# "no-mac-names" drops the platform-1 name records that nothing current reads.
+GENERATE='import fontforge, sys
+fontforge.open(sys.argv[1]).generate(sys.argv[2], flags=("opentype", "no-mac-names"))'
 # One process per format: generating the OTF first alters the in-memory outlines, so a
 # TTF generated after it in the same session gets a different glyf table.
 for ext in otf ttf; do
-  fontforge -quiet -lang=ff -c 'Open($1); Generate($2)' "$SOURCE" "$OUT.$ext"
+  fontforge -quiet -lang=py -c "$GENERATE" "$SOURCE" "$OUT.$ext"
 done
 
 if [[ -n $nerd_variants ]]; then

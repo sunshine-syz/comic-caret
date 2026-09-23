@@ -3,7 +3,7 @@ FontName: ComicCaret-Regular
 FullName: Comic Caret Regular
 FamilyName: Comic Caret
 Weight: Regular
-Copyright: MIT License\n\nCopyright (c) 2018 Shannon Miwa\nCopyright (c) 2023 Jesus Gonzalez\nCopyright (c) 2023 Rodrigo Batista de Moraes\nCopyright (c) 2024 Fini Jastrow\nCopyright (c) 2024 Kyle Beechly\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.
+Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly
 Version: 2.0.0
 ItalicAngle: 0
 UnderlinePosition: -140
@@ -51,14 +51,21 @@ OS2SupXOff: 0
 OS2SupYOff: 350
 OS2StrikeYSize: 84
 OS2StrikeYPos: 311
-OS2CapHeight: 650
-OS2XHeight: 450
+OS2CapHeight: 668
+OS2XHeight: 473
 OS2Vendor: 'NONE'
-OS2CodePages: 00000093.00000000
-OS2UnicodeRanges: 00000007.00000000.00000000.00000000
 MarkAttachClasses: 1
 DEI: 91125
-LangName: 1033 "" "" "" "" "" "" "" "" "" "" "" "" "" "MIT License+AAoACgAA-Copyright (c) 2018 Shannon Miwa+AAoA-Copyright (c) 2023 Jesus Gonzalez+AAoACgAA-Permission is hereby granted, free of charge, to any person obtaining a copy+AAoA-of this software and associated documentation files (the +ACIA-Software+ACIA), to deal+AAoA-in the Software without restriction, including without limitation the rights+AAoA-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell+AAoA-copies of the Software, and to permit persons to whom the Software is+AAoA-furnished to do so, subject to the following conditions:+AAoACgAA-The above copyright notice and this permission notice shall be included in all+AAoA-copies or substantial portions of the Software.+AAoACgAA-THE SOFTWARE IS PROVIDED +ACIA-AS IS+ACIA, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR+AAoA-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,+AAoA-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE+AAoA-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER+AAoA-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,+AAoA-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE+AAoA-SOFTWARE."
+TtTable: prep
+PUSHW_1
+ 511
+SCANCTRL
+PUSHB_1
+ 4
+SCANTYPE
+EndTTInstrs
+LangName: 1033 "" "" "" "" "" "" "" "" "" "" "" "" "" "Licensed under the MIT License. See https://opensource.org/license/mit for the full text." "https://opensource.org/license/mit"
+GaspTable: 1 65535 10 1
 Encoding: UnicodeBmp
 UnicodeInterp: none
 NameList: AGL For New Fonts
@@ -73,7 +80,6 @@ BlueScale 9 0.0291667
 BlueShift 2 10
 EndPrivate
 TeXData: 1 0 0 576716 288358 192238 488639 1048576 192238 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
-AnchorClass2: "aa""" 
 BeginChars: 65541 622
 
 StartChar: .notdef
