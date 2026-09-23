@@ -5,7 +5,10 @@
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
 - `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font Mono", as OTF and TTF.
 - Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflex on ĥ sat too high.
-- Added the no-break space (U+00A0) and „.
+- Added the no-break space (U+00A0), „ and λ.
+- Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
+- Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.
+- Cleaned up the outlines: self-intersections, reversed contours and missing extreme points are fixed in every glyph except ∄.
 - Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.
 - Box-drawing lines now end at the edges of the line instead of reaching into the lines above and below.
 - The font now sets its underline and strikethrough positions and thicknesses (the thicknesses were 0), and its PANOSE data marks it as monospaced.
@@ -26,7 +29,6 @@
 - Completely separating this fork from the original from now on.
 
 ## 2022
-- Check the version in the mono folder.
 - This version has fixed glyphs so that all of them are properly monospaced now.
 - Also added a more condensed version.
 
