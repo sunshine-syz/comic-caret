@@ -4,8 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SOURCE=src/ComicShannsMono-Regular.sfd
-OUT=fonts/ComicShannsMono-Regular
+SOURCE=src/ComicCaret-Regular.sfd
+OUT=fonts/ComicCaret-Regular
 NERD_OUT=build/nerd
 
 # Pinned so patched output changes only when we bump it on purpose. When bumping, update

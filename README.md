@@ -1,8 +1,15 @@
 # What it is
 
-Are you the kind of person that uses Comic Sans in presentations? Do you lie awake every night dreaming about a world where you could write your code in Comic Sans where it looks just as beautiful as on your dear presentations? Wait no more! I present to you **Comic Shanns**! The Comic Sans inspired monospaced font that's coming to a terminal or editor near you!
+Are you the kind of person that uses Comic Sans in presentations? Do you lie awake every night dreaming about a world where you could write your code in Comic Sans where it looks just as beautiful as on your dear presentations? Wait no more! I present to you **Comic Caret**! The Comic Sans inspired monospaced font that's coming to a terminal or editor near you!
+
+Comic Caret is a fork of [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono) by Jesús González, which grew out of Shannon Miwa's [Comic Shanns](https://github.com/shannpersand/comic-shanns).
 
 ## Changelog
+
+### Update 2026-09 (v2.0.0)
+- Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
+- The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
+- `./build.sh --nerd` builds a Nerd Fonts patched copy, "ComicCaret Nerd Font Mono".
 
 ### Update 2023-03 (v1.3.0)
 - Added aditional characters, like ƿ and ∃.
@@ -31,11 +38,11 @@ You can download it and install it like any other font.
 
 ## Editing and Building
 
-The source of the font is in `src/ComicShannsMono-Regular.sfd`. You can open it
+The source of the font is in `src/ComicCaret-Regular.sfd`. You can open it
 with FontForge and export it to whatever format you want.
 
 You can also use the script `build.sh` to build the font from the command line.
-Tt wil generate the ttf and otf versions in `fonts`.
+It will generate the ttf and otf versions in `fonts`.
 
 Make sure that `fontforge` is installed and in your path. Then run `./build.sh`
 
