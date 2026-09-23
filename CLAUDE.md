@@ -1,37 +1,22 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## What this is
-
-Comic Caret is a single-weight monospaced font inspired by Comic Sans (MIT), forked from Comic Shanns Mono. There is no application code.
-The whole font lives in one FontForge source file, `src/ComicCaret-Regular.sfd`. `fonts/*.otf` and `fonts/*.ttf` are build outputs; they are gitignored and not committed.
+Comic Caret is a single-weight monospaced font (MIT), forked from Comic Shanns Mono. The whole
+font is `src/ComicCaret-Regular.sfd`; `fonts/` and `build/` hold gitignored build outputs.
 
 ## Commands
 
-Requires Homebrew `fontforge` on `PATH`. Its Python module is also importable from `python3`, and `hb-shape`/`hb-view` (HarfBuzz) are installed.
+Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uvx`.
 
 ```sh
-./build.sh           # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
-./build.sh --nerd    # also Nerd Font Mono otf+ttf -> build/nerd/ (--nerd=mono,default,propo for more)
+./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
+./build.sh --nerd                       # also Nerd Font Mono copies -> build/nerd/
+python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 ```
 
-Run `./build.sh` after every SFD change, before the checks below. Build outputs are never
-committed: both `fonts/` and the Nerd Fonts output in `build/` are gitignored. The patcher version is pinned by
-`NERD_FONTS_VERSION` + `NERD_FONTS_SHA256` in `build.sh`. The patcher's "Fontforge 20251009
-produces unusable fonts" warning is about a monospace TTF `hmtx` bug; HarfBuzz reads correct
-550 advances from our patched output, so it does not apply here.
-
-Builds are reproducible: `build.sh` sets `SOURCE_DATE_EPOCH` to the last commit's time,
-because FontForge writes the date into the unique ID (name ID 3). It generates with the flags
-`opentype` (keeps `GDEF`) and `no-mac-names`, and pins FontForge's `AutoHint` preference on.
-Every glyph's CFF hints are stored in the SFD: run `glyph.autoHint()` on glyphs you change, so
-no glyph carries the `H` (changed since hinted) flag and the SFD holds the hints that ship.
-
-There is no test suite. These are the checks in use:
+Rebuild after every SFD change, then run the checks:
 
 ```sh
-# Monospace invariant + FontForge validation, split into the pre-existing 0x80000 flag vs everything else
+# Expect non-550 [], 0x80000 0, and other {'uni2204': '0x4'} only
 fontforge -quiet -lang=py -c '
 import fontforge, sys
 f = fontforge.open(sys.argv[1])
@@ -41,29 +26,54 @@ print("0x80000:", sum(1 for x in v.values() if x & 0x80000))
 print("other:", {n: hex(x) for n, x in v.items() if x & ~0x80001})
 ' src/ComicCaret-Regular.sfd
 
-# Shaping check against a built font (use --text; a leading '-' is parsed as an option)
-hb-shape fonts/ComicCaret-Regular.ttf --text='->'
-hb-shape --output-format=json fonts/ComicCaret-Regular.otf --text='a='
+hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
+uvx fontbakery check-universal fonts/ComicCaret-Regular.ttf  # expect 0 FAIL
+uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
 ```
 
-The baseline at HEAD was already this, so a later change did not cause it:
-- `other` is only `uni2204` (∄, self-intersecting, `0x4`).
-- `0x80000` (non-integral points) is set on no glyph: every coordinate is an integer. Glyphs you add should not raise either count.
+Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it does
+not affect this font.
 
-## Working with the SFD
+## Editing the SFD
 
-- **Edit through FontForge** (GUI or `import fontforge`), not with text edits to glyph bodies. `Refer:` lines point at other glyphs by glyph index (`Refer: <gid> <unicode> ...`). Accented and derived glyphs are built from references to base glyphs (the "Replace with Reference" pass), so deleting or reordering glyphs by hand silently breaks composites. FontForge rewrites the indices when it saves.
-- **Metrics:** em 1000 (ascent 750 / descent 250). OS/2 cap height 668 and x-height 473 are the tops of `H` and `x`. **Every glyph, including `.notdef`, has advance width 550.** Keep that true for any glyph you add.
-- **Line box:** hhea = typo = 850/−350/0 with `USE_TYPO_METRICS`, so every platform uses the same 1.2 em line. Win ascent/descent are offsets of 0 from the bbox, so they follow the tallest and deepest glyph with no hand-synced numbers. Box-drawing verticals span the line box plus 10 units (−360…860); new box glyphs should match.
-- **Computed OS/2 bits:** the SFD has no `OS2CodePages`/`OS2UnicodeRanges` lines, so FontForge computes both from the cmap when it generates. Setting either from Python or Font Info hard-codes it again.
-- **TTF rendering:** the TTF is unhinted. The SFD carries a `prep` table (`TtTable: prep`) that turns on smart dropout control, and gasp v1 `0x000F`: without the grid-fit bits the rasterizer may skip `prep`.
-- **Glyph hygiene:** new or redrawn glyphs should have integer coordinates and pass FontForge Validate. Only ∄ still fails Validate (see the baseline above). `glyph.round()` can push a handle 1 unit past its segment's end points, which shows up as missing extrema (`0x20`), so validate after rounding.
-- **No OpenType layout yet:** the font has no GSUB/GPOS lookups and no kerning.
-- **Noisy diffs:** each save changes `ModificationTime` and can rewrite hint (`HStem`/`VStem`) and `Validated:` lines on glyphs that were touched.
-- **Python pitfalls:** assigning `glyph.foreground` drops per-point hint masks (validate flags `0x800000` when stems overlap); `glyph.autoHint()` restores them. `glyph.transform()` shifts `vwidth` too. After editing a base glyph, generate from a fresh process, because composites keep stale bounds in the same session.
-- **Name records and version:** FontForge derives the shipped names (family, full, PostScript, `Version x.y.z`) and `head.fontRevision` from `FontName`/`FamilyName`/`FullName`/`Version:`. `LangName` holds only the license summary (name ID 13) and license URL (ID 14), and there is no `sfntRevision` line; adding either override brings back hand-synced duplicates.
-- **Duplicated metadata:** the five copyright holders are listed in both the SFD `Copyright:` field (name ID 0) and `LICENSE.md`. Keep them in sync by hand.
+- Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
+  index, so hand edits silently break composites.
+- Every glyph, `.notdef` included, is 550 wide.
+- Build accented and derived glyphs from references to base glyphs, not copied outlines.
+- Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
+  `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
+- Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`), hhea = typo =
+  850/−350 with `USE_TYPO_METRICS`. Box-drawing verticals span −360…860.
+- Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
+  ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
+  13 and 14.
+- The copyright holders appear in the SFD `Copyright:` field and in `LICENSE.md`; keep both in
+  sync.
+- SFD diffs are noisy: saves rewrite `ModificationTime` and hints, and deleting a glyph
+  renumbers every later index.
 
-## Changelog
+## FontForge Python pitfalls
 
-`CHANGELOG.md` holds the user-facing changelog, newest release first; the README has none. New glyph sets, features and user-visible fixes get an entry there.
+- Assigning `glyph.foreground` drops hint masks; call `glyph.autoHint()` afterwards.
+- `glyph.transform()` also shifts `vwidth`; transform `glyph.foreground.dup()` and assign it back.
+- Composites keep stale bounds in the process that edited their base glyph; hint them and
+  generate from a fresh process.
+- `glyph.unicode = -1` switches the font to a `Custom` encoding; set
+  `font.encoding = "UnicodeBmp"` afterwards.
+- Don't save from a process that validated every glyph; it writes `Validated:` into all of them.
+
+## Designing glyphs
+
+- Before you place, size or redraw a glyph, compare it with Fira Code and Maple Mono
+  (`tools/compare_glyphs.py`) and follow what they agree on. Both are OFL: copy measurements,
+  never outlines.
+- When the hand-drawn style calls for something else, say why in the commit message.
+- Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
+  rotated about the cell center.
+- The reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from the Fira
+  Code 6.2 release and Maple Mono 7.9 Regular (the Nerd Font build works too).
+
+## Other
+
+- Add user-visible changes to `CHANGELOG.md`.
+- The font has no GSUB/GPOS yet.

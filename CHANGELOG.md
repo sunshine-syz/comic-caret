@@ -4,8 +4,9 @@
 - Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
 - `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font Mono", as OTF and TTF.
-- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflex on ĥ sat too high.
-- Added the no-break space (U+00A0), „ and λ.
+- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ hung far below their letters. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
+- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left.
+- Added the no-break space (U+00A0), „, λ, Λ and Ꝛ.
 - Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
 - Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.
 - Cleaned up the outlines: self-intersections, reversed contours and missing extreme points are fixed in every glyph except ∄.
