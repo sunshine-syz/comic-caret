@@ -14,6 +14,7 @@
 - Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.
 - Box-drawing lines are straight and line up with each other, and they run a little past their cells so boxes stay closed at line spacings up to 1.5 em.
 - < > ≤ ≥ ← → × and ~ now sit on the same center line as - = +, so `->`, `<=`, `x<1` and `=~` line up. < > and ≤ ≥ are smaller, closer to the size of +.
+- Accents are flatter and the same size on capital and lowercase letters, as in most fonts, so À Â Č Ő Å and the rest fit inside the line and are no longer cut off in terminals. The standalone accents ´ ˆ ˇ ˘ ˜ ˚ ˙ ˝ match them and are centered in their cells.
 - The ogonek (Ą ą Ę ę Į į Ų ų) curls back under the point where it joins its letter, as in most fonts, and no longer sticks out of Ą and ą into the next character.
 - The font now sets its underline and strikethrough positions and thicknesses (the thicknesses were 0), and its PANOSE data marks it as monospaced.
 - Corrected the font's metadata. Its code-page and Unicode-block flags are now computed from the characters it contains: it declares the blocks it covers and no longer claims the Central European code page (cp1250). Its copyright notice and `LICENSE.md` list all five copyright holders.

@@ -6,18 +6,24 @@ These assert rules every glyph must follow (see CLAUDE.md), not the shape of any
 Font Bakery and OTS check the built fonts separately; see CLAUDE.md for those commands.
 """
 import pathlib
+import unicodedata
 import unittest
 
 import fontforge
 
 SFD = pathlib.Path(__file__).resolve().parent.parent / "src" / "ComicCaret-Regular.sfd"
 ADVANCE = 550
-LINE_BOTTOM = -350  # hhea and typo descender
+LINE_TOP, LINE_BOTTOM = 850, -350  # hhea and typo ascender and descender
 
 # Known exceptions.
 INK_OUTSIDE_CELL = {"dcaron"}          # the caron needs a narrower d
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
+# ĥ ĺ carry accents above an ascender; ^ is drawn tall and ģ's comma is too high.
+ABOVE_LINE = {"hcircumflex", "lacute", "asciicircum", "gcommaaccent"}
+# Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
+# comma above where Ģ has one below.
+OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
 
 VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
@@ -49,6 +55,32 @@ class SanityTest(unittest.TestCase):
         below = [g.glyphname for g in self.glyphs
                  if not is_box_drawing(g) and g.boundingBox()[1] < LINE_BOTTOM]
         self.assertEqual(below, [])
+
+    def test_nothing_rises_above_the_line(self):
+        # Terminals clip glyphs to the line box, so ink above it is cut off.
+        above = [g.glyphname for g in self.glyphs
+                 if not is_box_drawing(g) and g.glyphname not in ABOVE_LINE
+                 and g.boundingBox()[3] > LINE_TOP]
+        self.assertEqual(above, [])
+
+    def test_capitals_share_accents_with_lowercase(self):
+        # As in both reference fonts, a mark keeps one shape and size on either case.
+        def marks(glyph):
+            base = unicodedata.normalize("NFD", chr(glyph.unicode))[0]
+            letters = {self.font[ord(base)].glyphname, "dotlessi", "dotlessj"}
+            return sorted(r[0] for r in glyph.references if r[0] not in letters)
+
+        differ = []
+        for upper in self.glyphs:
+            if upper.unicode < 0 or not upper.references or not chr(upper.unicode).isupper():
+                continue
+            lower = chr(upper.unicode).lower()
+            if len(lower) != 1 or ord(lower) not in self.font:
+                continue
+            lower = self.font[ord(lower)]
+            if lower.glyphname not in OWN_ACCENTS and marks(upper) != marks(lower):
+                differ.append((upper.glyphname, marks(upper), marks(lower)))
+        self.assertEqual(differ, [])
 
     def test_encoded_glyphs_have_ink(self):
         empty = [g.glyphname for g in self.glyphs
