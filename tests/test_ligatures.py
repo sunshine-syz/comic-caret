@@ -89,6 +89,21 @@ LIGATED = {
     ">=": ["LIG", "greater_equal.liga"],
     "a<=b": ["a", "LIG", "less_equal.liga", "b"],
     "x >= y": ["x", "space", "LIG", "greater_equal.liga", "space", "y"],
+    # Runs of _ # ~
+    "__": pieces("underscore.sta", "underscore.mid", "underscore.end", 2),
+    "____": pieces("underscore.sta", "underscore.mid", "underscore.end", 4),
+    "__init__": ["underscore.sta", "underscore.end", "i", "n", "i", "t",
+                 "underscore.sta", "underscore.end"],
+    "##": pieces("numbersign.sta", "numbersign.mid", "numbersign.end", 2),
+    "#####": pieces("numbersign.sta", "numbersign.mid", "numbersign.end", 5),
+    "## Heading": ["numbersign.sta", "numbersign.end", "space", "H", "e", "a", "d", "i", "n", "g"],
+    "~~": ["asciitilde.sta", "asciitilde.end"],
+    "~~~": ["asciitilde.sta", "asciitilde.mid", "asciitilde.end.low"],
+    "~~~~": ["asciitilde.sta", "asciitilde.mid", "asciitilde.mid.low", "asciitilde.end"],
+    "~~~~~": ["asciitilde.sta", "asciitilde.mid", "asciitilde.mid.low", "asciitilde.mid",
+              "asciitilde.end.low"],
+    "~~strike~~": ["asciitilde.sta", "asciitilde.end", "s", "t", "r", "i", "k", "e",
+                   "asciitilde.sta", "asciitilde.end"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -100,6 +115,8 @@ PLAIN = [
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     ">>=", "<<=", "<=-", "=<=",
+    # Lone run characters
+    "_", "#", "~", "a_b", "#!", "~/",
 ]
 
 

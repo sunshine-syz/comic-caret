@@ -48,7 +48,18 @@ class Bar(NamedTuple):
 RUNS = {
     "hyphen": (Bar((200, 350), (215, 325), (231, 310)),),
     "equal": (Bar((200, 350), (135, 228), (143, 219)), Bar((200, 350), (318, 410), (326, 403))),
+    "underscore": (Bar((200, 350), (-100, -5), (-92, -14)),),
+    # The crossbars stick out past the slanted verticals, each by a different amount.
+    "numbersign": (Bar((100, 440), (170, 262), (178, 255)), Bar((150, 465), (408, 502), (415, 494))),
 }
+
+# ~ is a wave: a fall from crest to trough and its mirror image, each 174 wide, repeat. Three
+# fill a cell, so a cell ends at the other extreme from where it began and the pieces
+# alternate between starting low (.sta, .mid.low, .end.low) and high (.mid, .end).
+TILDE_CREST, TILDE_TROUGH = 182, 356
+TILDE_HALF = TILDE_TROUGH - TILDE_CREST
+CREST_PROFILE, TROUGH_PROFILE = (295, 394), (145, 243)
+TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # Arrowheads: the point of > and < sits on the axis at these x.
 GREATER_TIP, LESS_TIP = 462, 88
@@ -102,6 +113,35 @@ def run_pieces(font):
         glyphs[f"{name}.mid"] = stroke(font, name, -OVERLAP, ADVANCE + OVERLAP)
         glyphs[f"{name}.end"] = stroke(font, name, x0=-OVERLAP)
     return glyphs
+
+
+def tilde_pieces(font):
+    tilde = outline(font, "asciitilde")
+    fall = geo.snap_edge(geo.snap_edge(geo.trim(tilde, TILDE_CREST, TILDE_TROUGH),
+                                       TILDE_CREST, CREST_PROFILE), TILDE_TROUGH, TROUGH_PROFILE)
+    rise = geo.mirrored_x(fall, TILDE_TROUGH)
+    rise_before = geo.transformed(rise, psMat.translate(-2 * TILDE_HALF, 0))
+    start = geo.snap_edge(geo.trim(tilde, x1=TILDE_CREST), TILDE_CREST, CREST_PROFILE)
+    finish = geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE)
+    first, last = TILDE_CREST - TILDE_HALF, TILDE_TROUGH + TILDE_HALF  # the outer extremes
+
+    def to_edge(layer, x, edge, profile):
+        # The wave is level at an extreme, so moving the flat end out keeps it level.
+        moved = geo.stretch(layer, x - 1 if edge > x else x + 1, edge - x)
+        return geo.snap_edge(moved, edge, profile)
+
+    def waves(head, tail):
+        return geo.weld(geo.weld(head, fall, TILDE_CREST), tail, TILDE_TROUGH)
+
+    sta = to_edge(waves(start, rise), last, ADVANCE + OVERLAP, CREST_PROFILE)
+    mid_low = to_edge(to_edge(waves(rise_before, rise), first, -OVERLAP, TROUGH_PROFILE),
+                      last, ADVANCE + OVERLAP, CREST_PROFILE)
+    end_low = to_edge(waves(rise_before, finish), first, -OVERLAP, TROUGH_PROFILE)
+    mid = geo.snap_edge(geo.snap_edge(geo.mirrored_y(mid_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE),
+                        ADVANCE + OVERLAP, TROUGH_PROFILE)
+    end = geo.snap_edge(geo.mirrored_y(end_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE)
+    return {"asciitilde.sta": sta, "asciitilde.mid": mid, "asciitilde.end": end,
+            "asciitilde.mid.low": mid_low, "asciitilde.end.low": end_low}
 
 
 def head(font, name, tip, scale):
@@ -186,6 +226,7 @@ def build(font, head_scale=HEAD_SCALE):
     (glyph, dx, dy) references for pure shifts."""
     glyphs = {"LIG": []}  # the empty spacer before a .liga glyph
     glyphs.update(run_pieces(font))
+    glyphs.update(tilde_pieces(font))
     glyphs.update(arrowheads(font, head_scale))
     glyphs["exclam_equal.liga"] = not_equal(font, 2)
     glyphs["exclam_equal_equal.liga"] = not_equal(font, 3)

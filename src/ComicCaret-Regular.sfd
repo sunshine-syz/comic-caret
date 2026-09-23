@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790185698
+ModificationTime: 1790185745
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -57,6 +57,8 @@ OS2Vendor: 'NONE'
 Lookup: 1 0 0 "lig_sta" { "lig_sta subtable"  } []
 Lookup: 1 0 0 "lig_mid" { "lig_mid subtable"  } []
 Lookup: 1 0 0 "lig_end" { "lig_end subtable"  } []
+Lookup: 1 0 0 "lig_mid_low" { "lig_mid_low subtable"  } []
+Lookup: 1 0 0 "lig_end_low" { "lig_end_low subtable"  } []
 Lookup: 1 0 0 "lig_arrow" { "lig_arrow subtable"  } []
 Lookup: 1 0 0 "lig_darrow" { "lig_darrow subtable"  } []
 Lookup: 1 0 0 "lig_spacer" { "lig_spacer subtable"  } []
@@ -72,8 +74,89 @@ Lookup: 8 0 0 "lig_hyphen_unwind" { "lig_hyphen_unwind contextual 0"  "lig_hyphe
 Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_build contextual 1"  "lig_equal_build contextual 2"  "lig_equal_build contextual 3"  "lig_equal_build contextual 4"  "lig_equal_build contextual 5"  "lig_equal_build contextual 6"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_runs" { "lig_runs contextual 0"  "lig_runs contextual 1"  "lig_runs contextual 2"  "lig_runs contextual 3"  "lig_runs contextual 4"  "lig_runs contextual 5"  "lig_runs contextual 6"  "lig_runs contextual 7"  "lig_runs contextual 8"  "lig_runs contextual 9"  "lig_runs contextual 10"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 MarkAttachClasses: 1
 DEI: 91125
+ChainSub2: glyph "lig_runs contextual 10" 0 0 0 1
+ String: 10 asciitilde
+ BString: 0 
+ FString: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_sta"
+EndFPST
+ChainSub2: glyph "lig_runs contextual 9" 0 0 0 1
+ String: 10 asciitilde
+ BString: 14 asciitilde.mid
+ FString: 0 
+ 1
+  SeqLookup: 0 "lig_end_low"
+EndFPST
+ChainSub2: glyph "lig_runs contextual 8" 0 0 0 1
+ String: 10 asciitilde
+ BString: 14 asciitilde.mid
+ FString: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_mid_low"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 7" 0 0 0 1
+ 1 1 0
+  Coverage: 10 asciitilde
+  BCoverage: 33 asciitilde.sta asciitilde.mid.low
+ 1
+  SeqLookup: 0 "lig_end"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 6" 0 0 0 1
+ 1 1 1
+  Coverage: 10 asciitilde
+  BCoverage: 33 asciitilde.sta asciitilde.mid.low
+  FCoverage: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_mid"
+EndFPST
+ChainSub2: glyph "lig_runs contextual 5" 0 0 0 1
+ String: 10 numbersign
+ BString: 0 
+ FString: 10 numbersign
+ 1
+  SeqLookup: 0 "lig_sta"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 4" 0 0 0 1
+ 1 1 0
+  Coverage: 10 numbersign
+  BCoverage: 29 numbersign.sta numbersign.mid
+ 1
+  SeqLookup: 0 "lig_end"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 3" 0 0 0 1
+ 1 1 1
+  Coverage: 10 numbersign
+  BCoverage: 29 numbersign.sta numbersign.mid
+  FCoverage: 10 numbersign
+ 1
+  SeqLookup: 0 "lig_mid"
+EndFPST
+ChainSub2: glyph "lig_runs contextual 2" 0 0 0 1
+ String: 10 underscore
+ BString: 0 
+ FString: 10 underscore
+ 1
+  SeqLookup: 0 "lig_sta"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 1" 0 0 0 1
+ 1 1 0
+  Coverage: 10 underscore
+  BCoverage: 29 underscore.sta underscore.mid
+ 1
+  SeqLookup: 0 "lig_end"
+EndFPST
+ChainSub2: coverage "lig_runs contextual 0" 0 0 0 1
+ 1 1 1
+  Coverage: 10 underscore
+  BCoverage: 29 underscore.sta underscore.mid
+  FCoverage: 10 underscore
+ 1
+  SeqLookup: 0 "lig_mid"
+EndFPST
 ChainSub2: glyph "lig_or_equal contextual 5" 0 0 0 1
  String: 13 greater equal
  BString: 0 
@@ -86,13 +169,13 @@ ChainSub2: coverage "lig_or_equal contextual 4" 0 0 0 1
  1 0 2
   Coverage: 7 greater
   FCoverage: 5 equal
-  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_or_equal contextual 3" 0 0 0 1
  1 1 1
   Coverage: 7 greater
-  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  BCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -108,13 +191,13 @@ ChainSub2: coverage "lig_or_equal contextual 1" 0 0 0 1
  1 0 2
   Coverage: 4 less
   FCoverage: 5 equal
-  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_or_equal contextual 0" 0 0 0 1
  1 1 1
   Coverage: 4 less
-  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  BCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -288,13 +371,13 @@ ChainSub2: coverage "lig_colon_equal contextual 1" 0 0 0 1
  1 0 2
   Coverage: 5 colon
   FCoverage: 5 equal
-  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_colon_equal contextual 0" 0 0 0 1
  1 1 1
   Coverage: 5 colon
-  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  BCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -310,13 +393,13 @@ ChainSub2: coverage "lig_not_equal contextual 4" 0 0 0 1
  1 0 2
   Coverage: 6 exclam
   FCoverage: 5 equal
-  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_not_equal contextual 3" 0 0 0 1
  1 1 1
   Coverage: 6 exclam
-  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  BCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
  0
 EndFPST
@@ -334,13 +417,13 @@ ChainSub2: coverage "lig_not_equal contextual 1" 0 0 0 1
   Coverage: 6 exclam
   FCoverage: 5 equal
   FCoverage: 5 equal
-  FCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  FCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
  0
 EndFPST
 ChainSub2: coverage "lig_not_equal contextual 0" 0 0 0 1
  1 1 2
   Coverage: 6 exclam
-  BCoverage: 326 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
+  BCoverage: 499 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   FCoverage: 5 equal
   FCoverage: 5 equal
  0
@@ -369,7 +452,7 @@ BlueScale 9 0.0291667
 BlueShift 2 10
 EndPrivate
 TeXData: 1 0 0 576716 288358 192238 488639 1048576 192238 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
-BeginChars: 65555 636
+BeginChars: 65566 647
 
 StartChar: .notdef
 Encoding: 65536 -1 0
@@ -591,6 +674,9 @@ SplineSet
  345 363 349 389 354 416 c 1
  247 416 l 1
 EndSplineSet
+Substitution2: "lig_end subtable" numbersign.end
+Substitution2: "lig_mid subtable" numbersign.mid
+Substitution2: "lig_sta subtable" numbersign.sta
 EndChar
 
 StartChar: dollar
@@ -4096,6 +4182,9 @@ SplineSet
  55 -18 64 -14 79 -14 c 0
  80 -14 81 -14 82 -14 c 0
 EndSplineSet
+Substitution2: "lig_end subtable" underscore.end
+Substitution2: "lig_mid subtable" underscore.mid
+Substitution2: "lig_sta subtable" underscore.sta
 EndChar
 
 StartChar: grave
@@ -5806,6 +5895,11 @@ SplineSet
  460 367 467 373 474 376 c 0
  481 379 489 379 496 376 c 0
 EndSplineSet
+Substitution2: "lig_end_low subtable" asciitilde.end.low
+Substitution2: "lig_mid_low subtable" asciitilde.mid.low
+Substitution2: "lig_end subtable" asciitilde.end
+Substitution2: "lig_mid subtable" asciitilde.mid
+Substitution2: "lig_sta subtable" asciitilde.sta
 EndChar
 
 StartChar: exclamdown
@@ -15436,8 +15530,572 @@ SplineSet
 EndSplineSet
 EndChar
 
-StartChar: less.arrow
+StartChar: underscore.sta
 Encoding: 65546 -1 627
+Width: 550
+VWidth: 0
+Flags: W
+HStem: -92 78<50.2388 560>
+LayerCount: 2
+Fore
+SplineSet
+82 -14 m 0
+ 124 -15 164 -15 204 -15 c 0
+ 244 -15 280 -14 314 -14 c 2
+ 560 -14 l 1
+ 560 -92 l 1
+ 295 -92 l 2
+ 257 -92 219 -92 181 -92 c 0
+ 143 -92 110 -93 83 -93 c 0
+ 66 -93 55 -88 50 -80 c 0
+ 45 -72 43 -63 43 -53 c 0
+ 43 -52 43 -51 43 -50 c 0
+ 43 -42 46 -34 50 -26 c 0
+ 55 -18 64 -14 79 -14 c 0
+ 80 -14 81 -14 82 -14 c 0
+EndSplineSet
+EndChar
+
+StartChar: underscore.mid
+Encoding: 65547 -1 628
+Width: 550
+VWidth: 0
+Flags: W
+HStem: -92 78<-10 560>
+LayerCount: 2
+Fore
+SplineSet
+-10 -92 m 1
+ -10 -14 l 1
+ 53 -15 124 -15 204 -15 c 0
+ 244 -15 280 -14 314 -14 c 2
+ 560 -14 l 1
+ 560 -92 l 1
+ 295 -92 l 1
+ -10 -92 l 1
+EndSplineSet
+EndChar
+
+StartChar: underscore.end
+Encoding: 65548 -1 629
+Width: 550
+VWidth: 0
+Flags: W
+HStem: -92 78<-10 499.761>
+LayerCount: 2
+Fore
+SplineSet
+-10 -92 m 1
+ -10 -14 l 1
+ 53 -15 124 -15 204 -15 c 0
+ 244 -15 280 -14 314 -14 c 0
+ 348 -14 378 -14 404 -14 c 0
+ 430 -14 452 -13 468 -13 c 0
+ 484 -13 495 -16 500 -24 c 0
+ 505 -32 507 -41 508 -50 c 0
+ 508 -60 505 -69 500 -78 c 0
+ 495 -87 485 -91 468 -91 c 0
+ 454 -91 432 -92 400 -92 c 0
+ 368 -92 333 -92 295 -92 c 2
+ -10 -92 l 1
+EndSplineSet
+EndChar
+
+StartChar: numbersign.sta
+Encoding: 65549 -1 630
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 178 79<40.3779 104.875 215 311 420 560> 416 79<78.3303 153 262 354 462 560> 650 20G<435.5 441>
+LayerCount: 2
+Fore
+SplineSet
+75 252 m 0
+ 82 253 89 253 97 253 c 0
+ 105 253 113 253 121 254 c 1
+ 126 279 131 306 137 334 c 0
+ 143 362 148 388 153 415 c 1
+ 146 415 139 415 132 415 c 0
+ 125 415 119 414 114 414 c 0
+ 113 414 111 414 110 414 c 0
+ 95 414 85 418 78 425 c 0
+ 70 433 66 441 66 451 c 0
+ 66 452 66 453 66 455 c 0
+ 66 463 69 472 76 479 c 0
+ 84 487 96 491 113 492 c 0
+ 122 493 131 493 141 493 c 2
+ 168 493 l 1
+ 173 522 179 550 184 575 c 0
+ 189 600 192 621 195 638 c 0
+ 200 655 208 666 219 672 c 0
+ 226 676 234 677 241 677 c 0
+ 244 677 248 677 251 676 c 0
+ 264 673 274 668 281 658 c 0
+ 286 651 289 643 289 633 c 0
+ 289 628 288 623 287 618 c 0
+ 284 603 281 586 276 565 c 0
+ 271 544 267 520 262 495 c 1
+ 368 495 l 1
+ 373 523 377 549 382 572 c 0
+ 387 595 390 615 393 631 c 0
+ 398 648 406 660 417 665 c 0
+ 425 669 432 670 439 670 c 0
+ 443 670 446 670 450 669 c 0
+ 463 666 473 660 481 651 c 0
+ 486 645 488 638 488 629 c 0
+ 488 624 487 618 485 611 c 0
+ 482 598 478 581 474 561 c 0
+ 470 541 466 519 462 496 c 1
+ 560 494 l 1
+ 560 415 l 1
+ 447 416 l 1
+ 442 390 438 364 434 337 c 0
+ 430 310 425 283 420 256 c 1
+ 560 255 l 1
+ 560 178 l 1
+ 406 180 l 1
+ 401 151 397 125 392 100 c 0
+ 387 75 383 54 379 35 c 0
+ 374 22 366 12 353 5 c 0
+ 344 1 335 -2 327 -2 c 0
+ 323 -2 319 -1 315 0 c 0
+ 304 3 295 10 289 22 c 0
+ 286 29 284 36 284 44 c 0
+ 284 50 285 57 287 64 c 0
+ 290 74 294 89 298 109 c 0
+ 302 129 306 152 311 179 c 1
+ 292 179 274 178 255 178 c 0
+ 236 178 217 178 200 178 c 1
+ 195 151 190 126 185 102 c 0
+ 180 78 175 57 171 39 c 0
+ 166 26 157 16 144 7 c 0
+ 135 1 126 -2 118 -2 c 0
+ 114 -2 110 -1 106 -0 c 0
+ 95 3 87 10 81 23 c 0
+ 78 30 76 39 76 47 c 0
+ 76 54 77 60 79 68 c 2
+ 90 112 l 2
+ 95 131 100 152 105 177 c 1
+ 77 177 l 2
+ 60 177 48 180 40 186 c 0
+ 32 192 29 201 29 211 c 0
+ 29 212 29 213 29 215 c 0
+ 29 223 32 231 38 238 c 0
+ 45 246 58 251 75 252 c 0
+247 416 m 1
+ 242 390 238 364 232 337 c 0
+ 226 310 220 283 215 256 c 1
+ 234 257 253 257 272 257 c 2
+ 325 257 l 1
+ 330 282 335 309 340 336 c 0
+ 345 363 349 389 354 416 c 1
+ 247 416 l 1
+EndSplineSet
+EndChar
+
+StartChar: numbersign.mid
+Encoding: 65550 -1 631
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 178 78<-10 105 215 311 420 560> 415 79<-10 153 262 354 462 560> 650 20G<435.5 441>
+LayerCount: 2
+Fore
+SplineSet
+-10 178 m 1
+ -10 255 l 1
+ 61 254 92 253 107 253 c 0
+ 117 253 119 254 121 254 c 1
+ 126 279 131 306 137 334 c 0
+ 143 362 148 388 153 415 c 1
+ -10 415 l 1
+ -10 494 l 1
+ 168 493 l 1
+ 173 522 179 550 184 575 c 0
+ 189 600 192 621 195 638 c 0
+ 200 655 208 666 219 672 c 0
+ 226 676 234 677 241 677 c 0
+ 244 677 248 677 251 676 c 0
+ 264 673 274 668 281 658 c 0
+ 286 651 289 643 289 633 c 0
+ 289 628 288 623 287 618 c 0
+ 284 603 281 586 276 565 c 0
+ 271 544 267 520 262 495 c 1
+ 368 495 l 1
+ 373 523 377 549 382 572 c 0
+ 387 595 390 615 393 631 c 0
+ 398 648 406 660 417 665 c 0
+ 425 669 432 670 439 670 c 0
+ 443 670 446 670 450 669 c 0
+ 463 666 473 660 481 651 c 0
+ 486 645 488 638 488 629 c 0
+ 488 624 487 618 485 611 c 0
+ 482 598 478 581 474 561 c 0
+ 470 541 466 519 462 496 c 1
+ 560 494 l 1
+ 560 415 l 1
+ 447 416 l 1
+ 442 390 438 364 434 337 c 0
+ 430 310 425 283 420 256 c 1
+ 560 255 l 1
+ 560 178 l 1
+ 406 180 l 1
+ 401 151 397 125 392 100 c 0
+ 387 75 383 54 379 35 c 0
+ 374 22 366 12 353 5 c 0
+ 344 1 335 -2 327 -2 c 0
+ 323 -2 319 -1 315 0 c 0
+ 304 3 295 10 289 22 c 0
+ 286 29 284 36 284 44 c 0
+ 284 50 285 57 287 64 c 0
+ 290 74 294 89 298 109 c 0
+ 302 129 306 152 311 179 c 1
+ 292 179 274 178 255 178 c 0
+ 236 178 217 178 200 178 c 1
+ 195 151 190 126 185 102 c 0
+ 180 78 175 57 171 39 c 0
+ 166 26 157 16 144 7 c 0
+ 135 1 126 -2 118 -2 c 0
+ 114 -2 110 -1 106 -0 c 0
+ 95 3 87 10 81 23 c 0
+ 78 30 76 39 76 47 c 0
+ 76 54 77 60 79 68 c 2
+ 90 112 l 2
+ 95 131 100 152 105 177 c 1
+ -10 178 l 1
+247 416 m 1
+ 242 390 238 364 232 337 c 0
+ 226 310 220 283 215 256 c 1
+ 234 257 253 257 272 257 c 2
+ 325 257 l 1
+ 330 282 335 309 340 336 c 0
+ 345 363 349 389 354 416 c 1
+ 247 416 l 1
+EndSplineSet
+EndChar
+
+StartChar: numbersign.end
+Encoding: 65551 -1 632
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 178 78<-10 105 215 311 420 489.761> 416 79<-10 153 262 354 462 515.669> 650 20G<435.5 441>
+LayerCount: 2
+Fore
+SplineSet
+-10 178 m 1
+ -10 255 l 1
+ 61 254 92 253 107 253 c 0
+ 117 253 119 254 121 254 c 1
+ 126 279 131 306 137 334 c 0
+ 143 362 148 388 153 415 c 1
+ -10 415 l 1
+ -10 494 l 1
+ 168 493 l 1
+ 173 522 179 550 184 575 c 0
+ 189 600 192 621 195 638 c 0
+ 200 655 208 666 219 672 c 0
+ 226 676 234 677 241 677 c 0
+ 244 677 248 677 251 676 c 0
+ 264 673 274 668 281 658 c 0
+ 286 651 289 643 289 633 c 0
+ 289 628 288 623 287 618 c 0
+ 284 603 281 586 276 565 c 0
+ 271 544 267 520 262 495 c 1
+ 368 495 l 1
+ 373 523 377 549 382 572 c 0
+ 387 595 390 615 393 631 c 0
+ 398 648 406 660 417 665 c 0
+ 425 669 432 670 439 670 c 0
+ 443 670 446 670 450 669 c 0
+ 463 666 473 660 481 651 c 0
+ 486 645 488 638 488 629 c 0
+ 488 624 487 618 485 611 c 0
+ 482 598 478 581 474 561 c 0
+ 470 541 466 519 462 496 c 1
+ 473 496 l 2
+ 489 496 502 492 511 483 c 0
+ 520 474 525 466 526 457 c 0
+ 526 447 523 438 516 430 c 0
+ 509 422 498 417 481 416 c 1
+ 447 416 l 1
+ 442 390 438 364 434 337 c 0
+ 430 310 425 283 420 256 c 1
+ 458 256 l 2
+ 474 256 485 252 490 245 c 0
+ 495 238 497 230 498 221 c 0
+ 498 211 496 202 491 193 c 0
+ 486 184 475 180 458 180 c 2
+ 406 180 l 1
+ 401 151 397 125 392 100 c 0
+ 387 75 383 54 379 35 c 0
+ 374 22 366 12 353 5 c 0
+ 344 1 335 -2 327 -2 c 0
+ 323 -2 319 -1 315 0 c 0
+ 304 3 295 10 289 22 c 0
+ 286 29 284 36 284 44 c 0
+ 284 50 285 57 287 64 c 0
+ 290 74 294 89 298 109 c 0
+ 302 129 306 152 311 179 c 1
+ 292 179 274 178 255 178 c 0
+ 236 178 217 178 200 178 c 1
+ 195 151 190 126 185 102 c 0
+ 180 78 175 57 171 39 c 0
+ 166 26 157 16 144 7 c 0
+ 135 1 126 -2 118 -2 c 0
+ 114 -2 110 -1 106 -0 c 0
+ 95 3 87 10 81 23 c 0
+ 78 30 76 39 76 47 c 0
+ 76 54 77 60 79 68 c 2
+ 90 112 l 2
+ 95 131 100 152 105 177 c 1
+ -10 178 l 1
+247 416 m 1
+ 242 390 238 364 232 337 c 0
+ 226 310 220 283 215 256 c 1
+ 234 257 253 257 272 257 c 2
+ 325 257 l 1
+ 330 282 335 309 340 336 c 0
+ 345 363 349 389 354 416 c 1
+ 247 416 l 1
+EndSplineSet
+EndChar
+
+StartChar: asciitilde.sta
+Encoding: 65552 -1 633
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 145 98<321.624 390.376> 295 99<152.77 220.242 491.38 560>
+LayerCount: 2
+Fore
+SplineSet
+356 145 m 0
+ 330 145 309 153 292 170 c 0
+ 275 187 259 208 244 235 c 0
+ 233 254 223 270 216 280 c 0
+ 209 290 199 295 184 295 c 0
+ 183 295 183 295 182 295 c 0
+ 168 294 158 285 150 270 c 0
+ 142 254 131 229 119 195 c 0
+ 114 183 105 172 92 162 c 0
+ 82 154 73 150 65 150 c 0
+ 63 150 60 150 58 151 c 0
+ 52 152 46 158 41 168 c 0
+ 38 174 36 181 36 188 c 0
+ 36 192 37 197 38 202 c 0
+ 55 264 77 311 104 344 c 0
+ 131 377 156 394 181 394 c 2
+ 182 394 l 2
+ 205 394 223 390 240 382 c 0
+ 257 374 274 351 293 316 c 0
+ 304 296 313 279 321 265 c 0
+ 329 251 340 243 354 243 c 0
+ 355 243 355 243 356 243 c 0
+ 357 243 357 243 358 243 c 0
+ 372 243 383 251 391 265 c 0
+ 399 279 408 296 419 316 c 0
+ 438 351 455 374 472 382 c 0
+ 489 390 507 394 560 394 c 1
+ 560 295 l 1
+ 559 295 529 295 528 295 c 0
+ 513 295 503 290 496 280 c 0
+ 489 270 479 254 468 235 c 0
+ 453 208 437 187 420 170 c 0
+ 403 153 382 145 356 145 c 0
+EndSplineSet
+EndChar
+
+StartChar: asciitilde.mid
+Encoding: 65553 -1 634
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 145 99<143.758 220.242 491.38 560> 296 98<-10 42.3222 321.624 390.376>
+LayerCount: 2
+Fore
+SplineSet
+356 394 m 0
+ 382 394 403 386 420 369 c 0
+ 437 352 453 331 468 304 c 0
+ 479 285 489 269 496 259 c 0
+ 503 249 513 244 528 244 c 0
+ 529 244 559 244 560 243 c 1
+ 560 145 l 1
+ 507 145 489 149 472 157 c 0
+ 455 165 438 188 419 223 c 0
+ 408 243 399 260 391 274 c 0
+ 383 288 372 296 358 296 c 0
+ 357 296 357 296 356 296 c 0
+ 355 296 355 296 354 296 c 0
+ 340 296 329 288 321 274 c 0
+ 313 260 304 243 293 223 c 0
+ 274 188 257 165 240 157 c 0
+ 223 149 205 145 182 145 c 0
+ 159 145 141 149 124 157 c 0
+ 107 165 90 188 71 223 c 0
+ 60 243 51 260 43 274 c 0
+ 35 288 24 296 10 296 c 0
+ 9 296 -9 296 -10 295 c 1
+ -10 394 l 1
+ 34 394 55 386 72 369 c 0
+ 89 352 105 331 120 304 c 0
+ 131 285 141 269 148 259 c 0
+ 155 249 165 244 180 244 c 0
+ 181 244 181 244 182 244 c 0
+ 183 244 183 244 184 244 c 0
+ 199 244 209 249 216 259 c 0
+ 223 269 233 285 244 304 c 0
+ 259 331 275 352 292 369 c 0
+ 309 386 330 394 356 394 c 0
+EndSplineSet
+EndChar
+
+StartChar: asciitilde.end
+Encoding: 65554 -1 635
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 145 99<143.758 220.242> 296 98<-10 42.3222 321.624 400.918>
+LayerCount: 2
+Fore
+SplineSet
+356 394 m 0
+ 357 394 357 394 358 394 c 0
+ 379 394 401 385 425 366 c 0
+ 449 347 473 309 496 251 c 0
+ 503 232 507 214 510 197 c 0
+ 511 194 511 191 511 188 c 0
+ 511 176 506 167 496 163 c 0
+ 492 162 489 161 485 161 c 0
+ 481 161 478 162 474 163 c 0
+ 467 166 460 172 454 179 c 0
+ 448 186 443 193 438 201 c 0
+ 433 209 430 217 427 224 c 0
+ 419 243 412 257 406 267 c 0
+ 400 277 394 285 389 289 c 0
+ 384 293 378 295 373 295 c 0
+ 368 295 362 296 356 296 c 0
+ 355 296 355 296 354 296 c 0
+ 340 296 329 288 321 274 c 0
+ 313 260 304 243 293 223 c 0
+ 274 188 257 165 240 157 c 0
+ 223 149 205 145 182 145 c 0
+ 159 145 141 149 124 157 c 0
+ 107 165 90 188 71 223 c 0
+ 60 243 51 260 43 274 c 0
+ 35 288 24 296 10 296 c 0
+ 9 296 -9 296 -10 295 c 1
+ -10 394 l 1
+ 34 394 55 386 72 369 c 0
+ 89 352 105 331 120 304 c 0
+ 131 285 141 269 148 259 c 0
+ 155 249 165 244 180 244 c 0
+ 181 244 181 244 182 244 c 0
+ 183 244 183 244 184 244 c 0
+ 199 244 209 249 216 259 c 0
+ 223 269 233 285 244 304 c 0
+ 259 331 275 352 292 369 c 0
+ 309 386 330 394 356 394 c 0
+EndSplineSet
+EndChar
+
+StartChar: asciitilde.mid.low
+Encoding: 65555 -1 636
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 145 98<-10 42.3222 321.624 390.376> 295 99<143.758 220.242 491.38 560>
+LayerCount: 2
+Fore
+SplineSet
+356 145 m 0
+ 330 145 309 153 292 170 c 0
+ 275 187 259 208 244 235 c 0
+ 233 254 223 270 216 280 c 0
+ 209 290 199 295 184 295 c 0
+ 183 295 183 295 182 295 c 0
+ 181 295 181 295 180 295 c 0
+ 165 295 155 290 148 280 c 0
+ 141 270 131 254 120 235 c 0
+ 105 208 89 187 72 170 c 0
+ 55 153 34 145 -10 145 c 1
+ -10 243 l 1
+ -9 243 9 243 10 243 c 0
+ 24 243 35 251 43 265 c 0
+ 51 279 60 296 71 316 c 0
+ 90 351 107 374 124 382 c 0
+ 141 390 159 394 182 394 c 0
+ 205 394 223 390 240 382 c 0
+ 257 374 274 351 293 316 c 0
+ 304 296 313 279 321 265 c 0
+ 329 251 340 243 354 243 c 0
+ 355 243 355 243 356 243 c 0
+ 357 243 357 243 358 243 c 0
+ 372 243 383 251 391 265 c 0
+ 399 279 408 296 419 316 c 0
+ 438 351 455 374 472 382 c 0
+ 489 390 507 394 560 394 c 1
+ 560 295 l 1
+ 559 295 529 295 528 295 c 0
+ 513 295 503 290 496 280 c 0
+ 489 270 479 254 468 235 c 0
+ 453 208 437 187 420 170 c 0
+ 403 153 382 145 356 145 c 0
+EndSplineSet
+EndChar
+
+StartChar: asciitilde.end.low
+Encoding: 65556 -1 637
+Width: 550
+VWidth: 0
+Flags: W
+HStem: 145 98<-10 42.3222 321.624 400.918> 295 99<143.758 220.242>
+LayerCount: 2
+Fore
+SplineSet
+356 145 m 0
+ 330 145 309 153 292 170 c 0
+ 275 187 259 208 244 235 c 0
+ 233 254 223 270 216 280 c 0
+ 209 290 199 295 184 295 c 0
+ 183 295 183 295 182 295 c 0
+ 181 295 181 295 180 295 c 0
+ 165 295 155 290 148 280 c 0
+ 141 270 131 254 120 235 c 0
+ 105 208 89 187 72 170 c 0
+ 55 153 34 145 -10 145 c 1
+ -10 243 l 1
+ -9 243 9 243 10 243 c 0
+ 24 243 35 251 43 265 c 0
+ 51 279 60 296 71 316 c 0
+ 90 351 107 374 124 382 c 0
+ 141 390 159 394 182 394 c 0
+ 205 394 223 390 240 382 c 0
+ 257 374 274 351 293 316 c 0
+ 304 296 313 279 321 265 c 0
+ 329 251 340 243 354 243 c 0
+ 355 243 355 243 356 243 c 0
+ 362 243 368 244 373 244 c 0
+ 378 244 384 246 389 250 c 0
+ 394 254 400 262 406 272 c 0
+ 412 282 419 296 427 315 c 0
+ 430 322 433 330 438 338 c 0
+ 443 346 448 353 454 360 c 0
+ 460 367 467 373 474 376 c 0
+ 478 378 481 378 485 378 c 0
+ 489 378 492 378 496 376 c 0
+ 506 372 511 363 511 351 c 0
+ 511 348 511 345 510 342 c 0
+ 507 325 503 307 496 288 c 0
+ 473 230 449 192 425 173 c 0
+ 401 154 379 145 358 145 c 0
+ 357 145 357 145 356 145 c 0
+EndSplineSet
+EndChar
+
+StartChar: less.arrow
+Encoding: 65557 -1 638
 Width: 550
 VWidth: 0
 Flags: W
@@ -15487,7 +16145,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.arrow
-Encoding: 65547 -1 628
+Encoding: 65558 -1 639
 Width: 550
 VWidth: 0
 Flags: W
@@ -15537,7 +16195,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.darrow
-Encoding: 65548 -1 629
+Encoding: 65559 -1 640
 Width: 550
 VWidth: 0
 Flags: W
@@ -15587,7 +16245,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.darrow
-Encoding: 65549 -1 630
+Encoding: 65560 -1 641
 Width: 550
 VWidth: 0
 Flags: W
@@ -15635,7 +16293,7 @@ EndSplineSet
 EndChar
 
 StartChar: exclam_equal.liga
-Encoding: 65550 -1 631
+Encoding: 65561 -1 642
 Width: 550
 VWidth: 0
 Flags: W
@@ -15718,7 +16376,7 @@ EndSplineSet
 EndChar
 
 StartChar: exclam_equal_equal.liga
-Encoding: 65551 -1 632
+Encoding: 65562 -1 643
 Width: 550
 VWidth: 0
 Flags: W
@@ -15825,7 +16483,7 @@ EndSplineSet
 EndChar
 
 StartChar: colon.eq
-Encoding: 65552 -1 633
+Encoding: 65563 -1 644
 Width: 550
 VWidth: 0
 Flags: W
@@ -15837,7 +16495,7 @@ Refer: 27 58 N 1 0 0 1 0 38 2
 EndChar
 
 StartChar: less_equal.liga
-Encoding: 65553 -1 634
+Encoding: 65564 -1 645
 Width: 550
 VWidth: 0
 Flags: W
@@ -15907,7 +16565,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater_equal.liga
-Encoding: 65554 -1 635
+Encoding: 65565 -1 646
 Width: 550
 VWidth: 0
 Flags: W

@@ -15,6 +15,8 @@ languagesystem latn dflt;
   question bar asciitilde underscore
   LIG colon.eq
   hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end
+  underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end
+  asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga];
 
@@ -23,9 +25,20 @@ languagesystem latn dflt;
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
 
 # Single substitutions, called from the chain rules below.
-lookup lig_sta { sub [hyphen equal] by [hyphen.sta equal.sta]; } lig_sta;
-lookup lig_mid { sub [hyphen equal] by [hyphen.mid equal.mid]; } lig_mid;
-lookup lig_end { sub [hyphen equal] by [hyphen.end equal.end]; } lig_end;
+lookup lig_sta {
+  sub [hyphen equal underscore numbersign asciitilde]
+   by [hyphen.sta equal.sta underscore.sta numbersign.sta asciitilde.sta];
+} lig_sta;
+lookup lig_mid {
+  sub [hyphen equal underscore numbersign asciitilde]
+   by [hyphen.mid equal.mid underscore.mid numbersign.mid asciitilde.mid];
+} lig_mid;
+lookup lig_end {
+  sub [hyphen equal underscore numbersign asciitilde]
+   by [hyphen.end equal.end underscore.end numbersign.end asciitilde.end];
+} lig_end;
+lookup lig_mid_low { sub asciitilde by asciitilde.mid.low; } lig_mid_low;
+lookup lig_end_low { sub asciitilde by asciitilde.end.low; } lig_end_low;
 lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
 lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
@@ -105,5 +118,21 @@ feature calt {
     ignore sub greater' equal @Op;
     sub greater' lookup lig_spacer equal' lookup lig_greater_equal;
   } lig_or_equal;
+
+  # 4. Runs of _ # ~, whatever their neighbours. ~ pieces alternate: after one that ends
+  #    high (.sta, .mid.low) comes one that starts high (.mid, .end), and the reverse.
+  lookup lig_runs {
+    sub [underscore.sta underscore.mid] underscore' lookup lig_mid underscore;
+    sub [underscore.sta underscore.mid] underscore' lookup lig_end;
+    sub underscore' lookup lig_sta underscore;
+    sub [numbersign.sta numbersign.mid] numbersign' lookup lig_mid numbersign;
+    sub [numbersign.sta numbersign.mid] numbersign' lookup lig_end;
+    sub numbersign' lookup lig_sta numbersign;
+    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_mid asciitilde;
+    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_end;
+    sub asciitilde.mid asciitilde' lookup lig_mid_low asciitilde;
+    sub asciitilde.mid asciitilde' lookup lig_end_low;
+    sub asciitilde' lookup lig_sta asciitilde;
+  } lig_runs;
 
 } calt;
