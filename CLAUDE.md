@@ -16,16 +16,7 @@ python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the refere
 Rebuild after every SFD change, then run the checks:
 
 ```sh
-# Expect non-550 [], 0x80000 0, and other {'uni2204': '0x4'} only
-fontforge -quiet -lang=py -c '
-import fontforge, sys
-f = fontforge.open(sys.argv[1])
-v = {g.glyphname: g.validate(True) for g in f.glyphs()}
-print("non-550:", [g.glyphname for g in f.glyphs() if g.width != 550])
-print("0x80000:", sum(1 for x in v.values() if x & 0x80000))
-print("other:", {n: hex(x) for n, x in v.items() if x & ~0x80001})
-' src/ComicCaret-Regular.sfd
-
+python3 -m unittest discover tests  # font-wide SFD rules; known exceptions are listed in the test
 hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
 uvx fontbakery check-universal fonts/ComicCaret-Regular.ttf  # expect 0 FAIL
 uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf

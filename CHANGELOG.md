@@ -5,7 +5,7 @@
 - The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
 - `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font Mono", as OTF and TTF.
 - Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ were full-size commas hanging far below their letters; they are now smaller and stay inside the line. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
-- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ and „ are centered too.
+- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ „ and œ are centered too; œ reached into the next character.
 - Added the no-break space (U+00A0), „, λ, Λ and Ꝛ.
 - Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
 - Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.
