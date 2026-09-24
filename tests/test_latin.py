@@ -388,17 +388,34 @@ class ShapeTest(unittest.TestCase):
         cls.font = fontforge.open(str(SFD))
 
     def test_heights(self):
-        for name, bottom, top in (("germandbls", -30, 675), ("section", -120, 700)):
+        # ß rises to the ascender, as b d h k do, and as in Intel One Mono, over B's cap height.
+        for name, bottom, top in (("germandbls", -30, 718), ("section", -120, 700)):
             with self.subTest(glyph=name):
                 _, y0, _, y1 = self.font[name].boundingBox()
                 self.assertAlmostEqual(y0, bottom, delta=20)
                 self.assertAlmostEqual(y1, top, delta=10)
 
     def test_sharp_s_stays_open_at_the_bottom(self):
-        # The 3's lower end stops short of the stem, or ß reads as B.
+        # The 3's lower end stops short of the stem, or ß reads as B: at least as far as the
+        # narrowest reference's (Fira Code 69; Maple Mono 77, Intel One Mono 143).
         layer = self.font["germandbls"].foreground
-        self.assertEqual(len(measure.spans_at_y(layer, 60)), 2)
         self.assertEqual(len(layer), 1)
+        for y in (20, 40, 60):
+            with self.subTest(y=y):
+                (_, stem), (end, _) = measure.spans_at_y(layer, y)
+                self.assertGreaterEqual(end - stem, 69)
+
+    def test_sharp_s_waist_is_open(self):
+        # The white between the stem and the 3's middle, where B's bowls meet its stem: at
+        # least the narrowest reference's (Maple Mono 75; Fira Code 96, Intel One Mono 131).
+        layer = self.font["germandbls"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        gaps = []
+        for percent in range(30, 71):
+            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
+            if len(spans) >= 2:
+                gaps.append(spans[1][0] - spans[0][1])
+        self.assertGreaterEqual(min(gaps), 75)
 
     def test_eth_keeps_the_counter_of_six(self):
         # ð is 6 mirrored: its bowl keeps 6's counter.
