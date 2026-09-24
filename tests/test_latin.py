@@ -10,11 +10,12 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
 # Characters still to come; the set shrinks as each group lands.
-NOT_YET = set("ĸµŋŊƒ‰Ĳĳßð§¶")
+NOT_YET = set("ßð§¶")
 BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
 SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
 SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts are 73-83 %
@@ -271,6 +272,66 @@ class FigureTest(unittest.TestCase):
                 self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=5)
                 self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=5)
                 self.assertGreaterEqual(measure.gap(ring, inside), 48)
+
+
+class ReshapedTest(unittest.TestCase):
+    """Letters made from our own strokes, moved and shortened."""
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def box(self, name):
+        return layer_of(self.font, name).boundingBox()
+
+    def test_descenders_reach_ours(self):
+        for name, like in (("mu", "p"), ("eng", "dotlessj"), ("Eng", "dotlessj"),
+                           ("florin", "dotlessj")):
+            with self.subTest(glyph=name):
+                self.assertAlmostEqual(self.box(name)[1], self.box(like)[1], delta=3)
+
+    def test_kra_is_a_short_k(self):
+        # The stem stops at the x-height, as n's and u's do; the arms stay k's, whose upper one
+        # flicks up to 498.
+        kra = self.font["kgreenlandic"]
+        _, _, _, stem_top = geo.trim(kra.foreground, x1=200).boundingBox()
+        self.assertGreaterEqual(stem_top, 473)
+        self.assertLessEqual(stem_top, 481)
+        arms = geo.trim(kra.foreground, x0=200).boundingBox()
+        k_arms = geo.trim(self.font["k"].foreground, x0=200).boundingBox()
+        for edge, k_edge in zip(arms, k_arms):
+            self.assertAlmostEqual(edge, k_edge, delta=1)  # cleanup rounds a new extremum
+
+    def test_per_mille_rings_are_percent_rings(self):
+        def rings(name):
+            # Outer contours of the rings: the slash is the one taller than 300.
+            return sorted(c.boundingBox() for c in self.font[name].foreground
+                          if c.isClockwise() and c.boundingBox()[3] - c.boundingBox()[1] < 300)
+
+        [upper, lower] = sorted(rings("percent"), key=lambda b: -b[1])
+        per_mille = rings("perthousand")
+        self.assertEqual(len(per_mille), 3)
+        for ring in per_mille:
+            self.assertAlmostEqual(ring[2] - ring[0], lower[2] - lower[0], delta=3)
+        left, right = sorted((r for r in per_mille if r[3] < 300), key=lambda b: b[0])
+        self.assertGreaterEqual(right[0] - left[2], 5)
+
+    def test_per_mille_slash_clears_the_rings(self):
+        contours = list(self.font["perthousand"].foreground)
+        slash = fontforge.layer()
+        slash += max(contours, key=lambda c: c.boundingBox()[3] - c.boundingBox()[1])
+        for contour in contours:
+            if contour.isClockwise() and contour.boundingBox()[3] < 300:
+                ring = fontforge.layer()
+                ring += contour
+                self.assertGreaterEqual(measure.gap(slash, ring), 20)
+
+    def test_ij_hook_runs_under_the_i(self):
+        # As in Fira Code: j's hook passes under the i, whose stem stops at the baseline.
+        ij = self.font["ij"].foreground
+        [(stem_left, stem_right), _] = measure.spans_at_y(ij, 200)
+        self.assertLess(geo.trim(ij, y1=-100).boundingBox()[0], stem_right)
+        _, stem_bottom, _, _ = geo.trim(ij, x0=stem_left, x1=stem_right, y0=-100).boundingBox()
+        self.assertGreaterEqual(stem_bottom, -20)
 
 
 if __name__ == "__main__":
