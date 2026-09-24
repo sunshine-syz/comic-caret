@@ -7,6 +7,7 @@ import sys
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import lig_geometry as geo
@@ -44,6 +45,19 @@ class SpanTest(unittest.TestCase):
         layer = bars((10, 90), (200, 290))
         self.assertEqual(measure.ink_width(layer), 280)
         self.assertEqual(measure.ink_center(layer), 150)
+
+
+class InkTest(unittest.TestCase):
+    def test_resolves_nested_references_where_they_are_placed(self):
+        font = fontforge.font()
+        font.createChar(-1, "bar").foreground = bars((0, 90))
+        font.createChar(-1, "two").addReference("bar", psMat.translate(200, 0))
+        pair = font.createChar(-1, "pair")
+        pair.foreground = bars((400, 490))
+        pair.addReference("two", psMat.translate(0, 100))
+        self.assertEqual(sorted(tuple(round(v) for v in contour.boundingBox())
+                                for contour in measure.ink(font, "pair")),
+                         [(200, 100, 290, 500), (400, 0, 490, 400)])
 
 
 class GapTest(unittest.TestCase):

@@ -22,7 +22,7 @@ python3 tools/render_specimen.py        # the README's images in docs/images/ (c
 Rebuild after every SFD change, then run the checks:
 
 ```sh
-python3 -m unittest discover tests  # SFD rules and ligature shaping; known exceptions are in the tests
+python3 -m unittest discover tests  # SFD rules, built fonts, shaping; known exceptions are in the tests
 hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
 uvx fontbakery check-universal fonts/ComicCaret-Regular.ttf  # expect 0 FAIL
 uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
@@ -110,6 +110,32 @@ Font files are never committed; they ship as GitHub release assets.
 - The reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from the Fira
   Code 6.2 release, Maple Mono 7.9 Regular (the Nerd Font build works too) and
   `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`).
+
+## Writing tests
+
+A test fails when the font is broken, never because a glyph was redrawn on purpose. How a glyph
+looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
+
+- Put each check where its kind lives:
+  - `test_sanity.py`: what breaks text for every glyph: the cell, the line box, `validate()`,
+    hints, empty or unused glyphs.
+  - `test_consistency.py`: what whole classes share: rows, centering, the math axis, mirrored
+    pairs, accented letters built on their letter with marks clear of it, no copied outlines,
+    Braille dots.
+  - `test_built.py`: what generating the fonts must keep; `test_metadata.py`: names and
+    declared metrics.
+  - `test_legibility.py`, `test_latin.py`, `test_symbols.py`: rules for single glyphs.
+- Prefer a class rule. Add a new glyph to its class in `test_consistency.py` (`ROWS`,
+  `CENTERED`, `ON_AXIS`, `MIRRORED`) rather than writing a test for it.
+- A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a
+  counter or gap is at least the narrowest reference's, parts don't touch, a glyph is built from
+  another (a reference, turned or mirrored). Never assert a coordinate, width or offset that only
+  records today's design: if the only fix for a failure is to edit the number, don't write it.
+- Take thresholds from the font (another glyph, `os2_xheight`, the hyphen's middle) or from a
+  reference font's floor, and say in a comment where each number comes from.
+- A known exception goes in the test's exception list with its reason.
+- Before relying on a new check, break a copy of the SFD the way the check guards against and
+  watch it fail.
 
 ## Other
 

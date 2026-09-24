@@ -1,6 +1,8 @@
 """Western and Central European Latin: the characters that complete the Windows code pages.
 
 Run: python3 -m unittest discover tests
+
+Rows, centering and accented letters are checked for every glyph in test_consistency.py.
 """
 import math
 import pathlib
@@ -12,14 +14,11 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-import lig_geometry as geo
 import measure
-from project import ADVANCE, ROOT, SFD
+from project import ROOT, SFD
 
 TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
-BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
-SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
 # As heavy for their height as Intel One Mono's and Maple Mono's superscripts (0.16-0.17 of
 # it); at 74, as Fira Code's, the 4's counter in ¼ ¾ closed up.
 SMALL_STEM = (54, 4)
@@ -28,9 +27,6 @@ COUNTER_FLOOR = {"o": 115 / 285, "a": 103 / 285, "four": 71 / 360}
 # ™ © ® are lighter, as in every reference (43-66): an M at 74 has no room left for its
 # counters, and a ring at our full weight crowds the letter inside it.
 SIGN_STEM = (56, 4)
-# glyph: (x where the line crosses only the bar and the letter's own strokes, bar center)
-BARS = {"Eth": (200, 334), "dcroat": (340, 567), "hbar": (250, 567), "Hbar": (275, 515),
-        "Tbar": (150, 334), "tbar": (300, 250)}
 COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"}}
@@ -52,19 +48,9 @@ def code_page(codec):
             char = bytes([byte]).decode(codec)
         except UnicodeDecodeError:
             continue
-        if char.isprintable() or char == "\u00ad":
+        if char.isprintable() or char == "­":
             chars.add(char)
     return chars
-
-
-def layer_of(font, name):
-    """The glyph's ink as one layer, references included."""
-    layer = font[name].foreground.dup()
-    for ref, matrix, *_ in font[name].references:
-        part = layer_of(font, ref)
-        part.transform(matrix)
-        layer += part
-    return layer
 
 
 def code_page_range(path):
@@ -106,28 +92,8 @@ class CoverageTest(unittest.TestCase):
                 self.assertTrue(declared >> bit & 1)
 
 
-class BarTest(unittest.TestCase):
-    """Every bar is the hyphen's stroke."""
-    @classmethod
-    def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
-
-    def test_bars(self):
-        for name, (x, center) in BARS.items():
-            with self.subTest(glyph=name):
-                spans = measure.spans_at_x(layer_of(self.font, name), x)
-                [(y0, y1)] = [s for s in spans if s[0] <= center <= s[1]]
-                self.assertAlmostEqual(y1 - y0, BAR[0], delta=BAR[1])
-                self.assertAlmostEqual((y0 + y1) / 2, center, delta=10)
-
-    def test_H_bar_clears_the_crossbar(self):
-        # A gap of at least a stem keeps Ħ from reading as a filled block.
-        spans = measure.spans_at_x(layer_of(self.font, "Hbar"), 275)
-        self.assertEqual(len(spans), 2)
-        self.assertGreaterEqual(spans[1][0] - spans[0][1], 80)
-
-
-class SlashTest(unittest.TestCase):
+class LookalikeTest(unittest.TestCase):
+    """Letters set apart from the ones they would otherwise read as."""
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
@@ -145,6 +111,56 @@ class SlashTest(unittest.TestCase):
         ring = max(self.font["zero"].foreground, key=lambda c: c.boundingBox()[3])
         self.assertEqual(ring.boundingBox(), self.font["zero"].boundingBox())
 
+    def test_H_bar_clears_the_crossbar(self):
+        # A gap of at least a stem keeps Ħ from reading as a filled block.
+        spans = measure.spans_at_x(measure.ink(self.font, "Hbar"), 275)
+        self.assertEqual(len(spans), 2)
+        self.assertGreaterEqual(spans[1][0] - spans[0][1], 80)
+
+    def test_sharp_s_stays_open_at_the_bottom(self):
+        # The 3's lower end stops short of the stem, or ß reads as B: at least as far as the
+        # narrowest reference's (Fira Code 69; Maple Mono 77, Intel One Mono 143).
+        layer = self.font["germandbls"].foreground
+        self.assertEqual(len(layer), 1)
+        for y in (20, 40, 60):
+            with self.subTest(y=y):
+                (_, stem), (end, _) = measure.spans_at_y(layer, y)
+                self.assertGreaterEqual(end - stem, 69)
+
+    def test_sharp_s_waist_is_open(self):
+        # The white between the stem and the 3's middle, where B's bowls meet its stem: at
+        # least the narrowest reference's (Maple Mono 75; Fira Code 96, Intel One Mono 131).
+        layer = self.font["germandbls"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        gaps = []
+        for percent in range(30, 71):
+            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
+            if len(spans) >= 2:
+                gaps.append(spans[1][0] - spans[0][1])
+        self.assertGreaterEqual(min(gaps), 75)
+
+    def test_eth_bar_crosses_its_stroke(self):
+        # The bar tells ð from ∂: bar and rising stroke make one outline, the bar reaching past
+        # the stroke both sides.
+        layer = self.font["eth"].foreground
+        crossing = measure.spans_at_y(layer, 540)
+        self.assertEqual(len(crossing), 1)
+        rising = measure.spans_at_y(layer, 400)[-1]
+        self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
+
+    def test_per_mille_rings_and_slash_stay_apart(self):
+        contours = list(self.font["perthousand"].foreground)
+        slash = fontforge.layer()
+        slash += max(contours, key=lambda c: c.boundingBox()[3] - c.boundingBox()[1])
+        rings = [c for c in contours if c.isClockwise() and c.boundingBox()[3] < 300]
+        self.assertEqual(len(rings), 2)  # the lower two, side by side
+        left, right = sorted((c.boundingBox() for c in rings), key=lambda b: b[0])
+        self.assertGreaterEqual(right[0] - left[2], 5)
+        for contour in rings:
+            ring = fontforge.layer()
+            ring += contour
+            self.assertGreaterEqual(measure.gap(slash, ring), 20)
+
 
 class CompositeTest(unittest.TestCase):
     """Glyphs that are another glyph, or a letter and a mark, as references."""
@@ -161,18 +177,6 @@ class CompositeTest(unittest.TestCase):
     def test_soft_hyphen_is_the_hyphen(self):
         [(_, matrix, *_)] = self.font["uni00AD"].references
         self.assertEqual(matrix, psMat.identity())
-
-    def test_middle_dot_height(self):
-        # Centered at 0.65 of the x-height, as the references put it (0.62-0.72).
-        _, bottom, _, top = self.font["periodcentered"].boundingBox()
-        self.assertAlmostEqual((bottom + top) / 2, 307, delta=5)
-
-    def test_dots_follow_the_stem(self):
-        for name, center in (("Ldot", 334), ("ldot", 307)):
-            with self.subTest(glyph=name):
-                [dot] = [m for r, m, *_ in self.font[name].references if r == "periodcentered"]
-                _, bottom, _, top = self.font["periodcentered"].boundingBox()
-                self.assertAlmostEqual((bottom + top) / 2 + dot[5], center, delta=5)
 
 
 class SmallFigureTest(unittest.TestCase):
@@ -207,25 +211,6 @@ class SmallFigureTest(unittest.TestCase):
         self.assertEqual(len(measure.spans_at_y(layer, y0 + 0.25 * (y1 - y0))), 2)
         self.assertGreaterEqual(measure.counter(layer, y0 + 0.75 * (y1 - y0)), 53)
 
-    def test_figures_are_as_big_as_the_references(self):
-        # Their superscript and fraction figures are 311-401 tall and 185-267 wide; two of ours
-        # side by side must leave room for a fraction's bar.
-        for base in ("one", "two", "three", "four"):
-            with self.subTest(glyph=f"{base}.small"):
-                x0, y0, x1, y1 = self.font[f"{base}.small"].boundingBox()
-                self.assertGreaterEqual(y1 - y0, 311)
-                self.assertLessEqual(y1 - y0, 401)
-                self.assertLessEqual(x1 - x0, 230)
-
-    def test_ordinal_letters_are_as_big_as_the_references(self):
-        # Maple Mono's are the smallest, 235 × 285; at the figures' size, ª º need strokes too
-        # light to match the figures to keep their counters open.
-        for base in ("a", "o"):
-            with self.subTest(glyph=f"{base}.small"):
-                x0, y0, x1, y1 = self.font[f"{base}.small"].boundingBox()
-                self.assertGreaterEqual(x1 - x0, 230)
-                self.assertGreaterEqual(y1 - y0, 280)
-
     def test_one_scale_for_each_set(self):
         # Letters shrink alike within a set: the figures, ª º, and ™ © ®.
         def ratio(base):
@@ -253,22 +238,9 @@ class FigureTest(unittest.TestCase):
     def part(self, glyph, component):
         """The component's ink where the glyph places it."""
         [matrix] = [m for r, m, *_ in self.font[glyph].references if r == component]
-        layer = layer_of(self.font, component)
+        layer = measure.ink(self.font, component)
         layer.transform(matrix)
         return layer
-
-    def test_superscripts_top_out_together_centered(self):
-        for name in ("uni00B9", "uni00B2", "uni00B3"):
-            with self.subTest(glyph=name):
-                x0, _, x1, top = self.font[name].boundingBox()
-                self.assertAlmostEqual(top, 724, delta=5)
-                self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=5)
-
-    def test_fractions_run_from_the_baseline_to_cap_height(self):
-        for name, (numerator, denominator) in FRACTIONS.items():
-            with self.subTest(glyph=name):
-                self.assertAlmostEqual(self.part(name, numerator).boundingBox()[3], 668, delta=5)
-                self.assertAlmostEqual(self.part(name, denominator).boundingBox()[1], 0, delta=5)
 
     def test_fraction_bar_touches_neither_figure(self):
         for name, figures in FRACTIONS.items():
@@ -284,28 +256,22 @@ class FigureTest(unittest.TestCase):
         across = (b - a) * math.sin(math.radians(60))  # the bar leans at our slash's 60°
         self.assertAlmostEqual(across, SMALL_STEM[0], delta=SMALL_STEM[1])
 
-    def test_ordinals_stand_over_a_bar(self):
-        # As in Fira Code and Intel One Mono: the bar as wide as the letter, clear below it.
+    def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
             with self.subTest(glyph=name):
-                x0, y0, x1, y1 = self.part(name, letter).boundingBox()
-                b0, _, b1, bar_top = self.part(name, "bar.ordinal").boundingBox()
-                self.assertAlmostEqual(y1, 690, delta=5)
-                self.assertAlmostEqual(b1 - b0, x1 - x0, delta=10)
-                self.assertGreaterEqual(y0 - bar_top, 40)
-                [(t0, t1)] = measure.spans_at_x(self.part(name, "bar.ordinal"), ADVANCE / 2)
+                bar = self.part(name, "bar.ordinal")
+                x0, _, x1, _ = bar.boundingBox()
+                [(t0, t1)] = measure.spans_at_x(bar, (x0 + x1) / 2)
                 self.assertAlmostEqual(t1 - t0, SMALL_STEM[0], delta=SMALL_STEM[1])
+                self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)), 20)
 
-    def test_trademark_tops_at_cap_height(self):
-        self.assertAlmostEqual(self.font["trademark"].boundingBox()[3], 668, delta=5)
+    def test_trademark_letters_stay_apart(self):
         self.assertGreaterEqual(measure.gap(self.part("trademark", "T.small"),
                                             self.part("trademark", "M.small")), 15)
 
     def test_circled_letters_share_one_ring(self):
         self.assertEqual(self.part("copyright", "circle.copyright").boundingBox(),
                          self.part("registered", "circle.copyright").boundingBox())
-        x0, _, x1, _ = self.part("copyright", "circle.copyright").boundingBox()
-        self.assertAlmostEqual(x1 - x0, 490, delta=16)  # the references' 474-496
 
     def test_circled_letters_sit_in_the_middle_with_room(self):
         # At least the 48 units the references leave around their © at the closest point;
@@ -319,127 +285,6 @@ class FigureTest(unittest.TestCase):
                 self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=5)
                 self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=5)
                 self.assertGreaterEqual(measure.gap(ring, inside), 48)
-
-
-class ReshapedTest(unittest.TestCase):
-    """Letters made from our own strokes, moved and shortened."""
-    @classmethod
-    def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
-
-    def box(self, name):
-        return layer_of(self.font, name).boundingBox()
-
-    def test_descenders_reach_ours(self):
-        for name, like in (("mu", "p"), ("eng", "dotlessj"), ("Eng", "dotlessj"),
-                           ("florin", "dotlessj")):
-            with self.subTest(glyph=name):
-                self.assertAlmostEqual(self.box(name)[1], self.box(like)[1], delta=3)
-
-    def test_kra_is_a_short_k(self):
-        # The stem stops at the x-height, as n's and u's do; the arms stay k's, whose upper one
-        # flicks up to 498.
-        kra = self.font["kgreenlandic"]
-        _, _, _, stem_top = geo.trim(kra.foreground, x1=200).boundingBox()
-        self.assertGreaterEqual(stem_top, 473)
-        self.assertLessEqual(stem_top, 481)
-        arms = geo.trim(kra.foreground, x0=200).boundingBox()
-        k_arms = geo.trim(self.font["k"].foreground, x0=200).boundingBox()
-        for edge, k_edge in zip(arms, k_arms):
-            self.assertAlmostEqual(edge, k_edge, delta=1)  # cleanup rounds a new extremum
-
-    def test_per_mille_rings_are_percent_rings(self):
-        def rings(name):
-            # Outer contours of the rings: the slash is the one taller than 300.
-            return sorted(c.boundingBox() for c in self.font[name].foreground
-                          if c.isClockwise() and c.boundingBox()[3] - c.boundingBox()[1] < 300)
-
-        [_, lower] = sorted(rings("percent"), key=lambda b: -b[1])
-        per_mille = rings("perthousand")
-        self.assertEqual(len(per_mille), 3)
-        for ring in per_mille:
-            self.assertAlmostEqual(ring[2] - ring[0], lower[2] - lower[0], delta=3)
-        left, right = sorted((r for r in per_mille if r[3] < 300), key=lambda b: b[0])
-        self.assertGreaterEqual(right[0] - left[2], 5)
-
-    def test_per_mille_slash_clears_the_rings(self):
-        contours = list(self.font["perthousand"].foreground)
-        slash = fontforge.layer()
-        slash += max(contours, key=lambda c: c.boundingBox()[3] - c.boundingBox()[1])
-        for contour in contours:
-            if contour.isClockwise() and contour.boundingBox()[3] < 300:
-                ring = fontforge.layer()
-                ring += contour
-                self.assertGreaterEqual(measure.gap(slash, ring), 20)
-
-    def test_ij_hook_runs_under_the_i(self):
-        # As in Fira Code: j's hook passes under the i, whose stem stops at the baseline.
-        ij = self.font["ij"].foreground
-        [(stem_left, stem_right), _] = measure.spans_at_y(ij, 200)
-        self.assertLess(geo.trim(ij, y1=-100).boundingBox()[0], stem_right)
-        _, stem_bottom, _, _ = geo.trim(ij, x0=stem_left, x1=stem_right, y0=-100).boundingBox()
-        self.assertGreaterEqual(stem_bottom, -20)
-
-
-class ShapeTest(unittest.TestCase):
-    """ß ð § ¶, drawn from our strokes where the font has no glyph to build them from."""
-    @classmethod
-    def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
-
-    def test_heights(self):
-        # ß rises to the ascender, as b d h k do, and as in Intel One Mono, over B's cap height.
-        for name, bottom, top in (("germandbls", -30, 718), ("section", -120, 700)):
-            with self.subTest(glyph=name):
-                _, y0, _, y1 = self.font[name].boundingBox()
-                self.assertAlmostEqual(y0, bottom, delta=20)
-                self.assertAlmostEqual(y1, top, delta=10)
-
-    def test_sharp_s_stays_open_at_the_bottom(self):
-        # The 3's lower end stops short of the stem, or ß reads as B: at least as far as the
-        # narrowest reference's (Fira Code 69; Maple Mono 77, Intel One Mono 143).
-        layer = self.font["germandbls"].foreground
-        self.assertEqual(len(layer), 1)
-        for y in (20, 40, 60):
-            with self.subTest(y=y):
-                (_, stem), (end, _) = measure.spans_at_y(layer, y)
-                self.assertGreaterEqual(end - stem, 69)
-
-    def test_sharp_s_waist_is_open(self):
-        # The white between the stem and the 3's middle, where B's bowls meet its stem: at
-        # least the narrowest reference's (Maple Mono 75; Fira Code 96, Intel One Mono 131).
-        layer = self.font["germandbls"].foreground
-        _, y0, _, y1 = layer.boundingBox()
-        gaps = []
-        for percent in range(30, 71):
-            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
-            if len(spans) >= 2:
-                gaps.append(spans[1][0] - spans[0][1])
-        self.assertGreaterEqual(min(gaps), 75)
-
-    def test_eth_keeps_the_counter_of_six(self):
-        # ð is 6 mirrored: its bowl keeps 6's counter.
-        self.assertAlmostEqual(measure.counter(self.font["eth"].foreground, 150),
-                               measure.counter(self.font["six"].foreground, 150), delta=2)
-
-    def test_eth_bar_crosses_its_stroke(self):
-        # Bar and rising stroke make one outline, the bar reaching past the stroke both sides.
-        layer = self.font["eth"].foreground
-        crossing = measure.spans_at_y(layer, 540)
-        self.assertEqual(len(crossing), 1)
-        rising = measure.spans_at_y(layer, 400)[-1]
-        self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
-
-    def test_pilcrow(self):
-        # Two stems down to the descender, as in Fira Code and Maple Mono, beside a filled bowl
-        # as wide as theirs (397-471 wide overall).
-        glyph = self.font["paragraph"]
-        x0, y0, x1, _ = glyph.boundingBox()
-        self.assertAlmostEqual(y0, self.font["p"].boundingBox()[1], delta=10)
-        self.assertGreaterEqual(x1 - x0, 397)
-        self.assertLessEqual(x1 - x0, 471)
-        self.assertEqual(len(measure.spans_at_y(glyph.foreground, -150)), 2)
-        self.assertTrue(all(contour.isClockwise() for contour in glyph.foreground))
 
 
 if __name__ == "__main__":

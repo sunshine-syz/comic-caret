@@ -2,12 +2,13 @@
 
 Run: python3 -m unittest discover tests
 
-These assert rules every glyph must follow (see CLAUDE.md), not the shape of any one glyph.
-Font Bakery and OTS check the built fonts separately; see CLAUDE.md for those commands.
+These assert rules every glyph must follow (see CLAUDE.md), not the shape of any one glyph:
+what breaking would show as clipped, overlapping or broken text. test_consistency.py holds
+the rules classes of glyphs share, and test_built.py the built fonts'; Font Bakery and OTS
+check the built fonts further (see CLAUDE.md for those commands).
 """
 import pathlib
 import sys
-import unicodedata
 import unittest
 
 import fontforge
@@ -21,12 +22,11 @@ LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 
 # Known exceptions.
-INK_OUTSIDE_CELL = {"dcaron"}          # ď's caron, kept by choice
+# How far a glyph may run into the next cell: ď's caron, kept by choice, as far as Intel One
+# Mono's (93).
+INK_OUTSIDE_CELL = {"dcaron": 100}
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
-# Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
-# comma above where Ģ has one below.
-OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
 
 
 def is_box_drawing(glyph):
@@ -45,32 +45,40 @@ class SanityTest(unittest.TestCase):
 
     def test_one_line_box_everywhere(self):
         font = self.font
+        self.assertEqual(font.em, 1000)
+        # Without USE_TYPO_METRICS, Windows spaces lines by the win ascent and descent instead.
+        self.assertTrue(font.os2_use_typo_metrics)
         self.assertEqual((font.hhea_ascent, font.hhea_descent, font.hhea_linegap),
                          (LINE_TOP, LINE_BOTTOM, 0))
         self.assertEqual((font.os2_typoascent, font.os2_typodescent, font.os2_typolinegap),
                          (LINE_TOP, LINE_BOTTOM, 0))
 
-    def test_box_drawing_verticals_reach_the_next_line(self):
-        # Ink above or below ─ is a vertical, and each must end the same distance past its edge.
-        _, low, _, high = self.font["SF100000"].boundingBox()
+    def test_box_drawing_strokes_reach_the_next_cell(self):
+        # Ink above or below ─ is a vertical, and each must end the same distance past the line
+        # box; ink past the cell's sides is a horizontal, and must end where ─ does.
+        left, low, right, high = self.font["SF100000"].boundingBox()
         wrong = {}
         for glyph in self.visible:
             if not is_box_drawing(glyph):
                 continue
-            _, bottom, _, top = glyph.boundingBox()
+            x0, bottom, x1, top = glyph.boundingBox()
             if (bottom < low and bottom != LINE_BOTTOM - BOX_REACH
-                    or top > high and top != LINE_TOP + BOX_REACH):
-                wrong[glyph.glyphname] = (bottom, top)
+                    or top > high and top != LINE_TOP + BOX_REACH
+                    or x0 < 0 and x0 != left or x1 > ADVANCE and x1 != right):
+                wrong[glyph.glyphname] = (x0, bottom, x1, top)
         self.assertEqual(wrong, {})
 
     def test_every_glyph_is_one_cell_wide(self):
         self.assertEqual([g.glyphname for g in self.glyphs if g.width != ADVANCE], [])
 
     def test_ink_stays_in_the_cell(self):
-        outside = [g.glyphname for g in self.visible
-                   if not is_box_drawing(g) and g.glyphname not in INK_OUTSIDE_CELL
-                   and (g.boundingBox()[0] < 0 or g.boundingBox()[2] > ADVANCE)]
-        self.assertEqual(outside, [])
+        outside = {}
+        for glyph in self.visible:
+            x0, _, x1, _ = glyph.boundingBox()
+            reach = max(-x0, x1 - ADVANCE)
+            if not is_box_drawing(glyph) and reach > INK_OUTSIDE_CELL.get(glyph.glyphname, 0):
+                outside[glyph.glyphname] = reach
+        self.assertEqual(outside, {})
 
     def test_nothing_hangs_below_the_line(self):
         below = [g.glyphname for g in self.glyphs
@@ -82,30 +90,6 @@ class SanityTest(unittest.TestCase):
         above = [g.glyphname for g in self.glyphs
                  if not is_box_drawing(g) and g.boundingBox()[3] > LINE_TOP]
         self.assertEqual(above, [])
-
-    def test_capitals_share_accents_with_lowercase(self):
-        # As in both reference fonts, a mark keeps one shape and size on either case.
-        def is_letter(name):
-            # Not Lm: circumflex and caron are modifier letters, and marks here.
-            code = self.font[name].unicode
-            return code >= 0 and unicodedata.category(chr(code)) in {"Lu", "Ll", "Lt", "Lo"}
-
-        def marks(glyph):
-            # A reference to a whole letter is the base: A in Á, and L in Ŀ, which NFD leaves
-            # whole.
-            return sorted(r[0] for r in glyph.references if not is_letter(r[0]))
-
-        differ = []
-        for upper in self.glyphs:
-            if upper.unicode < 0 or not upper.references or not chr(upper.unicode).isupper():
-                continue
-            lower = chr(upper.unicode).lower()
-            if len(lower) != 1 or ord(lower) not in self.font:
-                continue
-            lower = self.font[ord(lower)]
-            if lower.glyphname not in OWN_ACCENTS and marks(upper) != marks(lower):
-                differ.append((upper.glyphname, marks(upper), marks(lower)))
-        self.assertEqual(differ, [])
 
     def test_unencoded_glyphs_are_used(self):
         # A glyph with no code point ships only as another glyph's part or a substitution's

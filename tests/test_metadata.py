@@ -1,4 +1,4 @@
-"""Checks on the font's names, version and copyright in the SFD.
+"""Checks on the font's names, version, copyright and declared metrics in the SFD.
 
 Run: python3 -m unittest discover tests
 """
@@ -55,6 +55,21 @@ class MetadataTest(unittest.TestCase):
         newest = re.search(r"^## (\S+)", changelog, re.MULTILINE)
         self.assertIsNotNone(newest)
         self.assertEqual(newest.group(1), self.font.version)
+
+    def test_declared_heights_are_the_tops_of_x_and_H(self):
+        self.assertEqual(self.font.os2_xheight, self.font["x"].boundingBox()[3])
+        self.assertEqual(self.font.os2_capheight, self.font["H"].boundingBox()[3])
+
+    def test_strikeout_covers_the_hyphen(self):
+        _, bottom, _, top = self.font["hyphen"].boundingBox()
+        position, size = self.font.os2_strikeypos, self.font.os2_strikeysize
+        self.assertEqual((position - size, position), (bottom, top))
+
+    def test_panose_declares_a_monospaced_latin_font(self):
+        # Family 2 (Latin Text), proportion 9 (Monospaced): apps that list monospaced fonts
+        # read it.
+        panose = self.font.os2_panose
+        self.assertEqual((panose[0], panose[3]), (2, 9))
 
 
 if __name__ == "__main__":

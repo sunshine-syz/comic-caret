@@ -37,6 +37,14 @@ def ink_center(layer):
     return (x0 + x1) / 2
 
 
+def ink(font, glyph):
+    """The glyph's outline as one layer, its references resolved at any depth."""
+    layer = font[glyph].foreground.dup()
+    for name, matrix, *_ in font[glyph].references:
+        layer += geo.transformed(ink(font, name), matrix)
+    return layer
+
+
 def _segments(contour):
     """The contour's segments as point lists: two points for a line, four for a cubic."""
     points = [(p.x, p.y, p.on_curve) for p in contour]
