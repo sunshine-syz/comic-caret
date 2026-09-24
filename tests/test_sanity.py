@@ -15,14 +15,16 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from project import ADVANCE, SFD, validation_errors
 
-LINE_TOP, LINE_BOTTOM = 850, -350  # hhea and typo ascender and descender
+LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
+# Box-drawing verticals run this far past the line box, so they still overlap the next line's
+# by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
+BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 
 # Known exceptions.
 INK_OUTSIDE_CELL = {"dcaron"}          # the caron needs a narrower d
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
-# ĥ ĺ carry accents above an ascender; ^ is drawn tall and ģ's comma is too high.
-ABOVE_LINE = {"hcircumflex", "lacute", "asciicircum", "gcommaaccent"}
+ABOVE_LINE = {"gcommaaccent"}          # ģ's comma is too high
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
@@ -41,6 +43,26 @@ class SanityTest(unittest.TestCase):
         # Composites are positioned by the glyphs that use them, so only what a code point
         # (or a missing one, via .notdef) can show is held to the cell.
         cls.visible = [g for g in cls.glyphs if g.unicode >= 0 or g.glyphname == ".notdef"]
+
+    def test_one_line_box_everywhere(self):
+        font = self.font
+        self.assertEqual((font.hhea_ascent, font.hhea_descent, font.hhea_linegap),
+                         (LINE_TOP, LINE_BOTTOM, 0))
+        self.assertEqual((font.os2_typoascent, font.os2_typodescent, font.os2_typolinegap),
+                         (LINE_TOP, LINE_BOTTOM, 0))
+
+    def test_box_drawing_verticals_reach_the_next_line(self):
+        # Ink above or below ─ is a vertical, and each must end the same distance past its edge.
+        _, low, _, high = self.font["SF100000"].boundingBox()
+        wrong = {}
+        for glyph in self.visible:
+            if not is_box_drawing(glyph):
+                continue
+            _, bottom, _, top = glyph.boundingBox()
+            if (bottom < low and bottom != LINE_BOTTOM - BOX_REACH
+                    or top > high and top != LINE_TOP + BOX_REACH):
+                wrong[glyph.glyphname] = (bottom, top)
+        self.assertEqual(wrong, {})
 
     def test_every_glyph_is_one_cell_wide(self):
         self.assertEqual([g.glyphname for g in self.glyphs if g.width != ADVANCE], [])

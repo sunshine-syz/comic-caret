@@ -16,7 +16,7 @@
 - Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
 - Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.
 - Cleaned up the outlines: self-intersections, reversed contours and missing extreme points are fixed in every glyph except ∄.
-- Line spacing is now 1.2 em in every app. Windows used 1.73 em, and apps that ignored the old line gap (GTK apps, for example) used 1.0 em. macOS and browsers keep the same line height, but the extra space is now split evenly above and below the text.
+- Line spacing is now 1.25 em in every app. Windows used 1.73 em, macOS and browsers 1.2 em, and apps that ignored the old line gap (GTK apps, for example) 1.0 em. Letters sit lower in the line than they did on macOS, so tall letters such as `l` `f` `H` no longer crowd the top of the cursor, selections or a highlighted line.
 - Box-drawing lines are straight and line up with each other, and they run a little past their cells so boxes stay closed at line spacings up to 1.5 em.
 - < > ≤ ≥ ← → × and ~ now sit on the same center line as - = +, so `->`, `<=`, `x<1` and `=~` line up. < > and ≤ ≥ are smaller, closer to the size of +.
 - Accents are flatter and the same size on capital and lowercase letters, as in most fonts, so À Â Č Ő Å and the rest fit inside the line and are no longer cut off in terminals. The standalone accents ´ ˆ ˇ ˘ ˜ ˚ ˙ ˝ match them and are centered in their cells.

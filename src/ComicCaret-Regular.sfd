@@ -21,14 +21,14 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790206159
+ModificationTime: 1790210257
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
 LineGap: 0
 VLineGap: 0
 Panose: 2 0 0 9 0 0 0 0 0 0
-OS2TypoAscent: 850
+OS2TypoAscent: 900
 OS2TypoAOffset: 0
 OS2TypoDescent: -350
 OS2TypoDOffset: 0
@@ -37,7 +37,7 @@ OS2WinAscent: 0
 OS2WinAOffset: 1
 OS2WinDescent: 0
 OS2WinDOffset: 1
-HheadAscent: 850
+HheadAscent: 900
 HheadAOffset: 0
 HheadDescent: -350
 HheadDOffset: 0
@@ -10935,15 +10935,15 @@ StartChar: SF110000
 Encoding: 9474 9474 319
 Width: 550
 Flags: W
-VStem: 233 84<-510 1010>
+VStem: 233 84<-485 1035>
 LayerCount: 2
 Fore
 SplineSet
-233 1010 m 1
- 317 1010 l 1
- 317 -510 l 1
- 233 -510 l 1
- 233 1010 l 1
+233 1035 m 1
+ 317 1035 l 1
+ 317 -485 l 1
+ 233 -485 l 1
+ 233 1035 l 1
 EndSplineSet
 EndChar
 
@@ -11032,7 +11032,7 @@ Encoding: 9484 9484 328
 Width: 550
 Flags: W
 HStem: 227 84<317 560>
-VStem: 233 84<-510 227>
+VStem: 233 84<-485 227>
 LayerCount: 2
 Fore
 SplineSet
@@ -11040,8 +11040,8 @@ SplineSet
  560 311 l 1
  560 227 l 1
  317 227 l 1
- 317 -510 l 1
- 233 -510 l 1
+ 317 -485 l 1
+ 233 -485 l 1
  233 311 l 1
 EndSplineSet
 EndChar
@@ -11084,14 +11084,14 @@ Encoding: 9488 9488 332
 Width: 550
 Flags: W
 HStem: 227 84<-10 233>
-VStem: 233 84<-510 227>
+VStem: 233 84<-485 227>
 LayerCount: 2
 Fore
 SplineSet
 -10 311 m 1
  317 311 l 1
- 317 -510 l 1
- 233 -510 l 1
+ 317 -485 l 1
+ 233 -485 l 1
  233 227 l 1
  -10 227 l 1
  -10 311 l 1
@@ -11136,17 +11136,17 @@ Encoding: 9492 9492 336
 Width: 550
 Flags: W
 HStem: 227 84<317 560>
-VStem: 233 84<311 1010>
+VStem: 233 84<311 1035>
 LayerCount: 2
 Fore
 SplineSet
-233 1010 m 1
- 317 1010 l 1
+233 1035 m 1
+ 317 1035 l 1
  317 311 l 1
  560 311 l 1
  560 227 l 1
  233 227 l 1
- 233 1010 l 1
+ 233 1035 l 1
 EndSplineSet
 EndChar
 
@@ -11155,17 +11155,17 @@ Encoding: 9496 9496 337
 Width: 550
 Flags: W
 HStem: 227 84<-10 233>
-VStem: 233 84<311 1010>
+VStem: 233 84<311 1035>
 LayerCount: 2
 Fore
 SplineSet
-233 1010 m 1
- 317 1010 l 1
+233 1035 m 1
+ 317 1035 l 1
  317 227 l 1
  -10 227 l 1
  -10 311 l 1
  233 311 l 1
- 233 1010 l 1
+ 233 1035 l 1
 EndSplineSet
 EndChar
 
