@@ -15,7 +15,7 @@ import measure
 from project import ADVANCE, SFD
 
 # Characters still to come; the set shrinks as each group lands.
-NOT_YET = set("ßð§¶")
+NOT_YET = set()
 BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
 SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
 SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts are 73-83 %
@@ -332,6 +332,50 @@ class ReshapedTest(unittest.TestCase):
         self.assertLess(geo.trim(ij, y1=-100).boundingBox()[0], stem_right)
         _, stem_bottom, _, _ = geo.trim(ij, x0=stem_left, x1=stem_right, y0=-100).boundingBox()
         self.assertGreaterEqual(stem_bottom, -20)
+
+
+class ShapeTest(unittest.TestCase):
+    """ß ð § ¶, drawn from our strokes where the font has no glyph to build them from."""
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_heights(self):
+        for name, bottom, top in (("germandbls", -30, 675), ("section", -120, 700)):
+            with self.subTest(glyph=name):
+                _, y0, _, y1 = self.font[name].boundingBox()
+                self.assertAlmostEqual(y0, bottom, delta=20)
+                self.assertAlmostEqual(y1, top, delta=10)
+
+    def test_sharp_s_stays_open_at_the_bottom(self):
+        # The 3's lower end stops short of the stem, or ß reads as B.
+        layer = self.font["germandbls"].foreground
+        self.assertEqual(len(measure.spans_at_y(layer, 60)), 2)
+        self.assertEqual(len(layer), 1)
+
+    def test_eth_keeps_the_counter_of_six(self):
+        # ð is 6 mirrored: its bowl keeps 6's counter.
+        self.assertAlmostEqual(measure.counter(self.font["eth"].foreground, 150),
+                               measure.counter(self.font["six"].foreground, 150), delta=2)
+
+    def test_eth_bar_crosses_its_stroke(self):
+        # Bar and rising stroke make one outline, the bar reaching past the stroke both sides.
+        layer = self.font["eth"].foreground
+        crossing = measure.spans_at_y(layer, 540)
+        self.assertEqual(len(crossing), 1)
+        rising = measure.spans_at_y(layer, 400)[-1]
+        self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
+
+    def test_pilcrow(self):
+        # Two stems down to the descender, as in Fira Code and Maple Mono, beside a filled bowl
+        # as wide as theirs (397-471 wide overall).
+        glyph = self.font["paragraph"]
+        x0, y0, x1, _ = glyph.boundingBox()
+        self.assertAlmostEqual(y0, self.font["p"].boundingBox()[1], delta=10)
+        self.assertGreaterEqual(x1 - x0, 397)
+        self.assertLessEqual(x1 - x0, 471)
+        self.assertEqual(len(measure.spans_at_y(glyph.foreground, -150)), 2)
+        self.assertTrue(all(contour.isClockwise() for contour in glyph.foreground))
 
 
 if __name__ == "__main__":
