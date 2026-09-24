@@ -85,10 +85,14 @@ class SanityTest(unittest.TestCase):
 
     def test_capitals_share_accents_with_lowercase(self):
         # As in both reference fonts, a mark keeps one shape and size on either case.
+        def is_letter(name):
+            code = self.font[name].unicode
+            return code >= 0 and unicodedata.category(chr(code)).startswith("L")
+
         def marks(glyph):
-            base = unicodedata.normalize("NFD", chr(glyph.unicode))[0]
-            letters = {self.font[ord(base)].glyphname, "dotlessi", "dotlessj"}
-            return sorted(r[0] for r in glyph.references if r[0] not in letters)
+            # A reference to a whole letter is the base: A in Á, and L in Ŀ, which NFD leaves
+            # whole.
+            return sorted(r[0] for r in glyph.references if not is_letter(r[0]))
 
         differ = []
         for upper in self.glyphs:
