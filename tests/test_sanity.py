@@ -24,7 +24,6 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 INK_OUTSIDE_CELL = {"dcaron"}          # the caron needs a narrower d
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
-ABOVE_LINE = {"gcommaaccent"}          # ģ's comma is too high
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
@@ -81,8 +80,7 @@ class SanityTest(unittest.TestCase):
     def test_nothing_rises_above_the_line(self):
         # Terminals clip glyphs to the line box, so ink above it is cut off.
         above = [g.glyphname for g in self.glyphs
-                 if not is_box_drawing(g) and g.glyphname not in ABOVE_LINE
-                 and g.boundingBox()[3] > LINE_TOP]
+                 if not is_box_drawing(g) and g.boundingBox()[3] > LINE_TOP]
         self.assertEqual(above, [])
 
     def test_capitals_share_accents_with_lowercase(self):

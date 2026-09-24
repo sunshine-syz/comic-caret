@@ -227,5 +227,32 @@ class CompositeTest(unittest.TestCase):
         self.assertAlmostEqual(dx - stem, 58 - 409, delta=2)  # as before the pass
 
 
+class TurnedCommaTest(unittest.TestCase):
+    """ģ's mark is a turned comma above, head down, as in Intel One Mono and Comic Sans MS.
+    Our comma is a straight stroke, so upright or merely turned it read as an acute."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+        [(cls.mark, cls.dx, cls.dy)] = [
+            (name, matrix[4], matrix[5])
+            for name, matrix, *_ in cls.font["gcommaaccent"].references if name != "g"]
+
+    def test_turned_comma_has_its_head_at_the_bottom(self):
+        layer = self.font[self.mark].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        [(head0, head1)] = measure.spans_at_y(layer, y0 + 0.25 * (y1 - y0))
+        [(tail0, tail1)] = measure.spans_at_y(layer, y0 + 0.85 * (y1 - y0))
+        self.assertGreaterEqual(head1 - head0, 1.4 * (tail1 - tail0))
+
+    def test_turned_comma_sits_where_the_dot_of_g_dot_does(self):
+        [(dot_dx, _)] = offsets(self.font["gdotaccent"], "dotaccent")
+        _, dot_bottom, _, _ = self.font["dotaccent"].boundingBox()
+        _, bottom, _, _ = self.font[self.mark].boundingBox()
+        self.assertAlmostEqual(bottom + self.dy, dot_bottom, delta=5)
+        self.assertAlmostEqual(center(self.font[self.mark], self.dx),
+                               center(self.font["dotaccent"], dot_dx), delta=5)
+
+
 if __name__ == "__main__":
     unittest.main()
