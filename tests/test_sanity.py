@@ -107,6 +107,20 @@ class SanityTest(unittest.TestCase):
                 differ.append((upper.glyphname, marks(upper), marks(lower)))
         self.assertEqual(differ, [])
 
+    def test_unencoded_glyphs_are_used(self):
+        # A glyph with no code point ships only as another glyph's part or a substitution's
+        # result; one that is neither is dead weight and a Font Bakery WARN.
+        used = {".notdef"}
+        for glyph in self.glyphs:
+            used.update(name for name, *_ in glyph.references)
+            for _, kind, *parts in glyph.getPosSub("*"):
+                if kind in ("Substitution", "AltSubs", "MultSubs"):
+                    used.update(parts)
+                elif kind == "Ligature":
+                    used.add(glyph.glyphname)
+        unused = [g.glyphname for g in self.glyphs if g.unicode < 0 and g.glyphname not in used]
+        self.assertEqual(unused, [])
+
     def test_encoded_glyphs_have_ink(self):
         empty = [g.glyphname for g in self.glyphs
                  if g.unicode >= 0 and g.glyphname not in BLANK
