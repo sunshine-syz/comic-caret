@@ -23,6 +23,20 @@ SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts 
 # ™ © ® are lighter, as in every reference (43-66): an M at 74 has no room left for its
 # counters, and a ring at our full weight crowds the letter inside it.
 SIGN_STEM = (56, 4)
+# glyph: (x where the line crosses only the bar and the letter's own strokes, bar center)
+BARS = {"Eth": (200, 334), "dcroat": (340, 567), "hbar": (250, 567), "Hbar": (275, 515),
+        "Tbar": (150, 334), "tbar": (300, 250)}
+COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
+              "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
+              "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"}}
+# small component: (height as a fraction of the glyph's, and which of the strokes a line there
+# crosses is upright): the stem, a bowl's side or the round side of 2 and 3.
+SMALL_PROBES = {"one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1), "four": (0.12, 0),
+                "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0), "M": (0.25, 0), "C": (0.5, 0),
+                "R": (0.75, 0)}
+FRACTIONS = {"onequarter": ("one.small", "four.small"),
+             "onehalf": ("one.small", "two.small"),
+             "threequarters": ("three.small", "four.small")}
 
 
 def code_page(codec):
@@ -33,7 +47,7 @@ def code_page(codec):
             char = bytes([byte]).decode(codec)
         except UnicodeDecodeError:
             continue
-        if char.isprintable() or char == "­":
+        if char.isprintable() or char == "\u00ad":
             chars.add(char)
     return chars
 
@@ -89,16 +103,12 @@ class CoverageTest(unittest.TestCase):
 
 class BarTest(unittest.TestCase):
     """Every bar is the hyphen's stroke."""
-    # glyph: (x where the line crosses only the bar and the letter's own strokes, bar center)
-    BARS = {"Eth": (200, 334), "dcroat": (340, 567), "hbar": (250, 567),
-            "Hbar": (275, 515), "Tbar": (150, 334), "tbar": (300, 250)}
-
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
 
     def test_bars(self):
-        for name, (x, center) in self.BARS.items():
+        for name, (x, center) in BARS.items():
             with self.subTest(glyph=name):
                 spans = measure.spans_at_x(layer_of(self.font, name), x)
                 [(y0, y1)] = [s for s in spans if s[0] <= center <= s[1]]
@@ -133,17 +143,12 @@ class SlashTest(unittest.TestCase):
 
 class CompositeTest(unittest.TestCase):
     """Glyphs that are another glyph, or a letter and a mark, as references."""
-    REFERENCES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"},
-                  "Dcroat": {"Eth"}, "Ldot": {"L", "periodcentered"},
-                  "ldot": {"l", "periodcentered"}, "Lcaron": {"L", "caron.alt"},
-                  "lcaron": {"l", "caron.alt"}}
-
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
 
     def test_references(self):
-        for name, refs in self.REFERENCES.items():
+        for name, refs in COMPOSITES.items():
             with self.subTest(glyph=name):
                 self.assertEqual({r for r, *_ in self.font[name].references}, refs)
                 self.assertEqual(len(self.font[name].foreground), 0)
@@ -172,14 +177,8 @@ class SmallFigureTest(unittest.TestCase):
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
 
-    # base: (height as a fraction of the glyph's, and which of the strokes a line there crosses
-    # is upright): the stem, a bowl's side or the round side of 2 and 3.
-    STEMS = {"one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1), "four": (0.12, 0),
-             "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0), "M": (0.25, 0), "C": (0.5, 0),
-             "R": (0.75, 0)}
-
     def test_stems(self):
-        for base, (height, index) in self.STEMS.items():
+        for base, (height, index) in SMALL_PROBES.items():
             with self.subTest(glyph=f"{base}.small"):
                 layer = self.font[f"{base}.small"].foreground
                 _, y0, _, y1 = layer.boundingBox()
@@ -225,10 +224,6 @@ class SmallFigureTest(unittest.TestCase):
 
 class FigureTest(unittest.TestCase):
     """Superscripts, fractions, ordinals and the signs built from the small components."""
-    FRACTIONS = {"onequarter": ("one.small", "four.small"),
-                 "onehalf": ("one.small", "two.small"),
-                 "threequarters": ("three.small", "four.small")}
-
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
@@ -248,13 +243,13 @@ class FigureTest(unittest.TestCase):
                 self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=5)
 
     def test_fractions_run_from_the_baseline_to_cap_height(self):
-        for name, (numerator, denominator) in self.FRACTIONS.items():
+        for name, (numerator, denominator) in FRACTIONS.items():
             with self.subTest(glyph=name):
                 self.assertAlmostEqual(self.part(name, numerator).boundingBox()[3], 668, delta=5)
                 self.assertAlmostEqual(self.part(name, denominator).boundingBox()[1], 0, delta=5)
 
     def test_fraction_bar_touches_neither_figure(self):
-        for name, figures in self.FRACTIONS.items():
+        for name, figures in FRACTIONS.items():
             bar = self.part(name, "slash.fraction")
             for figure in figures:
                 with self.subTest(glyph=name, figure=figure):
@@ -328,7 +323,7 @@ class ReshapedTest(unittest.TestCase):
             return sorted(c.boundingBox() for c in self.font[name].foreground
                           if c.isClockwise() and c.boundingBox()[3] - c.boundingBox()[1] < 300)
 
-        [upper, lower] = sorted(rings("percent"), key=lambda b: -b[1])
+        [_, lower] = sorted(rings("percent"), key=lambda b: -b[1])
         per_mille = rings("perthousand")
         self.assertEqual(len(per_mille), 3)
         for ring in per_mille:
