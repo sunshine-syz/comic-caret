@@ -79,8 +79,9 @@ Both install alongside plain Comic Caret and keep its ligatures.
 ![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, a box and Braille patterns](docs/images/characters.svg)
 
 ASCII, the Latin letters and signs of Western, Central European, Baltic and Turkish text, λ Λ,
-arrows and common math signs, basic box drawing, and Braille. Not there yet: most of Greek, and
-Cyrillic.
+straight, diagonal and double arrows, common math signs such as ≠ ≈ ≡ ∞, the check marks ✓ ✗
+and �, basic box drawing, and Braille. Not there yet: most of Greek, Cyrillic, and box-drawing
+junctions such as ├ ┼ (the Nerd Font edition has them).
 
 ## Building from source
 

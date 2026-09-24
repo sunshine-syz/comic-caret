@@ -95,7 +95,8 @@ Font files are never committed; they ship as GitHub release assets.
 - When the hand-drawn style calls for something else, say why in the commit message.
 - Draw new strokes in the font's own hand: round ends, the stem weight (about 90), the wobble.
   Reuse an existing stroke where one fits; move and shorten strokes rather than scaling them.
-  The one exception is the `*.small` components of superscripts, fractions and signs: the
+  The exceptions are ∞ (8's loop, scaled to fit; every reference draws ∞ lighter than its
+  letters) and the `*.small` components of superscripts, fractions and signs: the
   regular glyph at 0.45 (figures), 0.55 (ª º) or 0.41 (™ © ®), thickened with
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to

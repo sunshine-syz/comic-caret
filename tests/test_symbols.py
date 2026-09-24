@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import itertools
 import math
 import pathlib
 import sys
@@ -53,7 +54,7 @@ class OperatorTest(unittest.TestCase):
         gap = equal[1][0] - equal[0][1]
         for (b0, b1), (e0, e1) in zip(bars, equal + equal[:1]):
             self.assertAlmostEqual(b1 - b0, e1 - e0, delta=4)
-        for lower, upper in zip(bars, bars[1:]):
+        for lower, upper in itertools.pairwise(bars):
             self.assertAlmostEqual(upper[0] - lower[1], gap, delta=4)
 
     def test_approx_waves_stay_apart(self):
