@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import math
 import pathlib
 import struct
 import sys
@@ -19,7 +20,11 @@ TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
 BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
 SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
-SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts are 73-83 %
+# As heavy for their height as Intel One Mono's and Maple Mono's superscripts (0.16-0.17 of
+# it); at 74, as Fira Code's, the 4's counter in ¼ ¾ closed up.
+SMALL_STEM = (54, 4)
+# Hole width over letter height in Maple Mono's º ª and ¼'s 4, the narrowest reference's.
+COUNTER_FLOOR = {"o": 115 / 285, "a": 103 / 285, "four": 71 / 360}
 # ™ © ® are lighter, as in every reference (43-66): an M at 74 has no room left for its
 # counters, and a ring at our full weight crowds the letter inside it.
 SIGN_STEM = (56, 4)
@@ -186,6 +191,14 @@ class SmallFigureTest(unittest.TestCase):
                 weight, delta = SIGN_STEM if base in "TMCR" else SMALL_STEM
                 self.assertAlmostEqual(b - a, weight, delta=delta)
 
+    def test_counters_are_as_open_as_the_references(self):
+        for base, floor in COUNTER_FLOOR.items():
+            with self.subTest(glyph=f"{base}.small"):
+                layer = self.font[f"{base}.small"].foreground
+                _, y0, _, y1 = layer.boundingBox()
+                [(x0, _, x1, _)] = [c.boundingBox() for c in layer if not c.isClockwise()]
+                self.assertGreaterEqual((x1 - x0) / (y1 - y0), floor)
+
     def test_trademark_M_keeps_its_counters(self):
         # Its V stops short, as the references' do, leaving the bottom open; three quarters up,
         # their Ms keep 53-73 units of white.
@@ -204,14 +217,23 @@ class SmallFigureTest(unittest.TestCase):
                 self.assertLessEqual(y1 - y0, 401)
                 self.assertLessEqual(x1 - x0, 230)
 
-    def test_one_scale_for_all(self):
-        # Letters and figures shrink alike, so ª º match the figures, and ™ © ® one another.
+    def test_ordinal_letters_are_as_big_as_the_references(self):
+        # Maple Mono's are the smallest, 235 × 285; at the figures' size, ª º need strokes too
+        # light to match the figures to keep their counters open.
+        for base in ("a", "o"):
+            with self.subTest(glyph=f"{base}.small"):
+                x0, y0, x1, y1 = self.font[f"{base}.small"].boundingBox()
+                self.assertGreaterEqual(x1 - x0, 230)
+                self.assertGreaterEqual(y1 - y0, 280)
+
+    def test_one_scale_for_each_set(self):
+        # Letters shrink alike within a set: the figures, ª º, and ™ © ®.
         def ratio(base):
             _, y0, _, y1 = self.font[f"{base}.small"].boundingBox()
             _, b0, _, b1 = self.font[base].boundingBox()
             return (y1 - y0) / (b1 - b0)
 
-        for group in (("one", "two", "three", "four", "a", "o"), ("T", "C", "R")):
+        for group in (("one", "two", "three", "four"), ("a", "o"), ("T", "C", "R")):
             for base in group:
                 with self.subTest(glyph=f"{base}.small"):
                     self.assertAlmostEqual(ratio(base), ratio(group[0]), delta=0.03)
@@ -255,6 +277,13 @@ class FigureTest(unittest.TestCase):
                 with self.subTest(glyph=name, figure=figure):
                     self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)), 20)
 
+    def test_fraction_bar_is_as_heavy_as_the_figures(self):
+        bar = self.font["slash.fraction"].foreground
+        _, y0, _, y1 = bar.boundingBox()
+        [(a, b)] = measure.spans_at_y(bar, (y0 + y1) / 2)
+        across = (b - a) * math.sin(math.radians(60))  # the bar leans at our slash's 60°
+        self.assertAlmostEqual(across, SMALL_STEM[0], delta=SMALL_STEM[1])
+
     def test_ordinals_stand_over_a_bar(self):
         # As in Fira Code and Intel One Mono: the bar as wide as the letter, clear below it.
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
@@ -264,6 +293,8 @@ class FigureTest(unittest.TestCase):
                 self.assertAlmostEqual(y1, 690, delta=5)
                 self.assertAlmostEqual(b1 - b0, x1 - x0, delta=10)
                 self.assertGreaterEqual(y0 - bar_top, 40)
+                [(t0, t1)] = measure.spans_at_x(self.part(name, "bar.ordinal"), ADVANCE / 2)
+                self.assertAlmostEqual(t1 - t0, SMALL_STEM[0], delta=SMALL_STEM[1])
 
     def test_trademark_tops_at_cap_height(self):
         self.assertAlmostEqual(self.font["trademark"].boundingBox()[3], 668, delta=5)
