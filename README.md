@@ -1,22 +1,48 @@
-# What it is
+# Comic Caret
 
-Are you the kind of person that uses Comic Sans in presentations? Do you lie awake every night dreaming about a world where you could write your code in Comic Sans where it looks just as beautiful as on your dear presentations? Wait no more! I present to you **Comic Caret**! The Comic Sans inspired monospaced font that's coming to a terminal or editor near you!
+A hand-drawn monospaced font for code and terminals, in the spirit of Comic Sans, and made to
+stay readable through a long day of work.
 
-Comic Caret is a fork of [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono) by Jesús González, which grew out of Shannon Miwa's [Comic Shanns](https://github.com/shannpersand/comic-shanns).
+![A Rust function set in Comic Caret, with -> and >= drawn as ligatures](docs/images/specimen.svg)
 
-## Usage
-Build the font (see below), then install `fonts/ComicCaret-Regular.otf` or
-`fonts/ComicCaret-Regular.ttf` like any other font. For what changed between releases, see
-[CHANGELOG.md](CHANGELOG.md).
+**[Download the latest release](https://github.com/sunshine-syz/comic-caret/releases/latest)** ·
+[Changelog](CHANGELOG.md) · [Report a problem](https://github.com/sunshine-syz/comic-caret/issues)
+
+## Why Comic Caret
+
+- **Friendly, on a strict grid.** Round stroke ends and a slight wobble, but every character is
+  the same width and lines are 1.25 em apart, so columns and boxes line up.
+- **Look-alikes look different.** `l` ends in a tail, `0` has a slash, the dots of `i` and `j`
+  sit high, `:` and `;` are full size, and `( )` `[ ]` `{ }` each have their own shape. These
+  choices follow Intel One Mono, which was designed with low-vision developers.
+- **Ligatures that keep the grid.** `->` `=>` `!=` `>=` and more join into one symbol, but
+  every character keeps its own cell, so the cursor still moves one character at a time.
+- **Ready for terminals.** Box-drawing lines and all 256 Braille patterns for spinners and
+  graphs, plus a [Nerd Font edition](#nerd-font-edition) with icons.
+
+## Install
+
+1. Download `ComicCaret-<version>.zip` from the
+   [latest release](https://github.com/sunshine-syz/comic-caret/releases/latest). For icons,
+   take `ComicCaretNerdFont-<version>.zip` instead.
+2. Install one of the two font files; they hold the same font. On Windows take the TTF, which
+   carries rendering settings for ClearType; on macOS and Linux either works.
+   - macOS: double-click the file, then click **Install**.
+   - Windows: right-click the file, then choose **Install**.
+   - Linux: copy the file to `~/.local/share/fonts/`, then run `fc-cache -f`.
+3. Choose **Comic Caret** in your editor or terminal, for example
+   `"editor.fontFamily": "Comic Caret"` in VS Code.
 
 ## Ligatures
 
 Comic Caret joins common coding sequences into one symbol. Every character still takes its
 own cell, so columns line up and the cursor moves one character at a time.
 
+![The same sequences with ligatures off (left) and on (right)](docs/images/ligatures.svg)
+
 - Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`
 - Continuous lines of any length: `==` `--` `__` `##` `~~`
-- `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centred on the `=`
+- `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centered on the `=`
 - `|>` `<|` as triangles
 - Pairs pulled together: `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||`
 
@@ -35,59 +61,57 @@ The ligatures use the `calt` (contextual alternates) OpenType feature:
 | Ghostty | On by default | `font-feature = -calt` |
 | Windows Terminal | On by default | `"font": { "features": { "calt": 0 } }` in the profile |
 
-## Editing and Building
+## Nerd Font edition
 
-The source of the font is in `src/ComicCaret-Regular.sfd`. You can open it
-with FontForge and export it to whatever format you want.
+`ComicCaretNerdFont-<version>.zip` adds the [Nerd Fonts](https://www.nerdfonts.com/) icons
+(Powerline symbols, file-type, Git and OS icons) and the full box-drawing and block-element
+sets. It holds two families; install the OTF or the TTF of the one you want:
 
-You can also use the script `build.sh` to build the font from the command line.
-It will generate the ttf and otf versions in `fonts`.
+| Family | Icons |
+|---|---|
+| ComicCaret Nerd Font | Full size; wide icons overhang into the next cell |
+| ComicCaret Nerd Font Mono | Shrunk to fit one cell, for terminals that clip wider glyphs |
 
-Make sure that `fontforge` is installed and in your path. Then run `./build.sh`
+Both install alongside plain Comic Caret and keep its ligatures.
 
+## Character set
+
+![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, a box and Braille patterns](docs/images/characters.svg)
+
+ASCII, most Western and Central European accented letters, λ Λ, arrows and common math signs,
+basic box drawing, and Braille. Not there yet: ß, Ø ø, Ð ð, Ł ł, most of Greek, and Cyrillic.
+
+## Building from source
+
+You need [FontForge](https://fontforge.org/) (`brew install fontforge` on macOS). The Nerd Fonts
+builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`).
+
+```sh
+./build.sh                          # fonts/ComicCaret-Regular.otf and .ttf
+./build.sh --nerd                   # also ComicCaret Nerd Font in build/nerd/
+./build.sh --nerd=default,mono      # ... and ComicCaret Nerd Font Mono
+./build.sh --release                # both release zips in dist/, from a clean checkout
+python3 -m unittest discover tests  # after building
 ```
-$ ./build.sh
-```
 
-To also build [Nerd Fonts](https://www.nerdfonts.com/) patched copies, pass `--nerd`.
-The script downloads a pinned version of the Nerd Fonts patcher on first use (needs
-`curl` and `unzip`) and writes an otf and a ttf version to `build/nerd/`, which already
-holds prebuilt copies of ComicCaret Nerd Font. Install only one of the two, since they
-share a font name:
+The source is `src/ComicCaret-Regular.sfd`; edit it in FontForge. The ligatures are generated:
+don't edit their glyphs (`LIG`, `*.sta`, `*.liga` and the like) by hand. Change
+`src/ligatures.fea` or `tools/add_ligatures.py` instead, then run
+`python3 tools/add_ligatures.py` and `./build.sh`. [CLAUDE.md](CLAUDE.md) lists the rules the
+source follows and the checks to run after changing it.
 
-```
-$ ./build.sh --nerd                # ComicCaret Nerd Font: icons overhang the next cell
-$ ./build.sh --nerd=default,mono   # also ComicCaret Nerd Font Mono: icons fit one cell
-```
+## Credits
 
-The ligatures are generated. Don't edit their glyphs (`LIG`, `*.sta`, `*.liga` and the
-like) in FontForge: change `tools/add_ligatures.py` or `src/ligatures.fea`, then run
-`python3 tools/add_ligatures.py` and `./build.sh`.
+Comic Caret is based on [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono) by
+Jesús González, with contributions from Rodrigo Batista de Moraes, Fini Jastrow, Kyle Beechly
+and others. Comic Shanns Mono is a monospaced version of Shannon Miwa's
+[Comic Shanns](https://github.com/shannpersand/comic-shanns).
 
-## What does it look like?
-Like if someone made a version of Comic Sans that is monospaced.
+Glyph sizes and positions were measured against
+[Fira Code](https://github.com/tonsky/FiraCode),
+[Maple Mono](https://github.com/subframe7536/maple-font) and
+[Intel One Mono](https://github.com/intel/intel-one-mono); no outlines were copied from them.
 
-![image 1](https://user-images.githubusercontent.com/4615568/44279591-c9909780-a206-11e8-9e1d-40db6d6db77e.png)
-![image 2](https://user-images.githubusercontent.com/4615568/44279592-ca292e00-a206-11e8-9278-4a7566425c0c.png)
-![image](https://user-images.githubusercontent.com/4615568/44279593-ca292e00-a206-11e8-9b25-a4533b50d471.png)
+## License
 
-## What's in it?
-`ABCDEFGHIJKLMNOPQRSTUVWXYZ`
-
-`abcdefghijklmnopqrstuvwxyz`
-
-`1234567890`
-
-`` `~!@#$%^&*()-—_+=[]{}\|;:'",.<>/? ``
-
-- Some diacritics.
-- Some math glyphs.
-- Box drawing characters.
-- Braille characters.
-
----
-### I need help with it...
-File an issue, we'll see.
-
-### License
-It is licensed under the MIT License.
+MIT; see [LICENSE.md](LICENSE.md).
