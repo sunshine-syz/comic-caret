@@ -86,8 +86,9 @@ class SanityTest(unittest.TestCase):
     def test_capitals_share_accents_with_lowercase(self):
         # As in both reference fonts, a mark keeps one shape and size on either case.
         def is_letter(name):
+            # Not Lm: circumflex and caron are modifier letters, and marks here.
             code = self.font[name].unicode
-            return code >= 0 and unicodedata.category(chr(code)).startswith("L")
+            return code >= 0 and unicodedata.category(chr(code)) in {"Lu", "Ll", "Lt", "Lo"}
 
         def marks(glyph):
             # A reference to a whole letter is the base: A in Á, and L in Ŀ, which NFD leaves
