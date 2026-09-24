@@ -72,7 +72,9 @@ sets. It holds two families; install the OTF or the TTF of the one you want:
 | ComicCaret Nerd Font | Full size; wide icons overhang into the next cell |
 | ComicCaret Nerd Font Mono | Shrunk to fit one cell, for terminals that clip wider glyphs |
 
-Both install alongside plain Comic Caret and keep its ligatures.
+Both install alongside plain Comic Caret and keep its ligatures. The icons come from the icon
+sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 2.0 and OFL
+1.1; `ICON-LICENSES.txt` in the zip lists them.
 
 ## Character set
 
@@ -116,4 +118,5 @@ Glyph sizes and positions were measured against
 
 ## License
 
-MIT; see [LICENSE.md](LICENSE.md).
+MIT; see [LICENSE.md](LICENSE.md). The icons in the [Nerd Font edition](#nerd-font-edition)
+keep their own licenses.

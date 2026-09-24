@@ -61,6 +61,35 @@ fetch_patcher() {
   rm -f "$zip"
 }
 
+# The icons keep their own licenses (CC BY, OFL, Apache, MIT), which LICENSE.md doesn't cover.
+# Writes the patcher's table of icon sets, then the license texts it ships.
+write_icon_licenses() {
+  local glyphs=$PATCHER_DIR/src/glyphs table dir license
+  table=$(awk '/^## /{on = ($0 == "## Icon sets"); next} on' "$glyphs/README.md")
+  if [[ $table != *"| license"* ]]; then
+    echo "No icon set table in $glyphs/README.md; update write_icon_licenses" >&2
+    exit 1
+  fi
+  {
+    cat <<EOF
+Icons in ComicCaret Nerd Font and ComicCaret Nerd Font Mono
+
+The Nerd Fonts $NERD_FONTS_VERSION font patcher (https://github.com/ryanoasis/nerd-fonts)
+added these icons. LICENSE.md covers Comic Caret's own glyphs; each icon set below keeps
+its own license. The license texts that come with the patcher follow the table.
+$table
+EOF
+    for dir in "$glyphs"/*/; do
+      for license in "$dir"LICENSE* "$dir"OFL.txt; do
+        [[ -f $license ]] || continue
+        printf '\n\n==== %s ====\n\n' "${license#"$glyphs"/}"
+        # Codicons' license starts with a byte-order mark and has CRLF line ends.
+        sed $'1s/^\xef\xbb\xbf//; s/\r$//' "$license"
+      done
+    done
+  } >"$1"
+}
+
 nerd_variants=
 release=
 for arg in "$@"; do
@@ -129,6 +158,7 @@ if [[ -n $nerd_variants ]]; then
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
   done
+  write_icon_licenses "$NERD_OUT/ICON-LICENSES.txt"
 fi
 
 if [[ -n $release ]]; then
