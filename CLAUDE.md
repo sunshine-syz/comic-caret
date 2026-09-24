@@ -16,6 +16,7 @@ python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookup
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours, the saved build, the references
+python3 tools/render_specimen.py        # the README's images in docs/images/ (committed)
 ```
 
 Rebuild after every SFD change, then run the checks:
@@ -34,7 +35,8 @@ not affect this font.
 
 Font files are never committed; they ship as GitHub release assets.
 
-1. Set the SFD `Version:` (through FontForge) and head `CHANGELOG.md` with it.
+1. Set the SFD `Version:` (through FontForge) and head `CHANGELOG.md` with it. If glyphs
+   changed, rerun `tools/render_specimen.py` so the README shows them.
 2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd
    Fonts builds it made, which they skip otherwise.
 3. Tag the commit `vX.Y.Z` and attach both zips from `dist/` to a GitHub release.
