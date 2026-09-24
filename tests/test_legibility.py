@@ -227,6 +227,30 @@ class CompositeTest(unittest.TestCase):
         self.assertAlmostEqual(dx - stem, 58 - 409, delta=2)  # as before the pass
 
 
+class LetterFollowUpTest(unittest.TestCase):
+    """P, Ƿ, G and 5, which the legibility pass left for later."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_P_sits_right_of_center(self):
+        # The references put P 19-33 right of center; ours sat 8 left.
+        offset = center(self.font["P"]) - ADVANCE / 2
+        self.assertGreaterEqual(offset, 19)
+        self.assertLessEqual(offset, 33)
+
+    def test_wynn_bowl_runs_to_a_point_low_on_the_stem(self):
+        # As in ƿ. P's bowl closes halfway up, so a line 200 up crosses only P's stem.
+        self.assertEqual(len(measure.spans_at_y(self.font["uni01F7"].foreground, 200)), 2)
+
+    def test_wynn_stands_as_tall_as_P(self):
+        _, bottom, _, top = self.font["uni01F7"].boundingBox()
+        _, p_bottom, _, p_top = self.font["P"].boundingBox()
+        self.assertAlmostEqual(bottom, p_bottom, delta=3)
+        self.assertAlmostEqual(top, p_top, delta=3)
+
+
 class DotsTest(unittest.TestCase):
     """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off."""
 
