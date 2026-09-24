@@ -227,6 +227,35 @@ class CompositeTest(unittest.TestCase):
         self.assertAlmostEqual(dx - stem, 58 - 409, delta=2)  # as before the pass
 
 
+class DotsTest(unittest.TestCase):
+    """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def dots(self, name):
+        """The boxes of the glyph's own contours, left to right and bottom to top."""
+        return sorted(contour.boundingBox() for contour in self.font[name].foreground)
+
+    def test_divide_dots_clear_the_bar(self):
+        # The references leave 81-111 between each dot and the bar; ours left 54-59.
+        _, bar_bottom, _, bar_top = self.font["minus"].boundingBox()
+        low, high = sorted(self.dots("divide"), key=lambda box: box[1])
+        self.assertGreaterEqual(bar_bottom - low[3], 81)
+        self.assertGreaterEqual(high[1] - bar_top, 81)
+
+    def test_divide_is_centered_on_its_bar(self):
+        _, bar_bottom, _, bar_top = self.font["minus"].boundingBox()
+        _, bottom, _, top = self.font["divide"].boundingBox()
+        self.assertAlmostEqual(bar_bottom - bottom, top - bar_top, delta=2)
+
+    def test_ellipsis_is_centered_with_even_gaps(self):
+        left, middle, right = self.dots("ellipsis")
+        self.assertAlmostEqual(center(self.font["ellipsis"]), ADVANCE / 2, delta=1)
+        self.assertAlmostEqual(middle[0] - left[2], right[0] - middle[2], delta=1)
+
+
 class TurnedCommaTest(unittest.TestCase):
     """ģ's mark is a turned comma above, head down, as in Intel One Mono and Comic Sans MS.
     Our comma is a straight stroke, so upright or merely turned it read as an acute."""
