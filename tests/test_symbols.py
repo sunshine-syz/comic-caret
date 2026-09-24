@@ -2,17 +2,23 @@
 
 Run: python3 -m unittest discover tests
 """
+import math
 import pathlib
 import sys
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+import lig_geometry as geo
 import measure
-from project import SFD
+from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦"
+AXIS = 270  # the middle of - = + and of ← →'s shafts
+DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
+SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 
 
 def one(contour):
@@ -66,6 +72,61 @@ class OperatorTest(unittest.TestCase):
         (a0, b0, a1, b1), (c0, d0, c1, d1) = holes
         self.assertAlmostEqual(a1 - a0, c1 - c0, delta=4)
         self.assertAlmostEqual(b1 - b0, d1 - d0, delta=4)
+
+
+class ArrowTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def box(self, code):
+        return self.font[code].boundingBox()
+
+    def test_diagonals_are_the_right_arrow_turned(self):
+        # Turned back, each has →'s box; only its size counts, as each is centered in the cell.
+        x0, y0, x1, y1 = self.box(0x2192)
+        for code, degrees in DIAGONALS.items():
+            with self.subTest(arrow=chr(code)):
+                back = geo.transformed(self.font[code].foreground,
+                                       psMat.rotate(math.radians(-degrees)))
+                b0, c0, b1, c1 = back.boundingBox()
+                self.assertAlmostEqual(b1 - b0, x1 - x0, delta=2)
+                self.assertAlmostEqual(c1 - c0, y1 - y0, delta=2)
+
+    def test_double_arrows_mirror_each_other(self):
+        x0, y0, x1, y1 = self.box(0x21D2)
+        u0, v0, u1, v1 = self.box(0x21D0)
+        self.assertAlmostEqual(u0, ADVANCE - x1, delta=3)
+        self.assertAlmostEqual(u1, ADVANCE - x0, delta=3)
+        self.assertEqual((v0, v1), (y0, y1))
+
+    def test_two_headed_arrows_are_centered(self):
+        for code in (0x2194, 0x2195, 0x21D4):
+            with self.subTest(arrow=chr(code)):
+                x0, _, x1, _ = self.box(code)
+                self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=10)
+
+    def test_two_headed_arrows_show_shaft_between_their_heads(self):
+        # Two full-size heads meet in the middle, and ↔ reads as a diamond.
+        for code, spans_across in ((0x2194, measure.spans_at_x), (0x2195, measure.spans_at_y)):
+            with self.subTest(arrow=chr(code)):
+                x0, y0, x1, y1 = self.box(code)
+                middle = (x0 + x1) / 2 if code == 0x2194 else (y0 + y1) / 2
+                self.assertEqual(len(self.font[code].foreground), 1)
+                [(s0, s1)] = spans_across(self.font[code].foreground, middle)
+                self.assertLessEqual(s1 - s0, SHAFT)
+
+    def test_shafts_lie_on_the_axis(self):
+        for code in (0x2194, 0x21A6, 0x21D0, 0x21D2, 0x21D4):
+            with self.subTest(arrow=chr(code)):
+                spans = measure.spans_at_x(self.font[code].foreground, 275)
+                middle = (spans[0][0] + spans[-1][1]) / 2
+                self.assertAlmostEqual(middle, AXIS, delta=8)
+
+    def test_maps_to_bar_is_as_tall_as_the_head(self):
+        _, y0, _, y1 = self.box(0x2192)
+        [(b0, b1)] = measure.spans_at_x(self.font[0x21A6].foreground, 80)
+        self.assertAlmostEqual(b1 - b0, y1 - y0, delta=12)
 
 
 if __name__ == "__main__":
