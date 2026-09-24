@@ -3,6 +3,7 @@
 Run: python3 -m unittest discover tests
 """
 import pathlib
+import struct
 import sys
 import unittest
 
@@ -12,10 +13,10 @@ import psMat
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import lig_geometry as geo
 import measure
-from project import ADVANCE, SFD
+from project import ADVANCE, ROOT, SFD
 
-# Characters still to come; the set shrinks as each group lands.
-NOT_YET = set()
+TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
+CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
 BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
 SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
 SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts are 73-83 %
@@ -47,6 +48,16 @@ def layer_of(font, name):
     return layer
 
 
+def code_page_range(path):
+    """ulCodePageRange1 of the font's OS/2 table, read from the file itself."""
+    data = path.read_bytes()
+    for i in range(struct.unpack_from(">H", data, 4)[0]):
+        tag, _, offset, _ = struct.unpack_from(">4sLLL", data, 12 + 16 * i)
+        if tag == b"OS/2":
+            return struct.unpack_from(">L", data, offset + 78)[0]
+    raise ValueError(f"{path.name} has no OS/2 table")
+
+
 class CoverageTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -56,14 +67,24 @@ class CoverageTest(unittest.TestCase):
         return {c for c in chars if ord(c) not in self.font}
 
     def test_code_pages_are_complete(self):
-        for codec in ("cp1252", "cp1250", "cp1257", "cp1254"):
+        for codec in CODE_PAGE_BITS:
             with self.subTest(codec=codec):
-                self.assertEqual(self.missing(code_page(codec)), code_page(codec) & NOT_YET)
+                self.assertEqual(self.missing(code_page(codec)), set())
 
     def test_latin_blocks_are_complete(self):
         # Latin-1 Supplement and Latin Extended-A, but ŉ, which Unicode deprecates.
         blocks = {chr(c) for c in range(0xA0, 0x180) if c != 0x149}
-        self.assertEqual(self.missing(blocks), blocks & NOT_YET)
+        self.assertEqual(self.missing(blocks), set())
+
+    def test_built_font_declares_the_code_pages(self):
+        # FontForge derives the flags from the cmap; CLAUDE.md keeps them out of the SFD.
+        if not TTF.exists() or TTF.stat().st_mtime < SFD.stat().st_mtime:
+            raise AssertionError(f"{TTF.name} is missing or older than {SFD.name}; "
+                                 "run ./build.sh")
+        declared = code_page_range(TTF)
+        for codec, bit in CODE_PAGE_BITS.items():
+            with self.subTest(codec=codec):
+                self.assertTrue(declared >> bit & 1)
 
 
 class BarTest(unittest.TestCase):
