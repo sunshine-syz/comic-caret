@@ -87,6 +87,31 @@ def _outline(layer, steps):
     return samples, edges, normals
 
 
+def _to_segment(point, a, b):
+    (px, py), (ax, ay), (bx, by) = point, a, b
+    dx, dy = bx - ax, by - ay
+    length = dx * dx + dy * dy
+    t = 0 if not length else max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / length))
+    return math.hypot(px - ax - t * dx, py - ay - t * dy)
+
+
+def gap(first, second, steps=16):
+    """The shortest distance between the ink of two outlines that don't overlap; 0 where they
+    touch."""
+    lines = [[_polyline(contour, steps) for contour in layer] for layer in (first, second)]
+    best = math.inf
+    for mine, theirs in (lines, lines[::-1]):
+        edges = [(a, b) for line in theirs for a, b in zip(line, line[1:] + line[:1])]
+        xs = [x for line in theirs for x, _ in line]
+        ys = [y for line in theirs for _, y in line]
+        x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+        for x, y in (point for line in mine for point in line):
+            # Points farther from the other outline's box than the best so far can't beat it.
+            if x0 - best <= x <= x1 + best and y0 - best <= y <= y1 + best:
+                best = min(best, min(_to_segment((x, y), a, b) for a, b in edges))
+    return best
+
+
 def _depth(edges, origin, direction, reach, square):
     """(distance, edge index) from `origin` along `direction` to the first edge, or None when
     no edge lies within `reach` or the first one meets the ray at a glancing angle."""

@@ -11,15 +11,16 @@ import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import measure
-from project import SFD
+from project import ADVANCE, SFD
 
 # Characters still to come; the set shrinks as each group lands.
-NOT_YET = set("ĸµŋŊƒ‰Ĳĳßð§¶¹²³½¾ª©®º™")
+NOT_YET = set("ĸµŋŊƒ‰Ĳĳßð§¶")
 BAR = (79, 4)  # the hyphen's stroke across its straight part, 76-81
 SMALL = ("one", "two", "three", "four", "a", "o", "T", "M", "C", "R")
 SMALL_STEM = (74, 4)  # 82 % of a regular stem, as the references' superscripts are 73-83 %
-# ™ is lighter, as in every reference (43-58): an M at 74 has no room left for its counters.
-TRADEMARK_STEM = (56, 4)
+# ™ © ® are lighter, as in every reference (43-66): an M at 74 has no room left for its
+# counters, and a ring at our full weight crowds the letter inside it.
+SIGN_STEM = (56, 4)
 
 
 def code_page(codec):
@@ -153,7 +154,7 @@ class SmallFigureTest(unittest.TestCase):
     # is upright): the stem, a bowl's side or the round side of 2 and 3.
     STEMS = {"one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1), "four": (0.12, 0),
              "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0), "M": (0.25, 0), "C": (0.5, 0),
-             "R": (0.25, 0)}
+             "R": (0.75, 0)}
 
     def test_stems(self):
         for base, (height, index) in self.STEMS.items():
@@ -161,7 +162,7 @@ class SmallFigureTest(unittest.TestCase):
                 layer = self.font[f"{base}.small"].foreground
                 _, y0, _, y1 = layer.boundingBox()
                 a, b = measure.spans_at_y(layer, y0 + height * (y1 - y0))[index]
-                weight, delta = TRADEMARK_STEM if base in "TM" else SMALL_STEM
+                weight, delta = SIGN_STEM if base in "TMCR" else SMALL_STEM
                 self.assertAlmostEqual(b - a, weight, delta=delta)
 
     def test_trademark_M_keeps_its_counters(self):
@@ -183,20 +184,93 @@ class SmallFigureTest(unittest.TestCase):
                 self.assertLessEqual(x1 - x0, 230)
 
     def test_one_scale_for_all(self):
-        # Letters and figures shrink alike, so ™ © ª º match the figures.
+        # Letters and figures shrink alike, so ª º match the figures, and ™ © ® one another.
         def ratio(base):
             _, y0, _, y1 = self.font[f"{base}.small"].boundingBox()
             _, b0, _, b1 = self.font[base].boundingBox()
             return (y1 - y0) / (b1 - b0)
 
-        for base in SMALL:
-            with self.subTest(glyph=f"{base}.small"):
-                self.assertAlmostEqual(ratio(base), ratio("one"), delta=0.03)
+        for group in (("one", "two", "three", "four", "a", "o"), ("T", "C", "R")):
+            for base in group:
+                with self.subTest(glyph=f"{base}.small"):
+                    self.assertAlmostEqual(ratio(base), ratio(group[0]), delta=0.03)
 
     def test_trademark_letters_match(self):
         _, t0, _, t1 = self.font["T.small"].boundingBox()
         _, m0, _, m1 = self.font["M.small"].boundingBox()
         self.assertAlmostEqual(t1 - t0, m1 - m0, delta=4)
+
+
+class FigureTest(unittest.TestCase):
+    """Superscripts, fractions, ordinals and the signs built from the small components."""
+    FRACTIONS = {"onequarter": ("one.small", "four.small"),
+                 "onehalf": ("one.small", "two.small"),
+                 "threequarters": ("three.small", "four.small")}
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def part(self, glyph, component):
+        """The component's ink where the glyph places it."""
+        [matrix] = [m for r, m, *_ in self.font[glyph].references if r == component]
+        layer = layer_of(self.font, component)
+        layer.transform(matrix)
+        return layer
+
+    def test_superscripts_top_out_together_centered(self):
+        for name in ("uni00B9", "uni00B2", "uni00B3"):
+            with self.subTest(glyph=name):
+                x0, _, x1, top = self.font[name].boundingBox()
+                self.assertAlmostEqual(top, 724, delta=5)
+                self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=5)
+
+    def test_fractions_run_from_the_baseline_to_cap_height(self):
+        for name, (numerator, denominator) in self.FRACTIONS.items():
+            with self.subTest(glyph=name):
+                self.assertAlmostEqual(self.part(name, numerator).boundingBox()[3], 668, delta=5)
+                self.assertAlmostEqual(self.part(name, denominator).boundingBox()[1], 0, delta=5)
+
+    def test_fraction_bar_touches_neither_figure(self):
+        for name, figures in self.FRACTIONS.items():
+            bar = self.part(name, "slash.fraction")
+            for figure in figures:
+                with self.subTest(glyph=name, figure=figure):
+                    self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)), 20)
+
+    def test_ordinals_stand_over_a_bar(self):
+        # As in Fira Code and Intel One Mono: the bar as wide as the letter, clear below it.
+        for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
+            with self.subTest(glyph=name):
+                x0, y0, x1, y1 = self.part(name, letter).boundingBox()
+                b0, _, b1, bar_top = self.part(name, "bar.ordinal").boundingBox()
+                self.assertAlmostEqual(y1, 690, delta=5)
+                self.assertAlmostEqual(b1 - b0, x1 - x0, delta=10)
+                self.assertGreaterEqual(y0 - bar_top, 40)
+
+    def test_trademark_tops_at_cap_height(self):
+        self.assertAlmostEqual(self.font["trademark"].boundingBox()[3], 668, delta=5)
+        self.assertGreaterEqual(measure.gap(self.part("trademark", "T.small"),
+                                            self.part("trademark", "M.small")), 15)
+
+    def test_circled_letters_share_one_ring(self):
+        self.assertEqual(self.part("copyright", "circle.copyright").boundingBox(),
+                         self.part("registered", "circle.copyright").boundingBox())
+        x0, _, x1, _ = self.part("copyright", "circle.copyright").boundingBox()
+        self.assertAlmostEqual(x1 - x0, 490, delta=16)  # the references' 474-496
+
+    def test_circled_letters_sit_in_the_middle_with_room(self):
+        # At least the 48 units the references leave around their © at the closest point;
+        # around ® they leave 16-48.
+        for name, letter in (("copyright", "C.small"), ("registered", "R.small")):
+            with self.subTest(glyph=name):
+                ring = self.part(name, "circle.copyright")
+                inside = self.part(name, letter)
+                rx0, ry0, rx1, ry1 = ring.boundingBox()
+                x0, y0, x1, y1 = inside.boundingBox()
+                self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=5)
+                self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=5)
+                self.assertGreaterEqual(measure.gap(ring, inside), 48)
 
 
 if __name__ == "__main__":

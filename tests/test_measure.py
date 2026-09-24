@@ -46,6 +46,20 @@ class SpanTest(unittest.TestCase):
         self.assertEqual(measure.ink_center(layer), 150)
 
 
+class GapTest(unittest.TestCase):
+    def test_gap_between_side_by_side_bars(self):
+        self.assertAlmostEqual(measure.gap(bars((0, 90)), bars((130, 220))), 40, delta=1)
+
+    def test_gap_across_a_corner(self):
+        # Corner to corner, (90, 400) to (120, 440): 30 across and 40 up.
+        above = fontforge.layer()
+        above += geo.rect(120, 440, 200, 500)
+        self.assertAlmostEqual(measure.gap(bars((0, 90)), above), 50, delta=1)
+
+    def test_touching_outlines_have_no_gap(self):
+        self.assertAlmostEqual(measure.gap(bars((0, 90)), bars((90, 180))), 0, delta=1)
+
+
 class ThicknessChangeTest(unittest.TestCase):
     def test_a_rigid_move_changes_nothing(self):
         bar = bars((100, 190))
