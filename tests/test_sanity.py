@@ -21,7 +21,7 @@ LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 
 # Known exceptions.
-INK_OUTSIDE_CELL = {"dcaron"}          # the caron needs a narrower d
+INK_OUTSIDE_CELL = {"dcaron"}          # ď's caron, kept by choice
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned

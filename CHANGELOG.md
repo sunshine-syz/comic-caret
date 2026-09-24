@@ -11,10 +11,12 @@ The first release of Comic Caret. It starts from Comic Shanns Mono 1.3.0, and th
   - `l` ends in a tail, so it no longer looks like `1`. The dots of `i` and `j` sit higher, level with the tops of `l` and `d`, and the slash of `0` runs through the middle of its counter.
   - `:` and `;` use full-size dots and reach from the baseline to the top of the lowercase letters.
   - Parentheses, brackets and braces are taller and easier to tell apart: `( )` curve more, `[ ]` have shorter arms, and `{ }` have arms that bow out and a long point.
-  - Letters that crowded their neighbors are narrower, with the same stroke weight: n h u d s B D E F H I J K L N R U Z 1 5 7 8. `d`, `q` and `J` sit a little further left, as in most fonts.
+  - Letters that crowded their neighbors are narrower, with the same stroke weight: n h u d s B D E F H I J K L N R U Z 1 5 7 8. `d`, `q` and `J` sit a little further left, as in most fonts, and `P` a little further right.
+  - The bowl of `5` ends lower, leaving it open so it is easier to tell from `6`, and the top of `G` ends sooner.
+  - The dots of `÷` stand clear of its bar.
 - A Nerd Fonts edition with icons comes with each release: "ComicCaret Nerd Font", and "ComicCaret Nerd Font Mono", whose icons fit one cell, both as OTF and TTF. `./build.sh --nerd` builds them from source.
-- Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ were full-size commas hanging far below their letters; they are now smaller and stay inside the line. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
-- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ „ and œ are centered too; œ reached into the next character.
+- Fixed misdrawn characters. ģ's comma stuck out of the top of the line and looked like an acute accent; it is now a turned comma, head down. Ƿ looked like P; it now has the pointed bowl of ƿ. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ were full-size commas hanging far below their letters; they are now smaller and stay inside the line. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
+- ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ „ … and œ are centered too; œ reached into the next character.
 - Added the no-break space (U+00A0), „, λ, Λ and Ꝛ.
 - Carons were upside down and looked like small circumflexes. ď and ť now use an apostrophe-like mark instead of a caron.
 - Every glyph is exactly 550 units wide. .notdef, the accented i and n letters, λ, ┐ and the Braille block were off the grid.

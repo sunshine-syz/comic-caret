@@ -82,7 +82,8 @@ Font files are never committed; they ship as GitHub release assets.
 - Moving a few points of a contour can leave an extremum that `addExtrema("all")` won't add but
   `validate()` flags (0x20); keep the points next to the moved ones where they are.
 - `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
-  `name, matrix, *_`. Assigning `(name, matrix)` pairs works.
+  `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD in
+  reverse order; assign them reversed to keep the file's order.
 
 ## Designing glyphs
 
@@ -110,6 +111,7 @@ Font files are never committed; they ship as GitHub release assets.
 - Ligatures are generated. `tools/add_ligatures.py` owns every glyph its `GENERATED` pattern
   matches (`LIG`, `*.sta`, `*.liga`, …) and every `lig_*` lookup, and rebuilds them from
   `src/ligatures.fea` on each run. Change them only there, then rerun it and `./build.sh`;
-  `tests/test_add_ligatures.py` fails while the SFD is out of date. Its constants are
+  `tests/test_add_ligatures.py` fails while the SFD is out of date. A new glyph lands after the
+  generated ones, so rerun it after adding glyphs too. Its constants are
   measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until
   `MeasurementTest` passes, then rerun it.
