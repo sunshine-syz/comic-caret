@@ -1,7 +1,8 @@
 # CLAUDE.md
 
 Comic Caret is a single-weight monospaced font (MIT), forked from Comic Shanns Mono. The whole
-font is `src/ComicCaret-Regular.sfd`; `fonts/` and `build/` hold gitignored build outputs.
+font is `src/ComicCaret-Regular.sfd`; `fonts/`, `build/` and `dist/` hold gitignored build
+outputs.
 
 ## Commands
 
@@ -9,7 +10,8 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 
 ```sh
 ./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
-./build.sh --nerd                       # also the Nerd Font copies committed in build/nerd/
+./build.sh --nerd                       # also Nerd Fonts patched copies in build/nerd/
+./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
 python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
@@ -27,6 +29,15 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 
 Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it does
 not affect this font.
+
+## Releasing
+
+Font files are never committed; they ship as GitHub release assets.
+
+1. Set the SFD `Version:` (through FontForge) and head `CHANGELOG.md` with it.
+2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd
+   Fonts builds it made, which they skip otherwise.
+3. Tag the commit `vX.Y.Z` and attach both zips from `dist/` to a GitHub release.
 
 ## Editing the SFD
 

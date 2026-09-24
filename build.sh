@@ -1,5 +1,6 @@
 #!/bin/bash
-# Build the fonts from the SFD, and optionally Nerd Fonts patched copies. See usage().
+# Build the fonts from the SFD, optionally Nerd Fonts patched copies and release zips.
+# See usage().
 # Written for macOS's bash 3.2: no associative arrays, and no expanding empty arrays under -u.
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -7,6 +8,7 @@ cd "$(dirname "$0")"
 SOURCE=src/ComicCaret-Regular.sfd
 OUT=fonts/ComicCaret-Regular
 NERD_OUT=build/nerd
+DIST=dist
 
 # Pinned so patched output changes only when we bump it on purpose. When bumping, update
 # both lines; a checksum mismatch prints the new hash.
@@ -16,16 +18,17 @@ PATCHER_DIR=build/cache/FontPatcher-$NERD_FONTS_VERSION
 
 usage() {
   cat <<EOF
-Usage: ./build.sh [--nerd[=VARIANTS]]
+Usage: ./build.sh [--nerd[=VARIANTS] | --release]
 
 Builds $OUT.{otf,ttf} from $SOURCE.
 
   --nerd[=VARIANTS]  Also patch the OTF and TTF with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:
-                       default  icons overhang into the next cell (default; the
-                                copies committed in $NERD_OUT/)
+                       default  icons overhang into the next cell (default)
                        mono     icons fit one cell; every glyph stays 550 wide
                        propo    icons keep their own advance widths (not monospaced)
+  --release          From a clean checkout, build the fonts and the default and mono Nerd
+                     Fonts, and zip them into $DIST/ for a GitHub release.
 EOF
 }
 
@@ -59,14 +62,31 @@ fetch_patcher() {
 }
 
 nerd_variants=
+release=
 for arg in "$@"; do
   case $arg in
     --nerd) nerd_variants=default ;;
     --nerd=?*) nerd_variants=${arg#--nerd=} ;;
+    --release) release=1 ;;
     -h | --help) usage; exit 0 ;;
     *) usage >&2; exit 2 ;;
   esac
 done
+
+if [[ -n $release ]]; then
+  if [[ -n $nerd_variants ]]; then
+    echo "--release builds its own Nerd Fonts variants; drop --nerd" >&2
+    exit 2
+  fi
+  # The zips are named after the SFD's version, so they must be built from a commit.
+  if [[ -n $(git status --porcelain) ]]; then
+    echo "--release needs a clean checkout; commit or stash first" >&2
+    exit 1
+  fi
+  nerd_variants=default,mono
+  # Start empty so variants from earlier builds don't end up in the zip.
+  rm -rf "$NERD_OUT" "$DIST"
+fi
 
 # Reject bad variants before the slow steps.
 if [[ -n $nerd_variants ]]; then
@@ -109,4 +129,13 @@ if [[ -n $nerd_variants ]]; then
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
   done
+fi
+
+if [[ -n $release ]]; then
+  version=$(sed -n 's/^Version: //p' "$SOURCE")
+  mkdir -p "$DIST"
+  # -j stores bare file names and -X drops macOS extended attributes.
+  zip -qjX "$DIST/ComicCaret-$version.zip" "$OUT.otf" "$OUT.ttf" LICENSE.md
+  zip -qjX "$DIST/ComicCaretNerdFont-$version.zip" "$NERD_OUT"/* LICENSE.md
+  echo "Wrote $DIST/ComicCaret-$version.zip and $DIST/ComicCaretNerdFont-$version.zip"
 fi

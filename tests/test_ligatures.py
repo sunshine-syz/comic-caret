@@ -13,8 +13,7 @@ from add_ligatures import GENERATED
 from project import ADVANCE, ROOT, SFD
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
-NERD_FONTS = [ROOT / "build" / "nerd" / f"ComicCaretNerdFont-Regular.{ext}"
-              for ext in ("otf", "ttf")]
+NERD_DIR = ROOT / "build" / "nerd"
 
 
 def hb_shape(font, text, *options):
@@ -195,10 +194,20 @@ class LigatureShapingTest(unittest.TestCase):
 
 
 class NerdFontTest(unittest.TestCase):
-    """The committed Nerd Fonts builds keep the ligatures through the patcher."""
+    """Nerd Fonts builds keep the ligatures through the patcher.
+
+    They are built only by ./build.sh --nerd or --release, so without a current build the
+    tests skip; the release steps in CLAUDE.md run them after building.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
+        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
+            raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
 
     def test_patched_fonts_keep_the_ligatures(self):
-        for font in NERD_FONTS:
+        for font in self.fonts:
             for text in ("->", "<====>", "!=", ">=", "~~~", "::"):
                 with self.subTest(font=font.name, text=text):
                     self.assertEqual(names(font, text), LIGATED[text])
@@ -207,9 +216,10 @@ class NerdFontTest(unittest.TestCase):
         # Git keeps no mtimes, so compare with the plain fonts, which LigatureShapingTest
         # requires to be current: a stale build still shapes, but draws the old outlines.
         text = " ".join(LIGATED)  # reaches every generated glyph
-        for nerd, plain in zip(NERD_FONTS, FONTS, strict=True):
+        plain = {font.suffix: font for font in FONTS}
+        for nerd in self.fonts:
             with self.subTest(font=nerd.name):
-                self.assertEqual(extents(nerd, text), extents(plain, text))
+                self.assertEqual(extents(nerd, text), extents(plain[nerd.suffix], text))
 
 
 if __name__ == "__main__":
