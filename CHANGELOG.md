@@ -1,15 +1,18 @@
 # Changelog
 
 ## 1.0.0 (2026-09)
-- Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
-- Coding ligatures, on by default: arrows of any length (`->` `<==>` `--->`), continuous `==` `--` `__` `##` `~~`, `!=` `!==` `<=` `>=` drawn as ≠ ≢ ⩽ ⩾, `:=`, `|>` `<|`, and `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` pulled together. Every character keeps its own cell. They use the `calt` feature; the README lists how to turn them on or off in common editors and terminals.
+
+The first release of Comic Caret. It starts from Comic Shanns Mono 1.3.0, and these are the changes since then.
+
+**Coming from Comic Shanns Mono?** Comic Caret has its own family name, so the two can be installed side by side. Choose "Comic Caret" in your editor and terminal settings.
+
+- Coding ligatures: arrows of any length (`->` `<==>` `--->`), continuous `==` `--` `__` `##` `~~`, `!=` `!==` `<=` `>=` drawn as ≠ ≢ ⩽ ⩾, `:=`, `|>` `<|`, and `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` pulled together. Every character keeps its own cell. They use the `calt` feature, which most terminals turn on by default; the README lists how to turn them on or off in common editors and terminals.
 - Easier on the eyes in long sessions, after Intel One Mono's legibility work, keeping the hand-drawn style:
   - `l` ends in a tail, so it no longer looks like `1`. The dots of `i` and `j` sit higher, level with the tops of `l` and `d`, and the slash of `0` runs through the middle of its counter.
   - `:` and `;` use full-size dots and reach from the baseline to the top of the lowercase letters.
   - Parentheses, brackets and braces are taller and easier to tell apart: `( )` curve more, `[ ]` have shorter arms, and `{ }` have arms that bow out and a long point.
   - Letters that crowded their neighbors are narrower, with the same stroke weight: n h u d s B D E F H I J K L N R U Z 1 5 7 8. `d`, `q` and `J` sit a little further left, as in most fonts.
-- The family name no longer ends in "-Regular", and the font now reports its real version (it said 1.3.0, or 0 in the `head` table).
-- `./build.sh --nerd` builds Nerd Fonts patched copies, "ComicCaret Nerd Font", as OTF and TTF; prebuilt copies are in `build/nerd/`. `--nerd=mono` builds "ComicCaret Nerd Font Mono", whose icons fit one cell.
+- A Nerd Fonts edition with icons comes with each release: "ComicCaret Nerd Font", and "ComicCaret Nerd Font Mono", whose icons fit one cell, both as OTF and TTF. `./build.sh --nerd` builds them from source.
 - Fixed misdrawn characters. ‚ looked like ‘ at the top of the line. − sat higher than + and =. The commas under Ș ș Ț ț Ķ ķ Ļ ļ Ņ ņ Ŗ ŗ Ģ were full-size commas hanging far below their letters; they are now smaller and stay inside the line. The circumflexes on ĥ and Û sat too high. ¿ was mirrored, with its curve facing the wrong way.
 - ¡ and ¿ now start at the height of the lowercase letters and hang below the baseline, as in most fonts. ‹ › « » are centered in their cells and no taller than the lowercase letters, and » no longer sticks out to the left. ‚ „ and œ are centered too; œ reached into the next character.
 - Added the no-break space (U+00A0), „, λ, Λ and Ꝛ.
@@ -22,28 +25,11 @@
 - Accents are flatter and the same size on capital and lowercase letters, as in most fonts, so À Â Č Ő Å and the rest fit inside the line and are no longer cut off in terminals. The standalone accents ´ ˆ ˇ ˘ ˜ ˚ ˙ ˝ match them and are centered in their cells.
 - The ogonek (Ą ą Ę ę Į į Ų ų) curls back under the point where it joins its letter, as in most fonts, and no longer sticks out of Ą and ą into the next character.
 - The font now sets its underline and strikethrough positions and thicknesses (the thicknesses were 0), and its PANOSE data marks it as monospaced.
-- Corrected the font's metadata. Its code-page and Unicode-block flags are now computed from the characters it contains: it declares the blocks it covers and no longer claims the Central European code page (cp1250). Its copyright notice and `LICENSE.md` list all five copyright holders.
+- Corrected the font's metadata. Its code-page and Unicode-block flags are now computed from the characters it contains: it declares the blocks it covers and no longer claims the Central European code page (cp1250). Its copyright notice and `LICENSE.md` list every copyright holder, and its name records give its maker and home page.
 - The TTF turns on dropout control and ClearType symmetric smoothing, for better rendering on Windows.
 - Old Mac-only name records are gone, and building the same source twice now gives identical files.
-- Every outline point now sits on a whole font unit. With the other cleanups, both font files are about half the size they were in 1.3.0.
+- Every outline point now sits on a whole font unit. With the other cleanups, both font files are about half the size of Comic Shanns Mono 1.3.0's.
 
-## 1.3.0 (2023-03)
-- Added additional characters, like ƿ and ∃.
+## Origins
 
-## 2023-02
-- Added Braille characters (⢩ ⢪ ⢫ ⢬ ⢯ ⢿ ⣁ ⣂ ⣃ ⣇ ⠿ ⠾ ⠪⠘), usually used for progress indicators in terminals.
-
-## 2023-01
-- Added simple box drawing characters.
-- Removed obsolete versions. Updating the Condensed version is still in consideration.
-- Completely separating this fork from the original from now on.
-
-## 2022
-- This version has fixed glyphs so that all of them are properly monospaced now.
-- Also added a more condensed version.
-
-## 2020
-- Added terrible accents
-- Some math characters
-- Adjusted horizontal metrics
-- otf and ttf version
+Comic Caret continues [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono) (2020–2024) by Jesús González and contributors, a monospaced version of Shannon Miwa's [Comic Shanns](https://github.com/shannpersand/comic-shanns) (2018). Their releases up to Comic Shanns Mono 1.3.0 are described in the Comic Shanns Mono repository.
