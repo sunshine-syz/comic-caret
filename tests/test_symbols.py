@@ -22,12 +22,6 @@ DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 
 
-def one(contour):
-    layer = fontforge.layer()
-    layer += contour
-    return layer
-
-
 class CoverageTest(unittest.TestCase):
     def test_symbols_are_present(self):
         font = fontforge.open(str(SFD))
@@ -57,10 +51,18 @@ class OperatorTest(unittest.TestCase):
         for lower, upper in itertools.pairwise(bars):
             self.assertAlmostEqual(upper[0] - lower[1], gap, delta=4)
 
+    def test_approx_is_two_tildes(self):
+        # References, so ≈ follows any redrawing of ~.
+        glyph = self.font["approxequal"]
+        self.assertEqual([name for name, *_ in glyph.references], ["asciitilde", "asciitilde"])
+        self.assertEqual(len(glyph.foreground), 0)
+
     def test_approx_waves_stay_apart(self):
-        waves = list(self.font["approxequal"].foreground)
+        tilde = self.font["asciitilde"].foreground
+        waves = [geo.transformed(tilde, matrix)
+                 for _, matrix, *_ in self.font["approxequal"].references]
         self.assertEqual(len(waves), 2)
-        self.assertGreaterEqual(measure.gap(one(waves[0]), one(waves[1])), 60)
+        self.assertGreaterEqual(measure.gap(*waves), 60)
 
     def test_infinity_has_two_matching_holes(self):
         # At least the narrowest reference's holes, 155 wide and 169 tall.
@@ -141,6 +143,14 @@ class MarkTest(unittest.TestCase):
             with self.subTest(mark=chr(code)):
                 _, y0, _, y1 = self.font[code].boundingBox()
                 self.assertGreaterEqual((y1 - y0) - (t1 - t0), 100)
+
+    def test_ballot_x_is_not_the_letter_x(self):
+        # About as wide as it is tall and under cap height, as Maple Mono's (494 × 486); at X's
+        # tall, narrow proportions [✗] and [X] look the same.
+        x0, y0, x1, y1 = self.font[0x2717].boundingBox()
+        self.assertAlmostEqual((x1 - x0) / (y1 - y0), 1, delta=0.1)
+        self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - 60)
+        self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=5)
 
     def test_replacement_character_is_a_diamond_with_a_question_mark(self):
         glyph = self.font[0xFFFD]
