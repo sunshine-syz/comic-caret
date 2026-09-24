@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Comic Caret is a single-weight monospaced font (MIT), forked from Comic Shanns Mono. The whole
+Comic Caret is a single-weight monospaced font (MIT), derived from Comic Shanns Mono. The whole
 font is `src/ComicCaret-Regular.sfd`; `fonts/`, `build/` and `dist/` hold gitignored build
 outputs.
 
