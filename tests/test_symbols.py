@@ -15,7 +15,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗\ufffd"
 AXIS = 270  # the middle of - = + and of ← →'s shafts
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -127,6 +127,28 @@ class ArrowTest(unittest.TestCase):
         _, y0, _, y1 = self.box(0x2192)
         [(b0, b1)] = measure.spans_at_x(self.font[0x21A6].foreground, 80)
         self.assertAlmostEqual(b1 - b0, y1 - y0, delta=12)
+
+
+class MarkTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_marks_are_larger_than_times(self):
+        _, t0, _, t1 = self.font["multiply"].boundingBox()
+        for code in (0x2713, 0x2717):
+            with self.subTest(mark=chr(code)):
+                _, y0, _, y1 = self.font[code].boundingBox()
+                self.assertGreaterEqual((y1 - y0) - (t1 - t0), 100)
+
+    def test_replacement_character_is_a_diamond_with_a_question_mark(self):
+        glyph = self.font[0xFFFD]
+        contours = list(glyph.foreground)
+        self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
+        self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)  # hook and dot
+        x0, y0, x1, y1 = glyph.boundingBox()
+        self.assertAlmostEqual((x0 + x1) / 2, ADVANCE / 2, delta=5)
+        self.assertAlmostEqual((y0 + y1) / 2, 334, delta=10)
 
 
 if __name__ == "__main__":
