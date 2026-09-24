@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (2026-09)
+## 1.0.0 (2026-09)
 - Renamed the font to **Comic Caret** (files `ComicCaret-Regular.{otf,ttf}`), so it no longer shares a family name with Comic Shanns Mono and both can be installed side by side. Update your editor and terminal font settings to the new name.
 - Coding ligatures, on by default: arrows of any length (`->` `<==>` `--->`), continuous `==` `--` `__` `##` `~~`, `!=` `!==` `<=` `>=` drawn as ≠ ≢ ⩽ ⩾, `:=`, `|>` `<|`, and `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` pulled together. Every character keeps its own cell. They use the `calt` feature; the README lists how to turn them on or off in common editors and terminals.
 - Easier on the eyes in long sessions, after Intel One Mono's legibility work, keeping the hand-drawn style:

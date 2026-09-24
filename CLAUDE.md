@@ -41,9 +41,9 @@ not affect this font.
   verticals span −485…1035 (they meet up to 1.5 em line height), horizontals −10…560.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
   ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
-  13 and 14.
-- The copyright holders appear in the SFD `Copyright:` field and in `LICENSE.md`; keep both in
-  sync.
+  8–14: maker, designer, description, URLs and license.
+- The copyright holders appear in the SFD `Copyright:` field and in `LICENSE.md`, and the SFD
+  `Version:` heads `CHANGELOG.md`; `tests/test_metadata.py` keeps each pair in sync.
 - SFD diffs are noisy: saves rewrite `ModificationTime` and hints, and deleting a glyph
   renumbers every later index.
 

@@ -3,8 +3,8 @@ FontName: ComicCaret-Regular
 FullName: Comic Caret Regular
 FamilyName: Comic Caret
 Weight: Regular
-Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly
-Version: 2.0.0
+Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly, 2026 YZ Sun
+Version: 1.0.0
 ItalicAngle: 0
 UnderlinePosition: -140
 UnderlineWidth: 80
@@ -730,7 +730,7 @@ PUSHB_1
  4
 SCANTYPE
 EndTTInstrs
-LangName: 1033 "" "" "" "" "" "" "" "" "" "" "" "" "" "Licensed under the MIT License. See https://opensource.org/license/mit for the full text." "https://opensource.org/license/mit"
+LangName: 1033 "" "" "" "" "" "" "" "" "YZ Sun" "YZ Sun" "A hand-drawn monospaced font for code. Based on Comic Shanns Mono by Jes+APoA-s Gonz+AOEA-lez and Comic Shanns by Shannon Miwa." "https://github.com/sunshine-syz/comic-caret" "https://github.com/sunshine-syz" "Licensed under the MIT License. See https://opensource.org/license/mit for the full text." "https://opensource.org/license/mit"
 GaspTable: 1 65535 15 1
 Encoding: UnicodeBmp
 UnicodeInterp: none
