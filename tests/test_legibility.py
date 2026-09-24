@@ -244,6 +244,19 @@ class LetterFollowUpTest(unittest.TestCase):
         # As in ƿ. P's bowl closes halfway up, so a line 200 up crosses only P's stem.
         self.assertEqual(len(measure.spans_at_y(self.font["uni01F7"].foreground, 200)), 2)
 
+    def test_G_terminal_ends_left_of_the_stroke_below_it(self):
+        # In the references it ends 11-52 left of it; ours ran 25 past, closing G up like 6.
+        G = self.font["G"].foreground
+        _, _, terminal, _ = geo.trim(G, y0=540).boundingBox()
+        _, _, side, _ = geo.trim(G, y0=150, y1=250).boundingBox()
+        self.assertLessEqual(terminal, side - 11)
+
+    def test_five_bowl_ends_low(self):
+        # The references' lower terminals top out at 73-113; ours curled up to 154 and nearly
+        # closed the bowl, like 6.
+        _, _, _, top = geo.trim(self.font["five"].foreground, x1=200, y1=250).boundingBox()
+        self.assertLessEqual(top, 100)
+
     def test_wynn_stands_as_tall_as_P(self):
         _, bottom, _, top = self.font["uni01F7"].boundingBox()
         _, p_bottom, _, p_top = self.font["P"].boundingBox()
