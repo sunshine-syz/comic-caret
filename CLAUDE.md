@@ -36,8 +36,8 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 Font Bakery's known warnings, 5 on the TTF and 2 on the OTF:
 
 - Both: `soft_hyphen`; U+00AD is kept, since terminals give it a cell.
-- TTF: `numberOfHMetrics`; ď `decomposed-outline`; contour counts of @, ∄ and the soft
-  hyphen; `nonmarkingreturn` unreachable (FontForge adds it to every TTF).
+- TTF: `numberOfHMetrics`; ď `decomposed-outline`; contour counts of ∄ and the soft hyphen;
+  `nonmarkingreturn` unreachable (FontForge adds it to every TTF).
 - OTF: the unencoded components unreachable, since CFF has no components: `caron.alt`,
   `commaaccent`, `commaturnedabove`, `grave.accent`, the `*.small` figures and letters,
   `slash.fraction`, `bar.ordinal` and `circle.copyright`. Its one ERROR is a Font Bakery bug:

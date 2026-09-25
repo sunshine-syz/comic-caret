@@ -5,6 +5,7 @@ Run: python3 -m unittest discover tests
 
 Sizes and positions are judged on the proof sheet (tools/proof_sheet.py), not here.
 """
+import itertools
 import pathlib
 import sys
 import unittest
@@ -139,6 +140,37 @@ class CounterTest(unittest.TestCase):
                 with self.subTest(glyph=name, y=y):
                     self.assertGreaterEqual(
                         round(measure.counter(self.font[name].foreground, y)), floor)
+
+
+# Maple Mono 7.9's @, the tightest of the three references, across the middle of its ink box
+# at our cap height: 79 of white between the loop and the inner a, and a counter of 107.
+AT_GAP, AT_COUNTER = 79, 107
+
+
+class AtSignTest(unittest.TestCase):
+    """@ is an a inside a loop; the white inside it stays as open as in the references."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+        cls.at = cls.font["at"].foreground
+
+    def test_counter_and_the_white_round_the_a_keep_their_floors(self):
+        _, y0, _, y1 = self.at.boundingBox()
+        spans = measure.spans_at_y(self.at, (y0 + y1) / 2)
+        gaps = [right[0] - left[1] for left, right in itertools.pairwise(spans)]
+        self.assertGreaterEqual(min(gaps), AT_GAP)
+        self.assertGreaterEqual(max(gaps), AT_COUNTER)
+
+    def test_loop_stays_clear_of_the_stem(self):
+        # Down the right-hand stroke, the a's stem, the loop passes with at least the hyphen's
+        # thickness of white, so they stay apart at 12 px as ⇡'s dashes do.
+        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        _, y0, _, y1 = self.at.boundingBox()
+        stem = measure.spans_at_y(self.at, (y0 + y1) / 2)[-1]
+        spans = measure.spans_at_x(self.at, sum(stem) / 2)
+        for lower, upper in itertools.pairwise(spans):
+            self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
 
 
 class LetterFollowUpTest(unittest.TestCase):
