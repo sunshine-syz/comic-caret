@@ -7,10 +7,8 @@ but ModificationTime.
 """
 import argparse
 import math
-import os
 import pathlib
 import re
-import subprocess
 import sys
 from typing import NamedTuple
 
@@ -18,7 +16,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import ADVANCE, ROOT, SFD, validation_errors
+from project import ADVANCE, ROOT, SFD, save_checked, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
 
@@ -359,14 +357,7 @@ def main():
     remove_previous(font)
     add_glyphs(font, build(font))
     merge_features(font)
-    # Validating in this process would write "Validated:" into the saved glyphs, so a fresh
-    # process checks the saved copy before it replaces the SFD.
-    tmp = sfd.with_name(f".{sfd.name}.tmp")
-    font.save(str(tmp))
-    if subprocess.run([sys.executable, __file__, "--check", str(tmp)], check=False).returncode:
-        tmp.unlink()
-        sys.exit(f"{sfd} is unchanged.")
-    os.replace(tmp, sfd)
+    save_checked(font, sfd, __file__)
 
 
 if __name__ == "__main__":
