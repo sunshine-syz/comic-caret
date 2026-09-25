@@ -9,8 +9,14 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import render_specimen
 from add_ligatures import GENERATED
-from render_specimen import (IMAGES, LIGATURE_COLUMN, missing_characters, shape, syntax_classes,
-                             themed)
+from render_specimen import (
+    IMAGES,
+    LIGATURE_COLUMN,
+    missing_characters,
+    shape,
+    syntax_classes,
+    themed,
+)
 
 CAIRO_SVG = """<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="254.5" height="136" viewBox="0 0 254.5 136">

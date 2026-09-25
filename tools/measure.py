@@ -3,6 +3,7 @@
 Outlines are FontForge layers in font units, cubic as in the SFD. Stroke depth is measured
 along the outline's inward normal, the way a pen's width shows across a stroke.
 """
+import itertools
 import math
 
 import lig_geometry as geo
@@ -24,7 +25,7 @@ def spans_at_x(layer, x):
 def counter(layer, y):
     """The white between the strokes a horizontal line at y crosses, summed."""
     spans = spans_at_y(layer, y)
-    return sum(right[0] - left[1] for left, right in zip(spans, spans[1:]))
+    return sum(right[0] - left[1] for left, right in itertools.pairwise(spans))
 
 
 def ink_width(layer):

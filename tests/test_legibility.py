@@ -142,8 +142,9 @@ class CounterTest(unittest.TestCase):
                         round(measure.counter(self.font[name].foreground, y)), floor)
 
 
-# Maple Mono 7.9's @, the tightest of the three references, across the middle of its ink box
-# at our cap height: 79 of white between the loop and the inner a, and a counter of 107.
+# Maple Mono 7.9's @, the tightest of the three references, across the middle of its ink box,
+# scaled as compare_glyphs.py scales it (x to our advance, y to our cap height): 79 of white
+# between the loop and the inner a, and a counter of 107.
 AT_GAP, AT_COUNTER = 79, 107
 
 

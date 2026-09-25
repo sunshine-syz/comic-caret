@@ -24,13 +24,12 @@ SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
 # Heavy mark -> the light mark it is drawn from.
 HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">", "➜": "→"}
-HEAVY_INK = 1.45  # the lightest of Maple Mono's heavy-to-light ink ratios (1.46-1.72)
+# The lightest of Maple Mono's ✔ ✘ ❯ against ✓ ✗ > (1.72, 1.70, 1.46). Its ➜ carries only 1.11
+# of its →'s ink: another arrow, not → made heavier, so it sets no floor.
+HEAVY_INK = 1.45
 # How far heavy marks keep inside the cell: about ✗'s side bearing (22), so two side by side
 # stay about as far apart as ✗✗.
 HEAVY_SIDE = 20
-# Mirrored glyph -> the glyph it mirrors. An outline, since validate() flags a flipped
-# reference (0x10).
-MIRRORED_FROM = {"❮": "❯", "◀": "▶", "◁": "▷", "◂": "▸", "◃": "▹", "◄": "►"}
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆"}
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
@@ -51,11 +50,6 @@ def linear(matrix):
 
 def points(contour):
     return sorted((p.x, p.y, p.on_curve) for p in contour)
-
-
-def outline(layer):
-    """The layer's points, contour by contour, in an order that ignores where each starts."""
-    return sorted(points(contour) for contour in layer)
 
 
 class CoverageTest(unittest.TestCase):
@@ -152,7 +146,8 @@ class ArrowTest(unittest.TestCase):
         dashed = self.font[0x21E1].foreground
         _, y0, _, _ = dashed.boundingBox()
         spans = measure.spans_at_x(dashed, measure.ink_center(geo.trim(dashed, y1=y0 + 20)))
-        self.assertEqual(len(spans), 3)  # two dashes and the head
+        # Two dashes and the head, the three pieces Font Bakery's contour_count expects of ⇡.
+        self.assertEqual(len(spans), 3)
         for lower, upper in itertools.pairwise(spans):
             self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
 
@@ -198,7 +193,6 @@ class MarkTest(unittest.TestCase):
                 contours = list(self.font[ord(char)].foreground)
                 self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
                 self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)
-
 
 
 class ShapeTest(unittest.TestCase):
@@ -276,7 +270,8 @@ class HeavyMarkTest(unittest.TestCase):
 
 
 class BuiltFromTest(unittest.TestCase):
-    """Glyphs built from other glyphs, so they follow any redrawing of them."""
+    """Glyphs built from other glyphs. References follow a redrawing of their base; the
+    outlines copied from one (●, ☑ ☒, ⇕) don't, so these tests hold them to it."""
 
     @classmethod
     def setUpClass(cls):
@@ -292,12 +287,6 @@ class BuiltFromTest(unittest.TestCase):
     def middle(self, outline):
         x0, y0, x1, y1 = outline.boundingBox()
         return (x0 + x1) / 2, (y0 + y1) / 2
-
-    def test_mirrored_glyphs_are_their_base_mirrored(self):
-        for char, base in MIRRORED_FROM.items():
-            with self.subTest(glyph=char):
-                mirrored = geo.mirrored_x(self.font[ord(base)].foreground, ADVANCE / 2)
-                self.assertEqual(outline(self.font[ord(char)].foreground), outline(mirrored))
 
     def test_turned_glyphs_are_references_turned(self):
         for char, (base, degrees) in TURNED.items():

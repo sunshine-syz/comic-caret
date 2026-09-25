@@ -47,6 +47,9 @@ ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
            "✕✖❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮")
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "◀▶", "◁▷", "◂▸", "◃▹", "◄►")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
+# Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
+# validate() flags a mirrored reference.
+MIRRORED_OUTLINES = "❮◀◁◂◃◄"
 
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.
@@ -77,6 +80,11 @@ BRAILLE_DOTS = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (0, 3), (1, 3)) 
 
 def open_font():
     return fontforge.open(str(SFD))
+
+
+def outline(layer):
+    """The layer's points, contour by contour, in an order that ignores where each starts."""
+    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
 
 
 def box(font, char):
@@ -126,6 +134,13 @@ class PlacementTest(unittest.TestCase):
                 mirrored = (ADVANCE - x1, y0, ADVANCE - x0, y1)
                 for got, want in zip(box(self.font, right), mirrored, strict=True):
                     self.assertAlmostEqual(got, want, delta=TOLERANCE)
+
+    def test_mirrored_outlines_are_their_pair_mirrored(self):
+        for left, right in MIRRORED:
+            if left in MIRRORED_OUTLINES:
+                with self.subTest(pair=left + right):
+                    mirrored = geo.mirrored_x(self.font[ord(right)].foreground, ADVANCE / 2)
+                    self.assertEqual(outline(self.font[ord(left)].foreground), outline(mirrored))
 
 
 class CompositionTest(unittest.TestCase):
