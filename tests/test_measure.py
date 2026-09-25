@@ -106,5 +106,19 @@ class ThicknessChangeTest(unittest.TestCase):
         self.assertGreater(change, 10)
 
 
+class AreaTest(unittest.TestCase):
+    def test_holes_subtract(self):
+        layer = geo.rect(0, 0, 100, 100)
+        hole = geo.rect(25, 25, 75, 75)
+        for contour in hole:
+            contour.reverseDirection()
+        layer += hole
+        self.assertAlmostEqual(measure.area(layer), 100 * 100 - 50 * 50)
+
+    def test_covered_is_the_share_inside(self):
+        inner, outer = geo.rect(0, 0, 100, 100), geo.rect(50, -10, 200, 110)
+        self.assertAlmostEqual(measure.covered(inner, outer), 0.5)
+
+
 if __name__ == "__main__":
     unittest.main()

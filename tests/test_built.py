@@ -60,10 +60,11 @@ class BuiltFontTest(unittest.TestCase):
 
 
 class NerdFontTest(unittest.TestCase):
-    """The Nerd Fonts builds keep our box drawing and block elements.
+    """The Nerd Fonts builds keep our box drawing, block elements and ❮ ❯.
 
-    The patcher swaps in its own set unless the font has all of U+2500–U+259F. The builds are
-    made only by ./build.sh --nerd or --release, so without a current build the tests skip.
+    The patcher swaps in its own box set unless the font has all of U+2500–U+259F, and fills
+    U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱) only where the font has no glyph. The builds are made only by
+    ./build.sh --nerd or --release, so without a current build the tests skip.
     """
 
     @classmethod
@@ -72,8 +73,8 @@ class NerdFontTest(unittest.TestCase):
         if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
             raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
 
-    def test_patched_fonts_keep_our_box_drawing(self):
-        text = "".join(chr(code) for code in range(0x2500, 0x25A0))
+    def test_patched_fonts_keep_our_glyphs(self):
+        text = "".join(chr(code) for code in range(0x2500, 0x25A0)) + "❮❯"
         plain = {font.suffix: font for font in FONTS}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):

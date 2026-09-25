@@ -45,6 +45,25 @@ def ink(font, glyph):
     return layer
 
 
+def area(layer, steps=16):
+    """The ink's area. Outer contours run clockwise and holes counter-clockwise, so holes
+    subtract."""
+    total = 0
+    for contour in layer:
+        points = _polyline(contour, steps)
+        total -= sum(x0 * y1 - x1 * y0
+                     for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1])) / 2
+    return total
+
+
+def covered(inner, outer):
+    """The share of `inner`'s ink that `outer` covers. Neither may overlap itself."""
+    both = inner.dup()
+    both += outer.dup()
+    both.intersect()
+    return area(both) / area(inner)
+
+
 def _segments(contour):
     """The contour's segments as point lists: two points for a line, four for a cubic."""
     points = [(p.x, p.y, p.on_curve) for p in contour]

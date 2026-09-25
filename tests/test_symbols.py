@@ -1,4 +1,4 @@
-"""Coding and CLI symbols: ≠ ≈ ≡ ∞, arrows, ✓ ✗ and �.
+"""Coding, prompt and CLI symbols: ≠ ≈ ≡ ∞, arrows, marks, shapes, boxes and signs.
 
 Run: python3 -m unittest discover tests
 
@@ -16,11 +16,31 @@ import psMat
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import lig_geometry as geo
 import measure
-from project import SFD
+from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
+MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
+# Heavy mark -> the light mark it is drawn from.
+HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">", "➜": "→"}
+HEAVY_INK = 1.45  # the lightest of Maple Mono's heavy-to-light ink ratios (1.46-1.72)
+# How far heavy marks keep inside the cell: about ✗'s side bearing (22), so two side by side
+# stay about as far apart as ✗✗.
+HEAVY_SIDE = 20
+# Mirrored glyph -> the glyph it mirrors. An outline, since validate() flags a flipped
+# reference (0x10).
+MIRRORED_FROM = {"❮": "❯"}
+
+
+def linear(matrix):
+    """A reference's matrix without its move: its turn. -0.0 equals 0.0."""
+    return tuple(round(v, 6) for v in matrix[:4])
+
+
+def outline(layer):
+    """The layer's points, contour by contour, in an order that ignores where each starts."""
+    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
 
 
 class CoverageTest(unittest.TestCase):
@@ -115,7 +135,7 @@ class MarkTest(unittest.TestCase):
 
     def test_marks_are_larger_than_times(self):
         _, t0, _, t1 = self.font["multiply"].boundingBox()
-        for code in (0x2713, 0x2717):
+        for code in (0x2713, 0x2717, 0x2715):
             with self.subTest(mark=chr(code)):
                 _, y0, _, y1 = self.font[code].boundingBox()
                 self.assertGreaterEqual((y1 - y0) - (t1 - t0), 100)
@@ -131,6 +151,64 @@ class MarkTest(unittest.TestCase):
         contours = list(self.font[0xFFFD].foreground)
         self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
         self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)  # hook and dot
+
+
+
+class HeavyMarkTest(unittest.TestCase):
+    """✔ ✘ ✖ ❯ ➜ are ✓ ✗ ✕ > → drawn heavier, so each pair differs only in weight."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def ink(self, char):
+        return measure.ink(self.font, self.font[ord(char)].glyphname)
+
+    def test_heavy_marks_keep_their_light_marks_middle(self):
+        for heavy, light in HEAVY.items():
+            with self.subTest(mark=heavy):
+                h0, i0, h1, i1 = self.ink(heavy).boundingBox()
+                l0, m0, l1, m1 = self.ink(light).boundingBox()
+                self.assertAlmostEqual((h0 + h1) / 2, (l0 + l1) / 2, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual((i0 + i1) / 2, (m0 + m1) / 2, delta=MIDDLE_TOLERANCE)
+
+    def test_heavy_marks_carry_more_ink(self):
+        for heavy, light in HEAVY.items():
+            with self.subTest(mark=heavy):
+                ratio = measure.area(self.ink(heavy)) / measure.area(self.ink(light))
+                self.assertGreaterEqual(ratio, HEAVY_INK)
+
+    def test_heavy_marks_stay_clear_of_their_neighbours(self):
+        for heavy in HEAVY:
+            with self.subTest(mark=heavy):
+                x0, _, x1, _ = self.ink(heavy).boundingBox()
+                self.assertGreaterEqual(x0, HEAVY_SIDE)
+                self.assertLessEqual(x1, ADVANCE - HEAVY_SIDE)
+
+
+class BuiltFromTest(unittest.TestCase):
+    """Glyphs built from other glyphs, so they follow any redrawing of them."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def only_reference(self, char):
+        """(base glyph name, matrix) of a glyph that is one reference and nothing else."""
+        glyph = self.font[ord(char)]
+        self.assertEqual(len(glyph.foreground), 0)
+        [(name, matrix, *_)] = glyph.references
+        return name, matrix
+
+    def middle(self, outline):
+        x0, y0, x1, y1 = outline.boundingBox()
+        return (x0 + x1) / 2, (y0 + y1) / 2
+
+    def test_mirrored_glyphs_are_their_base_mirrored(self):
+        for char, base in MIRRORED_FROM.items():
+            with self.subTest(glyph=char):
+                mirrored = geo.mirrored_x(self.font[ord(base)].foreground, ADVANCE / 2)
+                self.assertEqual(outline(self.font[ord(char)].foreground), outline(mirrored))
 
 
 if __name__ == "__main__":
