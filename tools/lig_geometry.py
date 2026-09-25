@@ -62,7 +62,8 @@ def union(*layers):
     """
     out = fontforge.layer()
     for layer in layers:
-        out += layer
+        # Adding to an empty layer hands back the added layer itself, so add a copy.
+        out += layer.dup()
     out.removeOverlap()
     return out
 

@@ -139,6 +139,11 @@ class UnionAndMirrorTest(unittest.TestCase):
     def test_union_merges_crossing_outlines(self):
         self.assertEqual(len(geo.union(geo.rect(0, 0, 100, 50), geo.rect(50, -20, 70, 80))), 1)
 
+    def test_union_leaves_its_inputs_alone(self):
+        first, second = geo.rect(0, 0, 100, 50), geo.rect(50, -20, 70, 80)
+        geo.union(first, second)
+        self.assertEqual((box(first), box(second)), ((0, 0, 100, 50), (50, -20, 70, 80)))
+
     def test_mirrors_keep_contours_clockwise(self):
         for mirrored in (geo.mirrored_x(geo.rect(0, 0, 100, 50), 150),
                          geo.mirrored_y(geo.rect(0, 0, 100, 50), 100)):
