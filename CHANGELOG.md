@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2026-09)
 
 - All of Box Drawing and Block Elements (U+2500–U+259F), so `tree`, `cargo tree`, `rich` tables and panels, TUI borders, progress bars and graphs no longer fall back to another font:
   - Heavy, double and dashed lines, junctions such as ├ ┼ ┳ ╋ ╬, rounded corners ╭ ╮ ╯ ╰, half lines such as ╴ ╸, diagonals ╱ ╲ ╳, and every mix of light, heavy and double lines. Lines meet their neighbours flush in every combination, and dashes stay evenly spaced from one cell to the next.
