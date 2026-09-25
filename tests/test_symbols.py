@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -30,10 +30,15 @@ HEAVY_INK = 1.45  # the lightest of Maple Mono's heavy-to-light ink ratios (1.46
 HEAVY_SIDE = 20
 # Mirrored glyph -> the glyph it mirrors. An outline, since validate() flags a flipped
 # reference (0x10).
-MIRRORED_FROM = {"❮": "❯"}
+MIRRORED_FROM = {"❮": "❯", "◀": "▶", "◁": "▷", "◂": "▸", "◃": "▹", "◄": "►"}
 # Black shape -> the white shape whose outer contour it is.
-BLACK = {"●": "○"}
+BLACK = {"●": "○", "▶": "▷", "▸": "▹"}
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
+# Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
+TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
+          "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90)}
+SMALLER = 0.6  # ▸ ▹ ► against ▶ ▷: Maple Mono's are 0.48 of its ▶'s height
+SMALL_STEM = (54, 4)  # test_latin's small components, which ▹ is drawn like
 
 
 def linear(matrix):
@@ -185,6 +190,26 @@ class ShapeTest(unittest.TestCase):
                 [own] = list(self.font[ord(black)].foreground)
                 self.assertEqual(points(own), points(outer))
 
+    def test_small_triangles_are_about_half_size(self):
+        for small, large in (("▸", "▶"), ("▹", "▷")):
+            with self.subTest(shape=small):
+                self.assertLessEqual(self.height(small), SMALLER * self.height(large))
+
+    def test_small_white_triangle_is_drawn_like_the_small_figures(self):
+        # At the full stroke ▹'s counter closes up by 16 px, so, like the small figures, it is ▷
+        # scaled down with its strokes thickened back to a lighter stem.
+        layer = self.font[ord("▹")].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        (a, b), *_ = measure.spans_at_y(layer, (y0 + y1) / 2)
+        weight, delta = SMALL_STEM
+        self.assertAlmostEqual(b - a, weight, delta=delta)
+
+    def test_pointer_is_long_and_flat(self):
+        # ► points where ▶ stands, as Maple Mono's (559 × 270) does.
+        x0, y0, x1, y1 = self.font[ord("►")].boundingBox()
+        self.assertLessEqual(y1 - y0, SMALLER * self.height("▶"))
+        self.assertGreaterEqual((x1 - x0) / (y1 - y0), 1.5)
+
 
 class HeavyMarkTest(unittest.TestCase):
     """✔ ✘ ✖ ❯ ➜ are ✓ ✗ ✕ > → drawn heavier, so each pair differs only in weight."""
@@ -241,6 +266,13 @@ class BuiltFromTest(unittest.TestCase):
             with self.subTest(glyph=char):
                 mirrored = geo.mirrored_x(self.font[ord(base)].foreground, ADVANCE / 2)
                 self.assertEqual(outline(self.font[ord(char)].foreground), outline(mirrored))
+
+    def test_turned_glyphs_are_references_turned(self):
+        for char, (base, degrees) in TURNED.items():
+            with self.subTest(glyph=char):
+                name, matrix = self.only_reference(char)
+                self.assertEqual(name, self.font[ord(base)].glyphname)
+                self.assertEqual(linear(matrix), linear(psMat.rotate(math.radians(degrees))))
 
     def test_fisheye_is_a_dot_centered_in_the_ring(self):
         glyph = self.font[ord("◉")]
