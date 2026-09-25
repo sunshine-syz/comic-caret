@@ -124,7 +124,7 @@ Font files are never committed; they ship as GitHub release assets.
   match. ▹ is the same kind of exception: ▷ at 0.59 thinned to a 41 outline, since at the full
   stroke its counter fills in at 16 px. Its white stays 4 short of Maple Mono's, the only
   reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
-- Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 26 on every side, then
+- Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side, then
   squeezed at the ends to stay 20 inside the cell. No symbol comes closer to the cell's edges
   than ● (15), so two side by side don't touch. Black shapes (● ◆
   ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the hyphen's
