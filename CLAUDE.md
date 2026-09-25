@@ -35,8 +35,9 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 
 `tests/test_fontbakery.py` runs Font Bakery's universal profile on each built font and expects
 exactly the problems its `known()` lists, each with its reason; it skips without `uvx`. To read
-a full report, run `uvx fontbakery==1.1.0 check-universal fonts/ComicCaret-Regular.ttf`, one
-font at a time: together, the two read as one style twice and fail the family checks.
+a full report, run `uvx fontbakery==1.1.0 check-universal --skip-network` on one font at a
+time: together, the two read as one style twice and fail the family checks. Its network checks
+fail offline and whenever a newer Font Bakery is out, so the test skips them too.
 
 Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it does
 not affect this font.
@@ -126,9 +127,9 @@ together.
   reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
 - Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side, then
   squeezed at the ends to stay 20 inside the cell. No symbol comes closer to the cell's edges
-  than ● (15), so two side by side don't touch. Black shapes (● ◆
-  ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the hyphen's
-  stroke, or of `o`'s for ○.
+  than ● (15), so two side by side don't touch; `test_symbols.py` lists the exceptions. Black
+  shapes (● ◆ ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the
+  hyphen's stroke, or of `o`'s for ○.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
   height.
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,

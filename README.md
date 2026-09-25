@@ -89,7 +89,9 @@ of Box Drawing and Block Elements, and Braille. Not there yet: Cyrillic and most
 ## Building from source
 
 You need [FontForge](https://fontforge.org/) (`brew install fontforge` on macOS). The Nerd Fonts
-builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`).
+builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`). The
+Font Bakery test runs it through [`uv`](https://docs.astral.sh/uv/)'s `uvx`, which fetches it
+the first time, and skips without `uvx`.
 
 ```sh
 ./build.sh                          # fonts/ComicCaret-Regular.otf and .ttf

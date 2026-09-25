@@ -18,8 +18,12 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from project import ROOT, SFD
 
-# Pinned, so that a release with new checks can't fail the suite; bump it on purpose.
+# Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
+# with --skip-network: its version check asks PyPI for a newer Font Bakery and its name check
+# asks a web service, so offline, or once a newer one is out, they fail a sound font.
 FONTBAKERY = "fontbakery==1.1.0"
+# Font Bakery's statuses that report nothing wrong.
+QUIET = {"PASS", "SKIP", "INFO", "DEBUG"}
 FONTS = {ext: ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("ttf", "otf")}
 # How a message names its glyphs, by message code; other messages name none.
 GLYPH_NAMES = {
@@ -34,21 +38,23 @@ def run_fontbakery(font):
     with tempfile.TemporaryDirectory() as tmp:
         report = pathlib.Path(tmp) / "report.json"
         # It exits non-zero whenever a check fails or errors; the report says which.
-        subprocess.run(["uvx", FONTBAKERY, "check-universal", "--full-lists", "--json",
-                        str(report), str(font)], capture_output=True, check=False)
+        result = subprocess.run(["uvx", FONTBAKERY, "check-universal", "--skip-network",
+                                 "--full-lists", "--json", str(report), str(font)],
+                                capture_output=True, text=True, check=False)
         if not report.exists():
-            raise AssertionError(f"Font Bakery wrote no report for {font.name}")
+            raise AssertionError(f"Font Bakery wrote no report for {font.name}:\n"
+                                 f"{result.stderr[-2000:]}")
         return json.loads(report.read_text(encoding="utf-8"))
 
 
 def findings(report):
-    """{(status, check, message code, glyph names)} for each WARN, FAIL and ERROR."""
+    """{(status, check, message code, glyph names)} for each result that isn't quiet."""
     found = set()
     for section in report["sections"]:
         for check in section["checks"]:
             name = check["key"][1].removeprefix("<FontBakeryCheck:").removesuffix(">")
             for log in check["logs"]:
-                if log["status"] in ("WARN", "FAIL", "ERROR"):
+                if log["status"] not in QUIET:
                     code, text = log["message"]["code"], log["message"]["message"]
                     glyphs = re.findall(GLYPH_NAMES.get(code, r"(?!)"), text, re.MULTILINE)
                     found.add((log["status"], name, code, frozenset(glyphs)))

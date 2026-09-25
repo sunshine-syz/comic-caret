@@ -4,8 +4,8 @@ Run: python3 -m unittest discover tests
 
 These assert rules every glyph must follow (see CLAUDE.md), not the shape of any one glyph:
 what breaking would show as clipped, overlapping or broken text. test_consistency.py holds
-the rules classes of glyphs share, and test_built.py the built fonts'; Font Bakery and OTS
-check the built fonts further (see CLAUDE.md for those commands).
+the rules classes of glyphs share, and test_built.py the built fonts'; test_fontbakery.py
+runs Font Bakery on the built fonts, and CLAUDE.md gives the OTS command.
 """
 import pathlib
 import sys
