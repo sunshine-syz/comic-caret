@@ -27,9 +27,10 @@ HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">", "➜": "→"}
 # The lightest of Maple Mono's ✔ ✘ ❯ against ✓ ✗ > (1.72, 1.70, 1.46). Its ➜ carries only 1.11
 # of its →'s ink: another arrow, not → made heavier, so it sets no floor.
 HEAVY_INK = 1.45
-# How far heavy marks keep inside the cell: about ✗'s side bearing (22), so two side by side
-# stay about as far apart as ✗✗.
-HEAVY_SIDE = 20
+# Every symbol keeps at least as far inside the cell as ●, the widest full-size shape, so two
+# side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. ∞ (8's loop, scaled
+# to fit) and � (Comic Shanns's own) came with 1.0.0, 11 inside the cell.
+OWN_SIDES = "∞�"
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆"}
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
@@ -53,9 +54,21 @@ def points(contour):
 
 
 class CoverageTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
     def test_symbols_are_present(self):
-        font = fontforge.open(str(SFD))
-        self.assertEqual([c for c in SYMBOLS if ord(c) not in font], [])
+        self.assertEqual([c for c in SYMBOLS if ord(c) not in self.font], [])
+
+    def test_symbols_stay_clear_of_their_neighbours(self):
+        x0, _, x1, _ = self.font[ord("●")].boundingBox()
+        side = min(x0, ADVANCE - x1)
+        for char in SYMBOLS:
+            if char not in OWN_SIDES:
+                with self.subTest(symbol=char):
+                    x0, _, x1, _ = self.font[ord(char)].boundingBox()
+                    self.assertGreaterEqual(min(x0, ADVANCE - x1), side)
 
 
 class OperatorTest(unittest.TestCase):
@@ -260,13 +273,6 @@ class HeavyMarkTest(unittest.TestCase):
             with self.subTest(mark=heavy):
                 ratio = measure.area(self.ink(heavy)) / measure.area(self.ink(light))
                 self.assertGreaterEqual(ratio, HEAVY_INK)
-
-    def test_heavy_marks_stay_clear_of_their_neighbours(self):
-        for heavy in HEAVY:
-            with self.subTest(mark=heavy):
-                x0, _, x1, _ = self.ink(heavy).boundingBox()
-                self.assertGreaterEqual(x0, HEAVY_SIDE)
-                self.assertLessEqual(x1, ADVANCE - HEAVY_SIDE)
 
 
 class BuiltFromTest(unittest.TestCase):
