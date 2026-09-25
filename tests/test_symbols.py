@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -36,7 +36,8 @@ BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆"}
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
-          "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90)}
+          "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
+          "⋮": ("…", 90), "⇣": ("⇡", 180)}
 SMALLER = 0.6  # ▸ ▹ ► against ▶ ▷: Maple Mono's are 0.48 of its ▶'s height
 SMALL_STEM = (54, 4)  # test_latin's small components, which ▹ is drawn like
 
@@ -128,6 +129,30 @@ class ArrowTest(unittest.TestCase):
                 b0, c0, b1, c1 = back.boundingBox()
                 self.assertAlmostEqual(b1 - b0, x1 - x0, delta=2)
                 self.assertAlmostEqual(c1 - c0, y1 - y0, delta=2)
+
+    def test_vertical_arrows_share_one_height(self):
+        # ⇡'s two dashes set it; the solid and two-headed arrows match it.
+        _, y0, _, y1 = self.box(0x2191)
+        for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5):
+            with self.subTest(arrow=chr(code)):
+                _, b0, _, b1 = self.box(code)
+                self.assertAlmostEqual(b1 - b0, y1 - y0, delta=2)
+
+    def test_up_down_double_arrow_has_the_double_arrows_heads(self):
+        # ⇔ turned, its shaft lengthened: as wide as ⇔ is tall.
+        x0, _, x1, _ = self.box(0x21D5)
+        _, y0, _, y1 = self.box(0x21D4)
+        self.assertAlmostEqual(x1 - x0, y1 - y0, delta=2)
+
+    def test_dashed_arrow_shaft_breaks_into_two_dashes(self):
+        # Each gap is at least as wide as the hyphen's stroke, so it stays open at 12 px.
+        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        dashed = self.font[0x21E1].foreground
+        _, y0, _, _ = dashed.boundingBox()
+        spans = measure.spans_at_x(dashed, measure.ink_center(geo.trim(dashed, y1=y0 + 20)))
+        self.assertEqual(len(spans), 3)  # two dashes and the head
+        for lower, upper in itertools.pairwise(spans):
+            self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
 
     def test_two_headed_arrows_show_shaft_between_their_heads(self):
         # Two full-size heads meet in the middle, and ↔ reads as a diamond.
@@ -281,6 +306,19 @@ class BuiltFromTest(unittest.TestCase):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(linear(matrix), linear(psMat.rotate(math.radians(degrees))))
+
+    def test_midline_ellipsis_is_the_ellipsis_raised(self):
+        name, matrix = self.only_reference("⋯")
+        self.assertEqual(name, "ellipsis")
+        self.assertEqual(linear(matrix), (1, 0, 0, 1))
+
+    def test_arrows_stand_where_the_plain_arrows_do(self):
+        for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕")):
+            with self.subTest(arrow=char):
+                pairs = zip(self.middle(self.font[ord(char)]), self.middle(self.font[ord(plain)]),
+                            strict=True)
+                for a, b in pairs:
+                    self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
 
     def test_marked_boxes_hold_the_whole_box(self):
         # ☑ ☒ are single outlines, since a mark crossing a reference to ☐ fails validate()
