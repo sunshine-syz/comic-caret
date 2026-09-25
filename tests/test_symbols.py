@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -273,6 +273,15 @@ class BuiltFromTest(unittest.TestCase):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(linear(matrix), linear(psMat.rotate(math.radians(degrees))))
+
+    def test_marked_boxes_hold_the_whole_box(self):
+        # ☑ ☒ are single outlines, since a mark crossing a reference to ☐ fails validate()
+        # (0x4); so check that all of ☐ is there.
+        box = self.font[ord("☐")].foreground
+        for char in "☑☒":
+            with self.subTest(glyph=char):
+                self.assertGreaterEqual(measure.covered(box, self.font[ord(char)].foreground),
+                                        0.99)
 
     def test_fisheye_is_a_dot_centered_in_the_ring(self):
         glyph = self.font[ord("◉")]
