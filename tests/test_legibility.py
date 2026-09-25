@@ -155,9 +155,15 @@ class AtSignTest(unittest.TestCase):
         cls.font = fontforge.open(str(SFD))
         cls.at = cls.font["at"].foreground
 
+    def test_loop_stays_open_round_one_counter(self):
+        # One outline and the a's counter, as in all three references (and as Font Bakery's
+        # contour_count expects): wherever the loop touches the a, it closes off a second hole.
+        self.assertEqual(len(self.at), 2)
+
     def test_counter_and_the_white_round_the_a_keep_their_floors(self):
         _, y0, _, y1 = self.at.boundingBox()
         spans = measure.spans_at_y(self.at, (y0 + y1) / 2)
+        self.assertGreaterEqual(len(spans), 3)  # the loop, the a's bowl and its stem, apart
         gaps = [right[0] - left[1] for left, right in itertools.pairwise(spans)]
         self.assertGreaterEqual(min(gaps), AT_GAP)
         self.assertGreaterEqual(max(gaps), AT_COUNTER)
