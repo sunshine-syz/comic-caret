@@ -14,6 +14,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 from project import ADVANCE, ROOT, SFD
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
+NERD_DIR = ROOT / "build" / "nerd"
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
 
@@ -56,6 +57,27 @@ class BuiltFontTest(unittest.TestCase):
                                                                       self.boxes, strict=True)
                          if any(abs(a - b) > BOX_TOLERANCE for a, b in zip(box, sfd_box))}
                 self.assertEqual(moved, {})
+
+
+class NerdFontTest(unittest.TestCase):
+    """The Nerd Fonts builds keep our box drawing and block elements.
+
+    The patcher swaps in its own set unless the font has all of U+2500–U+259F. The builds are
+    made only by ./build.sh --nerd or --release, so without a current build the tests skip.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
+        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
+            raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
+
+    def test_patched_fonts_keep_our_box_drawing(self):
+        text = "".join(chr(code) for code in range(0x2500, 0x25A0))
+        plain = {font.suffix: font for font in FONTS}
+        for nerd in self.fonts:
+            with self.subTest(font=nerd.name):
+                self.assertEqual(shape(nerd, text), shape(plain[nerd.suffix], text))
 
 
 if __name__ == "__main__":

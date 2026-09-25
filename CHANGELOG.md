@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 (unreleased)
+
+- All of Box Drawing and Block Elements (U+2500–U+259F), so `tree`, `cargo tree`, `rich` tables and panels, TUI borders, progress bars and graphs no longer fall back to another font:
+  - Heavy, double and dashed lines, junctions such as ├ ┼ ┳ ╋ ╬, rounded corners ╭ ╮ ╯ ╰, half lines such as ╴ ╸, diagonals ╱ ╲ ╳, and every mix of light, heavy and double lines. Lines meet their neighbours flush in every combination, and dashes stay evenly spaced from one cell to the next.
+  - █ ▀ ▄ ▌ ▐, the eighths ▁–▇ and ▏–▉, the quadrants ▖–▟ and the shades ░ ▒ ▓. They fill the cell and the 1.25 em line exactly, so neighbouring blocks meet without a seam, and the shades' dot patterns run on across cells.
+- ━ ┃ ┏ ┓ ┗ ┛, the dashed lines ┄ ┅ ┆ ┇ ┈ ┉ ┊ ┋ and corners that mix weights, such as ┍ ┎, were drawn as plain light lines, so `pip` and `rich` progress bars and `rich`'s default table showed thin solid lines instead of heavy or dashed ones.
+- The Nerd Font edition now uses these glyphs too. Before, the Nerd Fonts patcher replaced the whole set with its own, because the font lacked part of it, and its boxes opened up at line spacings above 1.25 em.
+
 ## 1.0.0 (2026-09)
 
 The first release of Comic Caret. It starts from Comic Shanns Mono 1.3.0, and these are the changes since then.

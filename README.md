@@ -17,8 +17,9 @@ stay readable through a long day of work.
   choices follow Intel One Mono, which was designed with low-vision developers.
 - **Ligatures that keep the grid.** `->` `=>` `!=` `>=` and more join into one symbol, but
   every character keeps its own cell, so the cursor still moves one character at a time.
-- **Ready for terminals.** Box-drawing lines and all 256 Braille patterns for spinners and
-  graphs, plus a [Nerd Font edition](#nerd-font-edition) with icons.
+- **Ready for terminals.** Every box-drawing and block character and all 256 Braille patterns,
+  for borders, trees, tables, progress bars, spinners and graphs, plus a
+  [Nerd Font edition](#nerd-font-edition) with icons.
 
 ## Install
 
@@ -64,8 +65,8 @@ The ligatures use the `calt` (contextual alternates) OpenType feature:
 ## Nerd Font edition
 
 `ComicCaretNerdFont-<version>.zip` adds the [Nerd Fonts](https://www.nerdfonts.com/) icons
-(Powerline symbols, file-type, Git and OS icons) and the full box-drawing and block-element
-sets. It holds two families; install the OTF or the TTF of the one you want:
+(Powerline symbols, file-type, Git and OS icons). It holds two families; install the OTF or
+the TTF of the one you want:
 
 | Family | Icons |
 |---|---|
@@ -78,12 +79,12 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 
 ## Character set
 
-![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, a box and Braille patterns](docs/images/characters.svg)
+![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, boxes, block elements and Braille patterns](docs/images/characters.svg)
 
 ASCII, the Latin letters and signs of Western, Central European, Baltic and Turkish text, λ Λ,
 straight, diagonal and double arrows, common math signs such as ≠ ≈ ≡ ∞, the check marks ✓ ✗
-and �, basic box drawing, and Braille. Not there yet: most of Greek, Cyrillic, and box-drawing
-junctions such as ├ ┼ (the Nerd Font edition has them).
+and �, all of Box Drawing and Block Elements, and Braille. Not there yet: Cyrillic and most
+of Greek.
 
 ## Building from source
 

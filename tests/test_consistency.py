@@ -7,6 +7,7 @@ Each rule covers every glyph of its class, so a glyph added to one is checked wi
 test. Known exceptions are listed here with their reasons.
 """
 import collections
+import itertools
 import math
 import pathlib
 import statistics
@@ -17,6 +18,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+import add_box_drawing
 import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
@@ -37,9 +39,9 @@ ROW_TOLERANCE = 30
 OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 
 # Symmetric glyphs, and the brackets, which the legibility pass centered.
-CENTERED = "AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}"
+CENTERED = "AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
 ON_AXIS = "+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"  # centered on the hyphen, as the ligatures join them
-MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\")
+MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
 
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
@@ -49,6 +51,19 @@ MERGED_BELOW = 10  # a merged ogonek or cedilla lies below this height or inside
 MARK_CLEARANCE = 20  # the closest a mark may come to its letter
 MARK_OFFCENTER = 30  # C's circumflex, over an open side, sits 22 right of the ink's middle
 STEM_BASES = {"dotlessi", "dotlessj", "l"}  # their marks sit over the stem, not the ink's middle
+
+BOX_DRAWING = range(0x2500, 0x2580)
+BLOCK_ELEMENTS = range(0x2580, 0x25A0)
+SIDES = ("left", "right", "down", "up")
+# The lines whose profile each weight of line has where it leaves the cell.
+LINES = {"light": "─│", "heavy": "━┃", "double": "═║"}
+FRACTIONS = {"ONE EIGHTH": 1 / 8, "ONE QUARTER": 1 / 4, "THREE EIGHTHS": 3 / 8, "HALF": 1 / 2,
+             "FIVE EIGHTHS": 5 / 8, "THREE QUARTERS": 3 / 4, "SEVEN EIGHTHS": 7 / 8}
+SHADES = {"░": 1 / 4, "▒": 1 / 2, "▓": 3 / 4}
+BLOCK_TOLERANCE = 1  # eighths of 550 and 1250 units round to whole units
+RHYTHM_TOLERANCE = 2  # dashes and shade pixels span fractions of the cell, rounded
+SLIVER = 4  # rows and columns thinner than this join pixels that meet at a corner
+COVERAGE_TOLERANCE = 0.01  # those joins add 0.7 % to ▒
 
 BRAILLE = range(0x2800, 0x2900)
 # Unicode numbers the dots down the left column (1-3), down the right (4-6), then along the
@@ -238,6 +253,195 @@ class CompositionTest(unittest.TestCase):
         """The middle of each dot of a Braille pattern."""
         return [((x0 + x1) / 2, (y0 + y1) / 2)
                 for x0, y0, x1, y1 in (c.boundingBox() for c in measure.ink(self.font, code))]
+
+
+def rounded(spans):
+    return [(round(a), round(b)) for a, b in spans]
+
+
+def merged(spans):
+    """Spans sorted, with those that touch joined into one."""
+    out = []
+    for a, b in sorted(spans):
+        if out and a - out[-1][1] < 0.5:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
+
+
+def area(layer):
+    """The ink's area, for outlines of straight lines; holes run the other way and subtract."""
+    total = 0
+    for contour in layer:
+        points = [(p.x, p.y) for p in contour]
+        total += sum(x0 * y1 - x1 * y0
+                     for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]))
+    return abs(total) / 2
+
+
+class BoxDrawingTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = open_font()
+        cls.bottom, cls.top = cls.font.hhea_descent, cls.font.hhea_ascent
+
+    def ink(self, char):
+        return measure.ink(self.font, self.font[ord(char)].glyphname)
+
+    def edges(self, char):
+        """The strokes that cross each side of the cell, {side: [(from, to)]}."""
+        ink = self.ink(char)
+        return {"left": rounded(measure.spans_at_x(ink, 0)),
+                "right": rounded(measure.spans_at_x(ink, ADVANCE)),
+                "down": rounded(measure.spans_at_y(ink, self.bottom)),
+                "up": rounded(measure.spans_at_y(ink, self.top))}
+
+    def profile(self, side, weight):
+        horizontal, vertical = LINES[weight]
+        return self.edges(horizontal if side in ("left", "right") else vertical)[side]
+
+    def test_lines_leave_the_cell_where_their_names_say(self):
+        # Each arm has the profile of ─ ━ ═ or │ ┃ ║ where it leaves the cell, so it joins the
+        # line that continues it in the next cell.
+        wrong = {}
+        for code in BOX_DRAWING:
+            words = unicodedata.name(chr(code)).split()[2:]
+            if "DASH" in words or "DIAGONAL" in words:
+                continue
+            named = add_box_drawing.arms([w for w in words if w not in ("AND", "ARC")])
+            want = {side: self.profile(side, named[side]) if side in named else []
+                    for side in SIDES}
+            if (got := self.edges(chr(code))) != want:
+                wrong[chr(code)] = got
+        self.assertEqual(wrong, {})
+
+    def test_dashes_keep_their_rhythm_across_cells(self):
+        # The gap between two cells' dashes matches the gaps inside a cell, and each dash is
+        # as thick as the solid line of its weight.
+        _, y0, _, y1 = self.font[ord("─")].boundingBox()
+        x0, _, x1, _ = self.font[ord("│")].boundingBox()
+        wrong = {}
+        for code in BOX_DRAWING:
+            words = unicodedata.name(chr(code)).split()
+            if "DASH" not in words:
+                continue
+            count = {"DOUBLE": 2, "TRIPLE": 3, "QUADRUPLE": 4}[words[words.index("DASH") - 1]]
+            horizontal, vertical = LINES[words[2].lower()]
+            ink = self.ink(chr(code))
+            if words[-1] == "HORIZONTAL":
+                period, dashes = ADVANCE, measure.spans_at_y(ink, (y0 + y1) / 2)
+                middle = sum(dashes[0]) / 2
+                across = (measure.spans_at_x(ink, middle),
+                          measure.spans_at_x(self.ink(horizontal), middle))
+            else:
+                period, dashes = self.top - self.bottom, measure.spans_at_x(ink, (x0 + x1) / 2)
+                middle = sum(dashes[0]) / 2
+                across = (measure.spans_at_y(ink, middle),
+                          measure.spans_at_y(self.ink(vertical), middle))
+            two = dashes + [(a + period, b + period) for a, b in dashes]
+            lengths = [b - a for a, b in two]
+            gaps = [c - b for (_, b), (c, _) in itertools.pairwise(two)]
+            if (len(dashes) != count or max(lengths) - min(lengths) > RHYTHM_TOLERANCE
+                    or max(gaps) - min(gaps) > RHYTHM_TOLERANCE or across[0] != across[1]):
+                wrong[chr(code)] = (rounded(dashes), rounded(across[0]))
+        self.assertEqual(wrong, {})
+
+    def test_diagonals_run_corner_to_corner(self):
+        # From corner to corner of the line box, so they continue into their diagonal
+        # neighbours: at a quarter, half and three quarters of its height, ╱ crosses a quarter,
+        # half and three quarters of the width.
+        height = self.top - self.bottom
+        off = {}
+        for char, directions in {"╱": (1,), "╲": (-1,), "╳": (1, -1)}.items():
+            ink = self.ink(char)
+            for share in (1 / 4, 1 / 2, 3 / 4):
+                centres = sorted((a + b) / 2 for a, b in
+                                 measure.spans_at_y(ink, self.bottom + share * height))
+                if share == 1 / 2 and len(directions) == 2:
+                    centres *= 2  # the strokes of ╳ cross there
+                want = sorted(ADVANCE * (share if d > 0 else 1 - share) for d in directions)
+                if len(centres) != len(want) or any(
+                        abs(got - x) > TOLERANCE for got, x in zip(centres, want)):
+                    off[(char, share)] = [round(x) for x in centres]
+        self.assertEqual(off, {})
+
+
+class BlockElementTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.font = open_font()
+        cls.bottom, cls.top = cls.font.hhea_descent, cls.font.hhea_ascent
+
+    def ink(self, code):
+        return measure.ink(self.font, self.font[code].glyphname)
+
+    def test_blocks_fill_the_part_of_the_cell_their_names_give(self):
+        # The cell's width and the line box, split exactly, so bars and graphs line up and
+        # neighbouring blocks meet without a seam.
+        height = self.top - self.bottom
+        middle = (ADVANCE / 2, self.bottom + height / 2)
+        wrong = {}
+        for code in BLOCK_ELEMENTS:
+            name = unicodedata.name(chr(code))
+            ink = self.ink(code)
+            if name.endswith(" SHADE"):
+                continue
+            if name.startswith("QUADRANT "):
+                named = set(name.removeprefix("QUADRANT ").split(" AND "))
+                inked = set()
+                for row, y in (("LOWER", middle[1] - height / 4), ("UPPER", middle[1] + height / 4)):
+                    for column, x in (("LEFT", ADVANCE / 4), ("RIGHT", 3 * ADVANCE / 4)):
+                        if any(a <= x <= b for a, b in measure.spans_at_y(ink, y)):
+                            inked.add(f"{row} {column}")
+                if inked != named:
+                    wrong[chr(code)] = sorted(inked)
+                continue
+            if name == "FULL BLOCK":
+                want = (0, self.bottom, ADVANCE, self.top)
+            else:
+                side, fraction = name.removesuffix(" BLOCK").split(" ", 1)
+                width, tall = FRACTIONS[fraction] * ADVANCE, FRACTIONS[fraction] * height
+                want = {"LEFT": (0, self.bottom, width, self.top),
+                        "RIGHT": (ADVANCE - width, self.bottom, ADVANCE, self.top),
+                        "LOWER": (0, self.bottom, ADVANCE, self.bottom + tall),
+                        "UPPER": (0, self.top - tall, ADVANCE, self.top)}[side]
+            got = ink.boundingBox()
+            if len(ink) != 1 or any(abs(a - b) > BLOCK_TOLERANCE for a, b in zip(got, want)):
+                wrong[chr(code)] = (len(ink), got)
+        self.assertEqual(wrong, {})
+
+    def test_shades_cover_a_quarter_a_half_and_three_quarters(self):
+        cell = ADVANCE * (self.top - self.bottom)
+        off = {char: round(coverage, 3) for char, share in SHADES.items()
+               if abs((coverage := area(self.ink(ord(char))) / cell) - share) > COVERAGE_TOLERANCE}
+        self.assertEqual(off, {})
+
+    def test_shades_tile_without_a_seam(self):
+        # Along any row or column, the ink and the gaps that meet or cross the edge between
+        # two cells are as long as ones inside a cell.
+        height = self.top - self.bottom
+        seams = {}
+        for char in SHADES:
+            ink = self.ink(ord(char))
+            points = [p for contour in ink for p in contour]
+            # Rows, whose runs repeat every cell width, then columns, every line height.
+            for period, spans_at, coordinate in ((ADVANCE, measure.spans_at_y, lambda p: p.y),
+                                                 (height, measure.spans_at_x, lambda p: p.x)):
+                edges = sorted({coordinate(p) for p in points})
+                for a, b in itertools.pairwise(edges):
+                    if b - a < SLIVER:
+                        continue
+                    spans = spans_at(ink, (a + b) / 2)
+                    two = merged(spans + [(x0 + period, x1 + period) for x0, x1 in spans])
+                    ends = [x for span in two for x in span]
+                    runs = list(itertools.pairwise(ends))
+                    inside = [y - x for x, y in runs if 0 < x and y < period]
+                    for x, y in runs:
+                        if x <= period <= y and inside and min(
+                                abs(y - x - length) for length in inside) > RHYTHM_TOLERANCE:
+                            seams.setdefault(char, []).append((round(x), round(y)))
+        self.assertEqual(seams, {})
 
 
 if __name__ == "__main__":

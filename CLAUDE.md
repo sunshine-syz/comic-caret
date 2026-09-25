@@ -13,6 +13,7 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 ./build.sh --nerd                       # also Nerd Fonts patched copies in build/nerd/
 ./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
 python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
+python3 tools/add_box_drawing.py        # rebuild box drawing and block elements in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
@@ -35,9 +36,8 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 Font Bakery's known warnings, 5 on the TTF and 2 on the OTF:
 
 - Both: `soft_hyphen`; U+00AD is kept, since terminals give it a cell.
-- TTF: `numberOfHMetrics`; ď `decomposed-outline`; contour counts of @, ∄, the dashed
-  box-drawing placeholders and the soft hyphen; `nonmarkingreturn` unreachable (FontForge adds
-  it to every TTF).
+- TTF: `numberOfHMetrics`; ď `decomposed-outline`; contour counts of @, ∄ and the soft
+  hyphen; `nonmarkingreturn` unreachable (FontForge adds it to every TTF).
 - OTF: the unencoded components unreachable, since CFF has no components: `caron.alt`,
   `commaaccent`, `commaturnedabove`, `grave.accent`, the `*.small` figures and letters,
   `slash.fraction`, `bar.ordinal` and `circle.copyright`. Its one ERROR is a Font Bakery bug:
@@ -66,7 +66,8 @@ Font files are never committed; they ship as GitHub release assets.
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
 - Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`), hhea = typo =
   900/−350 (1.25 em) with `USE_TYPO_METRICS`. Box-drawing strokes overlap their neighbours:
-  verticals span −485…1035 (they meet up to 1.5 em line height), horizontals −10…560.
+  verticals span −485…1035 (they meet up to 1.5 em line height), horizontals −10…560. Block
+  elements fill the cell and the line box exactly.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
   ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
   8–14: maker, designer, description, URLs and license.
@@ -162,3 +163,8 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
   generated ones, so rerun it after adding glyphs too. Its constants are
   measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until
   `MeasurementTest` passes, then rerun it.
+- Box Drawing and Block Elements (U+2500–U+259F) are generated too, geometric rather than
+  hand-drawn so they tile. `tools/add_box_drawing.py` draws each glyph from its Unicode name
+  and redraws the range in place; change them only there, then rerun it and `./build.sh`.
+  `tests/test_add_box_drawing.py` fails while the SFD is out of date. Keep the range complete:
+  the Nerd Fonts patcher replaces all of it unless every glyph is there.

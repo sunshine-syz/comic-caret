@@ -9,6 +9,7 @@ check the built fonts further (see CLAUDE.md for those commands).
 """
 import pathlib
 import sys
+import unicodedata
 import unittest
 
 import fontforge
@@ -30,8 +31,9 @@ BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille 
 
 
 def is_box_drawing(glyph):
-    # Box drawing and block elements overlap their neighbours on purpose so lines join.
-    return 0x2500 <= glyph.unicode <= 0x259F
+    # Box-drawing lines overlap their neighbours on purpose so they join. Block elements fill
+    # the cell and the line box exactly, so the rules for every glyph hold for them.
+    return 0x2500 <= glyph.unicode <= 0x257F
 
 
 class SanityTest(unittest.TestCase):
@@ -54,12 +56,16 @@ class SanityTest(unittest.TestCase):
                          (LINE_TOP, LINE_BOTTOM, 0))
 
     def test_box_drawing_strokes_reach_the_next_cell(self):
-        # Ink above or below ─ is a vertical, and each must end the same distance past the line
-        # box; ink past the cell's sides is a horizontal, and must end where ─ does.
-        left, low, right, high = self.font["SF100000"].boundingBox()
+        # Ink above or below ═, the widest horizontal, is a vertical, and each must end the same
+        # distance past the line box; ink past the cell's sides is a horizontal, and must end
+        # where ─ does. Dashed lines end short of the cell to keep their gaps even, and
+        # diagonals end at the sides.
+        left, _, right, _ = self.font[ord("─")].boundingBox()
+        _, low, _, high = self.font[ord("═")].boundingBox()
         wrong = {}
         for glyph in self.visible:
-            if not is_box_drawing(glyph):
+            name = unicodedata.name(chr(glyph.unicode)) if glyph.unicode >= 0 else ""
+            if not is_box_drawing(glyph) or " DASH " in name or " DIAGONAL " in name:
                 continue
             x0, bottom, x1, top = glyph.boundingBox()
             if (bottom < low and bottom != LINE_BOTTOM - BOX_REACH
