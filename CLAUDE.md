@@ -27,21 +27,15 @@ SFD, `--text=TEXT` (repeatable) and `--features` to proof other glyphs, and `--l
 Rebuild after every SFD change, then run the checks:
 
 ```sh
-python3 -m unittest discover tests  # SFD rules, built fonts, shaping; known exceptions are in the tests
+python3 -m unittest discover tests  # SFD rules, built fonts, shaping, Font Bakery; known exceptions are in the tests
 hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
-uvx fontbakery check-universal fonts/ComicCaret-Regular.ttf  # expect 0 FAIL and the WARNs below
 uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
 ```
 
-Font Bakery's known warnings, 5 on the TTF and 2 on the OTF:
-
-- Both: `soft_hyphen`; U+00AD is kept, since terminals give it a cell.
-- TTF: `numberOfHMetrics`; ď `decomposed-outline`; contour counts of ∄ and the soft hyphen;
-  `nonmarkingreturn` unreachable (FontForge adds it to every TTF).
-- OTF: the unencoded components unreachable, since CFF has no components: `caron.alt`,
-  `commaaccent`, `commaturnedabove`, `grave.accent`, the `*.small` figures and letters,
-  `slash.fraction`, `bar.ordinal` and `circle.copyright`. Its one ERROR is a Font Bakery bug:
-  the monospace check reads the `glyf` table.
+`tests/test_fontbakery.py` runs Font Bakery's universal profile on each built font and expects
+exactly the problems its `known()` lists, each with its reason; it skips without `uvx`. To read
+a full report, run `uvx fontbakery==1.1.0 check-universal fonts/ComicCaret-Regular.ttf`, one
+font at a time: together, the two read as one style twice and fail the family checks.
 
 Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it does
 not affect this font.
