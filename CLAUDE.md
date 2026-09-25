@@ -121,8 +121,9 @@ Font files are never committed; they ship as GitHub release assets.
   regular glyph at 0.45 (figures), 0.55 (ª º) or 0.41 (™ © ®), thickened with
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to
-  match. ▹ is the same kind of exception: ▷ at 0.56 thickened to 54, since at the full stroke its
-  counter fills in at 16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
+  match. ▹ is the same kind of exception: ▷ at 0.59 thinned to a 41 outline, since at the full
+  stroke its counter fills in at 16 px. Its white stays 4 short of Maple Mono's, the only
+  reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
 - Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 26 on every side, then
   squeezed at the ends to stay 20 inside the cell so neighbours don't touch. Black shapes (● ◆
   ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the hyphen's

@@ -39,7 +39,9 @@ TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("�
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180)}
 SMALLER = 0.6  # ▸ ▹ ► against ▶ ▷: Maple Mono's are 0.48 of its ▶'s height
-SMALL_STEM = (54, 4)  # test_latin's small components, which ▹ is drawn like
+# The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
+# ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
+SMALL_COUNTER = 157
 
 
 def linear(matrix):
@@ -228,14 +230,11 @@ class ShapeTest(unittest.TestCase):
             with self.subTest(shape=small):
                 self.assertLessEqual(self.height(small), SMALLER * self.height(large))
 
-    def test_small_white_triangle_is_drawn_like_the_small_figures(self):
-        # At the full stroke ▹'s counter closes up by 16 px, so, like the small figures, it is ▷
-        # scaled down with its strokes thickened back to a lighter stem.
+    def test_small_white_triangle_keeps_its_counter(self):
+        # ▹ must read white next to ▸ at 14 px, where a heavier outline fills its counter in.
         layer = self.font[ord("▹")].foreground
         _, y0, _, y1 = layer.boundingBox()
-        (a, b), *_ = measure.spans_at_y(layer, (y0 + y1) / 2)
-        weight, delta = SMALL_STEM
-        self.assertAlmostEqual(b - a, weight, delta=delta)
+        self.assertGreaterEqual(round(measure.counter(layer, (y0 + y1) / 2)), SMALL_COUNTER)
 
     def test_pointer_is_long_and_flat(self):
         # ► points where ▶ stands, as Maple Mono's (559 × 270) does.
