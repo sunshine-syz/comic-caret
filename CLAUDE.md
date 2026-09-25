@@ -100,6 +100,11 @@ Font files are never committed; they ship as GitHub release assets.
 - `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
   `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD in
   reverse order; assign them reversed to keep the file's order.
+- `validate()` flags a mirrored reference (0x10, and 0x8 for its reversed contours) and a glyph
+  whose own outline overlaps its reference (0x4). Mirror into an outline with
+  `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
+- `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
+  another's outline as saved in the font, not from the layer before cleanup.
 
 ## Designing glyphs
 
@@ -116,7 +121,12 @@ Font files are never committed; they ship as GitHub release assets.
   regular glyph at 0.45 (figures), 0.55 (ª º) or 0.41 (™ © ®), thickened with
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to
-  match.
+  match. ▹ is the same kind of exception: ▷ at 0.56 thickened to 54, since at the full stroke its
+  counter fills in at 16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
+- Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 26 on every side, then
+  squeezed at the ends to stay 20 inside the cell so neighbours don't touch. Black shapes (● ◆
+  ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the hyphen's
+  stroke, or of `o`'s for ○.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
   height.
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,

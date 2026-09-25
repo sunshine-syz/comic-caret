@@ -79,12 +79,12 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 
 ## Character set
 
-![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, boxes, block elements and Braille patterns](docs/images/characters.svg)
+![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, prompt symbols, boxes, block elements and Braille patterns](docs/images/characters.svg)
 
 ASCII, the Latin letters and signs of Western, Central European, Baltic and Turkish text, λ Λ,
 straight, diagonal and double arrows, common math signs such as ≠ ≈ ≡ ∞, the check marks ✓ ✗
-and �, all of Box Drawing and Block Elements, and Braille. Not there yet: Cyrillic and most
-of Greek.
+and �, the prompt and status symbols of shells and CLI tools such as ❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐, all
+of Box Drawing and Block Elements, and Braille. Not there yet: Cyrillic and most of Greek.
 
 ## Building from source
 

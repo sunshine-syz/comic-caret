@@ -7,6 +7,8 @@
   - █ ▀ ▄ ▌ ▐, the eighths ▁–▇ and ▏–▉, the quadrants ▖–▟ and the shades ░ ▒ ▓. They fill the cell and the 1.25 em line exactly, so neighbouring blocks meet without a seam, and the shades' dot patterns run on across cells.
 - ━ ┃ ┏ ┓ ┗ ┛, the dashed lines ┄ ┅ ┆ ┇ ┈ ┉ ┊ ┋ and corners that mix weights, such as ┍ ┎, were drawn as plain light lines, so `pip` and `rich` progress bars and `rich`'s default table showed thin solid lines instead of heavy or dashed ones.
 - The Nerd Font edition now uses these glyphs too. Before, the Nerd Fonts patcher replaced the whole set with its own, because the font lacked part of it, and its boxes opened up at line spacings above 1.25 em.
+- Symbols for prompts and CLI output, so they no longer fall back to another font: the prompt characters ❯ ❮ (Starship, Pure, Powerlevel10k) and ➜ (oh-my-zsh), Starship's git arrows ⇡ ⇣ ⇕, the status marks ✔ ✕ ✖ ✘ ⚠ ℹ of `log-symbols`, npm, yarn and Jest, the dots and pointers ● ○ ◉ ◆ ◇ ▶ ▷ ▸ ▹ ► of lazygit, fzf and tmux with the same triangles pointing the other ways (◀ ▲ ▼ ▾ and the rest) for file trees, ★ ☆, the task boxes ☐ ☑ ☒, and ⋯ ⋮. They are drawn in the font's hand: ✔ ✘ ✖ ❯ ➜ are ✓ ✗ ✕ > → drawn heavier, the black shapes are the white ones filled in, and the shapes sit on the same center line as - and →. The Nerd Font edition keeps these ❯ ❮ instead of the patcher's.
+- ↑ ↓ ↕ are taller, to match the new ⇡ ⇣ ⇕, whose dashed shafts need the room.
 
 ## 1.0.0 (2026-09)
 
