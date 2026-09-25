@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -32,7 +32,7 @@ HEAVY_SIDE = 20
 # reference (0x10).
 MIRRORED_FROM = {"❮": "❯", "◀": "▶", "◁": "▷", "◂": "▸", "◃": "▹", "◄": "►"}
 # Black shape -> the white shape whose outer contour it is.
-BLACK = {"●": "○", "▶": "▷", "▸": "▹"}
+BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆"}
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
