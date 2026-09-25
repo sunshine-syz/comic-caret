@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -163,6 +163,14 @@ class MarkTest(unittest.TestCase):
         contours = list(self.font[0xFFFD].foreground)
         self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
         self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)  # hook and dot
+
+    def test_signs_are_black_shapes_with_a_white_mark(self):
+        # As � is: ! and i each cut out as a stroke and a dot.
+        for char in "⚠ℹ":
+            with self.subTest(sign=char):
+                contours = list(self.font[ord(char)].foreground)
+                self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
+                self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)
 
 
 
