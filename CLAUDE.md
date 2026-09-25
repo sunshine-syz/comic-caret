@@ -18,6 +18,7 @@ tools/render_sample.sh OUTDIR           # ligature sample images, calt on and of
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
 python3 tools/render_specimen.py        # the README's images in docs/images/ (committed)
+python3 tools/bump_version.py X.Y.Z     # start the next version: SFD Version: and CHANGELOG head
 ```
 
 `proof_sheet.py` takes `--before HEAD` (any commit) to add the font built from that commit's
@@ -44,11 +45,16 @@ not affect this font.
 
 Font files are never committed; they ship as GitHub release assets.
 
-1. Set the SFD `Version:` (through FontForge) and head `CHANGELOG.md` with it. If glyphs
-   changed, rerun `tools/render_specimen.py` so the README shows them.
+The version being worked on heads `CHANGELOG.md` as "unreleased"; start the next one with
+`tools/bump_version.py X.Y.Z`, which sets the SFD `Version:` through FontForge and the heading
+together.
+
+1. `python3 tools/bump_version.py --release` gives the heading this month. If glyphs changed,
+   rerun `tools/render_specimen.py` so the README shows them.
 2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd
    Fonts builds it made, which they skip otherwise.
-3. Tag the commit `vX.Y.Z` and attach both zips from `dist/` to a GitHub release.
+3. `python3 tools/bump_version.py --check-tag vX.Y.Z` refuses a tag that isn't that release.
+   Tag the commit and attach both zips from `dist/` to a GitHub release.
 
 ## Editing the SFD
 
