@@ -58,6 +58,11 @@ class LookalikeTest(unittest.TestCase):
         left_ring, slash, right_ring = measure.spans_at_y(layer, (y0 + y1) / 2)
         self.assertLessEqual(abs((slash[0] - left_ring[1]) - (right_ring[0] - slash[1])), 10)
 
+    def test_white_circle_is_wider_than_o(self):
+        # So "○ main" doesn't read as "o main": Fira Code's ○ is 78 wider than its o.
+        ring, o = self.font[0x25CB].foreground, self.font["o"].foreground
+        self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), 78)
+
 
 class ColonTest(unittest.TestCase):
     @classmethod

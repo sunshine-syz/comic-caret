@@ -18,7 +18,7 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜"
+SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉"
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -31,6 +31,9 @@ HEAVY_SIDE = 20
 # Mirrored glyph -> the glyph it mirrors. An outline, since validate() flags a flipped
 # reference (0x10).
 MIRRORED_FROM = {"❮": "❯"}
+# Black shape -> the white shape whose outer contour it is.
+BLACK = {"●": "○"}
+FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 
 
 def linear(matrix):
@@ -38,9 +41,13 @@ def linear(matrix):
     return tuple(round(v, 6) for v in matrix[:4])
 
 
+def points(contour):
+    return sorted((p.x, p.y, p.on_curve) for p in contour)
+
+
 def outline(layer):
     """The layer's points, contour by contour, in an order that ignores where each starts."""
-    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
+    return sorted(points(contour) for contour in layer)
 
 
 class CoverageTest(unittest.TestCase):
@@ -154,6 +161,31 @@ class MarkTest(unittest.TestCase):
 
 
 
+class ShapeTest(unittest.TestCase):
+    """The white shapes are rings in the font's stroke, and the black ones fill them in."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def height(self, char):
+        _, y0, _, y1 = self.font[ord(char)].boundingBox()
+        return y1 - y0
+
+    def test_white_shapes_are_rings(self):
+        for white in BLACK.values():
+            with self.subTest(shape=white):
+                clockwise = sorted(bool(c.isClockwise()) for c in self.font[ord(white)].foreground)
+                self.assertEqual(clockwise, [False, True])  # an outline and its counter
+
+    def test_black_shapes_are_their_white_shapes_filled(self):
+        for black, white in BLACK.items():
+            with self.subTest(shape=black):
+                [outer] = [c for c in self.font[ord(white)].foreground if c.isClockwise()]
+                [own] = list(self.font[ord(black)].foreground)
+                self.assertEqual(points(own), points(outer))
+
+
 class HeavyMarkTest(unittest.TestCase):
     """✔ ✘ ✖ ❯ ➜ are ✓ ✗ ✕ > → drawn heavier, so each pair differs only in weight."""
 
@@ -209,6 +241,18 @@ class BuiltFromTest(unittest.TestCase):
             with self.subTest(glyph=char):
                 mirrored = geo.mirrored_x(self.font[ord(base)].foreground, ADVANCE / 2)
                 self.assertEqual(outline(self.font[ord(char)].foreground), outline(mirrored))
+
+    def test_fisheye_is_a_dot_centered_in_the_ring(self):
+        glyph = self.font[ord("◉")]
+        self.assertEqual(len(glyph.foreground), 0)
+        parts = {name: geo.transformed(measure.ink(self.font, name), matrix)
+                 for name, matrix, *_ in glyph.references}
+        ring_name = self.font[ord("○")].glyphname
+        self.assertEqual(sorted(parts), sorted([ring_name, "bullet"]))
+        ring, dot = parts[ring_name], parts["bullet"]
+        for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
+            self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
+        self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
 
 
 if __name__ == "__main__":
