@@ -27,7 +27,7 @@ HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' head
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
-                       r"|dtail|twohead|shaft|liga|tight_l|tight_r)")
+                       r"|warrow|warrow\.low|dtail|twohead|shaft|liga|tight_l|tight_r)")
 
 
 class Bar(NamedTuple):
@@ -95,6 +95,11 @@ JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap,
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one, which leaves
 # at least the white of Fira Code, the one reference that draws ->>, between the two.
 HEAD_PITCH = 375
+
+# ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
+# upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
+WAVE_END = 335
+SPECK = 90  # the stem weight: a hole no wider than a stroke reads as a blot, not a counter
 
 
 def outline(font, name):
@@ -376,6 +381,23 @@ def two_heads(font, name):
     return geo.union(head, inner, shaft)
 
 
+def wave_arrows(font):
+    """~> and <~: the head's cell carries on the ~ run, from the crest or trough the cell
+    before ends on, and the wave's next turn runs into an arm, which hides its cut end.
+
+    The wave's turn before that brushes the other arm and shuts in a speck of white near the
+    point, which is filled.
+    """
+    tildes = tilde_pieces(font)
+    right, left = (longer_angle(font, name, HEAD_SCALE) for name in ("greater", "less"))
+    high = geo.trim(tildes["asciitilde.mid"], x1=WAVE_END)
+    low = geo.trim(tildes["asciitilde.mid.low"], x1=WAVE_END)
+    return {"greater.warrow": geo.without_specks(geo.union(right, high), SPECK),
+            "greater.warrow.low": geo.without_specks(geo.union(right, low), SPECK),
+            "less.warrow": geo.without_specks(geo.union(left, geo.mirrored_x(high, ADVANCE / 2)),
+                                              SPECK)}
+
+
 def build(font):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -400,6 +422,7 @@ def build(font):
     for name in ("greater", "less"):
         glyphs[f"{name}.twohead"] = two_heads(font, name)
         glyphs[f"{name}.shaft"] = [("hyphen.mid", 0, 0)]  # a > or < inside ->> <<-
+    glyphs.update(wave_arrows(font))
     return glyphs
 
 

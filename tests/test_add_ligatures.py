@@ -247,6 +247,12 @@ class GlyphShapeTest(unittest.TestCase):
                 self.assertEqual(len(layer), 2)  # the outer head, and the inner one with the shaft
                 self.assertGreaterEqual(gap(*(one_layer(c) for c in layer)), FIRA_HEAD_GAP)
 
+    def test_wave_arrows_are_one_stroke(self):
+        # The wave runs into the head, leaving no counter or speck of white between them.
+        for glyph in ("greater.warrow", "greater.warrow.low", "less.warrow"):
+            with self.subTest(glyph=glyph):
+                self.assertEqual(len(self.font[glyph].foreground), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

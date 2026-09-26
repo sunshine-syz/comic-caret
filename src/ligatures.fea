@@ -18,7 +18,7 @@ languagesystem latn dflt;
   underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
-  less.dtail greater.dtail
+  less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail
   less.twohead greater.twohead less.shaft greater.shaft
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
@@ -49,6 +49,8 @@ lookup lig_mid_low { sub asciitilde by asciitilde.mid.low; } lig_mid_low;
 lookup lig_end_low { sub asciitilde by asciitilde.end.low; } lig_end_low;
 lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
 lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
+lookup lig_warrow { sub [less greater] by [less.warrow greater.warrow]; } lig_warrow;
+lookup lig_warrow_low { sub greater by greater.warrow.low; } lig_warrow_low;
 lookup lig_dtail { sub [less greater] by [less.dtail greater.dtail]; } lig_dtail;
 lookup lig_twohead { sub [less greater] by [less.twohead greater.twohead]; } lig_twohead;
 lookup lig_shaft { sub [less greater] by [less.shaft greater.shaft]; } lig_shaft;
@@ -166,7 +168,9 @@ feature calt {
   } lig_or_equal;
 
   # 4. Runs of _ # ~, whatever their neighbours. ~ pieces alternate: after one that ends
-  #    high (.sta, .mid.low) comes one that starts high (.mid, .end), and the reverse.
+  #    high (.sta, .mid.low) comes one that starts high (.mid, .end), and the reverse. A <
+  #    before a ~ run, or a > after one, is a wave arrow's head, the < only when no operator
+  #    comes before it and the > only when none follows it; a < head ends high.
   lookup lig_runs {
     sub [underscore.sta underscore.mid] underscore' lookup lig_mid underscore;
     sub [underscore.sta underscore.mid] underscore' lookup lig_end;
@@ -174,11 +178,19 @@ feature calt {
     sub [numbersign.sta numbersign.mid] numbersign' lookup lig_mid numbersign;
     sub [numbersign.sta numbersign.mid] numbersign' lookup lig_end;
     sub numbersign' lookup lig_sta numbersign;
-    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_mid asciitilde;
-    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_end;
-    sub asciitilde.mid asciitilde' lookup lig_mid_low asciitilde;
+    ignore sub @Op less' asciitilde;
+    sub less' lookup lig_warrow asciitilde;
+    sub [asciitilde.sta asciitilde.mid.low less.warrow] asciitilde' lookup lig_end greater @Op;
+    sub asciitilde.mid asciitilde' lookup lig_end_low greater @Op;
+    sub [asciitilde.sta asciitilde.mid.low less.warrow] asciitilde' lookup lig_mid
+      [asciitilde greater];
+    sub [asciitilde.sta asciitilde.mid.low less.warrow] asciitilde' lookup lig_end;
+    sub asciitilde.mid asciitilde' lookup lig_mid_low [asciitilde greater];
     sub asciitilde.mid asciitilde' lookup lig_end_low;
-    sub asciitilde' lookup lig_sta asciitilde;
+    ignore sub asciitilde' greater @Op;
+    sub asciitilde' lookup lig_sta [asciitilde greater];
+    sub [asciitilde.sta asciitilde.mid.low] greater' lookup lig_warrow;
+    sub asciitilde.mid greater' lookup lig_warrow_low;
   } lig_runs;
 
   # 5. Pipes, and <> as a diamond.

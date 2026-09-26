@@ -126,6 +126,14 @@ LIGATED = {
     ">=>": ["greater.dtail", "equal.mid", "greater.darrow"],
     "f>=>g": ["f", "greater.dtail", "equal.mid", "greater.darrow", "g"],
     "<=<": ["less.darrow", "equal.mid", "less.dtail"],
+    # Wave arrows: a > head starts high or low, after whichever the run ends on
+    "~>": ["asciitilde.sta", "greater.warrow"],
+    "~> 1.0": ["asciitilde.sta", "greater.warrow", "space", "one", "period", "zero"],
+    "~~>": ["asciitilde.sta", "asciitilde.mid", "greater.warrow.low"],
+    "~~~>": ["asciitilde.sta", "asciitilde.mid", "asciitilde.mid.low", "greater.warrow"],
+    "<~": ["less.warrow", "asciitilde.end"],
+    "<~~": ["less.warrow", "asciitilde.mid", "asciitilde.end.low"],
+    "<~>": ["less.warrow", "asciitilde.mid", "greater.warrow.low"],
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -200,6 +208,8 @@ PLAIN = [
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
+    # Wave arrows followed by another operator, and Ruby's <<~ heredoc
+    "~>>", "~>=", "<<~", "=~", "!~",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)

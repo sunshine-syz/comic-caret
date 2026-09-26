@@ -135,6 +135,18 @@ class WeldTest(unittest.TestCase):
             geo.weld(geo.rect(0, 0, 100, 50), geo.rect(120, 0, 200, 50), 100)
 
 
+class WithoutSpecksTest(unittest.TestCase):
+    def test_fills_only_the_small_holes(self):
+        layer = geo.rect(0, 0, 300, 100)
+        for x0, x1 in ((20, 40), (100, 250)):
+            hole = geo.rect(x0, 20, x1, 80)
+            hole[0].reverseDirection()
+            layer += hole
+        self.assertEqual(sorted(tuple(round(v) for v in c.boundingBox())
+                                for c in geo.without_specks(layer, 60)),
+                         [(0, 0, 300, 100), (100, 20, 250, 80)])
+
+
 class UnionAndMirrorTest(unittest.TestCase):
     def test_union_merges_crossing_outlines(self):
         self.assertEqual(len(geo.union(geo.rect(0, 0, 100, 50), geo.rect(50, -20, 70, 80))), 1)

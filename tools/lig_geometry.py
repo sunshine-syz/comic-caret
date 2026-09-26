@@ -68,6 +68,16 @@ def union(*layers):
     return out
 
 
+def without_specks(layer, size):
+    """The outline with every hole no wider or taller than `size` filled."""
+    out = fontforge.layer()
+    for contour in layer:
+        x0, y0, x1, y1 = contour.boundingBox()
+        if contour.isClockwise() or x1 - x0 > size or y1 - y0 > size:
+            out += contour
+    return out
+
+
 def trim(layer, x0=-FAR, x1=FAR, y0=-FAR, y1=FAR):
     """The part of the outline inside the box, cut flat along its sides."""
     # layer.exclude() returns the wrong region, so intersect with the box instead.
