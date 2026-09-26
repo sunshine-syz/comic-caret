@@ -27,7 +27,7 @@ HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' head
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
-                       r"|liga|tight_l|tight_r)")
+                       r"|dtail|liga|tight_l|tight_r)")
 
 
 class Bar(NamedTuple):
@@ -89,6 +89,8 @@ DIAMOND_WIDTH_GAIN = 85
 # How far each glyph moves toward its partner in a tightened pair.
 TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
          "less": 40, "greater": 40, "question": 60, "bar": 100, "equal": 40}
+
+JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
 
 def outline(font, name):
@@ -162,10 +164,15 @@ def arm_halves(font, name):
     return geo.trim(angle, y0=AXIS - 30), geo.trim(angle, y1=AXIS + 30)
 
 
+def span_at(layer, y):
+    """(x0, x1) of the stroke that the horizontal line at y crosses."""
+    x0, _, x1, _ = geo.trim(layer, y0=y - 1, y1=y + 1).boundingBox()
+    return x0, x1
+
+
 def middle_at(layer, y):
     """The middle of the stroke that the horizontal line at y crosses."""
-    x0, _, x1, _ = geo.trim(layer, y0=y - 1, y1=y + 1).boundingBox()
-    return (x0 + x1) / 2, y
+    return sum(span_at(layer, y)) / 2, y
 
 
 def turned(layer, name, angle):
@@ -336,6 +343,25 @@ def diamond(font):
     return geo.union(*halves)
 
 
+def tail(font, name):
+    """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
+    carry on into the next cell, so the point between them stays open."""
+    angle = longer_angle(font, name, HEAD_SCALE)
+    parts = []
+    for bar in RUNS["equal"]:
+        bottom, top = bar.profile
+        upper = bottom > AXIS
+        inner = bottom if upper else top  # the bar's edge nearer the axis
+        parts.append(geo.trim(angle, y0=inner + JOIN) if upper
+                     else geo.trim(angle, y1=inner - JOIN))
+        # The bar starts where the cut arm's outer edge ends, so the edge runs on into the
+        # bar's and the bar's flat end lies inside the arm.
+        x0, x1 = span_at(angle, inner + JOIN if upper else inner - JOIN)
+        cut = (x0, ADVANCE + OVERLAP) if name == "greater" else (-OVERLAP, x1)
+        parts.append(geo.trim(stroke(font, "equal", *cut), y0=bar.band[0], y1=bar.band[1]))
+    return geo.union(*parts)
+
+
 def build(font):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -355,6 +381,8 @@ def build(font):
         glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
     glyphs["less_greater.liga"] = diamond(font)
     glyphs["less_bar_greater.liga"] = pipes(font)
+    for name in ("greater", "less"):
+        glyphs[f"{name}.dtail"] = tail(font, name)
     return glyphs
 
 

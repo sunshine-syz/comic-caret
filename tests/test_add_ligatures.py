@@ -223,6 +223,14 @@ class GlyphShapeTest(unittest.TestCase):
         x0, _, x1, _ = self.font["less_bar_greater.liga"].boundingBox()
         self.assertAlmostEqual((x0 + x1) / 2, -ADVANCE / 2, delta=2)
 
+    def test_tails_leave_the_point_open(self):
+        # >=> <=<: each arm runs into its = bar, and nothing joins the bars at the axis.
+        for tail in ("greater.dtail", "less.dtail"):
+            with self.subTest(tail=tail):
+                layer = self.font[tail].foreground
+                self.assertEqual(len(layer), 2)
+                self.assertEqual(spans_at_y(layer, AXIS), [])
+
 
 if __name__ == "__main__":
     unittest.main()

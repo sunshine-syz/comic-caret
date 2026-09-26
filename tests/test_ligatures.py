@@ -2,14 +2,18 @@
 
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
+import itertools
 import json
 import pathlib
 import subprocess
 import sys
 import unittest
 
+import fontforge
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from add_ligatures import GENERATED
+from add_ligatures import GENERATED, OVERLAP
+from measure import ink
 from project import ADVANCE, ROOT, SFD
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
@@ -38,6 +42,17 @@ def extents(font, text):
 
 def names(font, text, calt=True):
     return [name for name, _ in shape(font, text, calt)]
+
+
+def seam(layer, x):
+    """(y0, y1) of each straight vertical edge at x, where a piece is cut to meet the next."""
+    edges = []
+    for contour in layer:
+        for i in range(len(contour)):
+            a, b = contour[i], contour[(i + 1) % len(contour)]
+            if a.on_curve and b.on_curve and abs(a.x - x) < 0.5 and abs(b.x - x) < 0.5:
+                edges.append((min(a.y, b.y), max(a.y, b.y)))
+    return sorted(edges)
 
 
 def pieces(first, middle, last, count):
@@ -90,6 +105,10 @@ LIGATED = {
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
     "=->": ["equal"] + hyphens(2, right="greater.arrow"),
     "->=": hyphens(2, right="greater.arrow") + ["equal"],
+    # >=> <=<: a double arrow with a tail
+    ">=>": ["greater.dtail", "equal.mid", "greater.darrow"],
+    "f>=>g": ["f", "greater.dtail", "equal.mid", "greater.darrow", "g"],
+    "<=<": ["less.darrow", "equal.mid", "less.dtail"],
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -159,8 +178,8 @@ LIGATED = {
 PLAIN = [
     "-", "=", "a-b", "x=y", "- -", "= =",
     # Malformed arrows: a head pointing inward, doubled or in the middle, at any length
-    ">-", "-<", "=<", ">==", "==<", "->>", "<<-", "=>=", ">=>", "<=<",
-    "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
+    ">-", "-<", "=<", ">==", "==<", "->>", "<<-", "=>=",
+    "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
@@ -206,6 +225,16 @@ class LigatureShapingTest(unittest.TestCase):
                 with self.subTest(font=font.name, text=text):
                     generated = [n for n in names(font, text, calt=False) if GENERATED.fullmatch(n)]
                     self.assertEqual(generated, [])
+
+    def test_joined_pieces_meet_at_the_same_heights(self):
+        # A piece that runs on is cut flat at its cell's edge, and the next begins with the
+        # same edge; any step between them shows as a notch in the stroke.
+        font = fontforge.open(str(SFD))
+        for text in LIGATED:
+            for left, right in itertools.pairwise(names(FONTS[0], text)):
+                with self.subTest(text=text, left=left, right=right):
+                    self.assertEqual(seam(ink(font, left), ADVANCE + OVERLAP),
+                                     seam(ink(font, right), -OVERLAP))
 
     def test_every_generated_glyph_is_reachable(self):
         with open(SFD, encoding="utf-8") as sfd:

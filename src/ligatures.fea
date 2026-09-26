@@ -18,6 +18,7 @@ languagesystem latn dflt;
   underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
+  less.dtail greater.dtail
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
@@ -46,6 +47,7 @@ lookup lig_mid_low { sub asciitilde by asciitilde.mid.low; } lig_mid_low;
 lookup lig_end_low { sub asciitilde by asciitilde.end.low; } lig_end_low;
 lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
 lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
+lookup lig_dtail { sub [less greater] by [less.dtail greater.dtail]; } lig_dtail;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
@@ -85,6 +87,16 @@ feature calt {
     ignore sub colon' equal @Op;
     sub colon' lookup lig_colon_eq equal;
   } lig_colon_equal;
+
+  # >=> <=< as a double arrow with a tail: the second > or < is its head, the first its tail.
+  lookup lig_fish {
+    ignore sub @Op greater' equal greater;
+    ignore sub greater' equal greater @Op;
+    sub greater' lookup lig_dtail equal' lookup lig_mid greater' lookup lig_darrow;
+    ignore sub @Op less' equal less;
+    ignore sub less' equal less @Op;
+    sub less' lookup lig_darrow equal' lookup lig_mid less' lookup lig_dtail;
+  } lig_fish;
 
   # 2. Arrows and runs of - and =. Built left to right: a head, then pieces that continue
   #    from the glyph before, then a closing head. The unwind lookups then walk right to
