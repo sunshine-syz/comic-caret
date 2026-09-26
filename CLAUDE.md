@@ -137,7 +137,9 @@ together.
   stroke its counter fills in at 16 px. Its white stays 4 short of Maple Mono's, the only
   reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. ▫ (☐ at 0.52) and ◦ (○ at 0.48)
   are scaled so their rings come out about 41 too, ⧉'s squares are the hyphen's stroke at 0.79
-  so the one behind keeps clear of the one in front, and ⏺ ⏵ are ● ▶ scaled to ⏸'s height.
+  so the one behind keeps clear of the one in front, and ⏺ ⏵ are ● ▶ scaled to ⏸'s height. The
+  keyboard symbols ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ take the same 0.79 stroke, for their detail, so key hints
+  such as ⌃⌥⌘⇧ read at one weight.
 - Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side, then
   squeezed at the ends to stay 20 inside the cell; ❰ ❱ are two hyphen strokes pushed out the
   same, and ⏸'s bars are `|` pushed out 40, to weigh as much as ⏵ ⏺. No symbol comes closer to

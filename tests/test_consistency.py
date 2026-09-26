@@ -43,17 +43,17 @@ OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 # symbols, which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
-            "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱")
+            "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
            "✕✖❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
-           "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱")
+           "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤")
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
-            "◄►")
+            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
-MIRRORED_OUTLINES = "❮❰◀◁◂◃◄"
+MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫"
 
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.

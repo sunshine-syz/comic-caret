@@ -16,6 +16,11 @@
   - ■ □ ▪ ▫ ◦ ◯, for Starship and nested lists; ◦ stands where • does, and ▪ ▫ are small like ▸ ▹.
   - ❰ ❱, which Rich marks a traceback's failing line with, taller and narrower than the prompt's ❯ so the two don't look alike.
   - ⎯, which Vitest draws its dividers with: a row of them joins into the same line as `----`.
+- Keyboard, whitespace and return symbols:
+  - ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ for key hints, in one height and one weight, so ⌃⌥⌘⇧ reads evenly.
+  - ␣ ⍽ ↵ ⇥ ⏎ for the visible whitespace of VS Code, JetBrains IDEs, Vim and Helix; ␣ and ⍽ lie where `_` does.
+  - ↳ ↰ ↱ ↲ ↩ ↪ ⇤ ↹ for outlines, key hints and Vim's `showbreak`, built on the font's own → and ←.
+  - ⇑ ⇓, completing the double arrows.
 - Arrows such as `-->` and `=>` keep their head right before an HTML or JSX tag, as in `--><p>`, `--></div>` and `x=><li>`. Before, any `<` right after an arrow undid it.
 
 ## 1.1.0 (2026-09)

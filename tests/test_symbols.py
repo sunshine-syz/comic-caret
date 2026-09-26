@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓")
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -37,11 +37,17 @@ BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "
 # Claude Code's spinner cycles through these; frames of different sizes would make it pulse.
 SPINNER = "✢✳✶✻✽"
 MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
+# Keyboard symbols, which key hints string together (⌃⌥⌘⇧⏎): one band on the math axis, and
+# ⌃, the up arrowhead, at its top.
+KEYS = "⌘⌥⇧⎋⏎"
+# Symbols drawn as separate pieces, which keep apart.
+PIECES = "※⧉⇥⇤↹⎋⌦⌫"
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
-          "⋮": ("…", 90), "⇣": ("⇡", 180)}
+          "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
+          "↱": ("↲", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
@@ -150,7 +156,7 @@ class ArrowTest(unittest.TestCase):
     def test_vertical_arrows_share_one_height(self):
         # ⇡'s two dashes set it; the solid and two-headed arrows match it.
         _, y0, _, y1 = self.box(0x2191)
-        for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5):
+        for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5, 0x21D1, 0x21D3):
             with self.subTest(arrow=chr(code)):
                 _, b0, _, b1 = self.box(code)
                 self.assertAlmostEqual(b1 - b0, y1 - y0, delta=2)
@@ -171,6 +177,18 @@ class ArrowTest(unittest.TestCase):
         self.assertEqual(len(spans), 3)
         for lower, upper in itertools.pairwise(spans):
             self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
+
+    def test_turning_arrows_point_along_the_math_axis(self):
+        # ↵ ↩ ↪ rise above → and ←, but their heads stay where →'s and ←'s are; near the tip
+        # the head is one span, its middle the shaft's.
+        _, y0, _, y1 = self.box(ord("-"))
+        for char in "↵↩↪":
+            with self.subTest(arrow=char):
+                x0, _, x1, _ = self.box(ord(char))
+                points_left = char != "↪"
+                layer = self.font[ord(char)].foreground
+                [(s0, s1)] = measure.spans_at_x(layer, x0 + 40 if points_left else x1 - 40)
+                self.assertAlmostEqual((s0 + s1) / 2, (y0 + y1) / 2, delta=MIDDLE_TOLERANCE)
 
     def test_two_headed_arrows_show_shaft_between_their_heads(self):
         # Two full-size heads meet in the middle, and ↔ reads as a diamond.
@@ -279,6 +297,25 @@ class ShapeTest(unittest.TestCase):
             with self.subTest(control=char):
                 self.assertAlmostEqual(self.height(char), first, delta=2)
 
+    def test_keyboard_symbols_share_one_band(self):
+        # Within the hand's wobble: where two strokes meet in a point, as atop ⇧ and ⌃, their
+        # caps reach a little past it.
+        _, y0, _, y1 = self.font[ord(KEYS[0])].boundingBox()
+        for char in KEYS[1:]:
+            with self.subTest(key=char):
+                _, b0, _, b1 = self.font[ord(char)].boundingBox()
+                self.assertAlmostEqual(b0, y0, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual(b1, y1, delta=MIDDLE_TOLERANCE)
+        self.assertAlmostEqual(self.font[ord("⌃")].boundingBox()[3], y1, delta=MIDDLE_TOLERANCE)
+
+    def test_visible_spaces_lie_on_the_underscore(self):
+        # ␣ ⍽ stand for a space where _ would go, so their bottoms line up with it.
+        bottom = self.font["underscore"].boundingBox()[1]
+        for char in "␣⍽":
+            with self.subTest(space=char):
+                self.assertAlmostEqual(self.font[ord(char)].boundingBox()[1], bottom,
+                                       delta=MIDDLE_TOLERANCE)
+
     def test_white_bullet_stands_where_the_bullet_does(self):
         # As in every reference, so • and ◦ line up in nested lists.
         white, black = self.font[ord("◦")].boundingBox(), self.font[ord("•")].boundingBox()
@@ -327,28 +364,31 @@ class ApartTest(unittest.TestCase):
         x0, _, x1, _ = cls.font[ord("●")].boundingBox()
         cls.seam = 2 * min(x0, ADVANCE - x1)
 
-    def contours(self, char):
-        layers = []
-        for contour in self.font[ord(char)].foreground:
+    def pieces(self, char):
+        """The glyph's separate pieces: each outline with the counters inside it."""
+        contours = list(self.font[ord(char)].foreground)
+        outlines = [c for c in contours if c.isClockwise()]
+        pieces = []
+        for outline in outlines:
+            x0, y0, x1, y1 = outline.boundingBox()
             layer = fontforge.layer()
-            layer += contour
-            layers.append(layer)
-        return layers
+            layer += outline
+            for counter in contours:
+                a0, b0, a1, b1 = counter.boundingBox()
+                if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
+                    layer += counter
+            pieces.append(layer)
+        return pieces
 
-    def test_reference_mark_dots_clear_the_x(self):
-        parts = sorted(self.contours("※"), key=measure.area)
-        *dots, cross = parts
-        self.assertEqual(len(dots), 4)
-        for dot in dots:
-            self.assertGreaterEqual(measure.gap(dot, cross), self.seam)
-
-    def test_square_behind_clears_the_one_in_front(self):
-        # ⧉: the front square is a ring, its outline and counter; the one behind shows as a
-        # single piece round it.
-        rings = [c for c in self.contours("⧉") if c[0].isClockwise()]
-        self.assertEqual(len(rings), 2)
-        behind, front = sorted(rings, key=lambda layer: layer.boundingBox()[0])
-        self.assertGreaterEqual(measure.gap(behind, front), self.seam)
+    def test_pieces_keep_apart(self):
+        # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
+        # expects them apart), ⎋'s ring and arrow, and ⌫ ⌦'s tag and ×.
+        for char in PIECES:
+            pieces = self.pieces(char)
+            with self.subTest(symbol=char):
+                self.assertGreater(len(pieces), 1)
+                for a, b in itertools.combinations(pieces, 2):
+                    self.assertGreaterEqual(measure.gap(a, b), self.seam)
 
 
 class BuiltFromTest(unittest.TestCase):
@@ -383,7 +423,7 @@ class BuiltFromTest(unittest.TestCase):
         self.assertEqual(linear(matrix), (1, 0, 0, 1))
 
     def test_arrows_stand_where_the_plain_arrows_do(self):
-        for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕")):
+        for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕"), ("⇑", "↑"), ("⇓", "↓")):
             with self.subTest(arrow=char):
                 pairs = zip(self.middle(self.font[ord(char)]), self.middle(self.font[ord(plain)]),
                             strict=True)
