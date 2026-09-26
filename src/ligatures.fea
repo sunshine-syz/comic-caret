@@ -33,6 +33,8 @@ languagesystem latn dflt;
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
 # What starts a shell heredoc's delimiter after <<-: EOF 'EOF' "EOF" \EOF.
 @Delimiter = [A-Z a-z underscore quotesingle quotedbl backslash];
+# What follows a < that opens an HTML tag or comment: <p </p <!--.
+@TagStart = [A-Z a-z slash exclam];
 
 # Single substitutions, called from the chain rules below.
 lookup lig_sta {
@@ -113,11 +115,11 @@ feature calt {
   #    end touching more of the run reverts, then every piece before a reverted glyph.
   #    A doubled - head (<<- ->>) draws both heads in its outer cell and a shaft in the
   #    inner one, except in a shell heredoc (<<-EOF). In <!-- the < is an arrow of its own
-  #    and the -- runs on. A > before it ends a tag, as in </p><!--, unless it can head an
-  #    arrow.
+  #    and the -- runs on; it may follow the > that ends a tag or an arrow (</p><!--
+  #    --><!--). An arrow's head stays before a tag, as in --><p>.
   lookup lig_hyphen_build {
-    ignore sub [hyphen equal] greater less' exclam hyphen hyphen;
-    sub greater less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
+    sub [greater greater.arrow] less' lookup lig_comment exclam' lookup lig_comment hyphen
+      hyphen;
     ignore sub @Op less' exclam hyphen hyphen;
     sub less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
     ignore sub @HyphenRun less' less hyphen;
@@ -138,6 +140,8 @@ feature calt {
   lookup lig_hyphen_unwind {
     rsub [greater.twohead]' [hyphen less greater] by greater;
     rsub [greater.shaft]' [greater] by greater;
+    # A head before a tag becomes itself, which keeps the next rule from reverting it.
+    rsub [greater.arrow]' [less] @TagStart by greater.arrow;
     rsub [greater.arrow]' [hyphen less greater] by greater;
     rsub [hyphen.end]' [hyphen less greater] by hyphen;
     rsub [hyphen.mid]' [hyphen greater] by hyphen;
@@ -162,6 +166,7 @@ feature calt {
   } lig_equal_build;
 
   lookup lig_equal_unwind {
+    rsub [greater.darrow]' [less] @TagStart by greater.darrow;  # as in lig_hyphen_unwind
     rsub [greater.darrow]' [equal less greater] by greater;
     rsub [equal.end]' [equal less greater] by equal;
     rsub [equal.mid]' [equal greater] by equal;

@@ -7,8 +7,9 @@
   - `>=>` and `<=<`, Haskell's fish operators, as double arrows with a tail.
   - Arrows with two heads, `->>` and `<<-` (Clojure's thread-last, R's `<<-`), at any length: `-->>`, `<<-->>`. A shell heredoc's `<<-EOF` stays plain.
   - Wave arrows of any length, `~>` `<~` `~~>` `<~>`, for Elixir's and Ruby's version requirements and Scala's `<~`.
-  - `<!--` with its `<` drawn as an arrowhead, like the one `-->` already had, and the `!` centered between the arrow and the line.
+  - `<!--` with its `<` drawn as an arrowhead, like the one `-->` already had, and the `!` centered between the arrow and the line, also right after a tag or another comment: `</p><!--`, `--><!--`.
   - `?.` and `?:` pulled together, and threes pulled in from both ends: `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` and Rust's and Swift's ranges `..=` `..<`.
+- Arrows such as `-->` and `=>` keep their head right before an HTML or JSX tag, as in `--><p>`, `--></div>` and `x=><li>`. Before, any `<` right after an arrow undid it.
 
 ## 1.1.0 (2026-09)
 

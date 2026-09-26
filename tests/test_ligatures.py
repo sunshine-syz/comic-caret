@@ -110,6 +110,10 @@ LIGATED = {
     "<==": equals(3, left="less.darrow"),
     "<====": equals(5, left="less.darrow"),
     "<=>": equals(3, "less.darrow", "greater.darrow"),
+    # An arrow's head before a tag: HTML, and JSX's x=><li>
+    "--><p>": hyphens(3, right="greater.arrow") + ["less", "p", "greater"],
+    "--></p>": hyphens(3, right="greater.arrow") + ["less", "slash", "p", "greater"],
+    "x=><li>": ["x"] + equals(2, right="greater.darrow") + ["less", "l", "i", "greater"],
     "<====>": equals(6, "less.darrow", "greater.darrow"),
     # A - and an = family side by side: each part joins on its own
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
@@ -141,9 +145,8 @@ LIGATED = {
                     "space"] + hyphens(3, right="greater.arrow")),
     "</p><!--": ["less", "slash", "p", "greater", "less.comment", "exclam.tight_r", "hyphen.sta",
                  "hyphen.end"],
-    # After a > that can head an arrow, only the -- joins
-    "-><!--": ["hyphen", "greater", "less", "exclam", "hyphen.sta", "hyphen.end"],
-    "=><!--": ["equal", "greater", "less", "exclam", "hyphen.sta", "hyphen.end"],
+    "--><!--": (hyphens(3, right="greater.arrow")
+                + ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"]),
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -217,6 +220,8 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # A shell heredoc's <<-
     "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF",
+    # An arrow before a < that opens no tag
+    "-><", "=><", "-><1",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
