@@ -13,11 +13,13 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
+from add_ligatures import AXIS, GENERATED, OVERLAP
 from measure import spans_at_x, spans_at_y
-from project import ROOT, SFD
+from project import ADVANCE, ROOT, SFD
 
 GENERATOR = ROOT / "tools" / "add_ligatures.py"
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
+TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 
 
 def without_timestamp(path):
@@ -38,6 +40,17 @@ def flat_edges(layer, length):
             a, b = contour[i], contour[(i + 1) % len(contour)]
             if a.on_curve and b.on_curve and a.y == b.y and abs(a.x - b.x) >= length:
                 edges.append((a.y, min(a.x, b.x), max(a.x, b.x)))
+    return edges
+
+
+def cut_edges(layer, length):
+    """Straight vertical edges at least `length` long, as (x, y0, y1): strokes cut flat."""
+    edges = []
+    for contour in layer:
+        for i in range(len(contour)):
+            a, b = contour[i], contour[(i + 1) % len(contour)]
+            if a.on_curve and b.on_curve and a.x == b.x and abs(a.y - b.y) >= length:
+                edges.append((a.x, min(a.y, b.y), max(a.y, b.y)))
     return edges
 
 
@@ -144,7 +157,7 @@ class GlyphShapeTest(unittest.TestCase):
     def test_enlarged_heads_are_no_heavier_than_the_angles(self):
         # Scaling > up would thicken its arms past the shaft or bar they join.
         for glyph, angle in {"greater.arrow": "greater", "less.arrow": "less",
-                             **PIPES}.items():
+                             "less_bar_greater.liga": "less", **PIPES}.items():
             with self.subTest(glyph=glyph):
                 [arm] = self.mean_widths(angle)
                 strokes = self.mean_widths(glyph)
@@ -155,28 +168,60 @@ class GlyphShapeTest(unittest.TestCase):
 
     def test_pipe_bars_are_as_heavy_as_the_bar(self):
         [bar] = self.mean_widths("bar")
-        for pipe, angle in PIPES.items():
+        for pipe, index in {**{p: 0 if a == "greater" else -1 for p, a in PIPES.items()},
+                            "less_bar_greater.liga": 1}.items():
             with self.subTest(pipe=pipe):
                 strokes = self.mean_widths(pipe)
-                self.assertEqual(len(strokes), 2)
-                self.assertAlmostEqual(strokes[0] if angle == "greater" else strokes[-1], bar,
-                                       delta=0.05 * bar)
+                self.assertEqual(len(strokes), 3 if index == 1 else 2)
+                self.assertAlmostEqual(strokes[index], bar, delta=0.05 * bar)
 
     def test_pipe_bars_keep_their_round_ends(self):
         # Every stroke in the font ends round; a bar cut flat shows a straight horizontal
         # edge as wide as the stroke.
-        for pipe in PIPES:
+        for pipe in TRIANGLES:
             with self.subTest(pipe=pipe):
                 self.assertEqual(flat_edges(self.font[pipe].foreground, 20), [])
 
-    def test_pipe_corners_are_one_round_end(self):
-        # An arm end beside the bar's end would leave two caps with a notch between them.
-        for pipe in PIPES:
-            layer = self.font[pipe].foreground
+    def test_corners_are_one_round_end(self):
+        # Two stroke ends side by side would leave two caps with a notch between them.
+        for glyph in [*TRIANGLES, "less_greater.liga"]:
+            layer = self.font[glyph].foreground
             _, bottom, _, top = layer.boundingBox()
             for y in (top - 4, top - 10, bottom + 4, bottom + 10):
-                with self.subTest(pipe=pipe, y=y):
+                with self.subTest(glyph=glyph, y=y):
                     self.assertEqual(len(widths_at(layer, y)), 1)
+
+    def test_strokes_are_cut_flat_only_where_they_run_on(self):
+        # Every stroke in the font ends round. A straight edge is a stroke cut flat, which a
+        # piece may show only where it runs on into the next cell: upright, at the cell's
+        # edge. Any other cut has to lie inside a stroke it runs into. The bars of _ and # are
+        # drawn with straight sides.
+        seams = {-OVERLAP, ADVANCE + OVERLAP}
+        cut = {}
+        for glyph in self.font.glyphs():
+            name = glyph.glyphname
+            if not GENERATED.fullmatch(name):
+                continue
+            edges = [e for e in cut_edges(glyph.foreground, 20) if e[0] not in seams]
+            if not name.startswith(("underscore.", "numbersign.")):
+                edges += flat_edges(glyph.foreground, 20)
+            if edges:
+                cut[name] = edges
+        self.assertEqual(cut, {})
+
+    def test_diamond_is_one_ring_centred_on_its_cells(self):
+        # <> as ◇: the halves meet at both corners around one counter, centred on the boundary
+        # between its two cells and on the axis, like < and >.
+        layer = self.font["less_greater.liga"].foreground
+        # One outline and one hole: two halves that don't meet are two outlines.
+        self.assertEqual(sorted(c.isClockwise() for c in layer), [False, True])
+        x0, y0, x1, y1 = layer.boundingBox()
+        self.assertAlmostEqual((x0 + x1) / 2, 0, delta=2)
+        self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=5)
+
+    def test_pipes_are_centred_on_their_middle_cell(self):
+        x0, _, x1, _ = self.font["less_bar_greater.liga"].boundingBox()
+        self.assertAlmostEqual((x0 + x1) / 2, -ADVANCE / 2, delta=2)
 
 
 if __name__ == "__main__":

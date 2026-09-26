@@ -19,7 +19,7 @@ languagesystem latn dflt;
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
-  bar_greater.liga less_bar.liga
+  bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
@@ -54,6 +54,8 @@ lookup lig_less_equal { sub equal by less_equal.liga; } lig_less_equal;
 lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
 lookup lig_bar_greater { sub greater by bar_greater.liga; } lig_bar_greater;
 lookup lig_less_bar { sub bar by less_bar.liga; } lig_less_bar;
+lookup lig_less_bar_greater { sub greater by less_bar_greater.liga; } lig_less_bar_greater;
+lookup lig_less_greater { sub greater by less_greater.liga; } lig_less_greater;
 lookup lig_tight_r {
   sub [colon period ampersand plus slash asterisk less greater question bar equal]
    by [colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
@@ -152,8 +154,11 @@ feature calt {
     sub asciitilde' lookup lig_sta asciitilde;
   } lig_runs;
 
-  # 5. Pipes.
+  # 5. Pipes, and <> as a diamond.
   lookup lig_pipes {
+    ignore sub @Op less' bar greater;
+    ignore sub less' bar greater @Op;
+    sub less' lookup lig_spacer bar' lookup lig_spacer greater' lookup lig_less_bar_greater;
     ignore sub @Op bar' greater;
     ignore sub bar' greater @Op;
     sub bar' lookup lig_spacer greater' lookup lig_bar_greater;
@@ -167,6 +172,12 @@ feature calt {
     ignore sub bar' bar @Op;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
+
+  lookup lig_diamond {
+    ignore sub @Op less' greater;
+    ignore sub less' greater @Op;
+    sub less' lookup lig_spacer greater' lookup lig_less_greater;
+  } lig_diamond;
 
   # 6. Tightened threes, their outer glyphs moved in and the middle one left in place, then
   #    tightened pairs. The threes come first: a pair's ignore rules would claim them. An =

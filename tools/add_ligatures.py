@@ -82,6 +82,10 @@ BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
 COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
+# <>: each half's angle widened by this, so the diamond is as wide as the references' at the
+# same x-height: 1.70 x-heights, between Maple Mono's 1.67 and Fira Code's 1.76.
+DIAMOND_WIDTH_GAIN = 85
+
 # How far each glyph moves toward its partner in a tightened pair.
 TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
          "less": 40, "greater": 40, "question": 60, "bar": 100, "equal": 40}
@@ -221,14 +225,14 @@ def not_equal(font, cells):
     return geo.union(bars, slash)
 
 
-def flatter_angle(font, name):
+def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
     """< or > with each arm turned flatter about the point and lengthened so its end keeps
-    its height, which widens the angle by ANGLE_WIDTH_GAIN."""
+    its height, which widens the angle by `width_gain`."""
     tip = TIP[name]
     arms = []
     for (end_x, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
         dx, dy = end_x - tip, end_y - AXIS
-        new_dx = dx + OUTWARD[name] * ANGLE_WIDTH_GAIN
+        new_dx = dx + OUTWARD[name] * width_gain
         old_direction, new_direction = math.atan2(dy, dx), math.atan2(dy, new_dx)
         gain = math.hypot(new_dx, dy) - math.hypot(dx, dy)
         # Lay the arm along +x from the point, lengthen its far half, then turn it into place.
@@ -266,19 +270,70 @@ def squeezed_bar(font, height):
     return geo.transformed(lying, psMat.rotate(math.pi / 2))
 
 
+def pipe_bar(font, head):
+    """| squeezed to the height of `head` and level with it."""
+    _, hy0, _, hy1 = head.boundingBox()
+    bar = squeezed_bar(font, hy1 - hy0)
+    return geo.transformed(bar, psMat.translate(0, hy0 - bar.boundingBox()[1]))
+
+
+def against(head, name, x):
+    """The head of > or < moved so its arm ends' outer edge lies at x. Arm and bar are about
+    equally heavy, so with a bar's edge at x their round ends coincide."""
+    x0, _, x1, _ = head.boundingBox()
+    return geo.transformed(head, psMat.translate(x - (x0 if name == "greater" else x1), 0))
+
+
 def pipe(font, name):
     """|> or <| as a triangle: the enlarged head closed by a bar as tall as it."""
     arrow = longer_angle(font, name, PIPE_HEAD_SCALE)
-    hx0, hy0, hx1, hy1 = arrow.boundingBox()
-    bar = squeezed_bar(font, hy1 - hy0)
-    bx0, by0, bx1, _ = bar.boundingBox()
-    # The bar's outer edge goes where the references put it, and the arm ends' outer edge
-    # onto it; arm and bar are about equally heavy, so their round ends then coincide.
+    bar = pipe_bar(font, arrow)
+    bx0, _, bx1, _ = bar.boundingBox()
+    # The bar's outer edge goes where the references put it, and the arm ends' outer edge onto it.
     edge = PIPE_BAR_EDGE[name]
     outer = bx0 if name == "greater" else bx1  # |> has its bar on the left, <| on the right
-    bar = geo.transformed(bar, psMat.translate(edge - outer, hy0 - by0))
-    arrow = geo.transformed(arrow, psMat.translate(edge - (hx0 if name == "greater" else hx1), 0))
-    return geo.union(bar, arrow)
+    bar = geo.transformed(bar, psMat.translate(edge - outer, 0))
+    return geo.union(bar, against(arrow, name, edge))
+
+
+def pipes(font):
+    """<|> as ◁|▷: the heads of <| and |> on either side of one bar, centred on the middle of
+    its three cells."""
+    right = longer_angle(font, "greater", PIPE_HEAD_SCALE)
+    bar = pipe_bar(font, right)
+    bx0, _, bx1, _ = bar.boundingBox()
+    left = against(longer_angle(font, "less", PIPE_HEAD_SCALE), "less", bx1)
+    symbol = geo.union(left, bar, against(right, "greater", bx0))
+    x0, _, x1, _ = symbol.boundingBox()
+    return geo.transformed(symbol, psMat.translate(-ADVANCE / 2 - (x0 + x1) / 2, 0))
+
+
+def end_centre(angle, above):
+    """(x, y): the centre of the round end of the arm of `angle` above or below the axis, half
+    a stroke back from the arm's far end along its middle line. ARM_ENDS, measured by hand,
+    misses these centres by up to 30."""
+    _, y0, _, y1 = angle.boundingBox()
+    rise = (y1 if above else y0) - AXIS
+    (ax, ay), (bx, by) = (middle_at(angle, AXIS + k * rise) for k in (0.3, 0.65))
+    direction = math.atan2(by - ay, bx - ax)
+    # Laid along +x from (ax, ay), the arm's far end is its right edge.
+    arm = geo.trim(angle, y0=AXIS) if above else geo.trim(angle, y1=AXIS)
+    flat = geo.transformed(arm, geo.about(psMat.rotate(-direction), ax, ay))
+    far = flat.boundingBox()[2]
+    _, low, _, high = geo.trim(flat, x0=(ax + far) / 2 - 1, x1=(ax + far) / 2 + 1).boundingBox()
+    reach = far - ax - (high - low) / 2
+    return ax + reach * math.cos(direction), ay + reach * math.sin(direction)
+
+
+def diamond(font):
+    """<> as ◇: < and > widened by DIAMOND_WIDTH_GAIN and moved together until their arm ends
+    meet on the boundary between the two cells, so each corner turns as one round stroke end."""
+    halves = []
+    for name in ("less", "greater"):
+        angle = flatter_angle(font, name, DIAMOND_WIDTH_GAIN)
+        middle = sum(end_centre(angle, above)[0] for above in (True, False)) / 2
+        halves.append(geo.transformed(angle, psMat.translate(-middle, 0)))
+    return geo.union(*halves)
 
 
 def build(font):
@@ -298,6 +353,8 @@ def build(font):
     for name, shift in TIGHT.items():
         glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
         glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
+    glyphs["less_greater.liga"] = diamond(font)
+    glyphs["less_bar_greater.liga"] = pipes(font)
     return glyphs
 
 

@@ -116,9 +116,14 @@ LIGATED = {
               "asciitilde.end.low"],
     "~~strike~~": ["asciitilde.sta", "asciitilde.end", "s", "t", "r", "i", "k", "e",
                    "asciitilde.sta", "asciitilde.end"],
-    # Pipes and tightened pairs
+    # Pipes, <> and tightened pairs
     "|>": ["LIG", "bar_greater.liga"],
     "<|": ["LIG", "less_bar.liga"],
+    "<|>": ["LIG", "LIG", "less_bar_greater.liga"],
+    "a <|> b": ["a", "space", "LIG", "LIG", "less_bar_greater.liga", "space", "b"],
+    "<>": ["LIG", "less_greater.liga"],
+    "new List<>()": ["n", "e", "w", "space", "L", "i", "s", "t", "LIG", "less_greater.liga",
+                     "parenleft", "parenright"],
     "||": ["bar.tight_r", "bar.tight_l"],
     "a || b": ["a", "space", "bar.tight_r", "bar.tight_l", "space", "b"],
     "::": ["colon.tight_r", "colon.tight_l"],
@@ -158,7 +163,7 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
-    "<=-", "=<=",
+    "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
