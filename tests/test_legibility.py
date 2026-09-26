@@ -64,6 +64,25 @@ class LookalikeTest(unittest.TestCase):
         ring, o = self.font[0x25CB].foreground, self.font["o"].foreground
         self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), 78)
 
+    def test_white_bullet_sits_below_the_degree_sign(self):
+        # A small ring either way: ◦ keeps below °'s middle, so "◦ item" isn't "° item".
+        _, _, _, top = self.font[ord("◦")].boundingBox()
+        _, y0, _, y1 = self.font["degree"].boundingBox()
+        self.assertLessEqual(top, (y0 + y1) / 2)
+
+    def test_elbow_stands_as_tall_as_the_bar(self):
+        # ⎿ is | turning right; at a letter's height "⎿  Read" would read as "L  Read".
+        self.assertGreaterEqual(self.font[ord("⎿")].boundingBox()[3],
+                                self.font["bar"].boundingBox()[3])
+
+    def test_bracket_ornament_is_taller_and_narrower_than_the_quote_ornament(self):
+        # ❱ against the prompt's ❯: at least as far apart in height as ✗ and × (MarkTest in
+        # test_symbols.py), and narrower, so its arms stand steeper.
+        b0, c0, b1, c1 = self.font[ord("❱")].boundingBox()
+        q0, r0, q1, r1 = self.font[ord("❯")].boundingBox()
+        self.assertGreaterEqual((c1 - c0) - (r1 - r0), 100)
+        self.assertLess(b1 - b0, q1 - q0)
+
 
 class ColonTest(unittest.TestCase):
     @classmethod

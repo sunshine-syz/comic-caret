@@ -2,8 +2,8 @@
 
 Usage: python3 tools/add_ligatures.py [SFD]
 
-Replaces every glyph and GSUB lookup an earlier run made, so running it again changes nothing
-but ModificationTime.
+Replaces every glyph and GSUB lookup an earlier run made, and redraws ⎯ from the pieces, so
+running it again changes nothing but ModificationTime.
 """
 import argparse
 import math
@@ -19,6 +19,7 @@ import lig_geometry as geo
 from project import ADVANCE, ROOT, SFD, save_checked, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
+LINE_EXTENSION = 0x23AF
 
 OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
 AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
@@ -465,6 +466,17 @@ def add_glyphs(font, glyphs):
         glyph.autoHint()
 
 
+def add_line_extension(font):
+    """⎯ (U+23AF), which Vitest draws its dividers with, as the -- line's middle piece, so a
+    row of them draws the line -- does. Removing the pieces unlinked it into an outline, so it
+    is redrawn in place."""
+    glyph = font.createChar(LINE_EXTENSION, f"uni{LINE_EXTENSION:04X}")
+    glyph.foreground = fontforge.layer()
+    glyph.references = (("hyphen.mid", psMat.identity()),)
+    glyph.width = ADVANCE
+    glyph.autoHint()
+
+
 def merge_features(font):
     font.mergeFeature(str(FEA))
     # On a parse error FontForge prints to stderr and merges nothing, so check the result.
@@ -495,6 +507,7 @@ def main():
     font = fontforge.open(str(sfd))
     remove_previous(font)
     add_glyphs(font, build(font))
+    add_line_extension(font)
     merge_features(font)
     save_checked(font, sfd, __file__)
 

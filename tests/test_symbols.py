@@ -18,7 +18,8 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = "≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
+SYMBOLS = ("≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱")
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -32,16 +33,23 @@ HEAVY_INK = 1.45
 # to fit) and � (Comic Shanns's own) came with 1.0.0, 11 inside the cell.
 OWN_SIDES = "∞�"
 # Black shape -> the white shape whose outer contour it is.
-BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆"}
+BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫"}
+# Claude Code's spinner cycles through these; frames of different sizes would make it pulse.
+SPINNER = "✢✳✶✻✽"
+MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180)}
-SMALLER = 0.6  # ▸ ▹ ► against ▶ ▷: Maple Mono's are 0.48 of its ▶'s height
+SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
 SMALL_COUNTER = 157
+# The white across ▫'s middle and ◦'s, at least the narrowest reference's: Fira Code's ▫ and
+# Maple Mono's ◦, the only reference's, at our cap height.
+SMALL_SQUARE_COUNTER = 122
+WHITE_BULLET_COUNTER = 144
 
 
 def linear(matrix):
@@ -232,8 +240,8 @@ class ShapeTest(unittest.TestCase):
                 [own] = list(self.font[ord(black)].foreground)
                 self.assertEqual(points(own), points(outer))
 
-    def test_small_triangles_are_about_half_size(self):
-        for small, large in (("▸", "▶"), ("▹", "▷")):
+    def test_small_shapes_are_about_half_size(self):
+        for small, large in (("▸", "▶"), ("▹", "▷"), ("▪", "■"), ("▫", "□")):
             with self.subTest(shape=small):
                 self.assertLessEqual(self.height(small), SMALLER * self.height(large))
 
@@ -242,6 +250,41 @@ class ShapeTest(unittest.TestCase):
         layer = self.font[ord("▹")].foreground
         _, y0, _, y1 = layer.boundingBox()
         self.assertGreaterEqual(round(measure.counter(layer, (y0 + y1) / 2)), SMALL_COUNTER)
+
+    def test_small_white_shapes_keep_their_counters(self):
+        for char, floor in (("▫", SMALL_SQUARE_COUNTER), ("◦", WHITE_BULLET_COUNTER)):
+            with self.subTest(shape=char):
+                layer = self.font[ord(char)].foreground
+                _, y0, _, y1 = layer.boundingBox()
+                self.assertGreaterEqual(round(measure.counter(layer, (y0 + y1) / 2)), floor)
+
+    def radius(self, char):
+        """How far the glyph's ink reaches from the middle of its ink box, the farthest way."""
+        layer = self.font[ord(char)].foreground
+        x0, y0, x1, y1 = layer.boundingBox()
+        middle = psMat.translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
+        return max(geo.transformed(layer, psMat.compose(middle, psMat.rotate(math.radians(a))))
+                   .boundingBox()[2] for a in range(0, 360, 5))
+
+    def test_spinner_frames_share_one_size(self):
+        # Their middles are held by test_consistency's CENTERED and ON_AXIS.
+        first = self.radius(SPINNER[0])
+        for char in SPINNER[1:]:
+            with self.subTest(frame=char):
+                self.assertAlmostEqual(self.radius(char), first, delta=MIDDLE_TOLERANCE)
+
+    def test_media_controls_share_one_height(self):
+        first = self.height(MEDIA[0])
+        for char in MEDIA[1:]:
+            with self.subTest(control=char):
+                self.assertAlmostEqual(self.height(char), first, delta=2)
+
+    def test_white_bullet_stands_where_the_bullet_does(self):
+        # As in every reference, so • and ◦ line up in nested lists.
+        white, black = self.font[ord("◦")].boundingBox(), self.font[ord("•")].boundingBox()
+        for a, b in ((white[0] + white[2], black[0] + black[2]),
+                     (white[1] + white[3], black[1] + black[3])):
+            self.assertAlmostEqual(a / 2, b / 2, delta=MIDDLE_TOLERANCE)
 
     def test_pointer_is_long_and_flat(self):
         # ► points where ▶ stands, as Maple Mono's (559 × 270) does.
@@ -273,6 +316,39 @@ class HeavyMarkTest(unittest.TestCase):
             with self.subTest(mark=heavy):
                 ratio = measure.area(self.ink(heavy)) / measure.area(self.ink(light))
                 self.assertGreaterEqual(ratio, HEAVY_INK)
+
+
+class ApartTest(unittest.TestCase):
+    """Parts of a symbol keep at least ●●'s seam between them, so they stay apart at 16 px."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+        x0, _, x1, _ = cls.font[ord("●")].boundingBox()
+        cls.seam = 2 * min(x0, ADVANCE - x1)
+
+    def contours(self, char):
+        layers = []
+        for contour in self.font[ord(char)].foreground:
+            layer = fontforge.layer()
+            layer += contour
+            layers.append(layer)
+        return layers
+
+    def test_reference_mark_dots_clear_the_x(self):
+        parts = sorted(self.contours("※"), key=measure.area)
+        *dots, cross = parts
+        self.assertEqual(len(dots), 4)
+        for dot in dots:
+            self.assertGreaterEqual(measure.gap(dot, cross), self.seam)
+
+    def test_square_behind_clears_the_one_in_front(self):
+        # ⧉: the front square is a ring, its outline and counter; the one behind shows as a
+        # single piece round it.
+        rings = [c for c in self.contours("⧉") if c[0].isClockwise()]
+        self.assertEqual(len(rings), 2)
+        behind, front = sorted(rings, key=lambda layer: layer.boundingBox()[0])
+        self.assertGreaterEqual(measure.gap(behind, front), self.seam)
 
 
 class BuiltFromTest(unittest.TestCase):
@@ -313,6 +389,39 @@ class BuiltFromTest(unittest.TestCase):
                             strict=True)
                 for a, b in pairs:
                     self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
+
+    def test_same_shapes_are_references(self):
+        # Where every reference draws two characters alike, one is the other.
+        for char, base in (("◯", "○"), ("□", "☐")):
+            with self.subTest(glyph=char):
+                name, matrix = self.only_reference(char)
+                self.assertEqual(name, self.font[ord(base)].glyphname)
+                self.assertEqual(matrix, psMat.identity())
+
+    def test_line_extension_is_the_dash_lines_middle_piece(self):
+        # So a row of ⎯ joins into the line -- draws, as Vitest's dividers need.
+        self.assertEqual(self.only_reference("⎯"), ("hyphen.mid", psMat.identity()))
+
+    def test_media_shapes_are_the_black_shapes_smaller(self):
+        for char, base in (("⏺", "●"), ("⏵", "▶")):
+            with self.subTest(glyph=char):
+                name, matrix = self.only_reference(char)
+                self.assertEqual(name, self.font[ord(base)].glyphname)
+                scale, skew, turn, other = linear(matrix)
+                self.assertEqual((skew, turn), (0, 0))
+                self.assertEqual(scale, other)
+                self.assertLess(scale, 1)
+
+    def test_therefore_is_three_periods(self):
+        # Two on the colon's lower dot, the third on its upper dot, midway between them.
+        glyph = self.font[ord("∴")]
+        self.assertEqual(len(glyph.foreground), 0)
+        self.assertEqual([name for name, *_ in glyph.references], ["period"] * 3)
+        (a, low), (b, low2), (top_x, top_y) = sorted(
+            ((m[4], m[5]) for _, m, *_ in glyph.references), key=lambda xy: (xy[1], xy[0]))
+        colon = sorted(m[5] for _, m, *_ in self.font["colon"].references)
+        self.assertEqual((low, low2, top_y), (colon[0], colon[0], colon[1]))
+        self.assertAlmostEqual(top_x, (a + b) / 2, delta=1)
 
     def test_marked_boxes_hold_the_whole_box(self):
         # ☑ ☒ are single outlines, since a mark crossing a reference to ☐ fails validate()

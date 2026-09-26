@@ -11,6 +11,11 @@
   - `?.` and `?:` pulled together, and threes pulled in from both ends: `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` and Rust's and Swift's ranges `..=` `..<`.
 - ẞ (U+1E9E), the capital ß: a stem that curves into a flat top like ß's, then a diagonal down to a round bowl, the shape most fonts give it.
 - Combining accents (U+0300–U+0304, U+0306–U+0308, U+030A–U+030C, U+0326–U+0328), for decomposed text such as macOS file names and the output of tools that normalize to NFD, which fell back to another font. A letter and its accent show as the precomposed letter, so e followed by U+0301 is the same é as U+00E9. On other letters the accent sits where the font's own accented letters carry it, and i and j drop their dot under it. Terminals that draw accents without shaping text put them over the letter too. With these, the font has all of Google Fonts' Latin Core.
+- Symbols that terminal UIs print, which fell back to another font:
+  - Claude Code's ⏺ ⎿ ⏵ ⏸ ⧉ ∴ ※ and its spinner ✢ ✳ ✶ ✻ ✽, whose frames share one center and size so it turns without pulsing.
+  - ■ □ ▪ ▫ ◦ ◯, for Starship and nested lists; ◦ stands where • does, and ▪ ▫ are small like ▸ ▹.
+  - ❰ ❱, which Rich marks a traceback's failing line with, taller and narrower than the prompt's ❯ so the two don't look alike.
+  - ⎯, which Vitest draws its dividers with: a row of them joins into the same line as `----`.
 - Arrows such as `-->` and `=>` keep their head right before an HTML or JSX tag, as in `--><p>`, `--></div>` and `x=><li>`. Before, any `<` right after an arrow undid it.
 
 ## 1.1.0 (2026-09)

@@ -135,12 +135,15 @@ together.
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to
   match. ▹ is the same kind of exception: ▷ at 0.59 thinned to a 41 outline, since at the full
   stroke its counter fills in at 16 px. Its white stays 4 short of Maple Mono's, the only
-  reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it.
+  reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. ▫ (☐ at 0.52) and ◦ (○ at 0.48)
+  are scaled so their rings come out about 41 too, ⧉'s squares are the hyphen's stroke at 0.79
+  so the one behind keeps clear of the one in front, and ⏺ ⏵ are ● ▶ scaled to ⏸'s height.
 - Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side, then
-  squeezed at the ends to stay 20 inside the cell. No symbol comes closer to the cell's edges
-  than ● (15), so two side by side don't touch; `test_symbols.py` lists the exceptions. Black
-  shapes (● ◆ ▶ ▸ ★) are their white shape's outer contour; the white shapes are rings of the
-  hyphen's stroke, or of `o`'s for ○.
+  squeezed at the ends to stay 20 inside the cell; ❰ ❱ are two hyphen strokes pushed out the
+  same, and ⏸'s bars are `|` pushed out 40, to weigh as much as ⏵ ⏺. No symbol comes closer to
+  the cell's edges than ● (15), so two side by side don't touch; `test_symbols.py` lists the
+  exceptions. Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white
+  shapes are rings of the hyphen's stroke, or of `o`'s for ○.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
   height.
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
@@ -182,7 +185,8 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
 - Add user-visible changes to `CHANGELOG.md`.
 - Ligatures are generated. `tools/add_ligatures.py` owns every glyph its `GENERATED` pattern
   matches (`LIG`, `*.sta`, `*.liga`, …) and every `lig_*` lookup, and rebuilds them from
-  `src/ligatures.fea` on each run. Change them only there, then rerun it and `./build.sh`;
+  `src/ligatures.fea` on each run. It also redraws ⎯ (U+23AF) as the `--` line's middle piece,
+  so a row of them joins into that line. Change them only there, then rerun it and `./build.sh`;
   `tests/test_add_ligatures.py` fails while the SFD is out of date. A new glyph lands after the
   generated ones, so rerun it after adding glyphs too. Its constants are
   measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until

@@ -161,7 +161,7 @@ class MarkShapingTest(unittest.TestCase):
 
 
 class NerdFontTest(unittest.TestCase):
-    """The Nerd Fonts builds keep our box drawing, block elements and ❮ ❯.
+    """The Nerd Fonts builds keep our box drawing, block elements and ❮ ❯ ❰ ❱.
 
     The patcher swaps in its own box set unless the font has all of U+2500–U+259F, and fills
     U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱) only where the font has no glyph. The builds are made only by
@@ -186,7 +186,7 @@ class NerdFontTest(unittest.TestCase):
                                  dict.fromkeys(marks, advance))
 
     def test_patched_fonts_keep_our_glyphs(self):
-        text = "".join(chr(code) for code in range(0x2500, 0x25A0)) + "❮❯"
+        text = "".join(chr(code) for code in range(0x2500, 0x25A0)) + "❮❯❰❱"
         plain = {font.suffix: font for font in FONTS}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
