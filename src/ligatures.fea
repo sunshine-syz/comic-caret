@@ -31,6 +31,8 @@ languagesystem latn dflt;
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow
   less.twohead greater.twohead less.shaft greater.shaft];
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
+# What starts a shell heredoc's delimiter after <<-: EOF 'EOF' "EOF" \EOF.
+@Delimiter = [A-Z a-z underscore quotesingle quotedbl backslash];
 
 # Single substitutions, called from the chain rules below.
 lookup lig_sta {
@@ -110,14 +112,16 @@ feature calt {
   #    left and turn a malformed run back into plain glyphs, however long it is: a head or
   #    end touching more of the run reverts, then every piece before a reverted glyph.
   #    A doubled - head (<<- ->>) draws both heads in its outer cell and a shaft in the
-  #    inner one. In <!-- the < is an arrow of its own and the -- runs on. A > before it ends
-  #    a tag, as in </p><!--, unless it can head an arrow.
+  #    inner one, except in a shell heredoc (<<-EOF). In <!-- the < is an arrow of its own
+  #    and the -- runs on. A > before it ends a tag, as in </p><!--, unless it can head an
+  #    arrow.
   lookup lig_hyphen_build {
     ignore sub [hyphen equal] greater less' exclam hyphen hyphen;
     sub greater less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
     ignore sub @Op less' exclam hyphen hyphen;
     sub less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
     ignore sub @HyphenRun less' less hyphen;
+    ignore sub less' less hyphen @Delimiter;
     sub less' lookup lig_twohead less hyphen;
     sub less.twohead less' lookup lig_shaft;
     ignore sub @HyphenRun less' hyphen;

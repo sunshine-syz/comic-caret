@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790396119
+ModificationTime: 1790397935
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -82,7 +82,7 @@ Lookup: 1 0 0 "lig_tight_l" { "lig_tight_l subtable"  } []
 Lookup: 6 0 0 "lig_not_equal" { "lig_not_equal contextual 0"  "lig_not_equal contextual 1"  "lig_not_equal contextual 2"  "lig_not_equal contextual 3"  "lig_not_equal contextual 4"  "lig_not_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_colon_equal" { "lig_colon_equal contextual 0"  "lig_colon_equal contextual 1"  "lig_colon_equal contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_fish" { "lig_fish contextual 0"  "lig_fish contextual 1"  "lig_fish contextual 2"  "lig_fish contextual 3"  "lig_fish contextual 4"  "lig_fish contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  "lig_hyphen_build contextual 7"  "lig_hyphen_build contextual 8"  "lig_hyphen_build contextual 9"  "lig_hyphen_build contextual 10"  "lig_hyphen_build contextual 11"  "lig_hyphen_build contextual 12"  "lig_hyphen_build contextual 13"  "lig_hyphen_build contextual 14"  "lig_hyphen_build contextual 15"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  "lig_hyphen_build contextual 7"  "lig_hyphen_build contextual 8"  "lig_hyphen_build contextual 9"  "lig_hyphen_build contextual 10"  "lig_hyphen_build contextual 11"  "lig_hyphen_build contextual 12"  "lig_hyphen_build contextual 13"  "lig_hyphen_build contextual 14"  "lig_hyphen_build contextual 15"  "lig_hyphen_build contextual 16"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_hyphen_unwind" { "lig_hyphen_unwind contextual 0"  "lig_hyphen_unwind contextual 1"  "lig_hyphen_unwind contextual 2"  "lig_hyphen_unwind contextual 3"  "lig_hyphen_unwind contextual 4"  "lig_hyphen_unwind contextual 5"  "lig_hyphen_unwind contextual 6"  "lig_hyphen_unwind contextual 7"  "lig_hyphen_unwind contextual 8"  "lig_hyphen_unwind contextual 9"  "lig_hyphen_unwind contextual 10"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_build contextual 1"  "lig_equal_build contextual 2"  "lig_equal_build contextual 3"  "lig_equal_build contextual 4"  "lig_equal_build contextual 5"  "lig_equal_build contextual 6"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
@@ -946,21 +946,21 @@ ReverseChain2: revcov "lig_hyphen_unwind contextual 0" 0 0 0 1
   FCoverage: 19 hyphen less greater
   Replace: 7 greater
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 15" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 16" 0 0 0 1
  1 1 0
   Coverage: 7 greater
   BCoverage: 21 hyphen.sta hyphen.mid
  1
   SeqLookup: 0 "lig_arrow"
 EndFPST
-ChainSub2: glyph "lig_hyphen_build contextual 14" 0 0 0 1
+ChainSub2: glyph "lig_hyphen_build contextual 15" 0 0 0 1
  String: 7 greater
  BString: 13 greater.shaft
  FString: 0 
  1
   SeqLookup: 0 "lig_twohead"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 13" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 14" 0 0 0 1
  1 1 1
   Coverage: 7 greater
   BCoverage: 21 hyphen.sta hyphen.mid
@@ -968,27 +968,27 @@ ChainSub2: coverage "lig_hyphen_build contextual 13" 0 0 0 1
  1
   SeqLookup: 0 "lig_shaft"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 12" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 13" 0 0 0 1
  1 0 1
   Coverage: 6 hyphen
   FCoverage: 14 hyphen greater
  1
   SeqLookup: 0 "lig_sta"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 11" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 12" 0 0 0 1
  1 1 0
   Coverage: 6 hyphen
   BCoverage: 131 hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow less.twohead greater.twohead less.shaft greater.shaft
  0
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 10" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 11" 0 0 0 1
  1 1 0
   Coverage: 6 hyphen
   BCoverage: 43 less.arrow less.shaft hyphen.sta hyphen.mid
  1
   SeqLookup: 0 "lig_end"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 9" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 10" 0 0 0 1
  1 1 1
   Coverage: 6 hyphen
   BCoverage: 43 less.arrow less.shaft hyphen.sta hyphen.mid
@@ -996,33 +996,41 @@ ChainSub2: coverage "lig_hyphen_build contextual 9" 0 0 0 1
  1
   SeqLookup: 0 "lig_mid"
 EndFPST
-ChainSub2: glyph "lig_hyphen_build contextual 8" 0 0 0 1
+ChainSub2: glyph "lig_hyphen_build contextual 9" 0 0 0 1
  String: 4 less
  BString: 0 
  FString: 6 hyphen
  1
   SeqLookup: 0 "lig_arrow"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 7" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 8" 0 0 0 1
  1 1 1
   Coverage: 4 less
   BCoverage: 131 hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow less.twohead greater.twohead less.shaft greater.shaft
   FCoverage: 6 hyphen
  0
 EndFPST
-ChainSub2: glyph "lig_hyphen_build contextual 6" 0 0 0 1
+ChainSub2: glyph "lig_hyphen_build contextual 7" 0 0 0 1
  String: 4 less
  BString: 12 less.twohead
  FString: 0 
  1
   SeqLookup: 0 "lig_shaft"
 EndFPST
-ChainSub2: glyph "lig_hyphen_build contextual 5" 0 0 0 1
+ChainSub2: glyph "lig_hyphen_build contextual 6" 0 0 0 1
  String: 4 less
  BString: 0 
  FString: 11 less hyphen
  1
   SeqLookup: 0 "lig_twohead"
+EndFPST
+ChainSub2: coverage "lig_hyphen_build contextual 5" 0 0 0 1
+ 1 0 3
+  Coverage: 4 less
+  FCoverage: 4 less
+  FCoverage: 6 hyphen
+  FCoverage: 141 B C D E F G H I J K L M N O P Q R S T U V W X Y Z b c d e f g h i j k l m n o p q r s t u v w x y z underscore quotesingle quotedbl backslash
+ 0
 EndFPST
 ChainSub2: coverage "lig_hyphen_build contextual 4" 0 0 0 1
  1 1 2

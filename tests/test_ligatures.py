@@ -120,6 +120,7 @@ LIGATED = {
     "-->>": hyphens(3, right="greater.shaft") + ["greater.twohead"],
     "<<-": ["less.twohead", "less.shaft", "hyphen.end"],
     "x<<-1": ["x", "less.twohead", "less.shaft", "hyphen.end", "one"],
+    "x <<- y": ["x", "space", "less.twohead", "less.shaft", "hyphen.end", "space", "y"],
     "<<--": ["less.twohead"] + hyphens(3, left="less.shaft"),
     "<<->>": ["less.twohead"] + hyphens(3, "less.shaft", "greater.shaft") + ["greater.twohead"],
     # >=> <=<: a double arrow with a tail
@@ -214,6 +215,8 @@ PLAIN = [
     # Malformed arrows: a head pointing inward, tripled or in the middle, at any length
     ">-", "-<", "=<", ">==", "==<", "=>=", "=>>", "<<==", "->>>", "<<<-", "->>-", "-<<",
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
+    # A shell heredoc's <<-
+    "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
