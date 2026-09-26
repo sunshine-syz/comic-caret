@@ -2,6 +2,14 @@
 
 ## 1.2.0 (unreleased)
 
+- More coding ligatures, drawn in the font's hand from its own `<` `>` `-` `=` `~` `|`:
+  - `<>` as a diamond, and `<|>` as the triangles of `<|` and `|>` sharing one bar.
+  - `>=>` and `<=<`, Haskell's fish operators, as double arrows with a tail.
+  - Arrows with two heads, `->>` and `<<-` (Clojure's thread-last, R's `<<-`), at any length: `-->>`, `<<-->>`.
+  - Wave arrows of any length, `~>` `<~` `~~>` `<~>`, for Elixir's and Ruby's version requirements and Scala's `<~`.
+  - `<!--` with its `<` drawn as an arrowhead, like the one `-->` already had, and the `!` centered between the arrow and the line.
+  - `?.` and `?:` pulled together, and threes pulled in from both ends: `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` and Rust's and Swift's ranges `..=` `..<`.
+
 ## 1.1.0 (2026-09)
 
 - All of Box Drawing and Block Elements (U+2500–U+259F), so `tree`, `cargo tree`, `rich` tables and panels, TUI borders, progress bars and graphs no longer fall back to another font:

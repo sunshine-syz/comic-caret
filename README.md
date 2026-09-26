@@ -41,14 +41,16 @@ own cell, so columns line up and the cursor moves one character at a time.
 
 ![The same sequences with ligatures off (left) and on (right)](docs/images/ligatures.svg)
 
-- Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`
+- Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`, with two heads
+  (`->>` `<<-`) or a wave (`~>` `<~` `~~>`), and `>=>` `<=<` with a tail
 - Continuous lines of any length: `==` `--` `__` `##` `~~`
 - `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centered on the `=`
-- `|>` `<|` as triangles
-- Pairs pulled together: `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||`
+- `|>` `<|` `<|>` as triangles, `<>` as a diamond, and `<!--` with an arrowhead like `-->`'s
+- Pulled together: `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` `?.` `?:`, and
+  `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` `..=` `..<`
 
-Sequences that run into other operators stay as separate characters, for example `->>`,
-`<<-`, `==<`, `<<=` or `https://`.
+Sequences that run into other operators stay as separate characters, for example `->>>`,
+`<<<-`, `==<`, `<<==` or `https://`.
 
 The ligatures use the `calt` (contextual alternates) OpenType feature:
 
