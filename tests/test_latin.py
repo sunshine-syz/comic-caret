@@ -8,6 +8,7 @@ import math
 import pathlib
 import struct
 import sys
+import unicodedata
 import unittest
 
 import fontforge
@@ -81,6 +82,15 @@ class CoverageTest(unittest.TestCase):
         blocks = {chr(c) for c in range(0xA0, 0x180) if c != 0x149}
         self.assertEqual(self.missing(blocks), set())
 
+    def test_decomposed_letters_stay_in_the_font(self):
+        # Decomposed text, as in macOS file names and NFD output, needs every combining mark
+        # the font's letters decompose to.
+        missing = set()
+        for glyph in self.font.glyphs():
+            if glyph.unicode >= 0 and chr(glyph.unicode).isalpha():
+                missing |= self.missing(unicodedata.normalize("NFD", chr(glyph.unicode)))
+        self.assertEqual({f"U+{ord(c):04X}" for c in missing}, set())
+
     def test_built_font_declares_the_code_pages(self):
         # FontForge derives the flags from the cmap; CLAUDE.md keeps them out of the SFD.
         if not TTF.exists() or TTF.stat().st_mtime < SFD.stat().st_mtime:
@@ -138,6 +148,28 @@ class LookalikeTest(unittest.TestCase):
             if len(spans) >= 2:
                 gaps.append(spans[1][0] - spans[0][1])
         self.assertGreaterEqual(min(gaps), 75)
+
+    def test_capital_sharp_s_stays_open_at_the_bottom(self):
+        # The bowl ends short of the stem, or ẞ reads as B: at least as far as the narrowest
+        # reference's (Maple Mono 70 at 3-9 % of the height; Fira Code 84, Intel One Mono 129).
+        layer = self.font["uni1E9E"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        for share in (0.03, 0.06, 0.09):
+            with self.subTest(share=share):
+                (_, stem), (end, _) = measure.spans_at_y(layer, y0 + share * (y1 - y0))
+                self.assertGreaterEqual(end - stem, 70)
+
+    def test_capital_sharp_s_middle_is_open(self):
+        # The white between the stem and the diagonal, down to where it meets the bowl: at
+        # least the narrowest reference's (Maple Mono 81; Fira Code 111, Intel One Mono 136).
+        layer = self.font["uni1E9E"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        gaps = []
+        for percent in range(30, 71):
+            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
+            if len(spans) >= 2:
+                gaps.append(spans[1][0] - spans[0][1])
+        self.assertGreaterEqual(min(gaps), 81)
 
     def test_eth_bar_crosses_its_stroke(self):
         # The bar tells ð from ∂: bar and rising stroke make one outline, the bar reaching past

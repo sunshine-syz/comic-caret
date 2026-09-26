@@ -81,8 +81,9 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 ## Character set
 
 - **Complete:** Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the
-  deprecated ŉ), Box Drawing, Block Elements and Braille Patterns. The Latin covers Western,
-  Central European, Baltic and Turkish text.
+  deprecated ŉ), Google Fonts' Latin Core, Box Drawing, Block Elements and Braille Patterns.
+  The Latin covers Western, Central European, Baltic and Turkish text, with ẞ and the
+  combining accents, so decomposed text such as macOS file names keeps its accents.
 - **In part:** the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ € £),
   λ Λ, the check marks ✓ ✗ and �, and the prompt and status symbols of shells and CLI tools
   (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐).

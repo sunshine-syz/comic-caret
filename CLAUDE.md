@@ -14,6 +14,7 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 ./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
 python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
 python3 tools/add_box_drawing.py        # rebuild box drawing and block elements in the SFD
+python3 tools/add_marks.py              # rebuild the combining marks, anchors and ccmp in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
@@ -61,7 +62,8 @@ together.
 
 - Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
   index, so hand edits silently break composites.
-- Every glyph, `.notdef` included, is 550 wide.
+- Every glyph, `.notdef` included, is 550 wide, except the combining marks (U+0300…): they are
+  0 wide, with their ink over the cell, where terminals that don't shape text draw them.
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
@@ -106,6 +108,15 @@ together.
   `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
 - `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
   another's outline as saved in the font, not from the layer before cleanup.
+- Adding an anchor from Python marks the glyph's hints stale, and so does `autoHint()` on
+  every glyph (a few come out different, ☐ with a NaN); add anchors through a merged feature
+  file, which doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge
+  keeps an anchor a glyph already has; remove the anchor classes first.
+- A new contextual lookup goes before the others in the SFD, so the last generator to run
+  decides their order: run `tools/add_marks.py`, then `tools/add_ligatures.py`.
+- FontForge 20251009 gives every glyph of a TTF one advance when all but the zero-width ones
+  share it, so the marks come out a cell wide; `tools/mark_advances.py` rewrites the TTF's
+  `hmtx`, and `tools/generate.py` and `build.sh` run it. OTFs are right.
 
 ## Designing glyphs
 
@@ -176,6 +187,11 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
   generated ones, so rerun it after adding glyphs too. Its constants are
   measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until
   `MeasurementTest` passes, then rerun it.
+- Combining marks are generated too. `tools/add_marks.py` draws each as a reference to its
+  spacing accent, gives every encoded glyph a mark anchor above and below (a letter's from its
+  accented forms, so e + U+0301 matches é), and builds the `ccmp`, `mark` and `mkmk` lookups;
+  its lookups are named `marks_*`. Rerun it after adding or redrawing glyphs, then
+  `tools/add_ligatures.py`; `tests/test_add_marks.py` fails while the SFD is out of date.
 - Box Drawing and Block Elements (U+2500–U+259F) are generated too, geometric rather than
   hand-drawn so they tile. `tools/add_box_drawing.py` draws each glyph from its Unicode name
   and redraws the range in place; change them only there, then rerun it and `./build.sh`.

@@ -30,6 +30,11 @@ VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
 
 
+def is_mark(glyph):
+    """A combining mark, which takes no room of its own: it draws over the character before it."""
+    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)) == "Mn"
+
+
 def is_box_drawing(glyph):
     # Box-drawing lines overlap their neighbours on purpose so they join. Block elements fill
     # the cell and the line box exactly, so the rules for every glyph hold for them.
@@ -75,7 +80,8 @@ class SanityTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_every_glyph_is_one_cell_wide(self):
-        self.assertEqual([g.glyphname for g in self.glyphs if g.width != ADVANCE], [])
+        wrong = [g.glyphname for g in self.glyphs if g.width != (0 if is_mark(g) else ADVANCE)]
+        self.assertEqual(wrong, [])
 
     def test_ink_stays_in_the_cell(self):
         outside = {}

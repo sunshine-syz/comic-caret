@@ -2,10 +2,14 @@
 
 Usage: fontforge -quiet -script tools/generate.py SOURCE.sfd OUTPUT.otf|OUTPUT.ttf
 """
+import pathlib
 import sys
 
 import fontforge
 import psMat
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from mark_advances import zero_mark_advances
 
 
 def is_composite(glyph):
@@ -49,6 +53,8 @@ def main(source, output):
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
     # "no-mac-names" drops the platform-1 name records that nothing current reads.
     font.generate(output, flags=("opentype", "no-mac-names"))
+    if output.endswith(".ttf"):
+        zero_mark_advances(pathlib.Path(output))
 
 
 if __name__ == "__main__":

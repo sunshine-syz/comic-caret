@@ -9,6 +9,8 @@
   - Wave arrows of any length, `~>` `<~` `~~>` `<~>`, for Elixir's and Ruby's version requirements and Scala's `<~`.
   - `<!--` with its `<` drawn as an arrowhead, like the one `-->` already had, and the `!` centered between the arrow and the line, also right after a tag or another comment: `</p><!--`, `--><!--`.
   - `?.` and `?:` pulled together, and threes pulled in from both ends: `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` and Rust's and Swift's ranges `..=` `..<`.
+- ẞ (U+1E9E), the capital ß: a stem and a flat top that turns into a diagonal down to a round bowl, the shape most fonts give it.
+- Combining accents (U+0300–U+0304, U+0306–U+0308, U+030A–U+030C, U+0326–U+0328), for decomposed text such as macOS file names and the output of tools that normalize to NFD, which fell back to another font. A letter and its accent show as the precomposed letter, so e followed by U+0301 is the same é as U+00E9. On other letters the accent sits where the font's own accented letters carry it, and i and j drop their dot under it. Terminals that draw accents without shaping text put them over the letter too. With these, the font has all of Google Fonts' Latin Core.
 - Arrows such as `-->` and `=>` keep their head right before an HTML or JSX tag, as in `--><p>`, `--></div>` and `x=><li>`. Before, any `<` right after an arrow undid it.
 
 ## 1.1.0 (2026-09)

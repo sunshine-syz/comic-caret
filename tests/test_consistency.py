@@ -16,6 +16,7 @@ import unicodedata
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_box_drawing
@@ -27,9 +28,9 @@ LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and mar
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
-    "baseline": ("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷabcdefhiklmnorstuvwxzıĸß0123456789¼½¾", 1),
+    "baseline": ("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾", 1),
     "x-height": ("acemnorsuvwxzıĸµŋ", 3),
-    "cap height": ("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷ0123456789¼½¾™", 3),
+    "cap height": ("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™", 3),
     "ascender": ("bdfhklßþ", 3),
     "descender": ("gjpqyþµŋŊƒ¶", 1),
     "superscript": ("¹²³", 3),
@@ -58,6 +59,9 @@ MERGED_BELOW = 10  # a merged ogonek or cedilla lies below this height or inside
 MARK_CLEARANCE = 20  # the closest a mark may come to its letter
 MARK_OFFCENTER = 30  # C's circumflex, over an open side, sits 22 right of the ink's middle
 STEM_BASES = {"dotlessi", "dotlessj", "l"}  # their marks sit over the stem, not the ink's middle
+# Accents a letter places by hand away from where its anchor puts a combining mark: ì's grave
+# leans left of the stem and í's acute right, and the anchor takes the middle of its accents.
+OWN_PLACEMENT = {("dotlessi", "grave.accent")}
 
 BOX_DRAWING = range(0x2500, 0x2580)
 BLOCK_ELEMENTS = range(0x2580, 0x25A0)
@@ -89,6 +93,10 @@ def outline(layer):
 
 def box(font, char):
     return font[ord(char)].boundingBox()
+
+
+def is_mark(glyph):
+    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)) == "Mn"
 
 
 def is_letter(font, name):
@@ -237,6 +245,20 @@ class CompositionTest(unittest.TestCase):
                     off[(glyph.glyphname, name)] = round(offset)
         self.assertEqual(off, {})
 
+    def test_decomposed_letters_compose(self):
+        # ccmp makes e + U+0301 the same é as U+00E9, in shapers that don't compose on their
+        # own.
+        missing = []
+        for glyph in self.font.glyphs():
+            parts = unicodedata.normalize("NFD", chr(glyph.unicode)) if glyph.unicode >= 0 else ""
+            if len(parts) < 2 or any(ord(c) not in self.font for c in parts):
+                continue
+            names = tuple(self.font[ord(c)].glyphname for c in parts)
+            if not any(kind == "Ligature" and tuple(rest) == names
+                       for _, kind, *rest in glyph.getPosSub("*")):
+                missing.append(glyph.glyphname)
+        self.assertEqual(missing, [])
+
     def test_no_glyph_copies_another(self):
         # Outlines that match once moved: one should be a reference to the other.
         def shape(layer):
@@ -272,6 +294,90 @@ class CompositionTest(unittest.TestCase):
         """The middle of each dot of a Braille pattern."""
         return [((x0 + x1) / 2, (y0 + y1) / 2)
                 for x0, y0, x1, y1 in (c.boundingBox() for c in measure.ink(self.font, code))]
+
+
+def anchor(glyph, name, kind):
+    """(x, y) of the glyph's anchor of class `name` and type `kind`, or None."""
+    return next(((x, y) for cls, what, x, y, *_ in glyph.anchorPoints
+                 if cls == name and what == kind), None)
+
+
+class MarkTest(unittest.TestCase):
+    """Combining marks draw over the cell, where terminals that don't shape text put them, and
+    their anchors carry them onto the glyph before them in shaped text."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = open_font()
+        cls.marks = [g for g in cls.font.glyphs() if is_mark(g)]
+        cls.mark_names = {g.glyphname for g in cls.marks}
+        cls.side = {g.glyphname: "top" if anchor(g, "top", "mark") else "bottom"
+                    for g in cls.marks}
+
+    def placed(self, base, mark):
+        """The mark's ink where its anchor puts it on `base`."""
+        side = self.side[mark.glyphname]
+        (bx, by), (mx, my) = anchor(self.font[base], side, "base"), anchor(mark, side, "mark")
+        return geo.transformed(measure.ink(self.font, mark.glyphname),
+                               psMat.translate(bx - mx, by - my))
+
+    def test_marks_are_accents_centered_in_the_cell(self):
+        # A reference to the spacing accent, so the mark follows its redrawing.
+        wrong = {}
+        for mark in self.marks:
+            x0, _, x1, _ = mark.boundingBox()
+            names = [name for name, *_ in mark.references]
+            if len(mark.foreground) or len(names) != 1 or names[0] in self.mark_names:
+                wrong[mark.glyphname] = "not one reference to an accent"
+            elif abs((x0 + x1) / 2 - ADVANCE / 2) > TOLERANCE:
+                wrong[mark.glyphname] = round((x0 + x1) / 2 - ADVANCE / 2)
+        self.assertEqual(wrong, {})
+
+    def test_every_glyph_takes_marks(self):
+        # A mark after a glyph without an anchor would land on the next cell.
+        missing = [g.glyphname for g in self.font.glyphs() if g.unicode >= 0
+                   and g.glyphname not in self.mark_names
+                   and not (anchor(g, "top", "base") and anchor(g, "bottom", "base"))]
+        self.assertEqual(missing, [])
+
+    def test_marks_land_where_the_precomposed_letters_put_their_accents(self):
+        # So e + U+0301 looks like é even where nothing composes them.
+        accent_marks = {}
+        for mark in self.marks:
+            [(accent, matrix, *_)] = mark.references
+            accent_marks[accent] = (mark, matrix)
+        off = {}
+        for glyph in self.font.glyphs():
+            refs = {name: matrix for name, matrix, *_ in glyph.references}
+            accents = [name for name in refs if name in accent_marks]
+            letters = [name for name in refs if name not in accent_marks]
+            if glyph.unicode < 0 or len(accents) != 1 or len(letters) != 1:
+                continue
+            (accent,), (letter,) = accents, letters
+            if (letter, accent) in OWN_PLACEMENT:
+                continue
+            mark, _ = accent_marks[accent]
+            ax0, ay0, _, _ = self.placed(letter, mark).boundingBox()
+            px0, py0, _, _ = geo.transformed(self.font[accent].foreground,
+                                             refs[accent]).boundingBox()
+            if abs(ax0 - px0) > MARK_OFFCENTER or abs(ay0 - py0) > ROW_TOLERANCE:
+                off[(glyph.glyphname, mark.glyphname)] = (round(ax0 - px0), round(ay0 - py0))
+        self.assertEqual(off, {})
+
+    def test_marks_above_clear_every_letter(self):
+        # Letters without a precomposed form too, and ones that already have a mark.
+        acute = self.font[0x301]
+        close = {}
+        for glyph in self.font.glyphs():
+            if glyph.unicode < 0 or not is_letter(self.font, glyph.glyphname):
+                continue
+            mark = self.placed(glyph.glyphname, acute)
+            letter = measure.ink(self.font, glyph.glyphname)
+            if mark.boundingBox()[1] - letter.boundingBox()[3] >= MARK_CLEARANCE:
+                continue
+            if (gap := measure.gap(letter, mark)) < MARK_CLEARANCE:
+                close[glyph.glyphname] = round(gap)
+        self.assertEqual(close, {})
 
 
 def rounded(spans):

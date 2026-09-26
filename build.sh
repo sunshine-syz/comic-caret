@@ -158,6 +158,11 @@ if [[ -n $nerd_variants ]]; then
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
   done
+  # FontForge, which the patcher saves with, gives the TTFs' combining marks a cell's advance.
+  # Not in the Mono variant, where the patcher gives every glyph one advance on purpose.
+  for font in "$NERD_OUT"/*.ttf; do
+    [[ $font == *NerdFontMono-* ]] || python3 tools/mark_advances.py "$font"
+  done
   write_icon_licenses "$NERD_OUT/ICON-LICENSES.txt"
 fi
 
