@@ -27,7 +27,7 @@ HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' head
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
-                       r"|dtail|liga|tight_l|tight_r)")
+                       r"|dtail|twohead|shaft|liga|tight_l|tight_r)")
 
 
 class Bar(NamedTuple):
@@ -91,6 +91,10 @@ TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "a
          "less": 40, "greater": 40, "question": 60, "bar": 100, "equal": 40}
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
+
+# ->> <<-: the inner head sits this much closer to the shaft than the outer one, which leaves
+# at least the white of Fira Code, the one reference that draws ->>, between the two.
+HEAD_PITCH = 375
 
 
 def outline(font, name):
@@ -362,6 +366,16 @@ def tail(font, name):
     return geo.union(*parts)
 
 
+def two_heads(font, name):
+    """The end of ->> or <<-: a second head HEAD_PITCH inside the first, where the shaft ends."""
+    head = longer_angle(font, name, HEAD_SCALE)
+    inner = geo.transformed(head, psMat.translate(OUTWARD[name] * HEAD_PITCH, 0))
+    end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
+    shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
+             else stroke(font, "hyphen", end, ADVANCE + OVERLAP))
+    return geo.union(head, inner, shaft)
+
+
 def build(font):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -383,6 +397,9 @@ def build(font):
     glyphs["less_bar_greater.liga"] = pipes(font)
     for name in ("greater", "less"):
         glyphs[f"{name}.dtail"] = tail(font, name)
+    for name in ("greater", "less"):
+        glyphs[f"{name}.twohead"] = two_heads(font, name)
+        glyphs[f"{name}.shaft"] = [("hyphen.mid", 0, 0)]  # a > or < inside ->> <<-
     return glyphs
 
 

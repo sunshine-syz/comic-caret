@@ -19,6 +19,7 @@ languagesystem latn dflt;
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
   less.dtail greater.dtail
+  less.twohead greater.twohead less.shaft greater.shaft
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
@@ -27,7 +28,8 @@ languagesystem latn dflt;
   asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
 
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
-@HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
+@HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow
+  less.twohead greater.twohead less.shaft greater.shaft];
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
 
 # Single substitutions, called from the chain rules below.
@@ -48,6 +50,8 @@ lookup lig_end_low { sub asciitilde by asciitilde.end.low; } lig_end_low;
 lookup lig_arrow { sub [less greater] by [less.arrow greater.arrow]; } lig_arrow;
 lookup lig_darrow { sub [less greater] by [less.darrow greater.darrow]; } lig_darrow;
 lookup lig_dtail { sub [less greater] by [less.dtail greater.dtail]; } lig_dtail;
+lookup lig_twohead { sub [less greater] by [less.twohead greater.twohead]; } lig_twohead;
+lookup lig_shaft { sub [less greater] by [less.shaft greater.shaft]; } lig_shaft;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
@@ -102,21 +106,32 @@ feature calt {
   #    from the glyph before, then a closing head. The unwind lookups then walk right to
   #    left and turn a malformed run back into plain glyphs, however long it is: a head or
   #    end touching more of the run reverts, then every piece before a reverted glyph.
+  #    A doubled - head (<<- ->>) draws both heads in its outer cell and a shaft in the
+  #    inner one.
   lookup lig_hyphen_build {
+    ignore sub @HyphenRun less' less hyphen;
+    sub less' lookup lig_twohead less hyphen;
+    sub less.twohead less' lookup lig_shaft;
     ignore sub @HyphenRun less' hyphen;
     sub less' lookup lig_arrow hyphen;
-    sub [less.arrow hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
-    sub [less.arrow hyphen.sta hyphen.mid] hyphen' lookup lig_end;
+    sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
+    sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_end;
     ignore sub @HyphenRun hyphen';
     sub hyphen' lookup lig_sta [hyphen greater];
+    sub [hyphen.sta hyphen.mid] greater' lookup lig_shaft greater;
+    sub greater.shaft greater' lookup lig_twohead;
     sub [hyphen.sta hyphen.mid] greater' lookup lig_arrow;
   } lig_hyphen_build;
 
   lookup lig_hyphen_unwind {
+    rsub [greater.twohead]' [hyphen less greater] by greater;
+    rsub [greater.shaft]' [greater] by greater;
     rsub [greater.arrow]' [hyphen less greater] by greater;
     rsub [hyphen.end]' [hyphen less greater] by hyphen;
     rsub [hyphen.mid]' [hyphen greater] by hyphen;
     rsub [hyphen.sta]' [hyphen greater] by hyphen;
+    rsub [less.shaft]' [hyphen] by less;
+    rsub [less.twohead]' [less] by less;
     rsub [less.arrow]' [hyphen] by less;
   } lig_hyphen_unwind;
 

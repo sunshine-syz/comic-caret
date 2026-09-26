@@ -16,6 +16,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+from add_ligatures import GENERATED
 from project import ROOT, SFD
 
 # Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
@@ -62,10 +63,12 @@ def findings(report):
 
 
 def unencoded_components():
-    """Glyphs with no character of their own that other glyphs are built from."""
+    """Glyphs with no character of their own that other glyphs are built from, and that no
+    ligature reaches (tests/test_ligatures.py reaches every generated glyph)."""
     sfd = fontforge.open(str(SFD))
     used = {name for glyph in sfd.glyphs() for name, *_ in glyph.references}
-    return frozenset(g.glyphname for g in sfd.glyphs() if g.unicode < 0 and g.glyphname in used)
+    return frozenset(g.glyphname for g in sfd.glyphs() if g.unicode < 0 and g.glyphname in used
+                     and not GENERATED.fullmatch(g.glyphname))
 
 
 def known():

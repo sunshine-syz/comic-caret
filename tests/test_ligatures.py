@@ -13,7 +13,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from add_ligatures import GENERATED, OVERLAP
-from measure import ink
+from measure import ink, spans_at_x
 from project import ADVANCE, ROOT, SFD
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
@@ -53,6 +53,16 @@ def seam(layer, x):
             if a.on_curve and b.on_curve and abs(a.x - x) < 0.5 and abs(b.x - x) < 0.5:
                 edges.append((min(a.y, b.y), max(a.y, b.y)))
     return sorted(edges)
+
+
+def unmet(edges, other, x, inward, cover):
+    """The flat `edges` of one piece that the `other` piece, cut at x, neither repeats edge for
+    edge nor covers, just inside its cut (x + inward), with a stroke reaching `cover` past both
+    ends."""
+    repeated = seam(other, x)
+    spans = spans_at_x(other, x + inward)
+    return [(y0, y1) for y0, y1 in edges if (y0, y1) not in repeated
+            and not any(a <= y0 - cover and b >= y1 + cover for a, b in spans)]
 
 
 def pieces(first, middle, last, count):
@@ -105,6 +115,13 @@ LIGATED = {
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
     "=->": ["equal"] + hyphens(2, right="greater.arrow"),
     "->=": hyphens(2, right="greater.arrow") + ["equal"],
+    # Two heads on a - arrow, drawn in the outer cell, the inner > or < carrying the shaft
+    "->>": ["hyphen.sta", "greater.shaft", "greater.twohead"],
+    "-->>": hyphens(3, right="greater.shaft") + ["greater.twohead"],
+    "<<-": ["less.twohead", "less.shaft", "hyphen.end"],
+    "x<<-1": ["x", "less.twohead", "less.shaft", "hyphen.end", "one"],
+    "<<--": ["less.twohead"] + hyphens(3, left="less.shaft"),
+    "<<->>": ["less.twohead"] + hyphens(3, "less.shaft", "greater.shaft") + ["greater.twohead"],
     # >=> <=<: a double arrow with a tail
     ">=>": ["greater.dtail", "equal.mid", "greater.darrow"],
     "f>=>g": ["f", "greater.dtail", "equal.mid", "greater.darrow", "g"],
@@ -177,8 +194,8 @@ LIGATED = {
 # Input that must shape exactly as it does with calt off.
 PLAIN = [
     "-", "=", "a-b", "x=y", "- -", "= =",
-    # Malformed arrows: a head pointing inward, doubled or in the middle, at any length
-    ">-", "-<", "=<", ">==", "==<", "->>", "<<-", "=>=",
+    # Malformed arrows: a head pointing inward, tripled or in the middle, at any length
+    ">-", "-<", "=<", ">==", "==<", "=>=", "=>>", "<<==", "->>>", "<<<-", "->>-", "-<<",
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
@@ -226,15 +243,22 @@ class LigatureShapingTest(unittest.TestCase):
                     generated = [n for n in names(font, text, calt=False) if GENERATED.fullmatch(n)]
                     self.assertEqual(generated, [])
 
-    def test_joined_pieces_meet_at_the_same_heights(self):
+    def test_joined_pieces_meet_without_a_step(self):
         # A piece that runs on is cut flat at its cell's edge, and the next begins with the
-        # same edge; any step between them shows as a notch in the stroke.
+        # same edge or covers it; any step between them shows as a notch in the stroke.
         font = fontforge.open(str(SFD))
+        # A stroke hides an edge when it reaches a quarter of a stroke past both its ends, as
+        # the inner head of ->> does the shaft's end.
+        _, y0, _, y1 = font["hyphen"].boundingBox()
+        cover = (y1 - y0) / 4
         for text in LIGATED:
             for left, right in itertools.pairwise(names(FONTS[0], text)):
                 with self.subTest(text=text, left=left, right=right):
-                    self.assertEqual(seam(ink(font, left), ADVANCE + OVERLAP),
-                                     seam(ink(font, right), -OVERLAP))
+                    first, second = ink(font, left), ink(font, right)
+                    self.assertEqual(unmet(seam(first, ADVANCE + OVERLAP), second,
+                                           -OVERLAP, 1, cover), [])
+                    self.assertEqual(unmet(seam(second, -OVERLAP), first,
+                                           ADVANCE + OVERLAP, -1, cover), [])
 
     def test_every_generated_glyph_is_reachable(self):
         with open(SFD, encoding="utf-8") as sfd:

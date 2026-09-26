@@ -14,12 +14,15 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
 from add_ligatures import AXIS, GENERATED, OVERLAP
-from measure import spans_at_x, spans_at_y
+from measure import gap, spans_at_x, spans_at_y
 from project import ADVANCE, ROOT, SFD
 
 GENERATOR = ROOT / "tools" / "add_ligatures.py"
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
+# The shortest white between the two heads of Fira Code's ->>, the one reference that draws
+# it, with its cell scaled to ours.
+FIRA_HEAD_GAP = 133
 
 
 def without_timestamp(path):
@@ -52,6 +55,12 @@ def cut_edges(layer, length):
             if a.on_curve and b.on_curve and a.x == b.x and abs(a.y - b.y) >= length:
                 edges.append((a.x, min(a.y, b.y), max(a.y, b.y)))
     return edges
+
+
+def one_layer(contour):
+    layer = fontforge.layer()
+    layer += contour
+    return layer
 
 
 class GeneratorTest(unittest.TestCase):
@@ -230,6 +239,13 @@ class GlyphShapeTest(unittest.TestCase):
                 layer = self.font[tail].foreground
                 self.assertEqual(len(layer), 2)
                 self.assertEqual(spans_at_y(layer, AXIS), [])
+
+    def test_two_heads_stay_apart(self):
+        for glyph in ("greater.twohead", "less.twohead"):
+            with self.subTest(glyph=glyph):
+                layer = self.font[glyph].foreground
+                self.assertEqual(len(layer), 2)  # the outer head, and the inner one with the shaft
+                self.assertGreaterEqual(gap(*(one_layer(c) for c in layer)), FIRA_HEAD_GAP)
 
 
 if __name__ == "__main__":
