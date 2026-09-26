@@ -21,9 +21,9 @@ languagesystem latn dflt;
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   bar_greater.liga less_bar.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
-  asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r
+  asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l];
+  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
 
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow];
@@ -55,14 +55,14 @@ lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
 lookup lig_bar_greater { sub greater by bar_greater.liga; } lig_bar_greater;
 lookup lig_less_bar { sub bar by less_bar.liga; } lig_less_bar;
 lookup lig_tight_r {
-  sub [colon period ampersand plus slash asterisk less greater question bar]
+  sub [colon period ampersand plus slash asterisk less greater question bar equal]
    by [colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
-       asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r];
+       asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r];
 } lig_tight_r;
 lookup lig_tight_l {
-  sub [colon period ampersand plus slash asterisk less greater question bar]
+  sub [colon period ampersand plus slash asterisk less greater question bar equal]
    by [colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l];
+       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
 } lig_tight_l;
 
 feature calt {
@@ -160,16 +160,39 @@ feature calt {
     ignore sub @Op less' bar;
     ignore sub less' bar @Op;
     sub less' lookup lig_spacer bar' lookup lig_less_bar;
+    ignore sub @Op bar' bar bar;
+    ignore sub bar' bar bar @Op;
+    sub bar' lookup lig_tight_r bar bar' lookup lig_tight_l;
     ignore sub @Op bar' bar;
     ignore sub bar' bar @Op;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
 
-  # 6. Tightened pairs, and ... with the middle period left in place.
+  # 6. Tightened threes, their outer glyphs moved in and the middle one left in place, then
+  #    tightened pairs. The threes come first: a pair's ignore rules would claim them. An =
+  #    may close << >> (<<= >>=) or open << (=<<), as in C's shifts and Haskell's binds.
   lookup lig_tight {
     ignore sub @Op period' period period;
     ignore sub period' period period @Op;
     sub period' lookup lig_tight_r period period' lookup lig_tight_l;
+    ignore sub @Op period' period [equal less];
+    ignore sub period' period [equal less] @Op;
+    sub period' lookup lig_tight_r period [equal less]' lookup lig_tight_l;
+    ignore sub @Op ampersand' ampersand ampersand;
+    ignore sub ampersand' ampersand ampersand @Op;
+    sub ampersand' lookup lig_tight_r ampersand ampersand' lookup lig_tight_l;
+    ignore sub @Op less' less [less equal];
+    ignore sub less' less [less equal] @Op;
+    sub less' lookup lig_tight_r less [less equal]' lookup lig_tight_l;
+    ignore sub @Op greater' greater [greater equal];
+    ignore sub greater' greater [greater equal] @Op;
+    sub greater' lookup lig_tight_r greater [greater equal]' lookup lig_tight_l;
+    ignore sub @Op equal' less less;
+    ignore sub equal' less less @Op;
+    sub equal' lookup lig_tight_r less less' lookup lig_tight_l;
+    ignore sub @Op less' [dollar asterisk] greater;
+    ignore sub less' [dollar asterisk] greater @Op;
+    sub less' lookup lig_tight_r [dollar asterisk] greater' lookup lig_tight_l;
     ignore sub @Op colon' colon;
     ignore sub colon' colon @Op;
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
@@ -197,6 +220,9 @@ feature calt {
     ignore sub @Op question' question;
     ignore sub question' question @Op;
     sub question' lookup lig_tight_r question' lookup lig_tight_l;
+    ignore sub @Op question' [period colon];
+    ignore sub question' [period colon] @Op;
+    sub question' lookup lig_tight_r [period colon]' lookup lig_tight_l;
   } lig_tight;
 
 } calt;

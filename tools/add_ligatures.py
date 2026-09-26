@@ -84,7 +84,7 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
 # How far each glyph moves toward its partner in a tightened pair.
 TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
-         "less": 40, "greater": 40, "question": 60, "bar": 100}
+         "less": 40, "greater": 40, "question": 60, "bar": 100, "equal": 40}
 
 
 def outline(font, name):

@@ -132,6 +132,22 @@ LIGATED = {
     "<<": ["less.tight_r", "less.tight_l"],
     ">>": ["greater.tight_r", "greater.tight_l"],
     "??": ["question.tight_r", "question.tight_l"],
+    "a?.b": ["a", "question.tight_r", "period.tight_l", "b"],
+    "x?: T": ["x", "question.tight_r", "colon.tight_l", "space", "T"],
+    "(?:a)": ["parenleft", "question.tight_r", "colon.tight_l", "a", "parenright"],
+    # Tightened threes: the outer glyphs move in
+    "|||": ["bar.tight_r", "bar", "bar.tight_l"],
+    "&&&": ["ampersand.tight_r", "ampersand", "ampersand.tight_l"],
+    "<<<": ["less.tight_r", "less", "less.tight_l"],
+    ">>>": ["greater.tight_r", "greater", "greater.tight_l"],
+    ">>=": ["greater.tight_r", "greater", "equal.tight_l"],
+    "m >>= f": ["m", "space", "greater.tight_r", "greater", "equal.tight_l", "space", "f"],
+    "<<=": ["less.tight_r", "less", "equal.tight_l"],
+    "=<<": ["equal.tight_r", "less", "less.tight_l"],
+    "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
+    "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
+    "0..=9": ["zero", "period.tight_r", "period", "equal.tight_l", "nine"],
+    "0..<n": ["zero", "period.tight_r", "period", "less.tight_l", "n"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -142,12 +158,13 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
-    ">>=", "<<=", "<=-", "=<=",
+    "<=-", "=<=",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
-    # Pairs touching another operator
+    # Pairs and threes touching another operator, and ** (the asterisks would touch)
     "<<<<<<<", ">>>>>>>", "////", "///", "/**", "||=", "&&=", "??=",
-    "a::<T>", "https://", "....", "..", "|||", "<||", "|>>",
+    "a::<T>", "https://", "....", "..", "<||", "|>>", "||||", "&&&&", ">>>=", "...=",
+    "?..", "??.", "**", "a**b",
 ]
 
 
