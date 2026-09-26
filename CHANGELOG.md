@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.2.0 (unreleased)
+
 ## 1.1.0 (2026-09)
 
 - All of Box Drawing and Block Elements (U+2500–U+259F), so `tree`, `cargo tree`, `rich` tables and panels, TUI borders, progress bars and graphs no longer fall back to another font:
