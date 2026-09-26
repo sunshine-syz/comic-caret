@@ -1,9 +1,8 @@
 # Comic Caret
 
-A hand-drawn monospaced font for code and terminals, in the spirit of Comic Sans, and made to
-stay readable through a long day of work.
+A casual monospaced font for code and terminals, in the spirit of Comic Sans, and made to stay readable through a long day of work.
 
-![A Rust function set in Comic Caret, with -> and >= drawn as ligatures](docs/images/specimen.svg)
+![A large Aa beside the alphabet, digits, look-alike characters, accented letters and symbols, above a terminal with a prompt, a spinner, a progress bar, status marks and a table](docs/images/specimen.svg)
 
 **[Download the latest release](https://github.com/sunshine-syz/comic-caret/releases/latest)** ·
 [Changelog](CHANGELOG.md) · [Report a problem](https://github.com/sunshine-syz/comic-caret/issues)
@@ -39,7 +38,7 @@ stay readable through a long day of work.
 Comic Caret joins common coding sequences into one symbol. Every character still takes its
 own cell, so columns line up and the cursor moves one character at a time.
 
-![The same sequences with ligatures off (left) and on (right)](docs/images/ligatures.svg)
+![Arrows, comparisons, lines, pipes, tags and pulled-together pairs, each drawn as a ligature above the characters typed for it, then TypeScript code that uses them](docs/images/ligatures.svg)
 
 - Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`, with two heads
   (`->>` `<<-`) or a wave (`~>` `<~` `~~>`), and `>=>` `<=<` with a tail
@@ -81,12 +80,13 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 
 ## Character set
 
-![The alphabet, digits, symbols, look-alike characters, accented letters, arrows, prompt symbols, boxes, block elements and Braille patterns](docs/images/characters.svg)
-
-ASCII, the Latin letters and signs of Western, Central European, Baltic and Turkish text, λ Λ,
-straight, diagonal and double arrows, common math signs such as ≠ ≈ ≡ ∞, the check marks ✓ ✗
-and �, the prompt and status symbols of shells and CLI tools such as ❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐, all
-of Box Drawing and Block Elements, and Braille. Not there yet: Cyrillic and most of Greek.
+- **Complete:** Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the
+  deprecated ŉ), Box Drawing, Block Elements and Braille Patterns. The Latin covers Western,
+  Central European, Baltic and Turkish text.
+- **In part:** the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ € £),
+  λ Λ, the check marks ✓ ✗ and �, and the prompt and status symbols of shells and CLI tools
+  (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐).
+- **Not yet:** Cyrillic and most of Greek.
 
 ## Building from source
 
