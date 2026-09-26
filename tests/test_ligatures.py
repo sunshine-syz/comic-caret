@@ -134,6 +134,15 @@ LIGATED = {
     "<~": ["less.warrow", "asciitilde.end"],
     "<~~": ["less.warrow", "asciitilde.mid", "asciitilde.end.low"],
     "<~>": ["less.warrow", "asciitilde.mid", "greater.warrow.low"],
+    # HTML comments
+    "<!--": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"],
+    "<!-- x -->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "space", "x",
+                    "space"] + hyphens(3, right="greater.arrow")),
+    "</p><!--": ["less", "slash", "p", "greater", "less.comment", "exclam.tight_r", "hyphen.sta",
+                 "hyphen.end"],
+    # After a > that can head an arrow, only the -- joins
+    "-><!--": ["hyphen", "greater", "less", "exclam", "hyphen.sta", "hyphen.end"],
+    "=><!--": ["equal", "greater", "less", "exclam", "hyphen.sta", "hyphen.end"],
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -210,6 +219,8 @@ PLAIN = [
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
     # Wave arrows followed by another operator, and Ruby's <<~ heredoc
     "~>>", "~>=", "<<~", "=~", "!~",
+    # <!-- without its -- run
+    "<!-", "<!--<",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)

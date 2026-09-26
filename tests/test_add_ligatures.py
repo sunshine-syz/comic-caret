@@ -14,7 +14,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
 from add_ligatures import AXIS, GENERATED, OVERLAP
-from measure import gap, spans_at_x, spans_at_y
+from measure import gap, ink, spans_at_x, spans_at_y
 from project import ADVANCE, ROOT, SFD
 
 GENERATOR = ROOT / "tools" / "add_ligatures.py"
@@ -252,6 +252,16 @@ class GlyphShapeTest(unittest.TestCase):
         for glyph in ("greater.warrow", "greater.warrow.low", "less.warrow"):
             with self.subTest(glyph=glyph):
                 self.assertEqual(len(self.font[glyph].foreground), 1)
+
+    def test_comment_arrow_reads_as_an_arrow(self):
+        # <!--: the shaft reaches past the arm ends, and the ! sits midway between the shaft's
+        # end and the -- run.
+        arrow = self.font["less.comment"].foreground
+        _, _, end, _ = arrow.boundingBox()
+        self.assertAlmostEqual(spans_at_y(arrow, AXIS)[-1][1], end, delta=1)
+        x0, _, x1, _ = ink(self.font, "exclam.tight_r").boundingBox()
+        start = self.font["hyphen.sta"].boundingBox()[0] + ADVANCE
+        self.assertAlmostEqual(x0 - (end - ADVANCE), start - x1, delta=2)
 
 
 if __name__ == "__main__":

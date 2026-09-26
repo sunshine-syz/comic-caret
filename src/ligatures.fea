@@ -19,7 +19,7 @@ languagesystem latn dflt;
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
   less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail
-  less.twohead greater.twohead less.shaft greater.shaft
+  less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r
   exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
   bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
@@ -54,6 +54,7 @@ lookup lig_warrow_low { sub greater by greater.warrow.low; } lig_warrow_low;
 lookup lig_dtail { sub [less greater] by [less.dtail greater.dtail]; } lig_dtail;
 lookup lig_twohead { sub [less greater] by [less.twohead greater.twohead]; } lig_twohead;
 lookup lig_shaft { sub [less greater] by [less.shaft greater.shaft]; } lig_shaft;
+lookup lig_comment { sub [less exclam] by [less.comment exclam.tight_r]; } lig_comment;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
@@ -109,8 +110,13 @@ feature calt {
   #    left and turn a malformed run back into plain glyphs, however long it is: a head or
   #    end touching more of the run reverts, then every piece before a reverted glyph.
   #    A doubled - head (<<- ->>) draws both heads in its outer cell and a shaft in the
-  #    inner one.
+  #    inner one. In <!-- the < is an arrow of its own and the -- runs on. A > before it ends
+  #    a tag, as in </p><!--, unless it can head an arrow.
   lookup lig_hyphen_build {
+    ignore sub [hyphen equal] greater less' exclam hyphen hyphen;
+    sub greater less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
+    ignore sub @Op less' exclam hyphen hyphen;
+    sub less' lookup lig_comment exclam' lookup lig_comment hyphen hyphen;
     ignore sub @HyphenRun less' less hyphen;
     sub less' lookup lig_twohead less hyphen;
     sub less.twohead less' lookup lig_shaft;
@@ -135,6 +141,8 @@ feature calt {
     rsub [less.shaft]' [hyphen] by less;
     rsub [less.twohead]' [less] by less;
     rsub [less.arrow]' [hyphen] by less;
+    rsub [exclam.tight_r]' [hyphen] by exclam;
+    rsub [less.comment]' [exclam] by less;
   } lig_hyphen_unwind;
 
   # A left-only = arrow needs two =, since <= alone is ≤. An = run right after ! or : stays

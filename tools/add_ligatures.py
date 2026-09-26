@@ -27,7 +27,7 @@ HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' head
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
-                       r"|warrow|warrow\.low|dtail|twohead|shaft|liga|tight_l|tight_r)")
+                       r"|warrow|warrow\.low|dtail|twohead|shaft|comment|liga|tight_l|tight_r)")
 
 
 class Bar(NamedTuple):
@@ -398,6 +398,18 @@ def wave_arrows(font):
                                               SPECK)}
 
 
+def comment_open(font):
+    """<!--: the < as an arrow head whose shaft runs to the cell's edge and ends round, and how
+    far the ! moves right to sit midway between that end and the start of the -- run."""
+    shaft = stroke(font, "hyphen", TIP["less"] + SHAFT_INTO_HEAD)
+    [bar] = RUNS["hyphen"]
+    shaft = geo.stretch(shaft, bar.cuts[1], ADVANCE + OVERLAP - shaft.boundingBox()[2], bar.band)
+    arrow = geo.union(longer_angle(font, "less", HEAD_SCALE), shaft)
+    x0, _, x1, _ = font["exclam"].boundingBox()
+    start = font["hyphen"].boundingBox()[0] + ADVANCE  # the run's start, from the !'s cell
+    return arrow, round(((start - x1) - (x0 - OVERLAP)) / 2)
+
+
 def build(font):
     """Every generated glyph in SFD order: name -> outline layer, or a list of
     (glyph, dx, dy) references for pure shifts."""
@@ -423,6 +435,8 @@ def build(font):
         glyphs[f"{name}.twohead"] = two_heads(font, name)
         glyphs[f"{name}.shaft"] = [("hyphen.mid", 0, 0)]  # a > or < inside ->> <<-
     glyphs.update(wave_arrows(font))
+    glyphs["less.comment"], bang = comment_open(font)
+    glyphs["exclam.tight_r"] = [("exclam", bang, 0)]
     return glyphs
 
 
