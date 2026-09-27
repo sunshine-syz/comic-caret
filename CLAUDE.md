@@ -153,7 +153,8 @@ together.
   strokes.
 - Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
   are references to it; the tonos is the acute turned 25° steeper, and beside a capital it
-  stands in the cell before, as in both references (`test_sanity.py` lists them).
+  stands to the left, reaching into the cell before (all but Ά) no further than the
+  references' 112 (`test_sanity.py` lists them).
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
   rotated about the cell center.
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and

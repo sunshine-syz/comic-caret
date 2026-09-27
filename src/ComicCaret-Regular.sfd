@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790480383
+ModificationTime: 1790481385
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -31789,13 +31789,13 @@ Width: 550
 GlyphClass: 2
 Flags: W
 HStem: -37 21G<172 178> 536 151 644 20G<78.5 85 472 478>
-VStem: -125 124
-AnchorPoint: "bottom" 198 0 basechar 0
-AnchorPoint: "top" 198 739 basechar 0
+VStem: -111 124
+AnchorPoint: "bottom" 204 0 basechar 0
+AnchorPoint: "top" 204 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 937 933 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 -340 19 2
+Refer: 975 900 N 1 0 0 1 -326 19 2
 Ligature2: "marks_compose" Upsilon acutecomb
 EndChar
 
