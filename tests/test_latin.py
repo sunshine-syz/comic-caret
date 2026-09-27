@@ -290,19 +290,12 @@ class FigureTest(unittest.TestCase):
         drops = set()
         for sup, sub in zip(SUPERSCRIPTS, SUBSCRIPTS, strict=True):
             with self.subTest(glyph=sub):
+                self.assertEqual(len(self.font[ord(sub)].foreground), 0)
                 [(a, m, *_)] = self.font[ord(sup)].references
                 [(b, n, *_)] = self.font[ord(sub)].references
                 self.assertEqual((a, tuple(m[:5])), (b, tuple(n[:5])))
                 drops.add(m[5] - n[5])
         self.assertEqual(len(drops), 1)
-
-    def test_signs_stand_on_the_middle_of_the_small_figures(self):
-        # As in both references that have them: ⁺ ⁻ ⁼ ⁽ ⁾ centred on ¹'s height.
-        _, y0, _, y1 = self.font[ord("¹")].boundingBox()
-        for char in "⁺⁻⁼⁽⁾":
-            with self.subTest(glyph=char):
-                _, b0, _, b1 = self.font[ord(char)].boundingBox()
-                self.assertAlmostEqual((b0 + b1) / 2, (y0 + y1) / 2, delta=10)
 
     def test_fraction_bar_touches_neither_figure(self):
         for name, figures in FRACTIONS.items():

@@ -53,7 +53,9 @@ def is_top(code):
 
 
 def is_letter(glyph):
-    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)).startswith("L")
+    # Not Lm, as in tests/test_consistency.py: ˆ ˇ are modifier letters, and accents here.
+    return (glyph.unicode >= 0
+            and unicodedata.category(chr(glyph.unicode)) in {"Lu", "Ll", "Lt", "Lo"})
 
 
 def letter_placements(font):

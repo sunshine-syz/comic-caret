@@ -64,6 +64,12 @@ class LookalikeTest(unittest.TestCase):
         ring, o = self.font[0x25CB].foreground, self.font["o"].foreground
         self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), 78)
 
+    def test_empty_set_is_wider_than_o_slash(self):
+        # So "A = ∅" doesn't read as "A = ø": Fira Code's ∅ is 88 wider than its ø at our
+        # advance (Maple Mono's 129).
+        empty, slashed = self.font[0x2205].foreground, self.font["oslash"].foreground
+        self.assertGreaterEqual(measure.ink_width(empty) - measure.ink_width(slashed), 88)
+
     def test_white_bullet_sits_below_the_degree_sign(self):
         # A small ring either way: ◦ keeps below °'s middle, so "◦ item" isn't "° item".
         _, _, _, top = self.font[ord("◦")].boundingBox()
@@ -84,7 +90,8 @@ class LookalikeTest(unittest.TestCase):
         self.assertLess(b1 - b0, q1 - q0)
 
     def test_lozenge_is_a_tall_diamond_where_the_white_diamond_is_square(self):
-        # Both references draw ◊ 1.48 and 1.50 times as tall as wide, against a square ◇.
+        # Scaled to our advance and cap height, the references draw ◊ 1.48 (Maple Mono) and
+        # 1.56 (Fira Code) times as tall as wide, against a square ◇.
         def aspect(char):
             x0, y0, x1, y1 = self.font[ord(char)].boundingBox()
             return (y1 - y0) / (x1 - x0)

@@ -2,8 +2,8 @@
 
 Run: python3 -m unittest discover tests
 
-Rows and centering are checked for every letter in test_consistency.py, and accented letters
-built on their letter with marks clear of it there too.
+Rows, centering, and accented letters built on their letter with marks clear of it are
+checked in test_consistency.py.
 """
 import pathlib
 import sys
@@ -57,7 +57,7 @@ class GreekTest(unittest.TestCase):
 
     def test_tonos_is_the_acute_turned_steeper(self):
         # The same stroke, only turned, so it needs less room beside a capital.
-        tonos, acute = self.glyph("΄").foreground, self.font["acute"].foreground
+        tonos, acute = measure.ink(self.font, "tonos"), measure.ink(self.font, "acute")
         self.assertAlmostEqual(measure.area(tonos) / measure.area(acute), 1, delta=0.02)
         t0, u0, t1, u1 = tonos.boundingBox()
         a0, b0, a1, b1 = acute.boundingBox()
@@ -68,9 +68,7 @@ class GreekTest(unittest.TestCase):
         boxes = {}
         for char in chars:
             [matrix] = [m for name, m, *_ in self.glyph(char).references if name == "tonos"]
-            ink = self.glyph("΄").foreground.dup()
-            ink.transform(matrix)
-            boxes[char] = ink.boundingBox()
+            boxes[char] = geo.transformed(measure.ink(self.font, "tonos"), matrix).boundingBox()
         return boxes
 
     def test_tonos_stands_at_one_height(self):
@@ -94,8 +92,9 @@ class GreekTest(unittest.TestCase):
     def test_theta_bar_stays_clear_of_the_ring(self):
         # Θ is O and a bar; at 12 px a bar that nearly meets the ring reads as ⊖.
         theta = self.glyph("Θ")
-        ring = self.font["O"].foreground
-        self.assertEqual([name for name, *_ in theta.references], ["O"])
+        [(name, matrix, *_)] = theta.references
+        self.assertEqual(name, "O")
+        ring = geo.transformed(measure.ink(self.font, "O"), matrix)
         self.assertGreaterEqual(measure.gap(ring, theta.foreground), THETA_GAP)
 
 

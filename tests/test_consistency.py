@@ -30,7 +30,7 @@ LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and mar
 ROWS = {
     "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾"
                   "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω"), 1),
-    "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρστυφχψω", 3),
+    "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρσςτυφχψω", 3),
     "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ"), 3),
     "ascender": ("bdfhklßþβδζθξ", 3),
@@ -43,16 +43,20 @@ ROWS = {
 ROW_TOLERANCE = 30
 OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 
-# Symmetric glyphs, the brackets, which the legibility pass centered, and the prompt and CLI
-# symbols, which the reference fonts center by their ink box.
+# Symmetric glyphs; the brackets, which the legibility pass centered; the figures, and the
+# small ones of the superscripts and subscripts, which stand in the middle of the cell like
+# them; and the prompt, CLI and math symbols, which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
-            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
+            "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
            "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤")
+# The superscript and subscript signs, on the middle of their small figures, as in both
+# references that have them.
+SMALL_ON_AXIS = {"¹": "⁺⁻⁼⁽⁾", "₁": "₊₋₌₍₎"}
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
             "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
@@ -141,6 +145,16 @@ class PlacementTest(unittest.TestCase):
             _, b0, _, b1 = box(self.font, char)
             if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
                 off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
+        self.assertEqual(off, {})
+
+    def test_small_signs_sit_on_their_figures_middle(self):
+        off = {}
+        for figure, signs in SMALL_ON_AXIS.items():
+            _, y0, _, y1 = box(self.font, figure)
+            for char in signs:
+                _, b0, _, b1 = box(self.font, char)
+                if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
+                    off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         self.assertEqual(off, {})
 
     def test_mirror_pairs_mirror_each_other(self):

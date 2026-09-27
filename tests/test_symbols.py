@@ -427,7 +427,8 @@ class BuiltFromTest(unittest.TestCase):
                 glyph = self.font[ord(char)]
                 self.assertEqual(len(glyph.foreground), 0)
                 [(a, first, *_), (b, second, *_)] = glyph.references
-                self.assertEqual({a, b}, {self.base(single)})
+                self.assertEqual({self.base(a), self.base(b)},
+                                 {self.base(self.font[ord(single)].glyphname)})
                 self.assertEqual(first[:4] + first[5:], second[:4] + second[5:])
                 layer = measure.ink(self.font, glyph.glyphname)
                 _, y0, _, y1 = layer.boundingBox()
@@ -446,19 +447,19 @@ class BuiltFromTest(unittest.TestCase):
                 for a, b in pairs:
                     self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
 
-    def base(self, char):
-        """The glyph a glyph is one unmoved reference to, or the glyph itself."""
-        glyph = self.font[ord(char)]
+    def base(self, name):
+        """The glyph that `name` is one unmoved reference to, followed down, or `name`."""
+        glyph = self.font[name]
         if len(glyph.foreground) == 0 and len(glyph.references) == 1:
-            [(name, matrix, *_)] = glyph.references
+            [(base, matrix, *_)] = glyph.references
             if matrix == psMat.identity():
-                return name
-        return glyph.glyphname
+                return self.base(base)
+        return name
 
     def test_same_shapes_are_references(self):
         # Where every reference draws two characters alike, one is the other: ∆ as Fira Code,
-        # the only reference with ∆, draws it. ′ is the modifier prime ʹ, as the Greek numeral
-        # sign is.
+        # the only reference with ∆, draws it. And ′ is the modifier prime ʹ: Maple Mono, the
+        # only reference with ′, draws the two alike, only set apart in the cell.
         for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ")):
             with self.subTest(glyph=char):
                 name, matrix = self.only_reference(char)
