@@ -31,10 +31,14 @@ languagesystem latn dflt;
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow
   less.twohead greater.twohead less.shaft greater.shaft];
 @EqualRun = [equal less greater equal.sta equal.mid equal.end less.darrow greater.darrow];
+# FontForge's feature parser drops the first glyph of a range written A-Z; A - Z keeps it.
 # What starts a shell heredoc's delimiter after <<-: EOF 'EOF' "EOF" \EOF.
-@Delimiter = [A-Z a-z underscore quotesingle quotedbl backslash];
+@Delimiter = [A - Z a - z underscore quotesingle quotedbl backslash];
 # What follows a < that opens an HTML tag or comment: <p </p <!--.
-@TagStart = [A-Z a-z slash exclam];
+@TagStart = [A - Z a - z slash exclam];
+# What comes before the > that closes a tag: <p> <h1> <br/> alt="x" alt='x'.
+@TagEnd = [A - Z a - z zero one two three four five six seven eight nine slash quotedbl
+  quotesingle];
 
 # Single substitutions, called from the chain rules below.
 lookup lig_sta {
@@ -116,7 +120,9 @@ feature calt {
   #    A doubled - head (<<- ->>) draws both heads in its outer cell and a shaft in the
   #    inner one, except in a shell heredoc (<<-EOF). In <!-- the < is an arrow of its own
   #    and the -- runs on; it may follow the > that ends a tag or an arrow (</p><!--
-  #    --><!--). An arrow's head stays before a tag, as in --><p>.
+  #    --><!--). An arrow's head stays before a tag, as in --><p>, and so does <!--, as in
+  #    <!--<div>-->, whose -- run may start after the > that ends the tag, though >- is
+  #    otherwise an inward head.
   lookup lig_hyphen_build {
     sub [greater greater.arrow] less' lookup lig_comment exclam' lookup lig_comment hyphen
       hyphen;
@@ -130,6 +136,7 @@ feature calt {
     sub less' lookup lig_arrow hyphen;
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_end;
+    sub @TagEnd greater hyphen' lookup lig_sta [hyphen greater];
     ignore sub @HyphenRun hyphen';
     sub hyphen' lookup lig_sta [hyphen greater];
     sub [hyphen.sta hyphen.mid] greater' lookup lig_shaft greater;
@@ -143,6 +150,8 @@ feature calt {
     # A head before a tag becomes itself, which keeps the next rule from reverting it.
     rsub [greater.arrow]' [less] @TagStart by greater.arrow;
     rsub [greater.arrow]' [hyphen less greater] by greater;
+    # <!-- before a tag keeps its run's end, which keeps the next rule from reverting it.
+    rsub exclam.tight_r hyphen.sta [hyphen.end]' [less] by hyphen.end;
     rsub [hyphen.end]' [hyphen less greater] by hyphen;
     rsub [hyphen.mid]' [hyphen greater] by hyphen;
     rsub [hyphen.sta]' [hyphen greater] by hyphen;

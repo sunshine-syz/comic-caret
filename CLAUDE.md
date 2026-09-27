@@ -90,7 +90,8 @@ together.
 - Don't save from a process that validated glyphs; it writes `Validated:` into each one it
   checked.
 - `font.mergeFeature()` prints feature-file errors to stderr and returns normally, merging
-  nothing; check that the lookups exist afterwards.
+  nothing; check that the lookups exist afterwards. It also drops the first glyph of a class
+  range written `[A-Z]`; write `[A - Z]`.
 - Saving crashes when an `rsub` rule is made only of bare glyph names; write the input glyph as
   a one-glyph class (`[a]'`).
 - `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the

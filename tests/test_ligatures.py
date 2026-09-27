@@ -110,10 +110,16 @@ LIGATED = {
     "<==": equals(3, left="less.darrow"),
     "<====": equals(5, left="less.darrow"),
     "<=>": equals(3, "less.darrow", "greater.darrow"),
-    # An arrow's head before a tag: HTML, and JSX's x=><li>
+    # An arrow's head before a tag: HTML, and JSX's x=><li>. <a> and <A> too: FontForge's
+    # feature parser drops the first glyph of a [X-Y] range written without spaces.
     "--><p>": hyphens(3, right="greater.arrow") + ["less", "p", "greater"],
     "--></p>": hyphens(3, right="greater.arrow") + ["less", "slash", "p", "greater"],
+    "--><a>": hyphens(3, right="greater.arrow") + ["less", "a", "greater"],
+    "--><A>": hyphens(3, right="greater.arrow") + ["less", "A", "greater"],
     "x=><li>": ["x"] + equals(2, right="greater.darrow") + ["less", "l", "i", "greater"],
+    "x=><a>": ["x"] + equals(2, right="greater.darrow") + ["less", "a", "greater"],
+    # A - run after the > that ends a tag, though >- is otherwise an inward head
+    "</p>-->": ["less", "slash", "p", "greater"] + hyphens(3, right="greater.arrow"),
     "<====>": equals(6, "less.darrow", "greater.darrow"),
     # A - and an = family side by side: each part joins on its own
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
@@ -147,6 +153,11 @@ LIGATED = {
                  "hyphen.end"],
     "--><!--": (hyphens(3, right="greater.arrow")
                 + ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"]),
+    # A commented-out element: the opener keeps its ligature before the tag, and the arrow
+    # closes after it
+    "<!--<": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "less"],
+    "<!--<div>-->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end",
+                      "less", "d", "i", "v", "greater"] + hyphens(3, right="greater.arrow")),
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -218,17 +229,17 @@ PLAIN = [
     # Malformed arrows: a head pointing inward, tripled or in the middle, at any length
     ">-", "-<", "=<", ">==", "==<", "=>=", "=>>", "<<==", "->>>", "<<<-", "->>-", "-<<",
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
-    # A shell heredoc's <<-
-    "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF",
-    # An arrow before a < that opens no tag
-    "-><", "=><", "-><1",
+    # A shell heredoc's <<-, whatever letter its delimiter starts with
+    "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF", "cat <<-ARGS", "<<-abc",
+    # An arrow before a < that opens no tag, and a lone - after a tag's >
+    "-><", "=><", "-><1", "x>-1",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
     # Wave arrows followed by another operator, and Ruby's <<~ heredoc
     "~>>", "~>=", "<<~", "=~", "!~",
     # <!-- without its -- run
-    "<!-", "<!--<",
+    "<!-",
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
