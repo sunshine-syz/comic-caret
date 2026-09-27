@@ -21,6 +21,7 @@ OUT = ROOT / "docs" / "images"
 WIDTH = 800               # px; within a README column at 1:1
 MARGIN, PADDING = 24, 20  # around each image, and inside its panel
 CAP_HEIGHT = 0.668        # the top of H, in em
+LINE = 1.25               # the line box, in em: hhea and typo ascent 900 and descent 350
 ASCENT = 0.72             # the ascender's share of a line: 900 of 1250
 LIGHT, DARK = "#1f2328", "#e6edf3"  # GitHub's text colors
 COLORS = {  # class: (light, dark), GitHub's syntax and terminal colors
@@ -38,6 +39,9 @@ COLORS = {  # class: (light, dark), GitHub's syntax and terminal colors
     "purple": ("#8250df", "#bc8cff"),
 }
 PANEL = {"fill": ("#f6f8fa", "#151b23"), "stroke": ("#d1d9e0", "#3d444d")}  # a code block's
+
+# The look-alikes: the groups "Why Comic Caret" tells apart, large enough to see how.
+LOOKALIKES = ("Il1|", "O0o", "ij", ":;", "()[]{}")
 
 # The specimen: a large Aa beside spaced-out rows of samples, above a terminal whose prompt,
 # progress bar and table show the symbols at work. Terminal lines mark colored spans as
@@ -213,8 +217,22 @@ def highlighted(line):
     return classes
 
 
+def lookalikes():
+    """The look-alikes image, as SVG: each group spaced out a little, the row centered like
+    the images are on the page."""
+    layout = Layout()
+    size, gap, between = 52, 4, 46  # px: the letters, between their cells, between groups
+    widths = [len(group) * (ADVANCE * size / 1000 + gap) - gap for group in LOOKALIKES]
+    x = (WIDTH - sum(widths) - between * (len(LOOKALIKES) - 1)) / 2
+    baseline = MARGIN + CAP_HEIGHT * size
+    for group, width in zip(LOOKALIKES, widths):
+        layout.line(x, baseline, group, size, gap)
+        x += width + between
+    return layout.svg(baseline + (1 - ASCENT) * LINE * size + MARGIN)  # room for j's descender
+
+
 def specimen():
-    """The README's first image, as SVG."""
+    """The README's specimen, as SVG."""
     layout = Layout()
     right = WIDTH - MARGIN - PADDING  # where the table, and the longest row, end
 
@@ -274,7 +292,7 @@ def ligatures():
     return layout.svg(top + height + MARGIN)
 
 
-IMAGES = {"specimen": specimen, "ligatures": ligatures}
+IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures}
 
 
 def main():

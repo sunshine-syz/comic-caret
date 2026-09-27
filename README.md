@@ -1,11 +1,21 @@
-# Comic Caret
+<p align="center">
+  <img src="docs/images/logo.png" width="160" alt="Comic Caret, hand-lettered over a terminal window with lines of code, beside a smiling green caret with arms and legs, among stars, squiggles and a heart">
+</p>
 
-A casual monospaced font for code and terminals, in the spirit of Comic Sans, and made to stay readable through a long day of work.
+<p align="center">
+  A casual monospaced font for code and terminals, in the spirit of Comic Sans,<br>
+  and made to stay readable through a long day of work.
+</p>
 
-![A large Aa beside the alphabet, digits, look-alike characters, accented letters and symbols, above a terminal with a prompt, a spinner, a progress bar, status marks and a table](docs/images/specimen.svg)
+<p align="center">
+  <b><a href="https://github.com/sunshine-syz/comic-caret/releases/latest">Download the latest release</a></b> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/sunshine-syz/comic-caret/issues">Report a problem</a>
+</p>
 
-**[Download the latest release](https://github.com/sunshine-syz/comic-caret/releases/latest)** ·
-[Changelog](CHANGELOG.md) · [Report a problem](https://github.com/sunshine-syz/comic-caret/issues)
+<p align="center">
+  <img src="docs/images/specimen.svg" alt="A large Aa beside the alphabet, digits, look-alike characters, accented letters and symbols, above a terminal with a prompt, a spinner, a progress bar, status marks and a table">
+</p>
 
 ## Why Comic Caret
 
@@ -20,6 +30,10 @@ A casual monospaced font for code and terminals, in the spirit of Comic Sans, an
   for borders, trees, tables, progress bars, spinners and graphs, plus a
   [Nerd Font edition](#nerd-font-edition) with icons.
 
+<p align="center">
+  <img src="docs/images/lookalikes.svg" alt="The look-alikes, large: I l 1 and the bar, O 0 and o, i and j, the colon and semicolon, and the three pairs of brackets">
+</p>
+
 ## Install
 
 1. Download `ComicCaret-<version>.zip` from the
@@ -33,12 +47,18 @@ A casual monospaced font for code and terminals, in the spirit of Comic Sans, an
 3. Choose **Comic Caret** in your editor or terminal, for example
    `"editor.fontFamily": "Comic Caret"` in VS Code.
 
+**Coming from Comic Shanns Mono?** Comic Caret has its own family name, so the two can stay
+installed side by side; choose Comic Caret in your settings. The
+[1.0.0 notes](CHANGELOG.md#100-2026-09) list everything that changed.
+
 ## Ligatures
 
 Comic Caret joins common coding sequences into one symbol. Every character still takes its
 own cell, so columns line up and the cursor moves one character at a time.
 
-![Arrows, comparisons, lines, pipes, tags and pulled-together pairs, each drawn as a ligature above the characters typed for it, then TypeScript code that uses them](docs/images/ligatures.svg)
+<p align="center">
+  <img src="docs/images/ligatures.svg" alt="Arrows, comparisons, lines, pipes, tags and pulled-together pairs, each drawn as a ligature above the characters typed for it, then TypeScript code that uses them">
+</p>
 
 - Arrows of any length: `->` `<-` `<->` `=>` `<==` `<=>` `--->` `<====>`, with two heads
   (`->>` `<<-`) or a wave (`~>` `<~` `~~>`), and `>=>` `<=<` with a tail
@@ -80,17 +100,13 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 
 ## Character set
 
-- **Complete:** Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the
-  deprecated ŉ), Google Fonts' Latin Core and Greek Core, Box Drawing, Block Elements and
-  Braille Patterns. The Latin covers Western, Central European, Baltic and Turkish text, with
-  ẞ and the combining accents, so decomposed text such as macOS file names keeps its accents;
-  the Greek covers modern Greek text and the letters math and code use as names (θ Δt λ).
-- **In part:** the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂
-  ∇ ⟨ ⟩ € £), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗
-  and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of
-  terminal UIs such as Claude Code, Rich and Vitest (⏺ ⎿ ✻ ⏸ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎)
-  and editors' visible whitespace (␣ ↵ ⇥).
-- **Not yet:** Cyrillic.
+| Block | Coverage |
+|---|---|
+| **Latin** | Complete: Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the deprecated ŉ) and Google Fonts' Latin Core, so Western, Central European, Baltic and Turkish text, with ẞ and the combining accents that decomposed text such as macOS file names needs. |
+| **Greek** | Complete: Google Fonts' Greek Core, for modern Greek text and the letters math and code use as names (θ Δt λ). |
+| **Box Drawing, Block Elements, Braille** | Complete, for borders, trees, tables, progress bars, spinners and graphs. |
+| **Symbols** | In part: the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂ ∇ ⟨ ⟩ € £), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗ and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of terminal UIs such as Claude Code, Rich and Vitest (⏺︎ ⎿ ✻ ⏸︎ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎) and editors' visible whitespace (␣ ↵ ⇥). |
+| **Cyrillic** | Not yet. |
 
 ## Building from source
 
@@ -107,11 +123,10 @@ the first time, and skips without `uvx`.
 python3 -m unittest discover tests  # after building
 ```
 
-The source is `src/ComicCaret-Regular.sfd`; edit it in FontForge. The ligatures are generated:
-don't edit their glyphs (`LIG`, `*.sta`, `*.liga` and the like) by hand. Change
-`src/ligatures.fea` or `tools/add_ligatures.py` instead, then run
-`python3 tools/add_ligatures.py` and `./build.sh`. [CLAUDE.md](CLAUDE.md) lists the rules the
-source follows and the checks to run after changing it.
+The source is `src/ComicCaret-Regular.sfd`; edit it in FontForge. The ligatures, combining
+marks and box drawing are generated by the scripts in `tools/`, so change them there and rerun
+the script rather than editing their glyphs. [CLAUDE.md](CLAUDE.md) lists the rules the source
+follows and the checks to run after changing it.
 
 ## Credits
 
