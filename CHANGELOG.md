@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 (unreleased)
+## 1.2.0 (2026-09)
 
 - More coding ligatures, drawn in the font's hand from its own `<` `>` `-` `=` `~` `|`:
   - `<>` as a diamond, and `<|>` as the triangles of `<|` and `|>` sharing one bar.
