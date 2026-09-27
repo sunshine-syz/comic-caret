@@ -25,6 +25,7 @@
 - Superscripts and subscripts: ⁰ ⁴–⁹ ⁱ ⁿ ⁺ ⁻ ⁼ ⁽ ⁾ join ¹ ² ³, and ₀–₉ ₊ ₋ ₌ ₍ ₎ are new, for units and formulas in comments (m², CO₂, x₁, 10⁻³), footnotes, and the numbered box titles of btop (¹cpu to ⁴proc). They are the font's own figures and signs made small, at the weight of ¹ ² ³, and each subscript is its superscript lowered.
 - Math symbols: ∂ ∆ ∇ ∏ ∑ √ ∫ ◊ ∅ ′ ″ ‖ ⟨ ⟩, for math in comments and Markdown, Lean's anonymous constructors `⟨a, b⟩`, and names such as `∂x` and `∇f`. ∆ is Δ and ∇ is ∆ turned over, ∏ and ∑ are Π and Σ made taller to reach below the baseline, ∫ and ⟨ ⟩ are as tall as the brackets, and ∅ is the wide ○ struck through, so it doesn't read as ø.
 - Arrows such as `-->` and `=>` keep their head right before an HTML or JSX tag, as in `--><p>`, `--></div>` and `x=><li>`. Before, any `<` right after an arrow undid it. A commented-out element keeps both its ligatures too: in `<!--<div>-->` the `<!--` stays before the tag, and the `-->` joins after the tag's `>`.
+- The Nerd Font editions keep the font's Braille patterns. The patcher replaced all of them with its own square dots, so Braille spinners looked different there.
 
 ## 1.1.0 (2026-09)
 

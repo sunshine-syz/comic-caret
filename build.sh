@@ -151,9 +151,11 @@ if [[ -n $nerd_variants ]]; then
     # The patcher writes the input's format, so patching each build keeps the OTF's cubic
     # outlines instead of converting the TTF.
     for ext in otf ttf; do
-      # FontForge prints ~100 name-vs-codepoint notes while loading the icon fonts. Drop them
-      # so the patcher's own warnings stay visible; pipefail still reports a patcher failure.
-      fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete ${flag:+"$flag"} \
+      # --careful keeps every glyph the font has: without it --complete replaces the Braille
+      # with the patcher's own. FontForge prints ~100 name-vs-codepoint notes while loading
+      # the icon fonts. Drop them so the patcher's own warnings stay visible; pipefail still
+      # reports a patcher failure.
+      fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete --careful ${flag:+"$flag"} \
         --quiet --no-progressbars --outputdir "$NERD_OUT" "$OUT.$ext" 2>&1 |
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
