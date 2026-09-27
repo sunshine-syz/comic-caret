@@ -46,15 +46,15 @@ OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 # Symmetric glyphs, the brackets, which the legibility pass centered, and the prompt and CLI
 # symbols, which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
-            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌"
+            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
-           "✕✖❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
+           "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤")
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
-            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎")
+            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.

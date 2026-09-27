@@ -83,6 +83,15 @@ class LookalikeTest(unittest.TestCase):
         self.assertGreaterEqual((c1 - c0) - (r1 - r0), 100)
         self.assertLess(b1 - b0, q1 - q0)
 
+    def test_lozenge_is_a_tall_diamond_where_the_white_diamond_is_square(self):
+        # Both references draw ◊ 1.48 and 1.50 times as tall as wide, against a square ◇.
+        def aspect(char):
+            x0, y0, x1, y1 = self.font[ord(char)].boundingBox()
+            return (y1 - y0) / (x1 - x0)
+
+        self.assertGreaterEqual(aspect("◊"), 1.48)
+        self.assertLess(aspect("◇"), aspect("◊"))
+
 
 class ColonTest(unittest.TestCase):
     @classmethod
@@ -109,7 +118,8 @@ class ColonTest(unittest.TestCase):
                                delta=5)
 
 
-PAIRS = {"parenright": "parenleft", "bracketright": "bracketleft", "braceright": "braceleft"}
+PAIRS = {"parenright": "parenleft", "bracketright": "bracketleft", "braceright": "braceleft",
+         "uni27E9": "uni27E8"}
 
 
 class BracketTest(unittest.TestCase):

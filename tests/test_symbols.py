@@ -1,4 +1,4 @@
-"""Coding, prompt and CLI symbols: ≠ ≈ ≡ ∞, arrows, marks, shapes, boxes and signs.
+"""Coding, prompt, CLI and math symbols: ≠ ≈ ≡ ∞ ∑ ∫, arrows, marks, shapes, boxes and signs.
 
 Run: python3 -m unittest discover tests
 
@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩")
 DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
@@ -47,7 +47,7 @@ FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
-          "↱": ("↲", 180)}
+          "↱": ("↲", 180), "∇": ("∆", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
@@ -56,6 +56,10 @@ SMALL_COUNTER = 157
 # Maple Mono's ◦, the only reference's, at our cap height.
 SMALL_SQUARE_COUNTER = 122
 WHITE_BULLET_COUNTER = 144
+# Double mark -> (the single mark, the white between its two copies at their middle): at
+# least the narrowest reference's, scaled to our cell: Maple Mono's ″, the only reference's,
+# and Fira Code's ‖ (Maple Mono's 156).
+DOUBLES = {"″": ("′", 108), "‖": ("|", 90)}
 
 
 def linear(matrix):
@@ -417,6 +421,18 @@ class BuiltFromTest(unittest.TestCase):
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(linear(matrix), linear(psMat.rotate(math.radians(degrees))))
 
+    def test_double_marks_are_the_single_mark_twice(self):
+        for char, (single, floor) in DOUBLES.items():
+            with self.subTest(glyph=char):
+                glyph = self.font[ord(char)]
+                self.assertEqual(len(glyph.foreground), 0)
+                [(a, first, *_), (b, second, *_)] = glyph.references
+                self.assertEqual({a, b}, {self.base(single)})
+                self.assertEqual(first[:4] + first[5:], second[:4] + second[5:])
+                layer = measure.ink(self.font, glyph.glyphname)
+                _, y0, _, y1 = layer.boundingBox()
+                self.assertGreaterEqual(measure.counter(layer, (y0 + y1) / 2), floor)
+
     def test_midline_ellipsis_is_the_ellipsis_raised(self):
         name, matrix = self.only_reference("⋯")
         self.assertEqual(name, "ellipsis")
@@ -430,9 +446,20 @@ class BuiltFromTest(unittest.TestCase):
                 for a, b in pairs:
                     self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
 
+    def base(self, char):
+        """The glyph a glyph is one unmoved reference to, or the glyph itself."""
+        glyph = self.font[ord(char)]
+        if len(glyph.foreground) == 0 and len(glyph.references) == 1:
+            [(name, matrix, *_)] = glyph.references
+            if matrix == psMat.identity():
+                return name
+        return glyph.glyphname
+
     def test_same_shapes_are_references(self):
-        # Where every reference draws two characters alike, one is the other.
-        for char, base in (("◯", "○"), ("□", "☐")):
+        # Where every reference draws two characters alike, one is the other: ∆ as Fira Code,
+        # the only reference with ∆, draws it. ′ is the modifier prime ʹ, as the Greek numeral
+        # sign is.
+        for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ")):
             with self.subTest(glyph=char):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
