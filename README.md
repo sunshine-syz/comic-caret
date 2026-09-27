@@ -81,14 +81,16 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 ## Character set
 
 - **Complete:** Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the
-  deprecated ŉ), Google Fonts' Latin Core, Box Drawing, Block Elements and Braille Patterns.
-  The Latin covers Western, Central European, Baltic and Turkish text, with ẞ and the
-  combining accents, so decomposed text such as macOS file names keeps its accents.
-- **In part:** the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ € £),
-  λ Λ, the check marks ✓ ✗ and �, the prompt and status symbols of shells and CLI tools
-  (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of terminal UIs such as Claude Code, Rich and Vitest
-  (⏺ ⎿ ✻ ⏸ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎) and editors' visible whitespace (␣ ↵ ⇥).
-- **Not yet:** Cyrillic and most of Greek.
+  deprecated ŉ), Google Fonts' Latin Core and Greek Core, Box Drawing, Block Elements and
+  Braille Patterns. The Latin covers Western, Central European, Baltic and Turkish text, with
+  ẞ and the combining accents, so decomposed text such as macOS file names keeps its accents;
+  the Greek covers modern Greek text and the letters math and code use as names (θ Δt λ).
+- **In part:** the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂
+  ∇ ⟨ ⟩ € £), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗
+  and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of
+  terminal UIs such as Claude Code, Rich and Vitest (⏺ ⎿ ✻ ⏸ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎)
+  and editors' visible whitespace (␣ ↵ ⇥).
+- **Not yet:** Cyrillic.
 
 ## Building from source
 
