@@ -52,9 +52,14 @@ def is_top(code):
     return code not in BELOW
 
 
+def is_letter(glyph):
+    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)).startswith("L")
+
+
 def letter_placements(font):
     """[(letter, accent, dx, dy)]: each accented letter's letter and accent references, as the
-    accent is moved relative to the letter."""
+    accent is moved relative to the letter. Accents built on another accent, such as ΅ on
+    the tonos, place nothing."""
     accents = set(MARKS.values())
     out = []
     for glyph in font.glyphs():
@@ -62,7 +67,7 @@ def letter_placements(font):
             continue
         refs = {name: matrix for name, matrix, *_ in glyph.references}
         marks = [name for name in refs if name in accents]
-        letters = [name for name in refs if name not in accents]
+        letters = [name for name in refs if name not in accents and is_letter(font[name])]
         if len(marks) != 1 or len(letters) != 1:
             continue
         (mark,), (letter,) = marks, letters

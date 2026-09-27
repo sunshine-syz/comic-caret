@@ -25,8 +25,13 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 # Known exceptions.
 # How far a glyph may run into the next cell: ď's caron, kept by choice, as far as Intel One
 # Mono's (93); ⎯, the -- line's middle piece, as far as the line's pieces overlap so a row of
-# them joins (OVERLAP in tools/add_ligatures.py).
-INK_OUTSIDE_CELL = {"dcaron": 100, "uni23AF": 10}
+# them joins (OVERLAP in tools/add_ligatures.py); and the tonos left of a capital, which
+# stands in the cell before, as in Fira Code (up to 112, on Ύ) and Maple Mono (106): a word
+# starts there, so that cell holds a space.
+TONOS_OVERHANG = 130  # Ύ, whose arm reaches the cell's top corner
+INK_OUTSIDE_CELL = {"dcaron": 100, "uni23AF": 10,
+                    **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
+                                     "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
 BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
 

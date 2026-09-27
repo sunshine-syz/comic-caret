@@ -28,11 +28,13 @@ LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and mar
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
-    "baseline": ("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾", 1),
-    "x-height": ("acemnorsuvwxzıĸµŋ", 3),
-    "cap height": ("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™", 3),
-    "ascender": ("bdfhklßþ", 3),
-    "descender": ("gjpqyþµŋŊƒ¶", 1),
+    "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾"
+                  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω"), 1),
+    "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρστυφχψω", 3),
+    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™"
+                    "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ"), 3),
+    "ascender": ("bdfhklßþβδζθξ", 3),
+    "descender": ("gjpqyþµŋŊƒ¶βγζηξρςφχψϗ", 1),
     "superscript": ("¹²³", 3),
 }
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
@@ -42,6 +44,7 @@ OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 # Symmetric glyphs, the brackets, which the legibility pass centered, and the prompt and CLI
 # symbols, which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
+            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
@@ -353,7 +356,9 @@ class MarkTest(unittest.TestCase):
         for glyph in self.font.glyphs():
             refs = {name: matrix for name, matrix, *_ in glyph.references}
             accents = [name for name in refs if name in accent_marks]
-            letters = [name for name in refs if name not in accent_marks]
+            # Not ΅, which is the tonos, not a letter, over the dieresis.
+            letters = [name for name in refs
+                       if name not in accent_marks and is_letter(self.font, name)]
             if glyph.unicode < 0 or len(accents) != 1 or len(letters) != 1:
                 continue
             (accent,), (letter,) = accents, letters

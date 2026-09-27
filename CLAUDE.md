@@ -147,7 +147,12 @@ together.
   exceptions. Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white
   shapes are rings of the hyphen's stroke, or of `o`'s for ○.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
-  height.
+  height. Where three strokes share the cell (φ Φ ψ Ψ), the middle one takes the bar's weight
+  (78), and the sides reach as far out as `w`'s, to keep up with the references' lighter
+  strokes.
+- Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
+  are references to it; the tonos is the acute turned 25° steeper, and beside a capital it
+  stands in the cell before, as in both references (`test_sanity.py` lists them).
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
   rotated about the cell center.
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
@@ -169,7 +174,8 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
     Braille dots.
   - `test_built.py`: what generating the fonts must keep; `test_metadata.py`: names and
     declared metrics.
-  - `test_legibility.py`, `test_latin.py`, `test_symbols.py`: rules for single glyphs.
+  - `test_legibility.py`, `test_latin.py`, `test_greek.py`, `test_symbols.py`: rules for single
+    glyphs.
 - Prefer a class rule. Add a new glyph to its class in `test_consistency.py` (`ROWS`,
   `CENTERED`, `ON_AXIS`, `MIRRORED`) rather than writing a test for it.
 - A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a
