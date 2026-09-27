@@ -18,16 +18,21 @@ import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
 
-SYMBOLS = ("≠≈≡∞↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
+SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩")
-DIAGONALS = {0x2197: 45, 0x2196: 135, 0x2199: 225, 0x2198: 315}
+# Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
+LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
-# Heavy mark -> the light mark it is drawn from.
-HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">", "➜": "→"}
-# The lightest of Maple Mono's ✔ ✘ ❯ against ✓ ✗ > (1.72, 1.70, 1.46). Its ➜ carries only 1.11
-# of its →'s ink: another arrow, not → made heavier, so it sets no floor.
+# Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
+# head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
+# another arrow than its → too; it stands where → does (BuiltFromTest).
+HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">"}
+# The lightest of Maple Mono's ✔ ✘ ❯ against ✓ ✗ > (1.72, 1.70, 1.46).
 HEAVY_INK = 1.45
+# •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
+# hand's wobble.
+BULLET_WIDTH = 220 - MIDDLE_TOLERANCE
 # Every symbol keeps at least as far inside the cell as ●, the widest full-size shape, so two
 # side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. ∞ (8's loop, scaled
 # to fit) and � (Comic Shanns's own) came with 1.0.0, 11 inside the cell.
@@ -47,7 +52,7 @@ FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
-          "↱": ("↲", 180), "∇": ("∆", 180)}
+          "↱": ("↲", 180), "∇": ("∆", 180), "↙": ("↗", 180), "↘": ("↖", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
@@ -146,16 +151,15 @@ class ArrowTest(unittest.TestCase):
     def box(self, code):
         return self.font[code].boundingBox()
 
-    def test_diagonals_are_the_right_arrow_turned(self):
-        # Turned back, each has →'s box; only its size counts, as each is centered in the cell.
-        x0, y0, x1, y1 = self.box(0x2192)
-        for code, degrees in DIAGONALS.items():
-            with self.subTest(arrow=chr(code)):
-                back = geo.transformed(self.font[code].foreground,
-                                       psMat.rotate(math.radians(-degrees)))
-                b0, c0, b1, c1 = back.boundingBox()
-                self.assertAlmostEqual(b1 - b0, x1 - x0, delta=2)
-                self.assertAlmostEqual(c1 - c0, y1 - y0, delta=2)
+    def test_typed_arrows_are_as_tall_as_the_ligature_heads(self):
+        # ↖ ↗ ↘ ↙ keep to themselves (mirrored and turned, in test_consistency and TURNED):
+        # → turned 45° would leave the cell.
+        for char, head in LIGATURE_HEADS.items():
+            with self.subTest(arrow=char):
+                _, y0, _, y1 = self.box(ord(char))
+                _, h0, _, h1 = self.font[head].boundingBox()
+                self.assertAlmostEqual(y0, h0, delta=2)
+                self.assertAlmostEqual(y1, h1, delta=2)
 
     def test_vertical_arrows_share_one_height(self):
         # ⇡'s two dashes set it; the solid and two-headed arrows match it.
@@ -320,6 +324,10 @@ class ShapeTest(unittest.TestCase):
                 self.assertAlmostEqual(self.font[ord(char)].boundingBox()[1], bottom,
                                        delta=MIDDLE_TOLERANCE)
 
+    def test_bullet_is_as_wide_as_the_smallest_reference_bullet(self):
+        x0, _, x1, _ = self.font[ord("•")].boundingBox()
+        self.assertGreaterEqual(x1 - x0, BULLET_WIDTH)
+
     def test_white_bullet_stands_where_the_bullet_does(self):
         # As in every reference, so • and ◦ line up in nested lists.
         white, black = self.font[ord("◦")].boundingBox(), self.font[ord("•")].boundingBox()
@@ -440,7 +448,8 @@ class BuiltFromTest(unittest.TestCase):
         self.assertEqual(linear(matrix), (1, 0, 0, 1))
 
     def test_arrows_stand_where_the_plain_arrows_do(self):
-        for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕"), ("⇑", "↑"), ("⇓", "↓")):
+        for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕"), ("⇑", "↑"), ("⇓", "↓"),
+                            ("➜", "→")):
             with self.subTest(arrow=char):
                 pairs = zip(self.middle(self.font[ord(char)]), self.middle(self.font[ord(plain)]),
                             strict=True)

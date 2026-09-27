@@ -33,7 +33,7 @@ ROWS = {
     "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρσςτυφχψω", 3),
     "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ"), 3),
-    "ascender": ("bdfhklßþβδζθξ", 3),
+    "ascender": ("bdfhklßþβδζθλξ", 3),
     "descender": ("gjpqyþµŋŊƒ¶βγζηξρςφχψϗ", 1),
     "superscript": ("¹²³⁰⁴⁵⁶⁷⁸⁹", 3),
     "superscript baseline": ("¹²³⁰⁴⁵⁶⁷⁸⁹ⁱⁿ", 1),
@@ -46,18 +46,18 @@ OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 # Symmetric glyphs; the brackets, which the legibility pass centered; the figures, and the
 # small ones of the superscripts and subscripts, which stand in the middle of the cell like
 # them; and the prompt, CLI and math symbols, which the reference fonts center by their ink box.
-CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
+CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%…/\\()[]{}╳•"
             "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
-ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
+ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
            "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤")
 # The superscript and subscript signs, on the middle of their small figures, as in both
 # references that have them.
 SMALL_ON_AXIS = {"¹": "⁺⁻⁼⁽⁾", "₁": "₊₋₌₍₎"}
-MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
+MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
             "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
