@@ -32,10 +32,16 @@ COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"E
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"}}
 # small component: (height as a fraction of the glyph's, and which of the strokes a line there
-# crosses is upright): the stem, a bowl's side or the round side of 2 and 3.
-SMALL_PROBES = {"one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1), "four": (0.12, 0),
-                "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0), "M": (0.25, 0), "C": (0.5, 0),
-                "R": (0.75, 0)}
+# crosses is upright): the stem, a bowl's side or the round side of 2 and 3. 7 has no upright
+# stroke.
+SMALL_PROBES = {"zero": (0.5, 0), "one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1),
+                "four": (0.12, 0), "five": (0.8, 0), "six": (0.3, 0), "eight": (0.25, 0),
+                "nine": (0.7, -1), "i": (0.3, 0), "n": (0.5, 0), "plus": (0.2, 0),
+                "parenleft": (0.5, 0), "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0),
+                "M": (0.25, 0), "C": (0.5, 0), "R": (0.75, 0)}
+# Each superscript and the subscript Unicode pairs with it.
+SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"
+SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎"
 FRACTIONS = {"onequarter": ("one.small", "four.small"),
              "onehalf": ("one.small", "two.small"),
              "threequarters": ("three.small", "four.small")}
@@ -212,8 +218,9 @@ class CompositeTest(unittest.TestCase):
 
 
 class SmallFigureTest(unittest.TestCase):
-    """The small figures and letters that superscripts, fractions, ª º ™ © ® are built from:
-    the regular glyph scaled down, its strokes thickened back towards a regular stem."""
+    """The small figures, letters and signs that superscripts, subscripts, fractions, ª º ™ © ®
+    are built from: the regular glyph scaled down, its strokes thickened back towards a regular
+    stem."""
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
@@ -250,7 +257,11 @@ class SmallFigureTest(unittest.TestCase):
             _, b0, _, b1 = self.font[base].boundingBox()
             return (y1 - y0) / (b1 - b0)
 
-        for group in (("one", "two", "three", "four"), ("a", "o"), ("T", "C", "R")):
+        # The figures with the superscript letters and signs; ( ) are larger, to reach past
+        # the figures as far as the references' do, and - = too thin to compare.
+        figures = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+                   "nine", "i", "n", "plus")
+        for group in (figures, ("a", "o"), ("T", "C", "R")):
             for base in group:
                 with self.subTest(glyph=f"{base}.small"):
                     self.assertAlmostEqual(ratio(base), ratio(group[0]), delta=0.03)
@@ -273,6 +284,25 @@ class FigureTest(unittest.TestCase):
         layer = measure.ink(self.font, component)
         layer.transform(matrix)
         return layer
+
+    def test_subscripts_are_the_superscripts_lowered(self):
+        # The same small glyph, placed alike across, and all lowered by one distance.
+        drops = set()
+        for sup, sub in zip(SUPERSCRIPTS, SUBSCRIPTS, strict=True):
+            with self.subTest(glyph=sub):
+                [(a, m, *_)] = self.font[ord(sup)].references
+                [(b, n, *_)] = self.font[ord(sub)].references
+                self.assertEqual((a, tuple(m[:5])), (b, tuple(n[:5])))
+                drops.add(m[5] - n[5])
+        self.assertEqual(len(drops), 1)
+
+    def test_signs_stand_on_the_middle_of_the_small_figures(self):
+        # As in both references that have them: ⁺ ⁻ ⁼ ⁽ ⁾ centred on ¹'s height.
+        _, y0, _, y1 = self.font[ord("¹")].boundingBox()
+        for char in "⁺⁻⁼⁽⁾":
+            with self.subTest(glyph=char):
+                _, b0, _, b1 = self.font[ord(char)].boundingBox()
+                self.assertAlmostEqual((b0 + b1) / 2, (y0 + y1) / 2, delta=10)
 
     def test_fraction_bar_touches_neither_figure(self):
         for name, figures in FRACTIONS.items():

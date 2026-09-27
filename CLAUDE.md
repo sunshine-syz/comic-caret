@@ -129,8 +129,9 @@ together.
 - Draw new strokes in the font's own hand: round ends, the stem weight (about 90), the wobble.
   Reuse an existing stroke where one fits; move and shorten strokes rather than scaling them.
   The exceptions are ∞ (8's loop, scaled to fit; every reference draws ∞ lighter than its
-  letters) and the `*.small` components of superscripts, fractions and signs: the
-  regular glyph at 0.45 (figures), 0.55 (ª º) or 0.41 (™ © ®), thickened with
+  letters) and the `*.small` components of superscripts, subscripts, fractions and signs: the
+  regular glyph at 0.45 (figures, ⁱ ⁿ and the signs), 0.52 (the small parentheses, which reach
+  past the figures as far as the references' do), 0.55 (ª º) or 0.41 (™ © ®), thickened with
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to
   match. ▹ is the same kind of exception: ▷ at 0.59 thinned to a 41 outline, since at the full

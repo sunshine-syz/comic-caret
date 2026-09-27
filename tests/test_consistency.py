@@ -35,7 +35,9 @@ ROWS = {
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ"), 3),
     "ascender": ("bdfhklßþβδζθξ", 3),
     "descender": ("gjpqyþµŋŊƒ¶βγζηξρςφχψϗ", 1),
-    "superscript": ("¹²³", 3),
+    "superscript": ("¹²³⁰⁴⁵⁶⁷⁸⁹", 3),
+    "superscript baseline": ("¹²³⁰⁴⁵⁶⁷⁸⁹ⁱⁿ", 1),
+    "subscript": ("₀₁₂₃₄₅₆₇₈₉", 3),
 }
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
@@ -44,7 +46,7 @@ OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
 # Symmetric glyphs, the brackets, which the legibility pass centered, and the prompt and CLI
 # symbols, which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕⇔✗#%…/\\()[]{}╳"
-            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω"
+            "ΑΔΗΘΙΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
@@ -52,7 +54,7 @@ ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔⇐⇒⇔↦"
            "✕✖❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤")
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
-            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦")
+            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
