@@ -15,7 +15,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ADVANCE, SFD, validation_errors
+from project import ADVANCE, SFD, ZERO_WIDTH, validation_errors
 
 LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
@@ -33,12 +33,16 @@ INK_OUTSIDE_CELL = {"dcaron": 100, "uni23AF": 10,
                     **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                                      "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
 VALIDATE_FLAGS = {"uni2204": 0x4}      # ∄'s rotated E and slash overlap
-BLANK = {"space", "uni00A0", "uni2800"}  # space, no-break space, blank Braille pattern
+# The spaces, the blank Braille pattern and the zero-width format characters.
+BLANK = {"space", "uni00A0", "uni2009", "uni202F", "uni2800",
+         *(f"uni{code:04X}" for code in ZERO_WIDTH)}
 
 
-def is_mark(glyph):
-    """A combining mark, which takes no room of its own: it draws over the character before it."""
-    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)) == "Mn"
+def takes_no_cell(glyph):
+    """A combining mark, which draws over the character before it, or a format character
+    that terminals give no cell: zero wide."""
+    return glyph.unicode >= 0 and (unicodedata.category(chr(glyph.unicode)) == "Mn"
+                                   or glyph.unicode in ZERO_WIDTH)
 
 
 def is_box_drawing(glyph):
@@ -87,7 +91,8 @@ class SanityTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_every_glyph_is_one_cell_wide(self):
-        wrong = [g.glyphname for g in self.glyphs if g.width != (0 if is_mark(g) else ADVANCE)]
+        wrong = [g.glyphname for g in self.glyphs
+                 if g.width != (0 if takes_no_cell(g) else ADVANCE)]
         self.assertEqual(wrong, [])
 
     def test_ink_stays_in_the_cell(self):

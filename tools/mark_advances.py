@@ -1,11 +1,12 @@
-"""Give the combining marks of TrueType fonts from FontForge their zero advance.
+"""Give the zero-width glyphs of TrueType fonts from FontForge their zero advance.
 
 Usage: python3 tools/mark_advances.py FONT.ttf ...
 
 FontForge 20251009 writes a single advance for every glyph of a TTF whose glyphs are all one
-width but for zero-width ones, so the marks come out a cell wide; its OTFs are right. This
-rewrites hmtx and hhea.numberOfHMetrics in place, giving each GDEF mark glyph a zero advance,
-and leaves a font whose marks have none as it is. tools/generate.py runs it on every TTF it
+width but for zero-width ones, so the marks and the zero-width format characters come out a
+cell wide; its OTFs are right. This rewrites hmtx and hhea.numberOfHMetrics in place, giving
+each GDEF mark glyph and each of project.ZERO_WIDTH a zero advance, and leaves a font whose
+zero-width glyphs already have none as it is. tools/generate.py runs it on every TTF it
 writes, and build.sh on the Nerd Fonts TTFs, which the patcher writes with FontForge too.
 """
 import argparse
@@ -13,6 +14,8 @@ import pathlib
 import struct
 
 import fontforge
+
+from project import ZERO_WIDTH
 
 HEADER = struct.Struct(">4sHHHH")  # sfnt version, table count, and the binary search fields
 RECORD = struct.Struct(">4sLLL")   # tag, checksum, offset, length
@@ -78,10 +81,11 @@ def packed(pairs):
 
 
 def zero_mark_advances(path):
-    """Rewrite the TTF at `path` so its GDEF mark glyphs advance by 0; returns how many did
-    not before."""
+    """Rewrite the TTF at `path` so its GDEF mark glyphs and zero-width format characters
+    advance by 0; returns how many did not before."""
     font = fontforge.open(str(path))
-    marks = {glyph.originalgid for glyph in font.glyphs() if glyph.glyphclass == "mark"}
+    marks = {glyph.originalgid for glyph in font.glyphs()
+             if glyph.glyphclass == "mark" or glyph.unicode in ZERO_WIDTH}
     font.close()
     version, search, in_file = read_tables(path.read_bytes())
     order = [tag for tag, _ in in_file]

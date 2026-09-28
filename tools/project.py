@@ -7,6 +7,10 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SFD = ROOT / "src" / "ComicCaret-Regular.sfd"
 ADVANCE = 550  # every glyph's advance width
+# The format characters that take no cell (their wcwidth is 0), kept blank and zero wide like
+# the combining marks: the zero width space, non-joiner and joiner, the word joiner and the
+# byte order mark. Not the soft hyphen: terminals give it a cell.
+ZERO_WIDTH = frozenset({0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF})
 
 _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 

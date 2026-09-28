@@ -104,7 +104,7 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 
 | Block | Coverage |
 |---|---|
-| **Latin** | Complete: Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the deprecated ŉ) and Google Fonts' Latin Core, so Western, Central European, Baltic and Turkish text, with ẞ and the combining accents that decomposed text such as macOS file names needs. |
+| **Latin** | Complete: Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the deprecated ŉ) and Google Fonts' Latin Core, so Western, Central European, Baltic and Turkish text, with ẞ, the combining accents that decomposed text such as macOS file names needs, and the spaces copied text carries: the thin and narrow no-break spaces take a cell, and the zero-width space, joiners, word joiner and byte order mark take none. |
 | **Greek** | Complete: Google Fonts' Greek Core, for modern Greek text and the letters math and code use as names (θ Δt λ). |
 | **Box Drawing, Block Elements, Braille** | Complete, for borders, trees, tables, progress bars, spinners and graphs. |
 | **Powerline** | The basic symbols (U+E0A0–E0A2, U+E0B0–E0B3): the branch, line number and padlock, and the solid and thin separators, which fill the cell so a prompt's coloured segments meet without a seam. Powerlevel10k, Starship, vim-airline and tmux themes use these; the [Nerd Font edition](#nerd-font-edition) adds the extra separators. |

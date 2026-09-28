@@ -12,7 +12,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, ROOT, SFD, ZERO_WIDTH
 
 FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
 NERD_DIR = ROOT / "build" / "nerd"
@@ -46,8 +46,10 @@ def placed(font, text):
     return out
 
 
-def is_mark(char):
-    return unicodedata.category(char) == "Mn"
+def takes_no_cell(char):
+    """A combining mark or a zero-width format character: shaped alone, since a shaper zeroes
+    its advance and puts a run of marks in canonical order."""
+    return unicodedata.category(char) == "Mn" or ord(char) in ZERO_WIDTH
 
 
 def advances(font):
@@ -71,16 +73,15 @@ class BuiltFontTest(unittest.TestCase):
         require_current_build()
         sfd = fontforge.open(str(SFD))
         glyphs = sorted((g for g in sfd.glyphs() if g.unicode >= 0), key=lambda g: g.unicode)
-        cls.text = "".join(chr(g.unicode) for g in glyphs if not is_mark(chr(g.unicode)))
-        cls.names = [g.glyphname for g in glyphs if not is_mark(chr(g.unicode))]
-        cls.boxes = [g.boundingBox() for g in glyphs if not is_mark(chr(g.unicode))]
-        # Shaped one at a time: a run of marks is put in canonical order.
+        cls.text = "".join(chr(g.unicode) for g in glyphs if not takes_no_cell(chr(g.unicode)))
+        cls.names = [g.glyphname for g in glyphs if not takes_no_cell(chr(g.unicode))]
+        cls.boxes = [g.boundingBox() for g in glyphs if not takes_no_cell(chr(g.unicode))]
         cls.marks = [(chr(g.unicode), g.glyphname, g.boundingBox())
-                     for g in glyphs if is_mark(chr(g.unicode))]
+                     for g in glyphs if takes_no_cell(chr(g.unicode))]
         cls.widths = {g.glyphname: g.width for g in sfd.glyphs()}
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
-        # Combining marks take no room of their own; they draw over the character before them.
+        # But the combining marks and the zero-width format characters, which take no room.
         for font in FONTS:
             with self.subTest(font=font.name):
                 shaped = shape(font, self.text)
@@ -177,10 +178,10 @@ class NerdFontTest(unittest.TestCase):
         if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
             raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
 
-    def test_patched_fonts_keep_the_marks_zero_advance(self):
+    def test_patched_fonts_keep_the_zero_widths(self):
         # But in the Mono variant, where the patcher gives every glyph one advance on purpose.
         sfd = fontforge.open(str(SFD))
-        marks = {g.glyphname for g in sfd.glyphs() if g.unicode >= 0 and is_mark(chr(g.unicode))}
+        marks = {g.glyphname for g in sfd.glyphs() if g.unicode >= 0 and takes_no_cell(chr(g.unicode))}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
                 widths = advances(nerd)

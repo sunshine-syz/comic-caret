@@ -63,8 +63,9 @@ together.
 
 - Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
   index, so hand edits silently break composites.
-- Every glyph, `.notdef` included, is 550 wide, except the combining marks (U+0300…): they are
-  0 wide, with their ink over the cell, where terminals that don't shape text draw them.
+- Every glyph, `.notdef` included, is 550 wide, except the combining marks (U+0300…), which
+  are 0 wide with their ink over the cell, where terminals that don't shape text draw them,
+  and the blank zero-width format characters (`project.ZERO_WIDTH`).
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
@@ -117,8 +118,9 @@ together.
 - A new contextual lookup goes before the others in the SFD, so the last generator to run
   decides their order: run `tools/add_marks.py`, then `tools/add_ligatures.py`.
 - FontForge 20251009 gives every glyph of a TTF one advance when all but the zero-width ones
-  share it, so the marks come out a cell wide; `tools/mark_advances.py` rewrites the TTF's
-  `hmtx`, and `tools/generate.py` and `build.sh` run it. OTFs are right.
+  share it, so the marks and the zero-width format characters come out a cell wide;
+  `tools/mark_advances.py` rewrites the TTF's `hmtx`, and `tools/generate.py` and `build.sh`
+  run it. OTFs are right.
 
 ## Designing glyphs
 
