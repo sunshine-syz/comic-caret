@@ -41,7 +41,7 @@ class Bar(NamedTuple):
 RUNS = {
     "hyphen": (Bar((200, 350), (215, 325), (231, 310)),),
     "equal": (Bar((200, 350), (135, 228), (143, 219)), Bar((200, 350), (318, 410), (326, 403))),
-    "underscore": (Bar((200, 350), (-100, -5), (-92, -14)),),
+    "underscore": (Bar((200, 350), (-115, -20), (-107, -29)),),
     # The crossbars stick out past the slanted verticals, each by a different amount.
     "numbersign": (Bar((100, 440), (170, 262), (178, 255)),
                    Bar((150, 465), (408, 502), (415, 494))),
@@ -52,7 +52,7 @@ RUNS = {
 # alternate between starting low (.sta, .mid.low, .end.low) and high (.mid, .end).
 TILDE_CREST, TILDE_TROUGH = 182, 356
 TILDE_HALF = TILDE_TROUGH - TILDE_CREST
-CREST_PROFILE, TROUGH_PROFILE = (295, 394), (145, 243)
+CREST_PROFILE, TROUGH_PROFILE = (292, 378), (161, 246)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.

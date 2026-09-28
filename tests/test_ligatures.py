@@ -131,6 +131,10 @@ LIGATED = {
     "<<-": ["less.twohead", "less.shaft", "hyphen.end"],
     "x<<-1": ["x", "less.twohead", "less.shaft", "hyphen.end", "one"],
     "x <<- y": ["x", "space", "less.twohead", "less.shaft", "hyphen.end", "space", "y"],
+    # A heredoc written with a space after <<- looks like R's <<- and draws its arrow; the
+    # exception in PLAIN covers the delimiter right after the hyphen.
+    "cat <<- EOF": ["c", "a", "t", "space", "less.twohead", "less.shaft", "hyphen.end", "space",
+                    "E", "O", "F"],
     "<<--": ["less.twohead"] + hyphens(3, left="less.shaft"),
     "<<->>": ["less.twohead"] + hyphens(3, "less.shaft", "greater.shaft") + ["greater.twohead"],
     # >=> <=<: a double arrow with a tail

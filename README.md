@@ -69,7 +69,9 @@ own cell, so columns line up and the cursor moves one character at a time.
   `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` `..=` `..<`
 
 Sequences that run into other operators stay as separate characters, for example `->>>`,
-`<<<-`, `==<`, `<<==` or `https://`.
+`<<<-`, `==<`, `<<==` or `https://`. A shell heredoc's `<<-EOF`, `<<-'EOF'`, `<<-"EOF"` and
+`<<-\EOF` stay plain too; with a space, `<<- EOF` draws the two-headed arrow, since that is
+how R writes `x <<- y`.
 
 The ligatures use the `calt` (contextual alternates) OpenType feature:
 

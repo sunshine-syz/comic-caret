@@ -2,6 +2,14 @@
 
 ## 1.3.0 (unreleased)
 
+- `^` `~` `_` `%` and `°`, which everyone types, sat outside the range the three reference fonts cover:
+  - `^` is narrower and lower, its top level with Fira Code's; it reached almost to the top of the line.
+  - `~` swings less, as the references' do, and stays centered on the line of `-` `=` and the arrows; ≈, the `~~` runs and the `~>` wave arrows follow it.
+  - `_` sits 15 units lower, where Intel One Mono draws it; ␣ ⍽ and the `__` runs go with it.
+  - `%`'s slash no longer dips below its rings.
+  - ° is a larger, open ring, lower and centered; its counter closed up at small sizes.
+- The README says which heredocs stay plain: `<<-EOF` and its quoted and escaped forms, while `<<- EOF` with a space draws the `<<-` arrow, as R's `x <<- y` needs it.
+
 ## 1.2.0 (2026-09)
 
 - More coding ligatures, drawn in the font's hand from its own `<` `>` `-` `=` `~` `|`:
