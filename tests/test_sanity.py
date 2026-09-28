@@ -75,7 +75,8 @@ class SanityTest(unittest.TestCase):
         _, low, _, high = self.font[ord("═")].boundingBox()
         wrong = {}
         for glyph in self.visible:
-            name = unicodedata.name(chr(glyph.unicode)) if glyph.unicode >= 0 else ""
+            # Private-use code points, such as the Powerline symbols, have no name.
+            name = unicodedata.name(chr(glyph.unicode), "") if glyph.unicode >= 0 else ""
             if not is_box_drawing(glyph) or " DASH " in name or " DIAGONAL " in name:
                 continue
             x0, bottom, x1, top = glyph.boundingBox()

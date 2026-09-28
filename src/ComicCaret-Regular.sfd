@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790577484
+ModificationTime: 1790580452
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -1255,7 +1255,7 @@ BlueShift 2 10
 EndPrivate
 TeXData: 1 0 0 576716 288358 192238 488639 1048576 192238 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
 AnchorClass2: "top" "marks_base subtable" "bottom" "marks_base subtable" "top_mkmk" "marks_stack_top subtable" "bottom_mkmk" "marks_stack_bottom subtable"
-BeginChars: 65630 1121
+BeginChars: 65630 1128
 
 StartChar: .notdef
 Encoding: 65536 -1 0
@@ -28091,7 +28091,7 @@ AnchorPoint: "bottom" 275 0 basechar 0
 AnchorPoint: "top" 275 530 basechar 0
 LayerCount: 2
 Fore
-Refer: 1059 -1 N 1 0 0 1 0 0 2
+Refer: 1066 -1 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: uni21B3
@@ -33350,8 +33350,250 @@ Fore
 Refer: 1052 10216 N -1 0 0 -1 550 655 2
 EndChar
 
+StartChar: uniE0A0
+Encoding: 57504 57504 1057
+Width: 550
+Flags: W
+VStem: 60 160<-273.718 -165.353 715.353 823.718> 98 84<-171.031 252.986 345 721.031> 330 160<545.46 653.718> 368 84<417.366 551.338>
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 900 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+410 680 m 0x20
+ 454 680 490 644 490 600 c 0x20
+ 490 571 474 545 451 531 c 0
+ 451 528 452 524 452 520 c 0
+ 452 448 438 397 409 361 c 0
+ 346 283 246 305 207 257 c 0
+ 194 241 182 211 182 150 c 2
+ 182 -152 l 1x50
+ 205 -166 220 -191 220 -220 c 0
+ 220 -264 184 -300 140 -300 c 0
+ 96 -300 60 -264 60 -220 c 0x80
+ 60 -191 75 -166 98 -152 c 1
+ 98 150 l 1
+ 98 702 l 1x40
+ 75 716 60 741 60 770 c 0
+ 60 814 96 850 140 850 c 0
+ 184 850 220 814 220 770 c 0x80
+ 220 741 205 716 182 702 c 1
+ 182 345 l 1
+ 210 362 240 369 264 376 c 0
+ 303 386 328 394 343 413 c 0
+ 356 429 368 459 368 520 c 0x50
+ 368 524 369 528 369 531 c 0
+ 346 545 330 571 330 600 c 0
+ 330 644 366 680 410 680 c 0x20
+EndSplineSet
+EndChar
+
+StartChar: uniE0A1
+Encoding: 57505 57505 1058
+Width: 550
+Flags: W
+HStem: 307 60<184 429.227>
+VStem: 112 72<365 577.997> 112 58<-288.716 104> 131 70<677.961 801.762> 132 61<366.312 772.869> 374 64<98.4465 194.715> 381 57<-194 170.906>
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 860 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+408 321 m 0xc2
+ 390 318 367 314 340 312 c 0
+ 314 310 287 308 260 307 c 0
+ 233 306 208 306 185 305 c 0
+ 162 304 148 304 142 304 c 0
+ 134 304 126 307 120 313 c 0
+ 114 318 112 326 112 336 c 0
+ 112 337 112 338 112 340 c 0xa2
+ 113 362 116 390 120 425 c 0
+ 125 460 128 506 131 564 c 0x90
+ 132 580 132 598 132 619 c 0
+ 132 640 132 660 132 680 c 0x88
+ 132 699 131 718 131 734 c 0
+ 131 751 130 763 130 771 c 0
+ 131 785 135 794 142 800 c 0
+ 148 806 156 810 165 810 c 0
+ 166 810 166 810 167 810 c 0
+ 175 810 184 807 190 802 c 0
+ 198 797 201 787 201 774 c 0x90
+ 201 750 200 718 198 676 c 0
+ 197 634 195 588 193 537 c 0x88
+ 192 504 191 475 188 448 c 0
+ 185 421 184 393 184 365 c 1
+ 205 365 227 366 250 367 c 0
+ 271 368 294 369 314 372 c 0
+ 334 374 352 377 368 379 c 0
+ 384 381 396 384 404 386 c 0
+ 407 386 410 386 412 386 c 0
+ 420 386 426 384 430 377 c 0
+ 435 368 438 360 438 352 c 0
+ 438 344 436 338 432 332 c 0
+ 429 327 421 324 408 321 c 0xc2
+426 -283 m 0
+ 424 -290 418 -294 411 -296 c 0
+ 403 -298 396 -300 388 -300 c 0
+ 387 -300 385 -300 384 -300 c 0
+ 376 -300 370 -298 364 -295 c 0
+ 358 -291 355 -286 353 -281 c 0
+ 348 -269 336 -248 319 -219 c 0
+ 302 -190 286 -157 268 -120 c 0
+ 250 -83 232 -44 215 -4 c 0
+ 198 35 184 71 172 104 c 1
+ 174 71 174 36 174 -2 c 0
+ 174 -39 174 -75 173 -109 c 0
+ 172 -142 172 -172 171 -200 c 0
+ 170 -218 170 -232 170 -242 c 0
+ 170 -249 170 -259 170 -259 c 2
+ 170 -273 167 -283 160 -289 c 0
+ 154 -295 146 -298 138 -298 c 2
+ 138 -298 138 -298 137 -298 c 0
+ 127 -298 120 -293 117 -285 c 0
+ 113 -277 112 -266 112 -252 c 0
+ 112 -239 112 -215 113 -179 c 0
+ 114 -143 114 -104 115 -62 c 0
+ 116 -20 117 22 117 63 c 0
+ 117 69 118 74 118 80 c 0
+ 118 112 117 139 115 158 c 0
+ 115 160 115 161 115 163 c 0
+ 115 180 120 191 130 196 c 0
+ 139 201 149 204 158 204 c 0
+ 160 204 162 203 165 203 c 0
+ 172 203 178 202 186 199 c 0
+ 193 196 199 189 203 178 c 0
+ 208 160 219 136 235 103 c 0
+ 250 70 265 34 282 -2 c 0
+ 300 -39 318 -75 335 -110 c 0
+ 352 -146 367 -173 380 -194 c 1
+ 381 -170 381 -141 381 -106 c 0
+ 381 -89 382 -72 382 -55 c 0
+ 382 -38 381 -20 381 -2 c 0xa2
+ 381 34 380 66 379 97 c 0
+ 378 128 377 150 375 164 c 0
+ 375 166 374 169 374 171 c 0x84
+ 374 179 377 187 382 193 c 0
+ 388 200 395 204 404 204 c 0
+ 418 204 426 201 429 195 c 0
+ 432 189 435 178 437 166 c 0
+ 438 161 438 137 438 93 c 0
+ 438 71 438 48 438 24 c 0
+ 438 0 438 -25 438 -51 c 0
+ 438 -104 436 -152 435 -199 c 0
+ 433 -245 430 -273 426 -283 c 0
+EndSplineSet
+EndChar
+
+StartChar: uniE0A2
+Encoding: 57506 57506 1059
+Width: 550
+Flags: W
+HStem: 220 100<236.481 313.519> 396 84<223.19 326.81>
+VStem: 95 155<40 174.252> 95 135<138.379 213.519> 115 84<320 371.175> 300 155<40 174.252> 320 135<138.379 213.519> 351 84<320 371.175>
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 530 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+275 220 m 0xc2
+ 250 220 230 200 230 175 c 0xd2
+ 230 159 238 146 250 138 c 1
+ 250 40 l 1
+ 300 40 l 1
+ 300 138 l 1xe4
+ 312 146 320 159 320 175 c 0
+ 320 200 300 220 275 220 c 0xc2
+199 320 m 1xc9
+ 351 320 l 1
+ 351 362 317 396 275 396 c 0
+ 233 396 199 362 199 320 c 1xc9
+95 -40 m 2xd2
+ 95 280 l 2xd2
+ 95 295 103 308 115 315 c 0
+ 115 316 115 318 115 320 c 0
+ 115 408 187 480 275 480 c 0
+ 363 480 435 408 435 320 c 0
+ 435 318 435 316 435 315 c 0xc9
+ 447 308 455 295 455 280 c 2
+ 455 -40 l 2
+ 455 -62 437 -80 415 -80 c 2
+ 135 -80 l 2
+ 113 -80 95 -62 95 -40 c 2xd2
+EndSplineSet
+EndChar
+
+StartChar: uniE0B0
+Encoding: 57520 57520 1060
+Width: 550
+Flags: W
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 950 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+0 -350 m 1
+ 0 900 l 1
+ 550 275 l 1
+ 0 -350 l 1
+EndSplineSet
+EndChar
+
+StartChar: uniE0B1
+Encoding: 57521 57521 1061
+Width: 550
+Flags: W
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 950 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+0 -350 m 1
+ 0 -223 l 1
+ 438 275 l 1
+ 0 773 l 1
+ 0 900 l 1
+ 550 275 l 1
+ 0 -350 l 1
+EndSplineSet
+EndChar
+
+StartChar: uniE0B2
+Encoding: 57522 57522 1062
+Width: 550
+Flags: W
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 950 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+550 -350 m 1
+ 0 275 l 1
+ 550 900 l 1
+ 550 -350 l 1
+EndSplineSet
+EndChar
+
+StartChar: uniE0B3
+Encoding: 57523 57523 1063
+Width: 550
+Flags: W
+AnchorPoint: "bottom" 275 0 basechar 0
+AnchorPoint: "top" 275 950 basechar 0
+LayerCount: 2
+Fore
+SplineSet
+550 -350 m 1
+ 0 275 l 1
+ 550 900 l 1
+ 550 773 l 1
+ 112 275 l 1
+ 550 -223 l 1
+ 550 -350 l 1
+EndSplineSet
+EndChar
+
 StartChar: LIG
-Encoding: 65566 -1 1057
+Encoding: 65566 -1 1064
 Width: 550
 VWidth: 0
 Flags: W
@@ -33359,7 +33601,7 @@ LayerCount: 2
 EndChar
 
 StartChar: hyphen.sta
-Encoding: 65567 -1 1058
+Encoding: 65567 -1 1065
 Width: 550
 VWidth: 0
 Flags: W
@@ -33385,7 +33627,7 @@ EndSplineSet
 EndChar
 
 StartChar: hyphen.mid
-Encoding: 65568 -1 1059
+Encoding: 65568 -1 1066
 Width: 550
 VWidth: 0
 Flags: W
@@ -33409,7 +33651,7 @@ EndSplineSet
 EndChar
 
 StartChar: hyphen.end
-Encoding: 65569 -1 1060
+Encoding: 65569 -1 1067
 Width: 550
 VWidth: 0
 Flags: W
@@ -33435,7 +33677,7 @@ EndSplineSet
 EndChar
 
 StartChar: equal.sta
-Encoding: 65570 -1 1061
+Encoding: 65570 -1 1068
 Width: 550
 VWidth: 0
 Flags: W
@@ -33477,7 +33719,7 @@ EndSplineSet
 EndChar
 
 StartChar: equal.mid
-Encoding: 65571 -1 1062
+Encoding: 65571 -1 1069
 Width: 550
 VWidth: 0
 Flags: W
@@ -33508,7 +33750,7 @@ EndSplineSet
 EndChar
 
 StartChar: equal.end
-Encoding: 65572 -1 1063
+Encoding: 65572 -1 1070
 Width: 550
 VWidth: 0
 Flags: W
@@ -33549,7 +33791,7 @@ EndSplineSet
 EndChar
 
 StartChar: underscore.sta
-Encoding: 65573 -1 1064
+Encoding: 65573 -1 1071
 Width: 550
 VWidth: 0
 Flags: W
@@ -33575,7 +33817,7 @@ EndSplineSet
 EndChar
 
 StartChar: underscore.mid
-Encoding: 65574 -1 1065
+Encoding: 65574 -1 1072
 Width: 550
 VWidth: 0
 Flags: W
@@ -33595,7 +33837,7 @@ EndSplineSet
 EndChar
 
 StartChar: underscore.end
-Encoding: 65575 -1 1066
+Encoding: 65575 -1 1073
 Width: 550
 VWidth: 0
 Flags: W
@@ -33620,7 +33862,7 @@ EndSplineSet
 EndChar
 
 StartChar: numbersign.sta
-Encoding: 65576 -1 1067
+Encoding: 65576 -1 1074
 Width: 550
 VWidth: 0
 Flags: W
@@ -33712,7 +33954,7 @@ EndSplineSet
 EndChar
 
 StartChar: numbersign.mid
-Encoding: 65577 -1 1068
+Encoding: 65577 -1 1075
 Width: 550
 VWidth: 0
 Flags: W
@@ -33793,7 +34035,7 @@ EndSplineSet
 EndChar
 
 StartChar: numbersign.end
-Encoding: 65578 -1 1069
+Encoding: 65578 -1 1076
 Width: 550
 VWidth: 0
 Flags: W
@@ -33880,7 +34122,7 @@ EndSplineSet
 EndChar
 
 StartChar: asciitilde.sta
-Encoding: 65579 -1 1070
+Encoding: 65579 -1 1077
 Width: 550
 VWidth: 0
 Flags: W
@@ -33925,7 +34167,7 @@ EndSplineSet
 EndChar
 
 StartChar: asciitilde.mid
-Encoding: 65580 -1 1071
+Encoding: 65580 -1 1078
 Width: 550
 VWidth: 0
 Flags: W
@@ -33970,7 +34212,7 @@ EndSplineSet
 EndChar
 
 StartChar: asciitilde.end
-Encoding: 65581 -1 1072
+Encoding: 65581 -1 1079
 Width: 550
 VWidth: 0
 Flags: W
@@ -34019,7 +34261,7 @@ EndSplineSet
 EndChar
 
 StartChar: asciitilde.mid.low
-Encoding: 65582 -1 1073
+Encoding: 65582 -1 1080
 Width: 550
 VWidth: 0
 Flags: W
@@ -34064,7 +34306,7 @@ EndSplineSet
 EndChar
 
 StartChar: asciitilde.end.low
-Encoding: 65583 -1 1074
+Encoding: 65583 -1 1081
 Width: 550
 VWidth: 0
 Flags: W
@@ -34113,7 +34355,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.arrow
-Encoding: 65584 -1 1075
+Encoding: 65584 -1 1082
 Width: 550
 VWidth: 0
 Flags: W
@@ -34165,7 +34407,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.arrow
-Encoding: 65585 -1 1076
+Encoding: 65585 -1 1083
 Width: 550
 VWidth: 0
 Flags: W
@@ -34216,7 +34458,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.darrow
-Encoding: 65586 -1 1077
+Encoding: 65586 -1 1084
 Width: 550
 VWidth: 0
 Flags: W
@@ -34273,7 +34515,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.darrow
-Encoding: 65587 -1 1078
+Encoding: 65587 -1 1085
 Width: 550
 VWidth: 0
 Flags: W
@@ -34326,7 +34568,7 @@ EndSplineSet
 EndChar
 
 StartChar: exclam_equal.liga
-Encoding: 65588 -1 1079
+Encoding: 65588 -1 1086
 Width: 550
 VWidth: 0
 Flags: W
@@ -34407,7 +34649,7 @@ EndSplineSet
 EndChar
 
 StartChar: exclam_equal_equal.liga
-Encoding: 65589 -1 1080
+Encoding: 65589 -1 1087
 Width: 550
 VWidth: 0
 Flags: W
@@ -34511,7 +34753,7 @@ EndSplineSet
 EndChar
 
 StartChar: colon.eq
-Encoding: 65590 -1 1081
+Encoding: 65590 -1 1088
 Width: 550
 VWidth: 0
 Flags: W
@@ -34523,7 +34765,7 @@ Refer: 27 58 N 1 0 0 1 0 36 2
 EndChar
 
 StartChar: less_equal.liga
-Encoding: 65591 -1 1082
+Encoding: 65591 -1 1089
 Width: 550
 VWidth: 0
 Flags: W
@@ -34593,7 +34835,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater_equal.liga
-Encoding: 65592 -1 1083
+Encoding: 65592 -1 1090
 Width: 550
 VWidth: 0
 Flags: W
@@ -34664,7 +34906,7 @@ EndSplineSet
 EndChar
 
 StartChar: bar_greater.liga
-Encoding: 65593 -1 1084
+Encoding: 65593 -1 1091
 Width: 550
 VWidth: 0
 Flags: W
@@ -34726,7 +34968,7 @@ EndSplineSet
 EndChar
 
 StartChar: less_bar.liga
-Encoding: 65594 -1 1085
+Encoding: 65594 -1 1092
 Width: 550
 VWidth: 0
 Flags: W
@@ -34790,7 +35032,7 @@ EndSplineSet
 EndChar
 
 StartChar: colon.tight_r
-Encoding: 65595 -1 1086
+Encoding: 65595 -1 1093
 Width: 550
 VWidth: 0
 Flags: W
@@ -34802,7 +35044,7 @@ Refer: 27 58 N 1 0 0 1 92 0 2
 EndChar
 
 StartChar: colon.tight_l
-Encoding: 65596 -1 1087
+Encoding: 65596 -1 1094
 Width: 550
 VWidth: 0
 Flags: W
@@ -34814,7 +35056,7 @@ Refer: 27 58 N 1 0 0 1 -92 0 2
 EndChar
 
 StartChar: period.tight_r
-Encoding: 65597 -1 1088
+Encoding: 65597 -1 1095
 Width: 550
 VWidth: 0
 Flags: W
@@ -34826,7 +35068,7 @@ Refer: 15 46 N 1 0 0 1 92 0 2
 EndChar
 
 StartChar: period.tight_l
-Encoding: 65598 -1 1089
+Encoding: 65598 -1 1096
 Width: 550
 VWidth: 0
 Flags: W
@@ -34838,7 +35080,7 @@ Refer: 15 46 N 1 0 0 1 -92 0 2
 EndChar
 
 StartChar: ampersand.tight_r
-Encoding: 65599 -1 1090
+Encoding: 65599 -1 1097
 Width: 550
 VWidth: 0
 Flags: W
@@ -34850,7 +35092,7 @@ Refer: 7 38 N 1 0 0 1 37 0 2
 EndChar
 
 StartChar: ampersand.tight_l
-Encoding: 65600 -1 1091
+Encoding: 65600 -1 1098
 Width: 550
 VWidth: 0
 Flags: W
@@ -34862,7 +35104,7 @@ Refer: 7 38 N 1 0 0 1 -37 0 2
 EndChar
 
 StartChar: plus.tight_r
-Encoding: 65601 -1 1092
+Encoding: 65601 -1 1099
 Width: 550
 VWidth: 0
 Flags: W
@@ -34874,7 +35116,7 @@ Refer: 12 43 N 1 0 0 1 56 0 2
 EndChar
 
 StartChar: plus.tight_l
-Encoding: 65602 -1 1093
+Encoding: 65602 -1 1100
 Width: 550
 VWidth: 0
 Flags: W
@@ -34886,7 +35128,7 @@ Refer: 12 43 N 1 0 0 1 -56 0 2
 EndChar
 
 StartChar: slash.tight_r
-Encoding: 65603 -1 1094
+Encoding: 65603 -1 1101
 Width: 550
 VWidth: 0
 Flags: W
@@ -34896,7 +35138,7 @@ Refer: 16 47 N 1 0 0 1 65 0 2
 EndChar
 
 StartChar: slash.tight_l
-Encoding: 65604 -1 1095
+Encoding: 65604 -1 1102
 Width: 550
 VWidth: 0
 Flags: W
@@ -34906,7 +35148,7 @@ Refer: 16 47 N 1 0 0 1 -65 0 2
 EndChar
 
 StartChar: asterisk.tight_r
-Encoding: 65605 -1 1096
+Encoding: 65605 -1 1103
 Width: 550
 VWidth: 0
 Flags: W
@@ -34918,7 +35160,7 @@ Refer: 11 42 N 1 0 0 1 45 0 2
 EndChar
 
 StartChar: asterisk.tight_l
-Encoding: 65606 -1 1097
+Encoding: 65606 -1 1104
 Width: 550
 VWidth: 0
 Flags: W
@@ -34930,7 +35172,7 @@ Refer: 11 42 N 1 0 0 1 -45 0 2
 EndChar
 
 StartChar: less.tight_r
-Encoding: 65607 -1 1098
+Encoding: 65607 -1 1105
 Width: 550
 VWidth: 0
 Flags: W
@@ -34940,7 +35182,7 @@ Refer: 29 60 N 1 0 0 1 40 0 2
 EndChar
 
 StartChar: less.tight_l
-Encoding: 65608 -1 1099
+Encoding: 65608 -1 1106
 Width: 550
 VWidth: 0
 Flags: W
@@ -34950,7 +35192,7 @@ Refer: 29 60 N 1 0 0 1 -40 0 2
 EndChar
 
 StartChar: greater.tight_r
-Encoding: 65609 -1 1100
+Encoding: 65609 -1 1107
 Width: 550
 VWidth: 0
 Flags: W
@@ -34960,7 +35202,7 @@ Refer: 31 62 N 1 0 0 1 40 0 2
 EndChar
 
 StartChar: greater.tight_l
-Encoding: 65610 -1 1101
+Encoding: 65610 -1 1108
 Width: 550
 VWidth: 0
 Flags: W
@@ -34970,7 +35212,7 @@ Refer: 31 62 N 1 0 0 1 -40 0 2
 EndChar
 
 StartChar: question.tight_r
-Encoding: 65611 -1 1102
+Encoding: 65611 -1 1109
 Width: 550
 VWidth: 0
 Flags: W
@@ -34982,7 +35224,7 @@ Refer: 32 63 N 1 0 0 1 60 0 2
 EndChar
 
 StartChar: question.tight_l
-Encoding: 65612 -1 1103
+Encoding: 65612 -1 1110
 Width: 550
 VWidth: 0
 Flags: W
@@ -34994,7 +35236,7 @@ Refer: 32 63 N 1 0 0 1 -60 0 2
 EndChar
 
 StartChar: bar.tight_r
-Encoding: 65613 -1 1104
+Encoding: 65613 -1 1111
 Width: 550
 VWidth: 0
 Flags: W
@@ -35005,7 +35247,7 @@ Refer: 93 124 N 1 0 0 1 100 0 2
 EndChar
 
 StartChar: bar.tight_l
-Encoding: 65614 -1 1105
+Encoding: 65614 -1 1112
 Width: 550
 VWidth: 0
 Flags: W
@@ -35016,7 +35258,7 @@ Refer: 93 124 N 1 0 0 1 -100 0 2
 EndChar
 
 StartChar: equal.tight_r
-Encoding: 65615 -1 1106
+Encoding: 65615 -1 1113
 Width: 550
 VWidth: 0
 Flags: W
@@ -35027,7 +35269,7 @@ Refer: 30 61 N 1 0 0 1 40 0 2
 EndChar
 
 StartChar: equal.tight_l
-Encoding: 65616 -1 1107
+Encoding: 65616 -1 1114
 Width: 550
 VWidth: 0
 Flags: W
@@ -35038,7 +35280,7 @@ Refer: 30 61 N 1 0 0 1 -40 0 2
 EndChar
 
 StartChar: less_greater.liga
-Encoding: 65617 -1 1108
+Encoding: 65617 -1 1115
 Width: 550
 VWidth: 0
 Flags: W
@@ -35112,7 +35354,7 @@ EndSplineSet
 EndChar
 
 StartChar: less_bar_greater.liga
-Encoding: 65618 -1 1109
+Encoding: 65618 -1 1116
 Width: 550
 VWidth: 0
 Flags: W
@@ -35197,7 +35439,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.dtail
-Encoding: 65619 -1 1110
+Encoding: 65619 -1 1117
 Width: 550
 VWidth: 0
 Flags: W
@@ -35247,7 +35489,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.dtail
-Encoding: 65620 -1 1111
+Encoding: 65620 -1 1118
 Width: 550
 VWidth: 0
 Flags: W
@@ -35296,7 +35538,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.twohead
-Encoding: 65621 -1 1112
+Encoding: 65621 -1 1119
 Width: 550
 VWidth: 0
 Flags: W
@@ -35378,18 +35620,18 @@ EndSplineSet
 EndChar
 
 StartChar: greater.shaft
-Encoding: 65622 -1 1113
+Encoding: 65622 -1 1120
 Width: 550
 VWidth: 0
 Flags: W
 HStem: 231 79<-10 560>
 LayerCount: 2
 Fore
-Refer: 1059 -1 N 1 0 0 1 0 0 2
+Refer: 1066 -1 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: less.twohead
-Encoding: 65623 -1 1114
+Encoding: 65623 -1 1121
 Width: 550
 VWidth: 0
 Flags: W
@@ -35475,18 +35717,18 @@ EndSplineSet
 EndChar
 
 StartChar: less.shaft
-Encoding: 65624 -1 1115
+Encoding: 65624 -1 1122
 Width: 550
 VWidth: 0
 Flags: W
 HStem: 231 79<-10 560>
 LayerCount: 2
 Fore
-Refer: 1059 -1 N 1 0 0 1 0 0 2
+Refer: 1066 -1 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: greater.warrow
-Encoding: 65625 -1 1116
+Encoding: 65625 -1 1123
 Width: 550
 VWidth: 0
 Flags: W
@@ -35543,7 +35785,7 @@ EndSplineSet
 EndChar
 
 StartChar: greater.warrow.low
-Encoding: 65626 -1 1117
+Encoding: 65626 -1 1124
 Width: 550
 VWidth: 0
 Flags: W
@@ -35600,7 +35842,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.warrow
-Encoding: 65627 -1 1118
+Encoding: 65627 -1 1125
 Width: 550
 VWidth: 0
 Flags: W
@@ -35658,7 +35900,7 @@ EndSplineSet
 EndChar
 
 StartChar: less.comment
-Encoding: 65628 -1 1119
+Encoding: 65628 -1 1126
 Width: 550
 VWidth: 0
 Flags: W
@@ -35712,7 +35954,7 @@ EndSplineSet
 EndChar
 
 StartChar: exclam.tight_r
-Encoding: 65629 -1 1120
+Encoding: 65629 -1 1127
 Width: 550
 VWidth: 0
 Flags: W

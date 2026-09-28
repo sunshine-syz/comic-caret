@@ -8,6 +8,7 @@
   - `_` sits 15 units lower, where Intel One Mono draws it; ␣ ⍽ and the `__` runs go with it.
   - `%`'s slash no longer dips below its rings.
   - ° is a larger, open ring, lower and centered; its counter closed up at small sizes.
+- The basic Powerline symbols (U+E0A0–E0A2 and U+E0B0–E0B3: the branch, line number and padlock, and the solid and thin separators) in the plain font, so Powerlevel10k, Starship, vim-airline and tmux prompts no longer need the Nerd Font edition or fall back to another font. The separators fill the cell and the line box, so a prompt's coloured segments meet them without a seam; the thin ones take the box drawing stroke, and the branch, line number and padlock are drawn from the font's own strokes and letters. The Nerd Font editions keep them.
 - The README says which heredocs stay plain: `<<-EOF` and its quoted and escaped forms, while `<<- EOF` with a space draws the `<<-` arrow, as R's `x <<- y` needs it.
 
 ## 1.2.0 (2026-09)

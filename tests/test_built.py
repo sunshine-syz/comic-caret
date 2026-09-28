@@ -161,11 +161,13 @@ class MarkShapingTest(unittest.TestCase):
 
 
 class NerdFontTest(unittest.TestCase):
-    """The Nerd Fonts builds keep our box drawing, block elements, Braille and ❮ ❯ ❰ ❱.
+    """The Nerd Fonts builds keep our box drawing, block elements, Braille, Powerline symbols
+    and ❮ ❯ ❰ ❱.
 
     The patcher swaps in its own box set unless the font has all of U+2500–U+259F, its own
-    Braille unless --careful finds all of U+2800–U+28FF, and fills U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱)
-    only where the font has no glyph. The builds are made only by ./build.sh --nerd or
+    Braille unless --careful finds all of U+2800–U+28FF, its own Powerline symbols where
+    --careful doesn't find ours, and fills U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱) only where the font has
+    no glyph. The builds are made only by ./build.sh --nerd or
     --release, so without a current build the tests skip.
     """
 
@@ -187,7 +189,8 @@ class NerdFontTest(unittest.TestCase):
                                  dict.fromkeys(marks, advance))
 
     def test_patched_fonts_keep_our_glyphs(self):
-        text = "".join(chr(code) for code in [*range(0x2500, 0x25A0), *range(0x2800, 0x2900)])
+        text = "".join(chr(code) for code in [*range(0x2500, 0x25A0), *range(0x2800, 0x2900),
+                                              *range(0xE0A0, 0xE0A3), *range(0xE0B0, 0xE0B4)])
         text += "❮❯❰❱"
         plain = {font.suffix: font for font in FONTS}
         for nerd in self.fonts:

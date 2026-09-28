@@ -26,9 +26,9 @@
   choices follow Intel One Mono, which was designed with low-vision developers.
 - **Ligatures that keep the grid.** `->` `=>` `!=` `>=` and more join into one symbol, but
   every character keeps its own cell, so the cursor still moves one character at a time.
-- **Ready for terminals.** Every box-drawing and block character and all 256 Braille patterns,
-  for borders, trees, tables, progress bars, spinners and graphs, plus a
-  [Nerd Font edition](#nerd-font-edition) with icons.
+- **Ready for terminals.** Every box-drawing and block character, all 256 Braille patterns and
+  the Powerline symbols, for borders, trees, tables, progress bars, spinners, graphs and
+  prompts, plus a [Nerd Font edition](#nerd-font-edition) with icons.
 
 <p align="center">
   <img src="docs/images/lookalikes.svg" alt="The look-alikes, large: I l 1 and the bar, O 0 and o, i and j, the colon and semicolon, and the three pairs of brackets">
@@ -88,8 +88,8 @@ The ligatures use the `calt` (contextual alternates) OpenType feature:
 ## Nerd Font edition
 
 `ComicCaretNerdFont-<version>.zip` adds the [Nerd Fonts](https://www.nerdfonts.com/) icons
-(Powerline symbols, file-type, Git and OS icons). It holds two families; install the OTF or
-the TTF of the one you want:
+(file-type, Git and OS icons, and the extra Powerline separators). It holds two families;
+install the OTF or the TTF of the one you want:
 
 | Family | Icons |
 |---|---|
@@ -107,6 +107,7 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 | **Latin** | Complete: Basic Latin (ASCII), Latin-1 Supplement, Latin Extended-A (all but the deprecated ŉ) and Google Fonts' Latin Core, so Western, Central European, Baltic and Turkish text, with ẞ and the combining accents that decomposed text such as macOS file names needs. |
 | **Greek** | Complete: Google Fonts' Greek Core, for modern Greek text and the letters math and code use as names (θ Δt λ). |
 | **Box Drawing, Block Elements, Braille** | Complete, for borders, trees, tables, progress bars, spinners and graphs. |
+| **Powerline** | The basic symbols (U+E0A0–E0A2, U+E0B0–E0B3): the branch, line number and padlock, and the solid and thin separators, which fill the cell so a prompt's coloured segments meet without a seam. Powerlevel10k, Starship, vim-airline and tmux themes use these; the [Nerd Font edition](#nerd-font-edition) adds the extra separators. |
 | **Symbols** | In part: the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂ ∇ ⟨ ⟩ € £), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗ and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of terminal UIs such as Claude Code, Rich and Vitest (⏺︎ ⎿ ✻ ⏸︎ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎) and editors' visible whitespace (␣ ↵ ⇥). |
 
 ## Building from source

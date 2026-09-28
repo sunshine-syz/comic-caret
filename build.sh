@@ -152,7 +152,7 @@ if [[ -n $nerd_variants ]]; then
     # outlines instead of converting the TTF.
     for ext in otf ttf; do
       # --careful keeps every glyph the font has: without it --complete replaces the Braille
-      # with the patcher's own. FontForge prints ~100 name-vs-codepoint notes while loading
+      # and the Powerline symbols with the patcher's own. FontForge prints ~100 name-vs-codepoint notes while loading
       # the icon fonts. Drop them so the patcher's own warnings stay visible; pipefail still
       # reports a patcher failure.
       fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete --careful ${flag:+"$flag"} \
