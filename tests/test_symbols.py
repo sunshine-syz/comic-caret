@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -520,6 +520,114 @@ class BuiltFromTest(unittest.TestCase):
         for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
             self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
         self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
+
+
+# Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
+LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t"}
+# Where a sign's bars cross a vertical line: (x, how many bars, whether they are the topmost
+# spans there rather than the lowest). ₽'s bowl lies over its bar, W's arm over ₩'s bars, and
+# ₹'s leg under its bars.
+BARS = {"₽": (300, 1, False), "₩": (40, 2, False), "₹": (120, 2, True)}
+# Dash look-alike -> the dash it is: the hyphen for ‐ and the non-breaking hyphen ‑, the en
+# dash for the figure dash ‒ and the em dash for the horizontal bar ―, as their Unicode names
+# say and as the references that have them draw them.
+DASHES = {"‐": "-", "‑": "-", "‒": "–", "―": "—"}
+
+
+class CurrencyTest(unittest.TestCase):
+    """₽ ₩ ₺ are letters with bars and ₹ two bars over a small bowl; every bar is a piece
+    of the hyphen's stroke, so it weighs as the hyphen's middle does. ₫ is đ over the em
+    dash, both references."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+        hyphen = cls.font["hyphen"].foreground
+        x0, _, x1, _ = hyphen.boundingBox()
+        # The stroke's thickness along the hyphen's straight middle, which the bars stretch.
+        thickness = [y1 - y0 for x in range(round(x0) + 100, round(x1) - 100, 10)
+                     for y0, y1 in measure.spans_at_x(hyphen, x)]
+        cls.stroke = (min(thickness) - 2, max(thickness) + 2)  # rounded outlines
+
+    def flattened(self, char):
+        glyph = self.font[ord(char)]
+        layer = glyph.foreground.dup()
+        for name, matrix, *_ in glyph.references:
+            layer += geo.transformed(self.font[name].foreground, matrix)
+        return layer
+
+    def test_letter_signs_keep_their_letters_height(self):
+        for sign, letter in LETTER_SIGNS.items():
+            with self.subTest(sign=sign):
+                _, y0, _, y1 = self.font[ord(sign)].boundingBox()
+                _, ly0, _, ly1 = self.font[ord(letter)].boundingBox()
+                self.assertAlmostEqual(y0, ly0, delta=1)  # the sign's outline is rounded
+                self.assertAlmostEqual(y1, ly1, delta=1)
+
+    def bars(self, sign, x):
+        """The bars' (bottom, top) at x, lowest first."""
+        _, count, topmost = BARS[sign]
+        spans = sorted(measure.spans_at_x(self.flattened(sign), x))
+        bars = spans[-count:] if topmost else spans[:count]
+        self.assertEqual(len(bars), count)
+        return bars
+
+    def test_bars_weigh_as_the_hyphen(self):
+        low, high = self.stroke
+        for sign, (x, *_) in BARS.items():
+            with self.subTest(sign=sign):
+                for y0, y1 in self.bars(sign, x):
+                    self.assertGreaterEqual(y1 - y0, low)
+                    self.assertLessEqual(y1 - y0, high)
+
+    def test_rupee_bars_are_level(self):
+        # Both bars run at one height across the left half, before the bowl and the leg join.
+        x, *_ = BARS["₹"]
+        for (a0, a1), (b0, b1) in zip(self.bars("₹", x), self.bars("₹", 2 * x), strict=True):
+            self.assertAlmostEqual(a0, b0, delta=MIDDLE_TOLERANCE)
+            self.assertAlmostEqual(a1, b1, delta=MIDDLE_TOLERANCE)
+
+    def test_dong_is_the_letter_over_the_em_dash(self):
+        # The em dash only moved, to lie under the letter, clear of it.
+        glyph = self.font[ord("₫")]
+        self.assertEqual(len(glyph.foreground), 0)
+        refs = {name: matrix for name, matrix, *_ in glyph.references}
+        letter, dash = self.font[ord("đ")], self.font[ord("—")]
+        self.assertEqual(set(refs), {letter.glyphname, dash.glyphname})
+        self.assertEqual(refs[letter.glyphname], psMat.identity())
+        self.assertEqual(linear(refs[dash.glyphname]), linear(psMat.identity()))
+        _, letter_bottom, _, _ = letter.boundingBox()
+        _, _, _, dash_top = geo.transformed(dash.foreground, refs[dash.glyphname]).boundingBox()
+        self.assertLess(dash_top, letter_bottom)
+
+    def test_lira_bars_cross_the_stem(self):
+        # Two bars left of t's stem, where nothing else of t is, and no sliver of its crossbar
+        # left on either side: every span beside the stem is at least a stroke thick.
+        low, _ = self.stroke
+        layer = self.font[ord("₺")].foreground
+        [(x0, x1)] = measure.spans_at_y(layer, 560)  # the stem above the bars
+        self.assertEqual(len(measure.spans_at_x(layer, x0 - 60)), 2)
+        for x in (x0 - 60, x1 + 60):
+            with self.subTest(x=x):
+                for y0, y1 in measure.spans_at_x(layer, x):
+                    self.assertGreaterEqual(y1 - y0, low)
+
+    def test_dash_look_alikes_are_the_dashes(self):
+        for char, dash in DASHES.items():
+            with self.subTest(glyph=char):
+                glyph = self.font[ord(char)]
+                self.assertEqual(len(glyph.foreground), 0)
+                [(name, matrix, *_)] = glyph.references
+                self.assertEqual(name, self.font[ord(dash)].glyphname)
+                self.assertEqual(matrix, psMat.identity())
+
+    def test_triangular_bullet_is_the_small_triangle(self):
+        # Maple Mono, the only reference with ‣, draws it 258 wide at our em, which is our ▸.
+        glyph = self.font[ord("‣")]
+        self.assertEqual(len(glyph.foreground), 0)
+        [(name, matrix, *_)] = glyph.references
+        self.assertEqual(name, self.font[ord("▸")].glyphname)
+        self.assertEqual(matrix, psMat.identity())
 
 
 if __name__ == "__main__":
