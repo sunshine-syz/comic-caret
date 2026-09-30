@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -43,8 +43,8 @@ BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "
 SPINNER = "✢✳✶✻✽"
 MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
 # Keyboard symbols, which key hints string together (⌃⌥⌘⇧⏎): one band on the math axis, and
-# ⌃, the up arrowhead, at its top.
-KEYS = "⌘⌥⇧⎋⏎"
+# ⌃, the up arrowhead, at its top. Not ⇪, ⇧ lifted over a bar, which rises past the band.
+KEYS = "⌘⌥⇧⎋⏎⇦⇨⇩"
 # Symbols drawn as separate pieces, which keep apart (№'s o and its bar sit as close as º's).
 PIECES = "※⧉⇥⇤↹⎋⌦⌫℃℉"
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
@@ -52,7 +52,8 @@ FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
-          "↱": ("↲", 180), "∇": ("∆", 180), "↙": ("↗", 180), "↘": ("↖", 180)}
+          "↱": ("↲", 180), "∇": ("∆", 180), "↙": ("↗", 180), "↘": ("↖", 180),
+          "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
@@ -74,6 +75,29 @@ def linear(matrix):
 
 def points(contour):
     return sorted((p.x, p.y, p.on_curve) for p in contour)
+
+
+def shape(layer):
+    """The layer's points, contour by contour, in an order that ignores where each starts."""
+    return sorted(points(c) for c in layer)
+
+
+def pieces_of(layer):
+    """Each outline of the layer with the counters inside it."""
+    contours = list(layer)
+    pieces = []
+    for outline in contours:
+        if not outline.isClockwise():
+            continue
+        x0, y0, x1, y1 = outline.boundingBox()
+        piece = fontforge.layer()
+        piece += outline
+        for counter in contours:
+            a0, b0, a1, b1 = counter.boundingBox()
+            if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
+                piece += counter
+        pieces.append(piece)
+    return pieces
 
 
 class CoverageTest(unittest.TestCase):
@@ -164,7 +188,7 @@ class ArrowTest(unittest.TestCase):
     def test_vertical_arrows_share_one_height(self):
         # ⇡'s two dashes set it; the solid and two-headed arrows match it.
         _, y0, _, y1 = self.box(0x2191)
-        for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5, 0x21D1, 0x21D3):
+        for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5, 0x21D1, 0x21D3, 0x21DE, 0x21DF):
             with self.subTest(arrow=chr(code)):
                 _, b0, _, b1 = self.box(code)
                 self.assertAlmostEqual(b1 - b0, y1 - y0, delta=2)
@@ -449,7 +473,7 @@ class BuiltFromTest(unittest.TestCase):
 
     def test_arrows_stand_where_the_plain_arrows_do(self):
         for char, plain in (("⇡", "↑"), ("⇣", "↓"), ("⇕", "↕"), ("⇑", "↑"), ("⇓", "↓"),
-                            ("➜", "→")):
+                            ("➜", "→"), ("⇞", "↑"), ("⇟", "↓")):
             with self.subTest(arrow=char):
                 pairs = zip(self.middle(self.font[ord(char)]), self.middle(self.font[ord(plain)]),
                             strict=True)
@@ -536,21 +560,7 @@ class LetterlikeTest(unittest.TestCase):
         cls.seam = 2 * min(x0, ADVANCE - x1)
 
     def pieces(self, char):
-        """Each outline of the glyph with the counters inside it."""
-        contours = list(self.font[ord(char)].foreground)
-        pieces = []
-        for outline in contours:
-            if not outline.isClockwise():
-                continue
-            x0, y0, x1, y1 = outline.boundingBox()
-            layer = fontforge.layer()
-            layer += outline
-            for counter in contours:
-                a0, b0, a1, b1 = counter.boundingBox()
-                if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
-                    layer += counter
-            pieces.append(layer)
-        return pieces
+        return pieces_of(self.font[ord(char)].foreground)
 
     def test_numero_is_a_full_height_N_beside_a_raised_o(self):
         # N keeps its height, narrowed to make room, and º's o stands to its right as high as
@@ -606,6 +616,52 @@ class LetterlikeTest(unittest.TestCase):
                 self.assertAlmostEqual(r_top, b_top, delta=MIDDLE_TOLERANCE)
                 self.assertAlmostEqual(b_bottom, self.font[letter].boundingBox()[1],
                                        delta=MIDDLE_TOLERANCE)
+
+
+class KeyHintTest(unittest.TestCase):
+    """⇦ ⇨ ⇩ are ⇧ turned (TURNED); ⇪ is ⇧ lifted over a bar; ⇞ ⇟ are ↑ ↓ with two bars."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_caps_lock_is_the_up_arrow_lifted_over_a_bar(self):
+        # ⇧'s outline moved up, unchanged, over a bar of ⇧'s own stroke as wide as its shaft.
+        # The references keep ⇪ at ⇧'s height with a smaller arrow; here ⇪A and ⇧A read as
+        # one arrow.
+        up = self.font[ord("⇧")].foreground
+        pieces = pieces_of(self.font[ord("⇪")].foreground)
+        self.assertEqual(len(pieces), 2)
+        arrow = max(pieces, key=lambda p: p.boundingBox()[3] - p.boundingBox()[1])
+        [bar] = [p for p in pieces if p is not arrow]
+        dy = arrow.boundingBox()[1] - up.boundingBox()[1]
+        self.assertEqual(shape(arrow), shape(geo.transformed(up, psMat.translate(0, dy))))
+        _, y0, _, _ = up.boundingBox()
+        (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + 100)  # the shaft's walls
+        bx0, by0, bx1, by1 = bar.boundingBox()
+        self.assertLess(by1, arrow.boundingBox()[1])
+        self.assertAlmostEqual(by1 - by0, l1 - l0, delta=4)
+        self.assertAlmostEqual(bx0, l0, delta=4)
+        self.assertAlmostEqual(bx1, r1, delta=4)
+
+    def test_page_arrows_are_the_arrows_with_two_bars(self):
+        # ↑ and ↓ whole, with two bars of the hyphen's stroke across the shaft, reaching past
+        # it on both sides: Fira Code's span 61% of the arrow's width, Maple Mono's 95%.
+        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        for char, plain in (("⇞", "↑"), ("⇟", "↓")):
+            with self.subTest(arrow=char):
+                layer = self.font[ord(char)].foreground
+                arrow = self.font[ord(plain)].foreground
+                self.assertGreaterEqual(measure.covered(arrow, layer), 0.99)
+                _, y0, _, y1 = arrow.boundingBox()
+                [(s0, s1)] = measure.spans_at_y(arrow, (y0 + y1) / 2)  # the shaft
+                for x in (s0 - 30, s1 + 30):
+                    own = measure.spans_at_x(arrow, x)
+                    bars = [span for span in measure.spans_at_x(layer, x)
+                            if not any(abs(span[0] - a) < 2 and abs(span[1] - b) < 2 for a, b in own)]
+                    self.assertEqual(len(bars), 2, (x, bars))
+                    for a, b in bars:
+                        self.assertAlmostEqual(b - a, h1 - h0, delta=6)
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
