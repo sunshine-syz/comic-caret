@@ -15,6 +15,7 @@
 - The letterlike symbols № ℓ ℮ ℃ ℉: № is a narrowed `N` with º beside it, ℓ is a looped l in the font's hand, ℮ is `e` enlarged with its bar run out to the left, and ℃ ℉ are a small ° before a reduced `C` and `F`, set as Maple Mono sets them.
 - The fractions ⅓ ⅔ ⅕ ⅖ ⅗ ⅘ ⅙ ⅚ ⅛ ⅜ ⅝ ⅞, built like ½ ¼ ¾ from the small figures the superscripts use: their figures stand where ½'s do and the slash keeps ½'s clearances.
 - The key hints ⇞ ⇟ ⇪ ⇦ ⇨ ⇩ (page up and down, caps lock, and the white arrows that pair with ⇧): ⇦ ⇨ ⇩ are ⇧ turned, ⇪ is ⇧ over a bar, and ⇞ ⇟ are ↑ ↓ with two bars across the shaft.
+- The spinner frames of cli-spinners, which Rich, ora, yaspin, Textual and Ink animate: the halves, quarters, arcs and corner cuts of ○ and ☐ (◐ ◑ ◒ ◓, ◴ ◵ ◶ ◷, ◜ ◝ ◞ ◟ ◠ ◡, ◰ ◱ ◲ ◳, ◢ ◣ ◤ ◥, ▮ ▯), the rings ◎ ⦾ ⦿ ⧇ ⧆ ⊙ ∙ ◌ ◍, the trigrams ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷, the stars ✷ ✸ ✹ ✺, ⊶ ⊷, ☖ ☗, ▰ ▱ and ‼, cut, stacked and turned from the font's own ○ ● ☐ ■ ◦ ✶ ∗ and `!`, so the frames of one spinner share a centre and size and the animation stands still.
 - The spaces that copied text carries, so they no longer show as missing: the thin space and narrow no-break space (a cell each, blank), and the zero-width space, non-joiner and joiner, word joiner and byte order mark (blank and zero wide, like the combining marks, so they take no cell).
 - The README says which heredocs stay plain: `<<-EOF` and its quoted and escaped forms, while `<<- EOF` with a space draws the `<<-` arrow, as R's `x <<- y` needs it.
 

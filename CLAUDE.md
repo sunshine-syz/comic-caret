@@ -16,6 +16,7 @@ python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookup
 python3 tools/add_box_drawing.py        # rebuild box drawing and block elements in the SFD
 python3 tools/add_marks.py              # rebuild the combining marks, anchors and ccmp in the SFD
 python3 tools/add_powerline.py          # rebuild the Powerline symbols in the SFD
+python3 tools/add_shapes.py             # rebuild the spinner frames (◐ ◜ ◰ ☰ ✷ …) in the SFD
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
@@ -111,6 +112,13 @@ together.
   `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
 - `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
   another's outline as saved in the font, not from the layer before cleanup.
+- A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
+  `removeOverlap()` then takes them for holes; turn them clockwise (`add_shapes.clockwise`)
+  before a union.
+- The autohinter writes a NaN into a hint mask of any outline that contains ☐'s, and reading
+  the SFD back drops that glyph's later hints, so a rerun never comes out the same. Build such
+  glyphs as references to ☐ (◰–◳, ⧆), which `validate()` flags for overlapping (0x4), as ∄;
+  `test_sanity.py` lists them.
 - Adding an anchor from Python marks the glyph's hints stale, and so does `autoHint()` on
   every glyph (a few come out different, ☐ with a NaN); add anchors through a merged feature
   file, which doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge
@@ -219,3 +227,10 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
   from the box drawing stroke and the font's own letters; change them only there, then rerun it
   and `./build.sh`. `tests/test_add_powerline.py` fails while the SFD is out of date. The Nerd
   Fonts patcher keeps them because `build.sh` passes `--careful`.
+- The spinner frames are generated too: the halves, quarters, arcs and corner cuts of ○ and
+  ☐ (◐–◓ ◴–◷ ◜–◡ ◰–◳ ◢–◥ ▮ ▯), the rings ◎ ⦾ ⦿ ⧇ ⧆ ⊙ ∙ ◌ ◍, the trigrams ☰–☷, the stars
+  ✷ ✸ ✹ ✺, ⊶ ⊷, ☖ ☗ ▰ ▱ and ‼. `tools/add_shapes.py` cuts, stacks and turns the font's own
+  ○ ● ☐ ■ ◦ ✶ ∗ `!` into them (its `CODES`) and owns the components it builds them from
+  (`COMPONENTS`: `asterisk.small` and `square.*`); change them only there, then rerun it,
+  `tools/add_marks.py`, `tools/add_ligatures.py` and `./build.sh`. `tests/test_add_shapes.py`
+  fails while the SFD is out of date.

@@ -108,7 +108,7 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 | **Greek** | Complete: Google Fonts' Greek Core, for modern Greek text and the letters math and code use as names (θ Δt λ). |
 | **Box Drawing, Block Elements, Braille** | Complete, for borders, trees, tables, progress bars, spinners and graphs. |
 | **Powerline** | The basic symbols (U+E0A0–E0A2, U+E0B0–E0B3): the branch, line number and padlock, and the solid and thin separators, which fill the cell so a prompt's coloured segments meet without a seam. Powerlevel10k, Starship, vim-airline and tmux themes use these; the [Nerd Font edition](#nerd-font-edition) adds the extra separators. |
-| **Symbols** | In part: the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂ ∇ ⟨ ⟩ € £ ₹ ₽), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗ and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of terminal UIs such as Claude Code, Rich and Vitest (⏺︎ ⎿ ✻ ⏸︎ ❱ ⎯), key hints (⌘ ⌥ ⌃ ⇧ ⏎) and editors' visible whitespace (␣ ↵ ⇥). |
+| **Symbols** | In part: the arrows, math signs and currency code tends to use (← ⇒ ↕ ≠ ≈ ≡ ≤ ∞ ∑ ∫ √ ∂ ∇ ⟨ ⟩ € £ ₹ ₽), superscript and subscript figures and signs (m² 10⁻³ CO₂), the check marks ✓ ✗ and �, the prompt and status symbols of shells and CLI tools (❯ ➜ ⇡ ✔ ✖ ⚠ ● ▶ ☐), those of terminal UIs such as Claude Code, Rich and Vitest (⏺︎ ⎿ ✻ ⏸︎ ❱ ⎯), the spinner frames of cli-spinners, which Rich, ora and Ink animate (◐ ◜ ◰ ◢ ☰ ✷ ⊶ ☖ ▰), the fractions and letterlike symbols (⅓ ⅞ № ℓ ℃), key hints (⌘ ⌥ ⌃ ⇧ ⇪ ⏎) and editors' visible whitespace (␣ ↵ ⇥). |
 
 ## Building from source
 

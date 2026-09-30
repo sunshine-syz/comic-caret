@@ -86,9 +86,10 @@ def known():
             # ∄ is E and a slash as two references, where the check expects 3 contours; the soft
             # hyphen is drawn, as above, where it expects none; ₹'s bowl closes on its leg, so
             # it has a counter, where the check expects the open shape's one contour; ₱'s
-            # upper bar cuts P's counter in two, one contour more than it expects.
+            # upper bar cuts P's counter in two, one contour more than it expects; ◌ is eight
+            # dashes, as Maple Mono's, where it expects fewer.
             ("WARN", "contour_count", "contour-count",
-             frozenset({"uni2204", "uni00AD", "uni20B9", "uni20B1"})),
+             frozenset({"uni2204", "uni00AD", "uni20B9", "uni20B1", "uni25CC"})),
             # FontForge adds nonmarkingreturn to every TTF.
             ("WARN", "unreachable_glyphs", "unreachable-glyphs",
              frozenset({"nonmarkingreturn"})),

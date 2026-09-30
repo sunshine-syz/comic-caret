@@ -19,7 +19,8 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
+           "◐◑◒◓◴◵◶◷◜◝◞◟◠◡◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -38,9 +39,11 @@ BULLET_WIDTH = 220 - MIDDLE_TOLERANCE
 # to fit) and � (Comic Shanns's own) came with 1.0.0, 11 inside the cell.
 OWN_SIDES = "∞�"
 # Black shape -> the white shape whose outer contour it is.
-BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫"}
-# Claude Code's spinner cycles through these; frames of different sizes would make it pulse.
-SPINNER = "✢✳✶✻✽"
+BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫", "▮": "▯",
+         "☗": "☖", "▰": "▱"}
+# Claude Code's spinner cycles through the first, cli-spinners' star spinner through the
+# second; frames of different sizes would make them pulse.
+SPINNERS = ("✢✳✶✻✽", "✶✷✸✹✺")
 MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
 # Keyboard symbols, which key hints string together (⌃⌥⌘⇧⏎): one band on the math axis, and
 # ⌃, the up arrowhead, at its top. Not ⇪, ⇧ lifted over a bar, which rises past the band.
@@ -53,7 +56,7 @@ TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("�
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
           "↱": ("↲", 180), "∇": ("∆", 180), "↙": ("↗", 180), "↘": ("↖", 180),
-          "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180)}
+          "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180), "◤": ("◢", 180), "◥": ("◣", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
@@ -63,9 +66,9 @@ SMALL_COUNTER = 157
 SMALL_SQUARE_COUNTER = 122
 WHITE_BULLET_COUNTER = 144
 # Double mark -> (the single mark, the white between its two copies at their middle): at
-# least the narrowest reference's, scaled to our cell: Maple Mono's ″, the only reference's,
-# and Fira Code's ‖ (Maple Mono's 156).
-DOUBLES = {"″": ("′", 108), "‖": ("|", 90)}
+# least the narrowest reference's, scaled to our cell: Maple Mono's ″ and ‼, the only
+# reference's, and Fira Code's ‖ (Maple Mono's 156).
+DOUBLES = {"″": ("′", 108), "‖": ("|", 90), "‼": ("!", 110)}
 
 
 def linear(matrix):
@@ -318,10 +321,11 @@ class ShapeTest(unittest.TestCase):
 
     def test_spinner_frames_share_one_size(self):
         # Their middles are held by test_consistency's CENTERED and ON_AXIS.
-        first = self.radius(SPINNER[0])
-        for char in SPINNER[1:]:
-            with self.subTest(frame=char):
-                self.assertAlmostEqual(self.radius(char), first, delta=MIDDLE_TOLERANCE)
+        for spinner in SPINNERS:
+            first = self.radius(spinner[0])
+            for char in spinner[1:]:
+                with self.subTest(frame=char):
+                    self.assertAlmostEqual(self.radius(char), first, delta=MIDDLE_TOLERANCE)
 
     def test_media_controls_share_one_height(self):
         first = self.height(MEDIA[0])
