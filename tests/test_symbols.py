@@ -470,6 +470,14 @@ class BuiltFromTest(unittest.TestCase):
                 _, y0, _, y1 = layer.boundingBox()
                 self.assertGreaterEqual(measure.counter(layer, (y0 + y1) / 2), floor)
 
+    def test_double_exclamation_dots_keep_apart(self):
+        # ‼'s dots are wider than its stems, so the white between them is the narrow gap:
+        # at least Maple Mono's 93, the only reference's, measured through the dots.
+        _, y0, _, _ = self.font["exclam"].boundingBox()
+        dots = measure.spans_at_y(measure.ink(self.font, self.font[ord("‼")].glyphname), y0 + 50)
+        self.assertEqual(len(dots), 2)
+        self.assertGreaterEqual(dots[1][0] - dots[0][1], 93)
+
     def test_midline_ellipsis_is_the_ellipsis_raised(self):
         name, matrix = self.only_reference("⋯")
         self.assertEqual(name, "ellipsis")

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 (unreleased)
+## 1.5.0 (unreleased)
 
 - `^` `~` `_` `%` and `°`, which everyone types, sat outside the range the three reference fonts cover:
   - `^` is narrower and lower, its top level with Fira Code's; it reached almost to the top of the line.
@@ -8,16 +8,15 @@
   - `_` sits 15 units lower, where Intel One Mono draws it; ␣ ⍽ and the `__` runs go with it.
   - `%`'s slash no longer dips below its rings.
   - ° is a larger, open ring, lower and centered; its counter closed up at small sizes.
-- The basic Powerline symbols (U+E0A0–E0A2 and U+E0B0–E0B3: the branch, line number and padlock, and the solid and thin separators) in the plain font, so Powerlevel10k, Starship, vim-airline and tmux prompts no longer need the Nerd Font edition or fall back to another font. The separators fill the cell and the line box, so a prompt's coloured segments meet them without a seam; the thin ones take the box drawing stroke, and the branch, line number and padlock are drawn from the font's own strokes and letters. The Nerd Font editions keep them.
+- The basic Powerline symbols (U+E0A0–E0A2 and U+E0B0–E0B3: the branch, line number and padlock, and the solid and thin separators) in the plain font, so Powerlevel10k, Starship, vim-airline and tmux prompts no longer need the Nerd Font edition or fall back to another font. The separators fill the cell and the line box, so a prompt's colored segments meet them without a seam; the thin ones take the box drawing stroke, and the branch, line number and padlock are drawn from the font's own strokes and letters. The Nerd Font editions keep them.
 - The currency signs ₹ ₺ ₽ ₩ ₫, drawn from the font's own letters and the hyphen's stroke: ₽ is `P` with a bar, ₩ is `W` with two, ₫ is `đ` with a bar under it, ₺ is `t` with two rising bars in place of its crossbar, and ₹ is two bars over a small bowl with a long leg, the shape the three reference fonts agree on. With them the dash and bullet look-alikes ‣ ‐ ‑ ‒ ― that Markdown and copied text carry, as ▸, the hyphen, the en dash and the em dash.
-- ₦ ₱ ₿ too: ₦ is `N` with ₩'s two bars, ₱ is `P` with two bars through its bowl where Intel One Mono puts them, and ₿ is `B` with two ticks of `|`'s stroke through its top and bottom, as Maple Mono draws it.
+- The currency signs ₦ ₱ ₿: ₦ is `N` with ₩'s two bars, ₱ is `P` with two bars through its bowl where Intel One Mono puts them, and ₿ is `B` with two ticks of `|`'s stroke through its top and bottom, as Maple Mono draws it.
 - The modifier letters ʼ ʻ ʺ, which fell back to another font: ʼ (the apostrophe of Ukrainian and of many African and romanized languages) is ’, ʻ (the Hawaiian ʻokina) is ‘, and ʺ is ″, as the reference fonts that have them draw them.
 - The letterlike symbols № ℓ ℮ ℃ ℉: № is a narrowed `N` with º beside it, ℓ is a looped l in the font's hand, ℮ is `e` enlarged with its bar run out to the left, and ℃ ℉ are a small ° before a reduced `C` and `F`, set as Maple Mono sets them.
 - The fractions ⅓ ⅔ ⅕ ⅖ ⅗ ⅘ ⅙ ⅚ ⅛ ⅜ ⅝ ⅞, built like ½ ¼ ¾ from the small figures the superscripts use: their figures stand where ½'s do and the slash keeps ½'s clearances.
 - The key hints ⇞ ⇟ ⇪ ⇦ ⇨ ⇩ (page up and down, caps lock, and the white arrows that pair with ⇧): ⇦ ⇨ ⇩ are ⇧ turned, ⇪ is ⇧ over a bar, and ⇞ ⇟ are ↑ ↓ with two bars across the shaft.
-- The spinner frames of cli-spinners, which Rich, ora, yaspin, Textual and Ink animate: the halves, quarters, arcs and corner cuts of ○ and ☐ (◐ ◑ ◒ ◓, ◴ ◵ ◶ ◷, ◜ ◝ ◞ ◟ ◠ ◡, ◰ ◱ ◲ ◳, ◢ ◣ ◤ ◥, ▮ ▯), the rings ◎ ⦾ ⦿ ⧇ ⧆ ⊙ ∙ ◌ ◍, the trigrams ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷, the stars ✷ ✸ ✹ ✺, ⊶ ⊷, ☖ ☗, ▰ ▱ and ‼, cut, stacked and turned from the font's own ○ ● ☐ ■ ◦ ✶ ∗ and `!`, so the frames of one spinner share a centre and size and the animation stands still.
+- The spinner frames of cli-spinners, which Rich, ora, yaspin, Textual and Ink animate: the halves, quarters, arcs and corner cuts of ○ and ☐ (◐ ◑ ◒ ◓, ◴ ◵ ◶ ◷, ◜ ◝ ◞ ◟ ◠ ◡, ◰ ◱ ◲ ◳, ◢ ◣ ◤ ◥, ▮ ▯), the rings ◎ ⦾ ⦿ ⧇ ⧆ ⊙ ∙ ◌ ◍, the trigrams ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷, the stars ✷ ✸ ✹ ✺, ⊶ ⊷, ☖ ☗, ▰ ▱ and ‼, cut, stacked and turned from the font's own ○ ● ☐ ■ ◦ ✶ `*` and `!`, so the frames of one spinner share a center and size and the animation stands still.
 - The spaces that copied text carries, so they no longer show as missing: the thin space and narrow no-break space (a cell each, blank), and the zero-width space, non-joiner and joiner, word joiner and byte order mark (blank and zero wide, like the combining marks, so they take no cell).
-- The README says which heredocs stay plain: `<<-EOF` and its quoted and escaped forms, while `<<- EOF` with a space draws the `<<-` arrow, as R's `x <<- y` needs it.
 
 ## 1.2.0 (2026-09)
 

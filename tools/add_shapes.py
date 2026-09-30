@@ -9,13 +9,15 @@ frames share one centre and box and it turns without pulsing:
   of ○; ◰ ◱ ◲ ◳ are ☐ with a quarter of ■; ◢ ◣ ◤ ◥ are ■ cut corner to corner; ▯ is ☐
   narrowed and ▮ is it filled.
 - ◎ ⦾ are ○ over ◦, ⊙ is ○ over ∙ (the period on the math axis) and ⦿ is ◉; ◌ is ○ in
-  eight dashes and ◍ is ○ with bars inside; ⧆ ⧇ are ☐ over a small ∗ and ◦.
+  eight dashes and ◍ is ○ with bars inside; ⧆ ⧇ are ☐ over a small `*` and ◦.
 - ☰ … ☷ are bars of the hyphen's stroke, ✷ ✸ ✹ ✺ stars of ✶'s size with more points,
   ⊶ ⊷ a small ○ and ● joined by a stroke, ☖ ☗ and ▰ ▱ rings of ☐'s stroke and their fills,
   and ‼ is two !.
 
-The script owns these glyphs and redraws them in place, so running it again changes nothing
-but ModificationTime. Run tools/add_marks.py and tools/add_ligatures.py after it.
+The script owns these glyphs (CODES) and the components it builds them from (COMPONENTS:
+asterisk.small and the square.* quarters), and redraws them in place, so running it again
+changes nothing but ModificationTime. Run tools/add_marks.py and tools/add_ligatures.py after
+it.
 """
 import argparse
 import math
@@ -56,15 +58,14 @@ NARROW = 0.527  # ▮'s width over its height in Fira Code, the only reference w
 BULLSEYE, CIRCLED_BULLET, CIRCLED_WHITE_BULLET, DOTTED, FILLED = 0x25CE, 0x2299, 0x29BE, 0x25CC, 0x25CD
 FISHEYE, CIRCLED_FISHEYE, BULLET_OPERATOR = 0x25C9, 0x29BF, 0x2219
 SQUARED_ASTERISK, SQUARED_CIRCLE = 0x29C6, 0x29C7
-# ⧆ is references to ☐ and to ∗ made small, a component of its own: drawn into one outline
-# with ☐, the box's and the asterisk's stems give the autohinter overlapping hints, which
-# validate() rejects.
+# ⧆ is references to ☐ and to `*` made small, a component of its own, for the NaN reason
+# above; its parts don't overlap, so validate() is clean.
 SMALL_ASTERISK = "asterisk.small"
 DASHES = 8          # ◌: Maple Mono's, the only reference's, has eight
 DASH_GAP = 60       # along the ring's middle, so the gaps stay open at 12 px
 FILL_BARS = 3       # ◍: three bars of ◦'s stroke leave four gaps of 55 in ○'s counter
 THIN = 41           # ◦'s ring, which the bars inside ◍ and between ⊶ ⊷'s ends take
-ASTERISK_SCALE = 0.48  # ⧆'s ∗ in ☐'s counter, half a stroke clear of it, thickened like the small figures
+ASTERISK_SCALE = 0.48  # ⧆'s `*` in ☐'s counter, half a stroke clear of it, thickened like the small figures
 TRIGRAMS = range(0x2630, 0x2638)
 # Bit k of a trigram's offset from ☰ breaks line k from the top: ☱ (1) breaks the top line,
 # ☲ (2) the middle one, ☴ (4) the bottom one, ☷ (7) all three.
@@ -72,7 +73,7 @@ TRIGRAM_PITCH = 176  # the bars span 84% of ○'s height, as Fira Code's span it
 TRIGRAM_INSET = 55   # from the cell's sides; Fira Code's bars keep 14% of the cell
 BROKEN_GAP = 90      # between a broken line's halves: a fifth of the width, Fira Code's 23%
 SIX_STAR = 0x2736
-STARS = {0x2737: (8, 0.60), 0x2738: (8, 0.74), 0x2739: (12, 0.72)}  # (points, inner radius)
+STARS = {0x2737: (8, 0.60), 0x2738: (8, 0.74), 0x2739: (12, 0.72)}  # (points, inner radius over the outer)
 ASTERISK_STAR, SPOKES, SPOKE = 0x273A, 8, 50  # ✺: sixteen points as eight spokes
 TIP = 20  # the stars' tips are rounded as ✶'s are, by pushing a smaller polygon out this far
 ORIGINAL_OF, IMAGE_OF = 0x22B6, 0x22B7
@@ -236,10 +237,10 @@ def square_cuts(font):
     # a segment that coincides with another's troubles some rasterizers.
     x0, y0, x1, y1 = square.boundingBox()
     shrink = psMat.scale(1 - 2 * QUARTER_INSET / (x1 - x0), 1 - 2 * QUARTER_INSET / (y1 - y0))
-    inset = geo.transformed(square, geo.about(shrink, (x0 + x1) / 2, (y0 + y1) / 2))
+    shrunk = geo.transformed(square, geo.about(shrink, (x0 + x1) / 2, (y0 + y1) / 2))
     out = {}
     for code, cut in SQUARE_QUADRANTS.items():
-        out[SQUARE_QUARTERS[code]] = geo.cleanup(geo.trim(inset, **cut))
+        out[SQUARE_QUARTERS[code]] = geo.cleanup(geo.trim(shrunk, **cut))
         out[code] = Ref((f"uni{BOX:04X}", psMat.identity()), (SQUARE_QUARTERS[code], psMat.identity()))
     # ■ cut along its diagonal from the top right to the bottom left, by a triangle that
     # reaches well past it.
@@ -263,7 +264,7 @@ def rings(font):
     circle_name, box_name = f"uni{CIRCLE:04X}", f"uni{BOX:04X}"
     bullet_name = f"uni{WHITE_BULLET:04X}"
     out = {BULLSEYE: Ref((circle_name, psMat.identity()), (bullet_name, psMat.identity())),
-           CIRCLED_WHITE_BULLET: Ref((circle_name, psMat.identity()), (bullet_name, psMat.identity())),
+           CIRCLED_WHITE_BULLET: Ref((f"uni{BULLSEYE:04X}", psMat.identity())),  # drawn alike everywhere
            CIRCLED_FISHEYE: Ref((f"uni{FISHEYE:04X}", psMat.identity())),
            SQUARED_CIRCLE: Ref((box_name, psMat.identity()), (bullet_name, psMat.identity()))}
     # ∙: the period moved onto the math axis, centred in the cell.
@@ -293,7 +294,7 @@ def rings(font):
     bars = [clip(geo.rect(x - THIN / 2, ry0, x + THIN / 2, ry1), inside)
             for x in (inner_left + step * (k + 1) for k in range(FILL_BARS))]
     out[FILLED] = geo.cleanup(geo.union(ring, *bars))
-    # ⧆: ☐ over ∗ at half size, thickened back like the small figures, centred in the cell.
+    # ⧆: ☐ over `*` at half size, thickened back like the small figures, centred in the cell.
     asterisk = measure.ink(font, "asterisk")
     ax0, ay0, ax1, ay1 = asterisk.boundingBox()
     small = geo.transformed(asterisk, geo.about(psMat.scale(ASTERISK_SCALE),
@@ -377,6 +378,9 @@ def polygons(font):
 def build(font):
     """Every frame: code point (or a component's name) -> outline layer, or Ref for a glyph
     made of references."""
+    # Every cut is at AXIS, so ○ must be centred there, or the halves come out uneven.
+    _, y0, _, y1 = font[CIRCLE].boundingBox()
+    assert abs((y0 + y1) / 2 - AXIS) <= 1, f"○ is centred on {(y0 + y1) / 2}, not {AXIS}"
     out = {}
     for family in (circle_cuts, square_cuts, rings, trigrams, stars, joined_rounds, polygons):
         out.update(family(font))

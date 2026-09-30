@@ -31,12 +31,11 @@ FAMILIES = ("◐◑◒◓", "◴◵◶◷", "◰◱◲◳", "☰☱☲☳☴☵�
 # Shape -> the whole shape it holds: a cut of ● or ■ inside it, or pieces inside its counter.
 HOLDS = {"◐": "○", "◑": "○", "◒": "○", "◓": "○", "◴": "○", "◵": "○", "◶": "○", "◷": "○",
          "◰": "☐", "◱": "☐", "◲": "☐", "◳": "☐", "◍": "○", "⧆": "☐"}
-# Trigram -> which of its lines, top to bottom, are broken, as its Unicode name says.
+# Trigram -> which of its lines, top to bottom, are broken (the I Ching's figures).
 TRIGRAMS = {"☰": "", "☱": "top", "☲": "middle", "☳": "top middle", "☴": "bottom",
             "☵": "top bottom", "☶": "middle bottom", "☷": "top middle bottom"}
 STARS = {"✷": 8, "✸": 8, "✹": 12, "✺": 16}  # points
 # ‼'s dots keep at least Maple Mono's white between them (the only reference's, at our em).
-DOUBLE_EXCLAMATION_GAP = 93
 
 
 def without_timestamp(path):
@@ -191,7 +190,7 @@ class FrameTest(unittest.TestCase):
         # References, so they follow ○ ☐ ◦ ◉, the bullet operator and the small asterisk.
         circle, box_name = self.font[ord("○")].glyphname, self.font[ord("☐")].glyphname
         bullet = self.font[ord("◦")].glyphname
-        for char, parts in (("◎", {circle, bullet}), ("⦾", {circle, bullet}),
+        for char, parts in (("◎", {circle, bullet}), ("⦾", {self.font[ord("◎")].glyphname}),
                             ("⧇", {box_name, bullet}), ("⧆", {box_name, add_shapes.SMALL_ASTERISK}),
                             ("⊙", {circle, self.font[ord("∙")].glyphname})):
             with self.subTest(glyph=char):
@@ -303,14 +302,6 @@ class FrameTest(unittest.TestCase):
         top, bottom = measure.spans_at_y(ink, y1 - 20), measure.spans_at_y(ink, y0 + 20)
         self.assertGreater(top[0][0], bottom[0][0])
         self.assertGreater(top[-1][1], bottom[-1][1])
-
-    def test_double_exclamation_dots_keep_apart(self):
-        refs = self.font[ord("‼")].references
-        self.assertEqual([name for name, *_ in refs], ["exclam", "exclam"])
-        _, y0, _, _ = box(self.font, "!")
-        dots = measure.spans_at_y(self.ink("‼"), y0 + 50)
-        self.assertEqual(len(dots), 2)
-        self.assertGreaterEqual(dots[1][0] - dots[0][1], DOUBLE_EXCLAMATION_GAP)
 
 
 if __name__ == "__main__":
