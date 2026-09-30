@@ -29,7 +29,7 @@ import psMat
 
 import lig_geometry as geo
 import measure
-from add_powerline import circle, polygon
+from add_powerline import polygon
 from project import ADVANCE, SFD, save_checked, validation_errors
 
 CX, AXIS = ADVANCE / 2, 269  # the cell's middle and the math axis, ○ ● ☐ ■'s centre

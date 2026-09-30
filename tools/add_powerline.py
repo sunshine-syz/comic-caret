@@ -148,11 +148,11 @@ def letter(font, name, scale, bottom):
 
 def line_number(font):
     """: L over N, each the letter at LETTER_SCALE, N on the line box's bottom inset."""
-    n = letter(font, "N", LETTER_SCALE, LINE_BOTTOM + INSET)
-    l = letter(font, "L", LETTER_SCALE, n.boundingBox()[3] + LETTER_GAP)
+    below = letter(font, "N", LETTER_SCALE, LINE_BOTTOM + INSET)
+    above = letter(font, "L", LETTER_SCALE, below.boundingBox()[3] + LETTER_GAP)
     out = fontforge.layer()
-    out += n.dup()
-    out += l.dup()
+    out += below.dup()
+    out += above.dup()
     return geo.cleanup(out)
 
 
