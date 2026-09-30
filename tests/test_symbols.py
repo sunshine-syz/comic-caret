@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -523,11 +523,14 @@ class BuiltFromTest(unittest.TestCase):
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
-LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t"}
+LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t", "₦": "N", "₱": "P"}
 # Where a sign's bars cross a vertical line: (x, how many bars, whether they are the topmost
 # spans there rather than the lowest). ₽'s bowl lies over its bar, W's arm over ₩'s bars, and
-# ₹'s leg under its bars.
-BARS = {"₽": (300, 1, False), "₩": (40, 2, False), "₹": (120, 2, True)}
+# ₹'s leg under its bars; ₦'s and ₱'s bars run out left of their letters, alone there (past
+# the bars' rounded ends, which taper like the hyphen's).
+BARS = {"₽": (300, 1, False), "₩": (40, 2, False), "₹": (120, 2, True), "₦": (40, 2, False),
+        "₱": (40, 2, False)}
+TICK_REACH = 100  # ₿'s ticks past B: Maple Mono's, the only reference's, reach 130
 # Dash look-alike -> the dash it is: the hyphen for ‐ and the non-breaking hyphen ‑, the en
 # dash for the figure dash ‒ and the em dash for the horizontal bar ―, as their Unicode names
 # say and as the references that have them draw them.
@@ -535,9 +538,9 @@ DASHES = {"‐": "-", "‑": "-", "‒": "–", "―": "—"}
 
 
 class CurrencyTest(unittest.TestCase):
-    """₽ ₩ ₺ are letters with bars and ₹ two bars over a small bowl; every bar is a piece
-    of the hyphen's stroke, so it weighs as the hyphen's middle does. ₫ is đ over the em
-    dash, both references."""
+    """₽ ₩ ₺ ₦ ₱ are letters with bars and ₹ two bars over a small bowl; every bar is a
+    piece of the hyphen's stroke, so it weighs as the hyphen's middle does. ₫ is đ over the
+    em dash, both references, and ₿ is B with two ticks of |'s stroke through it."""
 
     @classmethod
     def setUpClass(cls):
@@ -586,6 +589,21 @@ class CurrencyTest(unittest.TestCase):
         for (a0, a1), (b0, b1) in zip(self.bars("₹", x), self.bars("₹", 2 * x), strict=True):
             self.assertAlmostEqual(a0, b0, delta=MIDDLE_TOLERANCE)
             self.assertAlmostEqual(a1, b1, delta=MIDDLE_TOLERANCE)
+
+    def test_bitcoin_ticks_pass_through_the_letter(self):
+        # Two ticks as thick as | rise above B and drop below it, and nothing else does.
+        layer = self.font[ord("₿")].foreground
+        x0, y0, x1, y1 = layer.boundingBox()
+        _, b0, _, b1 = self.font["B"].boundingBox()
+        self.assertGreaterEqual(y1 - b1, TICK_REACH)
+        self.assertGreaterEqual(b0 - y0, TICK_REACH)
+        [(s0, s1)] = measure.spans_at_y(self.font["bar"].foreground, 300)
+        for y in (b1 + TICK_REACH / 2, b0 - TICK_REACH / 2):
+            with self.subTest(y=y):
+                ticks = measure.spans_at_y(layer, y)
+                self.assertEqual(len(ticks), 2)
+                for a, b in ticks:
+                    self.assertAlmostEqual(b - a, s1 - s0, delta=4)
 
     def test_dong_is_the_letter_over_the_em_dash(self):
         # The em dash only moved, to lie under the letter, clear of it.
