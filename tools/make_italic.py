@@ -1,0 +1,197 @@
+"""Derive src/ComicCaret-Italic.sfd, the italic master, from src/ComicCaret-Regular.sfd.
+
+Usage: python3 tools/make_italic.py [ITALIC_SFD]
+
+The italic is the regular slanted ANGLE degrees, with the graphics kept upright and f given a
+descender. Nothing in the italic SFD is drawn by hand: this script rewrites the whole file
+from the regular, so running it again changes nothing but ModificationTime, and
+tests/test_make_italic.py fails while it is out of date. Change the regular or this script,
+then rerun it and ./build.sh.
+
+Every glyph of the regular falls in one of three sets, decided by classify():
+
+- SLANTED: what a pen writes. Letters, figures, the combining marks, punctuation, brackets,
+  quotes, currency, superscripts, operators, arrows and the ligatures. Each is sheared by
+  x += (y - AXIS) * SLANT, one map for every glyph, pivoting on the hyphen's middle: a stroke
+  at any height moves the same in every glyph, so the ligature pieces still meet at the cell
+  seams, while - = and the arrow shafts stay where they are and the lowercase stays centred.
+- UPRIGHT: what is drawn as a picture, which Maple Mono and Intel One Mono leave untouched in
+  their italics: Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and
+  the spinner frames, the status marks ✓ ✗ ⚠ ℹ, the checkboxes ☐ ☑ ☒ and the key hints ⌘ ⌥
+  ⌃ ⇧. Copied unchanged, hints included.
+- REDRAWN: letters given a cursive form. f takes ƒ's outline, the descending f the regular
+  already draws in its hand, and ƒ becomes a reference to it; then both are sheared.
+
+A composite keeps its references, each matrix conjugated by the shear, so it equals the shear
+of the regular's composite exactly: a turned ¿ stays ? turned, and an accent moves right by
+its height's share of the slant. Two cannot: an upright glyph built on a slanted one (∙ on
+the period) and a slanted glyph whose part is turned a quarter (⋮ on …) are unlinked into
+outlines. Anchors move with the shear, so the mark lookups carry over as they are, and so do
+the ligature lookups.
+"""
+import argparse
+import collections
+import math
+import pathlib
+import sys
+
+import fontforge
+import psMat
+
+import lig_geometry as geo
+from add_ligatures import AXIS
+from project import ITALIC_SFD, SFD, save_checked, validation_errors
+
+ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
+SLANT = math.tan(math.radians(ANGLE))
+SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
+
+SLANTED, UPRIGHT, REDRAWN = "slanted", "upright", "redrawn"
+
+# The blocks that stay upright: Miscellaneous Technical (⏺ ⏵ ⏸ ⎿ ⌘ ⌥ ⌃ ⌫ ⌦ ⎋ ⏎), Box Drawing
+# through Dingbats (the block elements, geometric shapes, ☐ ☑ ☒ ⚠ and ✓ ✗ ✶), Braille,
+# Miscellaneous Mathematical Symbols-B (⧉ ⦾ ⦿ ⧇ ⧆), the Powerline symbols and �.
+UPRIGHT_BLOCKS = (range(0x2300, 0x2400), range(0x2500, 0x27C0), range(0x2800, 0x2900),
+                  range(0x2980, 0x2A00), range(0xE000, 0xF900), range(0xFFF0, 0x10000))
+# Inside those blocks, what a pen writes: the heavy > < → of prompts, ⎯ (the -- line's middle
+# piece, which must join it) and ⍽, ␣'s sibling.
+SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
+# Outside them, what is a picture: the spinner frames ∙ ⊙ ⊶ ⊷ (and ⊙ is built on ∙), • and
+# ‣, which are the dot of ◉ and ▸ itself, ℹ, which stands beside ⚠, and the white arrows
+# ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟, key hints that read with ⌘ ⌥ ⌃ (Maple Mono slants them, and has no ⌘).
+UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟")
+
+# The cursive letters: name -> the upright outline to shear, drawn from the regular.
+REDRAWN_OUTLINES = {"f": lambda font: font["florin"].foreground.dup()}
+# Glyphs that become references to a redrawn letter: ƒ is the italic f.
+REDRAWN_REFERENCES = {"florin": "f"}
+
+IDENTITY, TURNED = (1, 0, 0, 1), (-1, 0, 0, -1)  # the linear parts that commute with a shear
+FONTNAME, FULLNAME = "ComicCaret-Italic", "Comic Caret Italic"
+ITALIC_BIT = 0x0001  # OS/2 fsSelection; the regular sets 0x0040, REGULAR
+
+
+def encoded_style(code):
+    char = chr(code)
+    if char in SLANTED_CHARS:
+        return SLANTED
+    if char in UPRIGHT_CHARS or any(code in block for block in UPRIGHT_BLOCKS):
+        return UPRIGHT
+    return SLANTED
+
+
+def classify(font):
+    """{glyph name: SLANTED, UPRIGHT or REDRAWN} for every glyph of the regular.
+
+    An encoded glyph goes by its character; .notdef, a box, stays upright. An unencoded part
+    follows the glyphs built from it, and a ligature piece, which only a substitution reaches,
+    is an operator's and slants.
+    """
+    styles = {".notdef": UPRIGHT, **dict.fromkeys(REDRAWN_OUTLINES, REDRAWN)}
+    users = collections.defaultdict(set)
+    for glyph in font.glyphs():
+        for name, *_ in glyph.references:
+            users[name].add(glyph.glyphname)
+        if glyph.unicode >= 0 and glyph.glyphname not in styles:
+            styles[glyph.glyphname] = encoded_style(glyph.unicode)
+    pending = [g.glyphname for g in font.glyphs() if g.glyphname not in styles]
+    while pending:
+        left = []
+        for name in pending:
+            found = {styles.get(user) for user in users[name]}
+            if not users[name]:
+                styles[name] = SLANTED
+            elif None in found:
+                left.append(name)  # a user is itself unclassified yet
+            elif len(found) == 1:
+                styles[name] = found.pop()
+            else:
+                sys.exit(f"{name} is used by glyphs of different styles: {sorted(users[name])}")
+        if len(left) == len(pending):
+            sys.exit(f"cannot classify {left}: their users depend on each other")
+        pending = left
+    return styles
+
+
+def conjugated(matrix):
+    """The reference matrix that draws a slanted base where the regular's matrix drew its
+    upright base, so the composite is the shear of the regular's. Only a translation or a
+    180° turn keeps the shear's form; anything else needs the outline."""
+    out = psMat.compose(psMat.compose(psMat.inverse(SHEAR), matrix), SHEAR)
+    return (*(round(v, 4) for v in out[:4]), *(round(v) for v in out[4:]))
+
+
+def slant(glyph):
+    """Shear the glyph in place: outline, references and anchors, then rehint it."""
+    if any(tuple(matrix[:4]) not in (IDENTITY, TURNED) for _, matrix, *_ in glyph.references):
+        glyph.unlinkRef()
+    if len(glyph.foreground):
+        layer = glyph.foreground.dup()
+        layer.transform(SHEAR)
+        # Rounding can move an extremum off its point, so extrema are added between two
+        # roundings; "all" because the default skips short segments validate() still checks.
+        layer.round()
+        layer.addExtrema("all")
+        layer.round()
+        glyph.foreground = layer
+    if glyph.references:
+        # FontForge writes references in reverse order.
+        glyph.references = tuple((name, conjugated(matrix))
+                                 for name, matrix, *_ in reversed(glyph.references))
+    glyph.anchorPoints = tuple((name, kind, round(x + (y - AXIS) * SLANT), y, *rest)
+                               for name, kind, x, y, *rest in glyph.anchorPoints)
+    glyph.autoHint()
+
+
+def build(font):
+    """Turn the regular, opened as `font`, into the italic."""
+    # The outlines first: f takes ƒ's before ƒ becomes a reference to f.
+    outlines = {name: outline(font) for name, outline in REDRAWN_OUTLINES.items()}
+    for name, outline in outlines.items():
+        font[name].references = ()
+        font[name].foreground = outline
+    for name, base in REDRAWN_REFERENCES.items():
+        font[name].foreground = fontforge.layer()
+        font[name].references = ((base, psMat.identity()),)
+    styles = classify(font)
+    # Before any base is sheared: an upright glyph keeps a slanted part's regular outline.
+    for glyph in font.glyphs():
+        parts = {styles[name] for name, *_ in glyph.references}
+        if styles[glyph.glyphname] == UPRIGHT and parts - {UPRIGHT}:
+            glyph.unlinkRef()
+            glyph.autoHint()
+        elif styles[glyph.glyphname] != UPRIGHT and UPRIGHT in parts:
+            sys.exit(f"{glyph.glyphname} slants but is built on an upright glyph")
+    for glyph in font.glyphs():
+        if styles[glyph.glyphname] != UPRIGHT:
+            slant(glyph)
+    font.italicangle = -ANGLE
+    font.fontname, font.fullname = FONTNAME, FULLNAME
+    font.os2_stylemap = ITALIC_BIT
+
+
+def check(path):
+    """Exit non-zero if a glyph of the italic at `path` fails validate() where the regular's
+    doesn't (∄'s references overlap in both)."""
+    italic, regular = fontforge.open(str(path)), fontforge.open(str(SFD))
+    failed = {g.glyphname: hex(flags) for g in italic.glyphs()
+              if (flags := validation_errors(g)) != validation_errors(regular[g.glyphname])}
+    if failed:
+        sys.exit(f"validate() failed: {failed}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("sfd", nargs="?", default=str(ITALIC_SFD), help="default: %(default)s")
+    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.check:
+        return check(args.sfd)
+
+    font = fontforge.open(str(SFD))
+    build(font)
+    save_checked(font, pathlib.Path(args.sfd), __file__)
+
+
+if __name__ == "__main__":
+    main()

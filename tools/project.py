@@ -5,7 +5,9 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SFD = ROOT / "src" / "ComicCaret-Regular.sfd"
+SFD = ROOT / "src" / "ComicCaret-Regular.sfd"  # the master every glyph is drawn in
+ITALIC_SFD = ROOT / "src" / "ComicCaret-Italic.sfd"  # derived from it by tools/make_italic.py
+STYLES = {"Regular": SFD, "Italic": ITALIC_SFD}
 ADVANCE = 550  # every glyph's advance width
 # The format characters that take no cell (their wcwidth is 0), kept blank and zero wide like
 # the combining marks: the zero width space, non-joiner and joiner, the word joiner and the
@@ -13,6 +15,11 @@ ADVANCE = 550  # every glyph's advance width
 ZERO_WIDTH = frozenset({0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF})
 
 _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
+
+
+def font_file(style, ext):
+    """The built font of `style` ("Regular" or "Italic") in format `ext` ("otf" or "ttf")."""
+    return ROOT / "fonts" / f"ComicCaret-{style}.{ext}"
 
 
 def validation_errors(glyph):
