@@ -44,7 +44,13 @@ SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"
 SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎"
 FRACTIONS = {"onequarter": ("one.small", "four.small"),
              "onehalf": ("one.small", "two.small"),
-             "threequarters": ("three.small", "four.small")}
+             "threequarters": ("three.small", "four.small"),
+             "uni2153": ("one.small", "three.small"), "uni2154": ("two.small", "three.small"),
+             "uni2155": ("one.small", "five.small"), "uni2156": ("two.small", "five.small"),
+             "uni2157": ("three.small", "five.small"), "uni2158": ("four.small", "five.small"),
+             "uni2159": ("one.small", "six.small"), "uni215A": ("five.small", "six.small"),
+             "uni215B": ("one.small", "eight.small"), "uni215C": ("three.small", "eight.small"),
+             "uni215D": ("five.small", "eight.small"), "uni215E": ("seven.small", "eight.small")}
 
 
 def code_page(codec):
@@ -303,6 +309,19 @@ class FigureTest(unittest.TestCase):
             for figure in figures:
                 with self.subTest(glyph=name, figure=figure):
                     self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)), 20)
+
+    def test_fractions_place_their_figures_where_one_half_does(self):
+        # Every numerator's ink stands centred where ½'s 1 is, its top at the 1's, and every
+        # denominator where ½'s 2 is, its bottom at the 2's, so a row of fractions lines up.
+        one = self.part("onehalf", "one.small")
+        two = self.part("onehalf", "two.small")
+        for name, (numerator, denominator) in FRACTIONS.items():
+            with self.subTest(glyph=name):
+                num, den = self.part(name, numerator), self.part(name, denominator)
+                self.assertAlmostEqual(measure.ink_center(num), measure.ink_center(one), delta=5)
+                self.assertAlmostEqual(num.boundingBox()[3], one.boundingBox()[3], delta=2)
+                self.assertAlmostEqual(measure.ink_center(den), measure.ink_center(two), delta=5)
+                self.assertAlmostEqual(den.boundingBox()[1], two.boundingBox()[1], delta=2)
 
     def test_fraction_bar_is_as_heavy_as_the_figures(self):
         bar = self.font["slash.fraction"].foreground

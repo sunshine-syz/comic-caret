@@ -29,9 +29,10 @@ LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and mar
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
     "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾"
+                  "⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
                   "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ"), 1),
     "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρσςτυφχψω", 3),
-    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™"
+    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱"), 3),
     "ascender": ("bdfhklßþβδζθλξℓ", 3),
     "descender": ("gjpqyþµŋŊƒ¶βγζηξρςφχψϗ", 1),
