@@ -14,9 +14,11 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from add_ligatures import GENERATED, OVERLAP
 from measure import ink, spans_at_x
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, ROOT, SFD, STYLES, font_file
 
-FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
+# Each built font, with the SFD it is built from.
+FONTS = {font_file(style, ext): sfd for style, sfd in STYLES.items() for ext in ("otf", "ttf")}
+REGULAR = font_file("Regular", "ttf")
 NERD_DIR = ROOT / "build" / "nerd"
 
 
@@ -256,9 +258,9 @@ PLAIN = [
 class LigatureShapingTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        for font in FONTS:
-            if not font.exists() or font.stat().st_mtime < SFD.stat().st_mtime:
-                raise AssertionError(f"{font.name} is missing or older than {SFD.name}; "
+        for font, sfd in FONTS.items():
+            if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
+                raise AssertionError(f"{font.name} is missing or older than {sfd.name}; "
                                      "run ./build.sh")
 
     def test_ligated_sequences(self):
@@ -289,14 +291,16 @@ class LigatureShapingTest(unittest.TestCase):
 
     def test_joined_pieces_meet_without_a_step(self):
         # A piece that runs on is cut flat at its cell's edge, and the next begins with the
-        # same edge or covers it; any step between them shows as a notch in the stroke.
+        # same edge or covers it; any step between them shows as a notch in the stroke. On
+        # the regular: the italic's pieces are the same pieces sheared about one pivot
+        # (tests/test_make_italic.py), so they meet as these do.
         font = fontforge.open(str(SFD))
         # A stroke hides an edge when it reaches a quarter of a stroke past both its ends, as
         # the inner head of ->> does the shaft's end.
         _, y0, _, y1 = font["hyphen"].boundingBox()
         cover = (y1 - y0) / 4
         for text in LIGATED:
-            for left, right in itertools.pairwise(names(FONTS[0], text)):
+            for left, right in itertools.pairwise(names(REGULAR, text)):
                 with self.subTest(text=text, left=left, right=right):
                     first, second = ink(font, left), ink(font, right)
                     self.assertEqual(unmet(seam(first, ADVANCE + OVERLAP), second,
@@ -322,8 +326,9 @@ class NerdFontTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
-        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
-            raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
+        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
+        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < newest_sfd:
+            raise unittest.SkipTest("no Nerd Fonts build newer than the SFDs")
 
     def test_patched_fonts_keep_the_ligatures(self):
         for font in self.fonts:
@@ -335,10 +340,11 @@ class NerdFontTest(unittest.TestCase):
         # Git keeps no mtimes, so compare with the plain fonts, which LigatureShapingTest
         # requires to be current: a stale build still shapes, but draws the old outlines.
         text = " ".join(LIGATED)  # reaches every generated glyph
-        plain = {font.suffix: font for font in FONTS}
+        plain = {(font.stem.split("-")[-1], font.suffix): font for font in FONTS}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
-                self.assertEqual(extents(nerd, text), extents(plain[nerd.suffix], text))
+                style = nerd.stem.split("-")[-1]
+                self.assertEqual(extents(nerd, text), extents(plain[style, nerd.suffix], text))
 
 
 if __name__ == "__main__":

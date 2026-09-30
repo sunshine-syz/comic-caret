@@ -5,8 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SOURCE=src/ComicCaret-Regular.sfd
-OUT=fonts/ComicCaret-Regular
+SOURCES="src/ComicCaret-Regular.sfd src/ComicCaret-Italic.sfd"
+OUT_DIR=fonts
 NERD_OUT=build/nerd
 DIST=dist
 
@@ -20,9 +20,9 @@ usage() {
   cat <<EOF
 Usage: ./build.sh [--nerd[=VARIANTS] | --release]
 
-Builds $OUT.{otf,ttf} from $SOURCE.
+Builds $OUT_DIR/ComicCaret-{Regular,Italic}.{otf,ttf} from $SOURCES.
 
-  --nerd[=VARIANTS]  Also patch the OTF and TTF with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
+  --nerd[=VARIANTS]  Also patch every built font with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:
                        default  icons overhang into the next cell (default)
                        mono     icons fit one cell; every glyph stays 550 wide
@@ -129,7 +129,7 @@ if [[ -n $nerd_variants ]]; then
   done
 fi
 
-mkdir -p "$(dirname "$OUT")"
+mkdir -p "$OUT_DIR"
 # FontForge stamps the build date into the unique ID (name ID 3). Use the last commit's time
 # instead, so building the same commit on another day gives the same bytes. HEAD rather than
 # the SFD's last commit, because a shallow clone (the CI default) can't see the latter.
@@ -139,8 +139,11 @@ if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && epoch=$(git log -1 --format=%ct 2>/dev/nul
 fi
 # One process per format: generating the OTF first alters the in-memory outlines, so a
 # TTF generated after it in the same session gets a different glyf table.
-for ext in otf ttf; do
-  fontforge -quiet -script tools/generate.py "$SOURCE" "$OUT.$ext"
+for source in $SOURCES; do
+  out=$OUT_DIR/$(basename "$source" .sfd)
+  for ext in otf ttf; do
+    fontforge -quiet -script tools/generate.py "$source" "$out.$ext"
+  done
 done
 
 if [[ -n $nerd_variants ]]; then
@@ -150,13 +153,13 @@ if [[ -n $nerd_variants ]]; then
     flag=$(nerd_flag "$variant")
     # The patcher writes the input's format, so patching each build keeps the OTF's cubic
     # outlines instead of converting the TTF.
-    for ext in otf ttf; do
+    for font in "$OUT_DIR"/ComicCaret-*.otf "$OUT_DIR"/ComicCaret-*.ttf; do
       # --careful keeps every glyph the font has: without it --complete replaces the Braille
       # and the Powerline symbols with the patcher's own. FontForge prints ~100 name-vs-codepoint notes while loading
       # the icon fonts. Drop them so the patcher's own warnings stay visible; pipefail still
       # reports a patcher failure.
       fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete --careful ${flag:+"$flag"} \
-        --quiet --no-progressbars --outputdir "$NERD_OUT" "$OUT.$ext" 2>&1 |
+        --quiet --no-progressbars --outputdir "$NERD_OUT" "$font" 2>&1 |
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
   done
@@ -169,10 +172,10 @@ if [[ -n $nerd_variants ]]; then
 fi
 
 if [[ -n $release ]]; then
-  version=$(sed -n 's/^Version: //p' "$SOURCE")
+  version=$(sed -n 's/^Version: //p' "${SOURCES%% *}")
   mkdir -p "$DIST"
   # -j stores bare file names and -X drops macOS extended attributes.
-  zip -qjX "$DIST/ComicCaret-$version.zip" "$OUT.otf" "$OUT.ttf" LICENSE.md
+  zip -qjX "$DIST/ComicCaret-$version.zip" "$OUT_DIR"/ComicCaret-*.otf "$OUT_DIR"/ComicCaret-*.ttf LICENSE.md
   zip -qjX "$DIST/ComicCaretNerdFont-$version.zip" "$NERD_OUT"/* LICENSE.md
   echo "Wrote $DIST/ComicCaret-$version.zip and $DIST/ComicCaretNerdFont-$version.zip"
 fi

@@ -4,7 +4,8 @@ Usage: python3 tools/proof_sheet.py OUTDIR [FONT ...] [--before REV] [--text TEX
                                     [--features LIST] [--line-height EM ...]
 
 Writes OUTDIR/index.html and the images it shows; open the page in a browser. With no FONT
-arguments it shows fonts/ComicCaret-Regular.ttf and every font in build/cache/reference/.
+arguments it shows fonts/ComicCaret-Regular.ttf, fonts/ComicCaret-Italic.ttf if it is built,
+and every font in build/cache/reference/.
 --before REV adds, second, the font built from the SFD at that commit (HEAD: the last one).
 Images are rendered with hb-view and are not committed.
 """
@@ -21,6 +22,7 @@ import tempfile
 from project import ROOT, SFD
 
 BUILT = ROOT / "fonts" / "ComicCaret-Regular.ttf"
+BUILT_ITALIC = ROOT / "fonts" / "ComicCaret-Italic.ttf"
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"
 SFD_PATH = SFD.relative_to(ROOT).as_posix()  # as git names it
 SMALL = (12, 13, 14, 16)  # px: common editor and terminal sizes
@@ -119,7 +121,7 @@ def rendered_at():
 
 def default_fonts():
     references = sorted(p for p in REFERENCE_DIR.glob("*") if p.suffix in (".otf", ".ttf"))
-    return [BUILT, *references]
+    return [BUILT, *([BUILT_ITALIC] if BUILT_ITALIC.exists() else []), *references]
 
 
 def label(path):

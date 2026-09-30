@@ -4,7 +4,8 @@
     python3 tools/bump_version.py --release           # date the changelog's unreleased head
     python3 tools/bump_version.py --check-tag vX.Y.Z  # refuse a tag that isn't that release
 
-The SFD's Version: always heads CHANGELOG.md (tests/test_metadata.py checks the pair). A
+The SFDs' Version: always heads CHANGELOG.md (tests/test_metadata.py checks the pair); the
+italic is written too, so a bump never leaves it behind the regular it is derived from. A
 version is "unreleased" there until --release gives it its month, as in "## 1.0.0 (2026-09)".
 """
 import argparse
@@ -14,7 +15,7 @@ import sys
 
 import fontforge
 
-from project import ROOT, SFD
+from project import ROOT, SFD, STYLES
 
 CHANGELOG = ROOT / "CHANGELOG.md"
 VERSION = re.compile(r"\d+\.\d+\.\d+")
@@ -50,8 +51,8 @@ def ordered(version):
     return tuple(int(part) for part in version.split("."))
 
 
-def start(version, sfd=SFD, changelog=CHANGELOG):
-    """Make `version` the SFD's and the changelog's newest, unreleased.
+def start(version, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+    """Make `version` the SFDs' and the changelog's newest, unreleased.
 
     An unreleased head is renamed, keeping its entries; after a release, a new head goes on top.
     """
@@ -67,10 +68,11 @@ def start(version, sfd=SFD, changelog=CHANGELOG):
         text = text[:head.start()] + heading + text[head.end():]
     else:
         text = text[:head.start()] + heading + "\n\n" + text[head.start():]
-    font = fontforge.open(str(sfd))
-    font.version = version
-    font.save(str(sfd))
-    font.close()
+    for sfd in sfds:
+        font = fontforge.open(str(sfd))
+        font.version = version
+        font.save(str(sfd))
+        font.close()
     changelog.write_text(text, encoding="utf-8")
 
 
@@ -119,7 +121,8 @@ def main():
             print(f"{args.check_tag} matches {SFD.name} and {CHANGELOG.name}.")
         else:
             start(args.version)
-            print(f"{SFD.name} and {CHANGELOG.name} are at {args.version}, unreleased.")
+            names = ", ".join(sfd.name for sfd in STYLES.values())
+            print(f"{names} and {CHANGELOG.name} are at {args.version}, unreleased.")
     except VersionError as error:
         sys.exit(str(error))
 

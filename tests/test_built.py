@@ -12,9 +12,10 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ADVANCE, ROOT, SFD, ZERO_WIDTH
+from make_italic import AXIS, SLANT
+from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file
 
-FONTS = [ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("otf", "ttf")]
+FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 NERD_DIR = ROOT / "build" / "nerd"
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
@@ -60,18 +61,26 @@ def advances(font):
     return widths
 
 
-def require_current_build():
-    for font in FONTS:
-        if not font.exists() or font.stat().st_mtime < SFD.stat().st_mtime:
-            raise AssertionError(f"{font.name} is missing or older than {SFD.name}; "
+def require_current_build(style):
+    for font in FONTS[style]:
+        if not font.exists() or font.stat().st_mtime < STYLES[style].stat().st_mtime:
+            raise AssertionError(f"{font.name} is missing or older than {STYLES[style].name}; "
                                  "run ./build.sh")
 
 
+def nerd_style(font):
+    """The style a Nerd Fonts build was patched from: the last part of its name."""
+    return font.stem.split("-")[-1]
+
+
 class BuiltFontTest(unittest.TestCase):
+    style = "Regular"
+
     @classmethod
     def setUpClass(cls):
-        require_current_build()
-        sfd = fontforge.open(str(SFD))
+        require_current_build(cls.style)
+        cls.fonts = FONTS[cls.style]
+        sfd = fontforge.open(str(STYLES[cls.style]))
         glyphs = sorted((g for g in sfd.glyphs() if g.unicode >= 0), key=lambda g: g.unicode)
         cls.text = "".join(chr(g.unicode) for g in glyphs if not takes_no_cell(chr(g.unicode)))
         cls.names = [g.glyphname for g in glyphs if not takes_no_cell(chr(g.unicode))]
@@ -82,7 +91,7 @@ class BuiltFontTest(unittest.TestCase):
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
         # But the combining marks and the zero-width format characters, which take no room.
-        for font in FONTS:
+        for font in self.fonts:
             with self.subTest(font=font.name):
                 shaped = shape(font, self.text)
                 self.assertEqual([name for name, _, _ in shaped], self.names)
@@ -94,7 +103,7 @@ class BuiltFontTest(unittest.TestCase):
 
     def test_outlines_keep_their_extent(self):
         # A composite generated in the process that edited its base keeps the old bounds.
-        for font in FONTS:
+        for font in self.fonts:
             with self.subTest(font=font.name):
                 built = shape(font, self.text)
                 built += [glyph for char, _, _ in self.marks for glyph in shape(font, char)]
@@ -106,21 +115,30 @@ class BuiltFontTest(unittest.TestCase):
     def test_the_fonts_give_every_glyph_its_advance(self):
         # hb-shape zeroes a mark's advance whatever the font gives it, and FontForge gives
         # every glyph of a TTF one advance when all but the zero-width ones share it.
-        for font in FONTS:
+        for font in self.fonts:
             with self.subTest(font=font.name):
                 wrong = {name: width for name, width in advances(font).items()
                          if name in self.widths and width != self.widths[name]}
                 self.assertEqual(wrong, {})
 
 
+class ItalicBuiltFontTest(BuiltFontTest):
+    style = "Italic"
+
+
 class MarkShapingTest(unittest.TestCase):
     """Combining marks in shaped text: composed where the font has the letter, and otherwise
     placed on the glyph before them."""
 
+    style = "Regular"
+    slant = 0     # how far ink at a height moves per unit above the math axis
+    rounding = 0  # how far a placed mark may miss its cell through rounding
+
     @classmethod
     def setUpClass(cls):
-        require_current_build()
-        sfd = fontforge.open(str(SFD))
+        require_current_build(cls.style)
+        cls.fonts = FONTS[cls.style]
+        sfd = fontforge.open(str(STYLES[cls.style]))
         # Not the soft hyphen: shapers skip a default ignorable, and a mark after one goes on
         # the character before it.
         cls.bases = [chr(g.unicode) for g in sfd.glyphs() if g.unicode >= 0
@@ -130,15 +148,19 @@ class MarkShapingTest(unittest.TestCase):
     def test_marks_land_on_the_glyph_before_them(self):
         # Inside its cell, above or below: a mark after a glyph without anchors would land on
         # the next cell. Each base and its mark make one cluster, two characters long and one
-        # cell wide, whether they compose or not.
-        for font in FONTS:
+        # cell wide, whether they compose or not. The italic's cell is sheared: ink at a
+        # height y may lie left of it below the axis and right of it above, by (y - AXIS)
+        # times the slant.
+        for font in self.fonts:
             for mark in (0x301, 0x326):
                 with self.subTest(font=font.name, mark=f"U+{mark:04X}"):
                     text = "".join(base + chr(mark) for base in self.bases)
                     outside = {}
-                    for cluster, name, (x0, _, x1, _) in placed(font, text):
+                    for cluster, name, (x0, y0, x1, y1) in placed(font, text):
                         cell = cluster // 2 * ADVANCE
-                        if name == self.names[mark] and (x0 < cell or x1 > cell + ADVANCE):
+                        left = cell + (y0 - AXIS) * self.slant - self.rounding
+                        right = cell + ADVANCE + (y1 - AXIS) * self.slant + self.rounding
+                        if name == self.names[mark] and (x0 < left or x1 > right):
                             outside[self.bases[cluster // 2]] = (round(x0 - cell),
                                                                  round(x1 - cell))
                     self.assertEqual(outside, {})
@@ -146,7 +168,7 @@ class MarkShapingTest(unittest.TestCase):
     def test_stacked_marks_stay_apart(self):
         # Two marks above, or two below, one over the other without touching. Canonical order
         # puts the cedilla (class 202) before the comma below (220).
-        for font in FONTS:
+        for font in self.fonts:
             for text in ("x\u0308\u0301", "x\u0327\u0326"):
                 with self.subTest(font=font.name, text=ascii(text)):
                     [_, (_, _, (_, low0, _, high0)), (_, _, (_, low1, _, high1))] = \
@@ -154,11 +176,17 @@ class MarkShapingTest(unittest.TestCase):
                     self.assertTrue(low1 > high0 or high1 < low0)
 
     def test_i_and_j_lose_their_dot_under_a_mark_above(self):
-        for font in FONTS:
+        for font in self.fonts:
             with self.subTest(font=font.name):
                 self.assertEqual([name for name, _, _ in shape(font, "i\u030C j\u030C i\u0326")],
                                  ["dotlessi", "uni030C", "space", "dotlessj", "uni030C",
                                   "space", "i", "uni0326"])
+
+
+class ItalicMarkShapingTest(MarkShapingTest):
+    style = "Italic"
+    slant = SLANT
+    rounding = 2  # a sheared outline's points and its anchors are each rounded to units
 
 
 class NerdFontTest(unittest.TestCase):
@@ -175,8 +203,9 @@ class NerdFontTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
-        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < SFD.stat().st_mtime:
-            raise unittest.SkipTest(f"no Nerd Fonts build newer than {SFD.name}")
+        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
+        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < newest_sfd:
+            raise unittest.SkipTest("no Nerd Fonts build newer than the SFDs")
 
     def test_patched_fonts_keep_the_zero_widths(self):
         # But in the Mono variant, where the patcher gives every glyph one advance on purpose.
@@ -193,10 +222,11 @@ class NerdFontTest(unittest.TestCase):
         text = "".join(chr(code) for code in [*range(0x2500, 0x25A0), *range(0x2800, 0x2900),
                                               *range(0xE0A0, 0xE0A3), *range(0xE0B0, 0xE0B4)])
         text += "❮❯❰❱"
-        plain = {font.suffix: font for font in FONTS}
+        plain = {(style, font.suffix): font for style, fonts in FONTS.items() for font in fonts}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
-                self.assertEqual(shape(nerd, text), shape(plain[nerd.suffix], text))
+                self.assertEqual(shape(nerd, text),
+                                 shape(plain[nerd_style(nerd), nerd.suffix], text))
 
 
 if __name__ == "__main__":

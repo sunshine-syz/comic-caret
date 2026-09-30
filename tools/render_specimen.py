@@ -14,9 +14,9 @@ import re
 import subprocess
 import sys
 
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, ROOT, STYLES, font_file
 
-FONT = ROOT / "fonts" / "ComicCaret-Regular.ttf"
+FONT, ITALIC = font_file("Regular", "ttf"), font_file("Italic", "ttf")
 OUT = ROOT / "docs" / "images"
 WIDTH = 800               # px; within a README column at 1:1
 MARGIN, PADDING = 24, 20  # around each image, and inside its panel
@@ -52,6 +52,14 @@ SAMPLES = (
     "0123456789 (){}[]<>=+-*/@&",
     "Il1| O0o ;: àéîõüçñøłşßæœ",
     "→⇒↔ ≠≈≤≥∞ ±×÷ €£ ©½λ",
+)
+# The italic: the alphabet slanted, above code with its comments and keywords in italic, as
+# editors set them; the graphics in the last row stay upright.
+ITALIC_SAMPLES = (
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "abcdefghijklmnopqrstuvwxyz",
+    "0123456789 fly Il1| O0o ij:;",
+    "→⇒ ≠≤≥ ✓✗⚠ ●○■□ ─┼│ ☐☑",
 )
 TERMINAL = (
     "{blue:~/comic-caret} {muted:on} {purple:main} {muted:⇡1 ⇣2}",
@@ -99,29 +107,29 @@ TYPESCRIPT = re.compile("|".join(f"(?P<{name}>{pattern})" for name, pattern in {
 }.items()))
 
 
-def harfbuzz(tool, text, features, *options):
-    command = [tool, str(FONT), f"--text={text}", f"--features={features}", *options]
+def harfbuzz(tool, text, features, *options, font=FONT):
+    command = [tool, str(font), f"--text={text}", f"--features={features}", *options]
     return subprocess.run(command, capture_output=True, text=True, check=True).stdout  # --text=: text may start with '-'
 
 
-def shape(text, features):
+def shape(text, features, font=FONT):
     """hb-shape's glyphs for one line: dicts with the glyph name "g" and cluster "cl"."""
-    return json.loads(harfbuzz("hb-shape", text, features, "--output-format=json"))
+    return json.loads(harfbuzz("hb-shape", text, features, "--output-format=json", font=font))
 
 
 @functools.cache
-def glyphs(text, calt):
+def glyphs(text, calt, font=FONT):
     """(path, cell, cluster) for each glyph with ink that HarfBuzz draws for one line of
     `text`: the path in font units, y down from the glyph's origin on the baseline, the cell it
     starts in, and the character it came from."""
     features = "calt" if calt else "-calt"
-    shaped = shape(text, features)
+    shaped = shape(text, features, font)
     if missing := sorted({text[glyph["cl"]] for glyph in shaped if glyph["g"] == ".notdef"}):
         raise ValueError(f"the font has no glyph for {' '.join(missing)}")
     # --logical: set the line in its own box, not widened to ink beyond it (box drawing's
     # overlap), so glyphs land on their pen positions.
     svg = harfbuzz("hb-view", text, features, "--font-size=1000", "--margin=0", "--logical",
-                   "--output-format=svg")
+                   "--output-format=svg", font=font)
     paths = {glyph_id: re.sub(r"-?\d+\.\d+", lambda n: str(round(float(n.group()))), path)
              for glyph_id, path in re.findall(r'<g id="(glyph-[\d-]+)">\s*<path[^>]*\sd="([^"]*)"',
                                               svg)}
@@ -159,14 +167,26 @@ class Layout:
     def __init__(self):
         self.paths, self.drawn, self.classes = {}, [], {}
 
-    def line(self, x, baseline, text, size, gap=0, calt=False, classes=None):
+    def line(self, x, baseline, text, size, gap=0, calt=False, classes=None, font=FONT):
         """Draw one line of `text` from x on the baseline, `gap` px between cells. `classes`
         colors every glyph, as a class name, or each by its character, as a list."""
         if isinstance(classes, str) or classes is None:
             classes = [classes] * len(text)
         pitch = ADVANCE * size / 1000 + gap
-        for path, cell, cluster in glyphs(text, calt):
+        for path, cell, cluster in glyphs(text, calt, font):
             self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
+
+    def styled(self, x, baseline, text, size, italic, calt=False, classes=None):
+        """As line(), with the characters `italic` marks (one bool each) drawn in the italic.
+        Both styles shape alike, so a glyph comes from the style of the character it starts
+        at; keep a ligature's characters in one style."""
+        if isinstance(classes, str) or classes is None:
+            classes = [classes] * len(text)
+        pitch = ADVANCE * size / 1000
+        for font, slanted in ((FONT, False), (ITALIC, True)):
+            for path, cell, cluster in glyphs(text, calt, font):
+                if italic[cluster] == slanted:
+                    self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
 
     def spans(self, x, baseline, spans, size):
         """Draw (class or None, text) spans one after another."""
@@ -215,6 +235,11 @@ def highlighted(line):
     for token in TYPESCRIPT.finditer(line):
         classes[token.start():token.end()] = [token.lastgroup] * len(token.group())
     return classes
+
+
+def italicized(line):
+    """Whether each character of `line` is in a comment or a keyword: what editors italicize."""
+    return [name in ("comment", "keyword") for name in highlighted(line)]
 
 
 def lookalikes():
@@ -292,13 +317,39 @@ def ligatures():
     return layout.svg(top + height + MARGIN)
 
 
-IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures}
+def italic():
+    """The italic image, as SVG: rows like the specimen's, then code set as editors set it."""
+    layout = Layout()
+    right = WIDTH - MARGIN - PADDING
+    size, lead = 21, 34
+    first = MARGIN + 10 + CAP_HEIGHT * size
+    x = MARGIN + 4
+    gap = (right - x) / max(map(len, ITALIC_SAMPLES)) - ADVANCE * size / 1000
+    for i, row in enumerate(ITALIC_SAMPLES):
+        layout.line(x, first + i * lead, row, size, gap, font=ITALIC)
+    last = first + (len(ITALIC_SAMPLES) - 1) * lead
+
+    top = last + 2 * PADDING
+    size, lead = 17, 25
+    height = 2 * PADDING + len(CODE) * lead
+    layout.panel(top, height)
+    for i, line in enumerate(CODE):
+        if line:
+            layout.styled(MARGIN + PADDING, top + PADDING + ASCENT * lead + i * lead, line, size,
+                          italicized(line), calt=True, classes=highlighted(line))
+    return layout.svg(top + height + MARGIN)
+
+
+IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures,
+          "italic": italic}
 
 
 def main():
     argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
-    if not FONT.exists() or FONT.stat().st_mtime < SFD.stat().st_mtime:
-        sys.exit(f"{FONT.name} is missing or older than {SFD.name}; run ./build.sh")
+    for style, sfd in STYLES.items():
+        font = font_file(style, "ttf")
+        if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
+            sys.exit(f"{font.name} is missing or older than {sfd.name}; run ./build.sh")
     OUT.mkdir(parents=True, exist_ok=True)
     for name, draw in IMAGES.items():
         try:

@@ -13,9 +13,13 @@ import unicodedata
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ADVANCE, SFD, ZERO_WIDTH, validation_errors
+import lig_geometry as geo
+import make_italic
+from measure import ink
+from project import ADVANCE, ITALIC_SFD, SFD, ZERO_WIDTH, validation_errors
 
 LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
@@ -54,9 +58,11 @@ def is_box_drawing(glyph):
 
 
 class SanityTest(unittest.TestCase):
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
         cls.glyphs = list(cls.font.glyphs())
         # Composites are positioned by the glyphs that use them, so only what a code point
         # (or a missing one, via .notdef) can show is held to the cell.
@@ -97,11 +103,16 @@ class SanityTest(unittest.TestCase):
                  if g.width != (0 if takes_no_cell(g) else ADVANCE)]
         self.assertEqual(wrong, [])
 
+    rounding = 0  # how far ink may miss its allowance through rounding
+
+    def box(self, glyph):
+        return glyph.boundingBox()
+
     def test_ink_stays_in_the_cell(self):
         outside = {}
         for glyph in self.visible:
-            x0, _, x1, _ = glyph.boundingBox()
-            reach = max(-x0, x1 - ADVANCE)
+            x0, _, x1, _ = self.box(glyph)
+            reach = max(-x0, x1 - ADVANCE) - self.rounding
             if not is_box_drawing(glyph) and reach > INK_OUTSIDE_CELL.get(glyph.glyphname, 0):
                 outside[glyph.glyphname] = reach
         self.assertEqual(outside, {})
@@ -147,13 +158,34 @@ class SanityTest(unittest.TestCase):
     def test_hints_are_current(self):
         # FontForge marks a glyph edited since it was last hinted with H in its Flags line.
         stale, name = [], None
-        with open(SFD, encoding="utf-8") as sfd:
+        with open(self.sfd, encoding="utf-8") as sfd:
             for line in sfd:
                 if line.startswith("StartChar: "):
                     name = line.split(None, 1)[1].strip()
                 elif line.startswith("Flags: ") and "H" in line.split(None, 1)[1]:
                     stale.append(name)
         self.assertEqual(stale, [])
+
+
+class ItalicSanityTest(SanityTest):
+    """The same rules for the italic, whose cell is the regular's sheared: a slanted glyph's
+    ink is held to the cell the shear took it from, so a descender may reach left of the
+    cell and an ascender right of it by the slant's share of its height."""
+
+    sfd = ITALIC_SFD
+    rounding = 1  # a sheared outline's points are rounded to units, so un-sheared it misses
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.styles = make_italic.classify(cls.font)
+
+    def box(self, glyph):
+        if self.styles[glyph.glyphname] == make_italic.UPRIGHT:
+            return glyph.boundingBox()
+        unsheared = geo.transformed(ink(self.font, glyph.glyphname),
+                                    psMat.inverse(make_italic.SHEAR))
+        return unsheared.boundingBox()
 
 
 if __name__ == "__main__":

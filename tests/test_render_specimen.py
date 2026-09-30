@@ -14,11 +14,13 @@ from project import ADVANCE
 from render_specimen import (
     CODE,
     IMAGES,
+    ITALIC,
     LIGATURES,
     WIDTH,
     Layout,
     glyphs,
     highlighted,
+    italicized,
     marked,
     ruled,
     shape,
@@ -85,6 +87,19 @@ class LayoutTest(unittest.TestCase):
         self.assertIn(f".green{{fill:{dark}}}", style(svg))
         self.assertNotIn(".red", style(svg))
 
+    def test_styled_draws_each_character_in_its_style(self):
+        # The italic's H is the regular's slanted: another path, at the same cell.
+        layout = Layout()
+        layout.styled(0, 20, "HH", 20, [False, True])
+        svg = layout.svg(40)
+        self.assertEqual(svg.count("<path "), 2)
+        self.assertEqual([x for x, *_ in placed(svg)], [0, 11])
+        [regular] = [path for path, *_ in glyphs("H", False)]
+        [slanted] = [path for path, *_ in glyphs("H", False, ITALIC)]
+        self.assertNotEqual(regular, slanted)
+        self.assertIn(regular, svg)
+        self.assertIn(slanted, svg)
+
     def test_colors_follow_the_viewers_scheme(self):
         css = style(Layout().svg(10))
         light, dark = css.split("@media (prefers-color-scheme:dark)")
@@ -113,6 +128,11 @@ class HighlightTest(unittest.TestCase):
         self.assertEqual(classes_of('g("x", 7)'),
                          ["function", None] + ["string"] * 3 + [None] * 2 + ["number", None])
         self.assertEqual(classes_of("// done"), ["comment"] * 7)
+
+    def test_comments_and_keywords_are_italicized(self):
+        line = 'export const f = g(7); // done'
+        self.assertEqual(italicized(line),
+                         [True] * 6 + [False] + [True] * 5 + [False] * 11 + [True] * 7)
 
 
 class ImageTest(unittest.TestCase):

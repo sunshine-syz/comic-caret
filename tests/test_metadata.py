@@ -10,15 +10,27 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ROOT, SFD
+import make_italic
+from project import ITALIC_SFD, ROOT, SFD
 
 HOME = "https://github.com/sunshine-syz/comic-caret"
 SET_BY_HAND = range(8, 15)  # name IDs in LangName; FontForge derives 0-7 from other fields
+REGULAR_BIT = 0x0040  # OS/2 fsSelection
+# What every style of the family declares alike: the names set by hand, the em and the line
+# box, the heights, weight and width, PANOSE, the underline, strikeout, subscript and
+# superscript metrics, the copyright, version and vendor.
+SHARED = ("familyname", "weight", "copyright", "version", "em", "ascent", "descent",
+          "hhea_ascent", "hhea_descent", "hhea_linegap", "os2_typoascent", "os2_typodescent",
+          "os2_typolinegap", "os2_use_typo_metrics", "os2_capheight", "os2_xheight",
+          "os2_weight", "os2_width", "os2_panose", "os2_vendor", "os2_version", "upos",
+          "uwidth", "os2_strikeypos", "os2_strikeysize", "os2_subxsize", "os2_subysize",
+          "os2_subxoff", "os2_subyoff", "os2_supxsize", "os2_supysize", "os2_supxoff",
+          "os2_supyoff", "encoding")
 
 
-def lang_name_fields():
+def lang_name_fields(path=SFD):
     """The quoted strings of the SFD's English LangName line, indexed by name ID."""
-    with open(SFD, encoding="utf-8") as sfd:
+    with open(path, encoding="utf-8") as sfd:
         for line in sfd:
             if line.startswith("LangName: 1033 "):
                 return re.findall(r'"([^"]*)"', line)
@@ -26,11 +38,21 @@ def lang_name_fields():
 
 
 class MetadataTest(unittest.TestCase):
+    sfd = SFD
+    # PostScript name, full name, the subfamily FontForge derives from them, the italic angle
+    # and the OS/2 style bit: what apps pair the styles of a family by.
+    style = ("ComicCaret-Regular", "Comic Caret Regular", "Regular", 0, REGULAR_BIT)
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
         cls.names = {strid: text for lang, strid, text in cls.font.sfnt_names
                      if lang == "English (US)"}
+
+    def test_font_declares_its_style(self):
+        font = self.font
+        self.assertEqual((font.fontname, font.fullname, self.names.get("SubFamily"),
+                          font.italicangle, font.os2_stylemap), self.style)
 
     def test_license_and_font_list_the_same_copyright_holders(self):
         license_text = (ROOT / "LICENSE.md").read_text(encoding="utf-8")
@@ -41,7 +63,7 @@ class MetadataTest(unittest.TestCase):
 
     def test_lang_name_leaves_derived_names_to_fontforge(self):
         # Hard-coded family, version or unique ID records would override the derived ones.
-        set_ids = {i for i, text in enumerate(lang_name_fields()) if text}
+        set_ids = {i for i, text in enumerate(lang_name_fields(self.sfd)) if text}
         self.assertLessEqual(set_ids, set(SET_BY_HAND))
 
     def test_font_names_its_maker_and_home(self):
@@ -70,6 +92,19 @@ class MetadataTest(unittest.TestCase):
         # read it.
         panose = self.font.os2_panose
         self.assertEqual((panose[0], panose[3]), (2, 9))
+
+
+class ItalicMetadataTest(MetadataTest):
+    sfd = ITALIC_SFD
+    style = (make_italic.FONTNAME, make_italic.FULLNAME, "Italic", -make_italic.ANGLE,
+             make_italic.ITALIC_BIT)
+
+    def test_everything_but_the_style_is_the_regulars(self):
+        regular = fontforge.open(str(SFD))
+        for field in SHARED:
+            with self.subTest(field=field):
+                self.assertEqual(getattr(self.font, field), getattr(regular, field))
+        self.assertEqual(lang_name_fields(ITALIC_SFD), lang_name_fields(SFD))
 
 
 if __name__ == "__main__":

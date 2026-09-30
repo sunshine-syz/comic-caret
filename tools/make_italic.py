@@ -19,8 +19,10 @@ Every glyph of the regular falls in one of three sets, decided by classify():
   their italics: Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and
   the spinner frames, the status marks ✓ ✗ ⚠ ℹ, the checkboxes ☐ ☑ ☒ and the key hints ⌘ ⌥
   ⌃ ⇧. Copied unchanged, hints included.
-- REDRAWN: letters given a cursive form. f takes ƒ's outline, the descending f the regular
-  already draws in its hand, and ƒ becomes a reference to it; then both are sheared.
+- CURSIVE: letters given a cursive form, drawn from the regular's own strokes and then
+  sheared. f drops its foot and runs its stem below the baseline, as deep as j, ending in a
+  short flick to the left (proofed against ƒ's hook, which Maple Mono's f has, and against
+  a plain straight descender).
 
 A composite keeps its references, each matrix conjugated by the shear, so it equals the shear
 of the regular's composite exactly: a turned ¿ stays ? turned, and an accent moves right by
@@ -39,14 +41,17 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
+import measure
+from add_box_drawing import KAPPA
 from add_ligatures import AXIS
+from add_shapes import clockwise
 from project import ITALIC_SFD, SFD, save_checked, validation_errors
 
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
 SLANT = math.tan(math.radians(ANGLE))
 SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
 
-SLANTED, UPRIGHT, REDRAWN = "slanted", "upright", "redrawn"
+SLANTED, UPRIGHT, CURSIVE = "slanted", "upright", "cursive"
 
 # The blocks that stay upright: Miscellaneous Technical (⏺ ⏵ ⏸ ⎿ ⌘ ⌥ ⌃ ⌫ ⌦ ⎋ ⏎), Box Drawing
 # through Dingbats (the block elements, geometric shapes, ☐ ☑ ☒ ⚠ and ✓ ✗ ✶), Braille,
@@ -61,14 +66,46 @@ SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
 # ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟, key hints that read with ⌘ ⌥ ⌃ (Maple Mono slants them, and has no ⌘).
 UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟")
 
-# The cursive letters: name -> the upright outline to shear, drawn from the regular.
-REDRAWN_OUTLINES = {"f": lambda font: font["florin"].foreground.dup()}
-# Glyphs that become references to a redrawn letter: ƒ is the italic f.
-REDRAWN_REFERENCES = {"florin": "f"}
+# f's descender, in the stem's own stroke. The regular's foot ends at 70, so from FOOT_TOP up
+# the outline is the stem alone; the new stroke starts OVERLAP inside it, runs down as far as
+# j reaches and bends left by FLICK, a quarter ellipse FLATNESS as high as it is wide.
+FOOT_TOP = 80
+OVERLAP = 15
+STEM_SAMPLE = 100  # a height at which the stem is measured
+FLICK = 70         # how far the end reaches left of the stem's middle; 90 and 100 read busier
+FLATNESS = 0.9
 
 IDENTITY, TURNED = (1, 0, 0, 1), (-1, 0, 0, -1)  # the linear parts that commute with a shear
 FONTNAME, FULLNAME = "ComicCaret-Italic", "Comic Caret Italic"
 ITALIC_BIT = 0x0001  # OS/2 fsSelection; the regular sets 0x0040, REGULAR
+
+
+def descending_f(font):
+    """The regular's f with its foot dropped and its stem run below the baseline, ending in
+    a short flick to the left."""
+    outline = font["f"].foreground.dup()
+    (x0, x1), = measure.spans_at_y(outline, STEM_SAMPLE)
+    middle, width = (x0 + x1) / 2, x1 - x0
+    foot = measure.spans_at_y(outline, FOOT_TOP)
+    if len(foot) != 1 or abs(foot[0][1] - foot[0][0] - width) > 10:
+        sys.exit(f"f's foot no longer ends below {FOOT_TOP}; measure it again")
+    depth = -font["j"].boundingBox()[1]  # the descender row
+    rx = FLICK - width / 2
+    ry = rx * FLATNESS
+    bend = -depth + width / 2 + ry  # where the stem starts to bend
+    path = fontforge.contour()
+    path.moveTo(middle, FOOT_TOP + OVERLAP)
+    path.lineTo(middle, bend)
+    path.cubicTo((middle, bend - KAPPA * ry), (middle - rx + KAPPA * rx, bend - ry),
+                 (middle - rx, bend - ry))
+    layer = fontforge.layer()
+    layer += path
+    stroke = clockwise(layer.stroke("circular", width, "round", "round"))
+    return geo.union(geo.trim(outline, y0=FOOT_TOP), stroke)
+
+
+# The cursive letters: name -> the upright outline to shear, drawn from the regular.
+CURSIVE_LETTERS = {"f": descending_f}
 
 
 def encoded_style(code):
@@ -81,13 +118,13 @@ def encoded_style(code):
 
 
 def classify(font):
-    """{glyph name: SLANTED, UPRIGHT or REDRAWN} for every glyph of the regular.
+    """{glyph name: SLANTED, UPRIGHT or CURSIVE} for every glyph of the regular.
 
     An encoded glyph goes by its character; .notdef, a box, stays upright. An unencoded part
     follows the glyphs built from it, and a ligature piece, which only a substitution reaches,
     is an operator's and slants.
     """
-    styles = {".notdef": UPRIGHT, **dict.fromkeys(REDRAWN_OUTLINES, REDRAWN)}
+    styles = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE)}
     users = collections.defaultdict(set)
     for glyph in font.glyphs():
         for name, *_ in glyph.references:
@@ -145,14 +182,9 @@ def slant(glyph):
 
 def build(font):
     """Turn the regular, opened as `font`, into the italic."""
-    # The outlines first: f takes ƒ's before ƒ becomes a reference to f.
-    outlines = {name: outline(font) for name, outline in REDRAWN_OUTLINES.items()}
-    for name, outline in outlines.items():
+    for name, draw in CURSIVE_LETTERS.items():
         font[name].references = ()
-        font[name].foreground = outline
-    for name, base in REDRAWN_REFERENCES.items():
-        font[name].foreground = fontforge.layer()
-        font[name].references = ((base, psMat.identity()),)
+        font[name].foreground = draw(font)
     styles = classify(font)
     # Before any base is sheared: an upright glyph keeps a slanted part's regular outline.
     for glyph in font.glyphs():

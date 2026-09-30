@@ -8,6 +8,11 @@ around. Read this before writing code that edits the SFD.
 - Assigning `glyph.foreground` drops hint masks; call `glyph.autoHint()` afterwards.
 - `glyph.transform()` also shifts `vwidth`; transform `glyph.foreground.dup()` and assign it
   back.
+- Assigning `glyph.anchorPoints` or `glyph.references` marks the glyph's hints stale (`H` in
+  its `Flags:` line), a composite's too; `glyph.autoHint()` afterwards clears it on both.
+- FontForge derives the family, subfamily, full and PostScript names, the style bits and the
+  caret slope from `fontname`, `fullname`, `italicangle` and `os2_stylemap`; `tools/make_italic.py`
+  sets only those. It writes the italic's caret slope in hundredths (100/21 for 12°).
 - Composites keep stale bounds in the process that edited their base glyph; hint them and
   generate from a fresh process.
 - `glyph.unicode = -1` switches the font to a `Custom` encoding; set
@@ -34,7 +39,11 @@ around. Read this before writing code that edits the SFD.
 
 - `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the
   wrong region; cut with `layer.intersect()` against a box.
-- `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`.
+- `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`. It
+  splits the curve at each extremum, so the segment's control points change; compare
+  outlines by their on-curve points.
+- `layer.boundingBox()` of a curve whose extremum is not a point is loose, reaching to the
+  control points; add the extrema first.
 - Moving a few points of a contour can leave an extremum that `addExtrema("all")` won't add
   but `validate()` flags (0x20); keep the points next to the moved ones where they are.
 - `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from

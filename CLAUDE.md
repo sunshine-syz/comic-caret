@@ -1,30 +1,32 @@
 # CLAUDE.md
 
 Comic Caret is a single-weight monospaced font (MIT), derived from Comic Shanns Mono. The whole
-font is `src/ComicCaret-Regular.sfd`; `fonts/`, `build/` and `dist/` hold gitignored build
-outputs. Font files are never committed; they ship as GitHub release assets.
+font is `src/ComicCaret-Regular.sfd`; the italic, `src/ComicCaret-Italic.sfd`, is generated from
+it by `tools/make_italic.py` and never edited by hand. `fonts/`, `build/` and `dist/` hold
+gitignored build outputs. Font files are never committed; they ship as GitHub release assets.
 
 ## Commands
 
 Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uvx`.
 
 ```sh
-./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
+./build.sh                              # SFDs -> fonts/ComicCaret-{Regular,Italic}.{otf,ttf}
 ./build.sh --nerd                       # also Nerd Fonts patched copies in build/nerd/
 ./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
 python3 tools/add_<what>.py             # regenerate a generated range in the SFD (see below)
+python3 tools/make_italic.py            # regenerate the italic SFD from the regular (see below)
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/render_specimen.py        # the README's images in docs/images/ (committed)
-python3 tools/bump_version.py X.Y.Z     # start the next version: SFD Version: and CHANGELOG head
+python3 tools/bump_version.py X.Y.Z     # start the next version: both SFDs' Version: and CHANGELOG head
 ```
 
 `proof_sheet.py` takes `--text=TEXT` (repeatable) and `--features` to proof other glyphs,
 `--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
 that box drawing meets across lines.
 
-Rebuild after every SFD change, then run the checks:
+After every change to the regular, rerun `tools/make_italic.py`, rebuild, then run the checks:
 
 ```sh
 python3 -m unittest discover tests  # SFD rules, built fonts, shaping, Font Bakery; known exceptions are in the tests
@@ -35,7 +37,7 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 ## Releasing
 
 The version being worked on heads `CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y.Z`
-starts the next one, setting the SFD `Version:` and the heading together.
+starts the next one, setting both SFDs' `Version:` and the heading together.
 
 1. `python3 tools/bump_version.py --release` gives the heading this month. If glyphs changed,
    rerun `tools/render_specimen.py` so the README shows them.
@@ -46,6 +48,9 @@ starts the next one, setting the SFD `Version:` and the heading together.
 
 ## The SFD
 
+- Every glyph is drawn in the regular. The italic SFD is its output: `tools/make_italic.py`
+  slants the text glyphs, keeps the graphics upright and draws the cursive letters from the
+  regular's strokes, so change the regular or the generator, never the italic, and rerun it.
 - Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
   index, so hand edits silently break composites. Before writing FontForge Python, read
   `docs/fontforge-pitfalls.md`: the module's quirks the tools work around.
@@ -81,7 +86,10 @@ generator, rerun it, then `./build.sh`. Each generator's docstring has the detai
 
 After adding or redrawing any glyph, run `tools/add_marks.py`, then `tools/add_ligatures.py`
 last: a new glyph lands after the generated ones, and the last generator to run decides the
-lookups' order.
+lookups' order. Then `tools/make_italic.py`, which rewrites the whole italic SFD from the
+regular; `tests/test_make_italic.py` fails while it is out of date. A new glyph slants unless
+its block or character is listed as upright there; a picture, such as a shape or a status
+mark, goes in the upright set.
 
 ## Designing glyphs
 
@@ -99,9 +107,12 @@ lookups' order.
 - Center symmetric ink in the cell; turned glyphs such as ¡ ¿ are references rotated 180°
   about the cell center.
 - `docs/design-notes.md` records how the scaled parts, heavy marks, shapes and Greek were
-  sized, and where the reference fonts live; `tests/test_legibility.py` holds the rules for
-  confusable characters, the colon and semicolon, brackets and letter widths. Read them before
-  changing what they cover.
+  sized, how the italic was decided, and where the reference fonts live;
+  `tests/test_legibility.py` holds the rules for confusable characters, the colon and
+  semicolon, brackets and letter widths. Read them before changing what they cover.
+- The italic's rules are the regular's: its glyphs are the regular's sheared, and its cursive
+  letters are built in `tools/make_italic.py` from the regular's strokes, proofed against the
+  Maple Mono and Intel One Mono italics (`build/cache/reference/`, from the same releases).
 
 ## Writing tests
 
@@ -113,7 +124,10 @@ looks is judged on the proof sheet, not asserted.
   for what whole classes share (rows, centering, the math axis, mirrored pairs, accented
   letters, no copied outlines); `test_built.py` for what generating the fonts must keep;
   `test_metadata.py` for names and declared metrics; `test_legibility.py`, `test_latin.py`,
-  `test_greek.py` and `test_symbols.py` for rules on single glyphs.
+  `test_greek.py` and `test_symbols.py` for rules on single glyphs; `test_make_italic.py` for
+  how the italic follows the regular. The sanity, metadata, built-font and shaping suites run
+  on both styles; the rules on glyphs and classes run on the regular, which the italic is
+  derived from.
 - Prefer a class rule: add a new glyph to its class in `test_consistency.py` (`ROWS`,
   `CENTERED`, `ON_AXIS`, `MIRRORED`) rather than writing a test for it.
 - A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a

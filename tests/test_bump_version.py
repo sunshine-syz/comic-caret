@@ -39,7 +39,7 @@ class BumpVersionTest(unittest.TestCase):
     def test_start_after_a_release_heads_the_changelog_and_sets_the_sfd(self):
         sfd = self.sfd_at("1.1.0")
         self.write_changelog(RELEASED)
-        bump_version.start("1.2.0", sfd, self.changelog)
+        bump_version.start("1.2.0", [sfd], self.changelog)
         self.assertEqual(self.heads(), ["## 1.2.0 (unreleased)", "## 1.1.0 (2026-10)",
                                         "## 1.0.0 (2026-09)"])
         self.assertEqual(bump_version.sfd_version(sfd), "1.2.0")
@@ -48,7 +48,7 @@ class BumpVersionTest(unittest.TestCase):
         sfd = self.sfd_at("1.1.0")
         before = sfd.read_text(encoding="utf-8").splitlines()
         self.write_changelog(RELEASED)
-        bump_version.start("1.2.0", sfd, self.changelog)
+        bump_version.start("1.2.0", [sfd], self.changelog)
         after = sfd.read_text(encoding="utf-8").splitlines()
         changed = {line.split(":")[0] for line in set(before) ^ set(after)}
         self.assertLessEqual(changed, {"Version", "ModificationTime"})
@@ -56,7 +56,7 @@ class BumpVersionTest(unittest.TestCase):
     def test_start_renames_an_unreleased_head(self):
         sfd = self.sfd_at("1.2.0")
         self.write_changelog(UNRELEASED)
-        bump_version.start("2.0.0", sfd, self.changelog)
+        bump_version.start("2.0.0", [sfd], self.changelog)
         self.assertEqual(self.heads()[:2], ["## 2.0.0 (unreleased)", "## 1.1.0 (2026-10)"])
         self.assertIn("- Three.", self.changelog.read_text(encoding="utf-8"))
         self.assertEqual(bump_version.sfd_version(sfd), "2.0.0")
@@ -66,7 +66,7 @@ class BumpVersionTest(unittest.TestCase):
         self.write_changelog(UNRELEASED)
         for version in ("1.1.0", "1.0.9", "1.2", "v1.3.0", "1.3.0-rc1"):
             with self.subTest(version=version), self.assertRaises(VersionError):
-                bump_version.start(version, sfd, self.changelog)
+                bump_version.start(version, [sfd], self.changelog)
         self.assertEqual(self.changelog.read_text(encoding="utf-8"), UNRELEASED)
         self.assertEqual(bump_version.sfd_version(sfd), "1.2.0")
 
