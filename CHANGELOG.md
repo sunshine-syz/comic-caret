@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.0 (unreleased)
+## 1.5.0 (2026-09)
 
 - `^` `~` `_` `%` and `°`, which everyone types, sat outside the range the three reference fonts cover:
   - `^` is narrower and lower, its top level with Fira Code's; it reached almost to the top of the line.
