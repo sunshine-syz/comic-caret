@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -45,8 +45,8 @@ MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
 # Keyboard symbols, which key hints string together (⌃⌥⌘⇧⏎): one band on the math axis, and
 # ⌃, the up arrowhead, at its top.
 KEYS = "⌘⌥⇧⎋⏎"
-# Symbols drawn as separate pieces, which keep apart.
-PIECES = "※⧉⇥⇤↹⎋⌦⌫"
+# Symbols drawn as separate pieces, which keep apart (№'s o and its bar sit as close as º's).
+PIECES = "※⧉⇥⇤↹⎋⌦⌫℃℉"
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
@@ -523,6 +523,89 @@ class BuiltFromTest(unittest.TestCase):
         for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
             self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
         self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
+
+
+class LetterlikeTest(unittest.TestCase):
+    """№ ℓ ℮ ℃ ℉: letters, or pieces of letters, drawn together in the cell. Their rows and
+    centring are in test_consistency.py."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+        x0, _, x1, _ = cls.font[ord("●")].boundingBox()
+        cls.seam = 2 * min(x0, ADVANCE - x1)
+
+    def pieces(self, char):
+        """Each outline of the glyph with the counters inside it."""
+        contours = list(self.font[ord(char)].foreground)
+        pieces = []
+        for outline in contours:
+            if not outline.isClockwise():
+                continue
+            x0, y0, x1, y1 = outline.boundingBox()
+            layer = fontforge.layer()
+            layer += outline
+            for counter in contours:
+                a0, b0, a1, b1 = counter.boundingBox()
+                if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
+                    layer += counter
+            pieces.append(layer)
+        return pieces
+
+    def test_numero_is_a_full_height_N_beside_a_raised_o(self):
+        # N keeps its height, narrowed to make room, and º's o stands to its right as high as
+        # º, its bar under it; Fira Code and Maple Mono set № so.
+        pieces = self.pieces("№")
+        self.assertEqual(len(pieces), 3)
+        n = max(pieces, key=lambda p: p.boundingBox()[3] - p.boundingBox()[1])
+        [o] = [p for p in pieces if len(p) == 2]
+        [bar] = [p for p in pieces if p is not n and p is not o]
+        _, n0, _, n1 = n.boundingBox()
+        _, N0, _, N1 = self.font["N"].boundingBox()
+        self.assertAlmostEqual(n0, N0, delta=1)
+        self.assertAlmostEqual(n1, N1, delta=1)
+        self.assertAlmostEqual(o.boundingBox()[3], self.font["ordmasculine"].boundingBox()[3],
+                               delta=MIDDLE_TOLERANCE)
+        self.assertLess(bar.boundingBox()[3], o.boundingBox()[1])
+        for piece in (o, bar):
+            self.assertGreaterEqual(measure.gap(n, piece), self.seam)
+
+    def test_script_ell_loops_above_the_middle(self):
+        # One stroke as tall as l (ROWS), whose loop closes above the hyphen's middle, where
+        # every reference crosses its strokes.
+        [piece] = self.pieces("ℓ")
+        self.assertEqual(len(piece), 2)  # the stroke and its loop
+        [loop] = [c for c in piece if not c.isClockwise()]
+        _, y0, _, y1 = self.font["hyphen"].boundingBox()
+        self.assertGreaterEqual(loop.boundingBox()[1], (y0 + y1) / 2)
+
+    def test_estimated_sign_bar_runs_out_past_the_bowl(self):
+        # e's bar run on to the left: the ink reaches at least a stroke further left than the
+        # bowl above the eye does, as Fira Code's and Maple Mono's ℮ do.
+        [piece] = self.pieces("℮")
+        self.assertEqual(len(piece), 2)  # e's eye
+        [eye] = [c for c in piece if not c.isClockwise()]
+        bowl = geo.trim(piece, y0=eye.boundingBox()[3] + 20)
+        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        self.assertGreaterEqual(bowl.boundingBox()[0] - piece.boundingBox()[0], h1 - h0)
+
+    def test_degree_signs_put_a_small_ring_before_the_letter(self):
+        # A ring at the top left, its top level with the letter's, before a letter standing
+        # where the letter stands, as Maple Mono (the only reference) sets them; ApartTest
+        # keeps them apart.
+        for char, letter in (("℃", "C"), ("℉", "F")):
+            with self.subTest(sign=char):
+                pieces = sorted(self.pieces(char), key=lambda p: p.boundingBox()[0])
+                self.assertEqual(len(pieces), 2)
+                ring, body = pieces
+                self.assertEqual(len(ring), 2)
+                self.assertEqual(len(body), len(self.font[letter].foreground))
+                _, _, rx1, r_top = ring.boundingBox()
+                bx0, b_bottom, _, b_top = body.boundingBox()
+                self.assertLess(rx1, bx0)
+                self.assertAlmostEqual(r_top, b_top, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual(b_bottom, self.font[letter].boundingBox()[1],
+                                       delta=MIDDLE_TOLERANCE)
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
