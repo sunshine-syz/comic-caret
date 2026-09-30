@@ -57,6 +57,8 @@ ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦
            "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤⇦⇨⇩"
            "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙")
+# The <= >= ligatures, by glyph name: centred on the axis like ≤ ≥, as the references' are.
+ON_AXIS_GLYPHS = ("less_equal.liga", "greater_equal.liga")
 # The superscript and subscript signs, on the middle of their small figures, as in both
 # references that have them.
 SMALL_ON_AXIS = {"¹": "⁺⁻⁼⁽⁾", "₁": "₊₋₌₍₎"}
@@ -149,6 +151,10 @@ class PlacementTest(unittest.TestCase):
             _, b0, _, b1 = box(self.font, char)
             if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
                 off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
+        for name in ON_AXIS_GLYPHS:
+            _, b0, _, b1 = self.font[name].boundingBox()
+            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
+                off[name] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         self.assertEqual(off, {})
 
     def test_small_signs_sit_on_their_figures_middle(self):

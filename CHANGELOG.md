@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 (unreleased)
+
+- The `<=` and `>=` ligatures hung below the line: their angle kept the height of `<` `>` and the bar went under it, so in `a >= 3` the symbol sat lower than the text around it. They are now centered on the line of `-` `=` and the arrows, as ≤ ≥ and the other ligatures are and as Fira Code and Maple Mono draw theirs, with the angle raised and the bar at the baseline.
+
 ## 1.5.0 (2026-09)
 
 - `^` `~` `_` `%` and `°`, which everyone types, sat outside the range the three reference fonts cover:

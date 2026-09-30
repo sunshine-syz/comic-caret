@@ -264,7 +264,8 @@ def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
 
 def or_equal(font, name):
     """<= or >= as ⩽ ⩾: the flatter angle with a bar under its lower arm, centred on the
-    boundary between the two cells. The point stays on the axis, level with < >."""
+    boundary between the two cells and on the axis, as ≤ ≥ and the references' ligatures
+    are, so the angle rises above < > and the bar hangs below the baseline."""
     tip = TIP[name]
     end_x, end_y = ARM_ENDS[name][1]
     far = (end_x + OUTWARD[name] * ANGLE_WIDTH_GAIN, end_y)
@@ -277,8 +278,8 @@ def or_equal(font, name):
         psMat.compose(psMat.translate(-(x0 + x1) / 2, -(y0 + y1) / 2), psMat.rotate(direction)),
         psMat.translate((tip + far[0]) / 2, (AXIS + far[1]) / 2 - drop)))
     symbol = geo.union(flatter_angle(font, name), bar)
-    x0, _, x1, _ = symbol.boundingBox()
-    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, 0))
+    x0, y0, x1, y1 = symbol.boundingBox()
+    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, AXIS - (y0 + y1) / 2))
 
 
 def squeezed_bar(font, height):
