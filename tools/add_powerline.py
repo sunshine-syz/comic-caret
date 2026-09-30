@@ -6,7 +6,8 @@ The separators fill the cell and the line box exactly, as the block elements do,
 coloured segments meet them without a seam; the thin ones are the box drawing's light stroke.
 The branch, line-number and padlock symbols are built from that stroke, round dots and the
 font's own L and N. The script owns the seven glyphs and redraws them in place, so running it
-again changes nothing but ModificationTime.
+again changes nothing but ModificationTime. The Nerd Fonts patcher keeps them because build.sh
+passes --careful.
 """
 import argparse
 import math

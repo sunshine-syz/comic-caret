@@ -6,7 +6,8 @@ A combining mark has no advance and draws over the cell, where terminals that do
 draw it: over the character before it. Shaped text moves it there with `mark` anchors, which
 every other encoded glyph has, one above and one below, and stacks marks with `mkmk`. First,
 `ccmp` turns a letter and its marks into the precomposed letter where the font has one, so e +
-U+0301 shows the same é as U+00E9, and takes the dot off i and j under a mark above.
+U+0301 shows the same é as U+00E9, and takes the dot off i and j under a mark above. The
+lookups are named marks_*.
 
 Each mark is a reference to its spacing accent, placed as on the lowercase letters. A letter's
 anchors put a mark where the font's own accented forms of it do; other letters center it over

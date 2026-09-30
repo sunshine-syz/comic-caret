@@ -5,7 +5,9 @@ Usage: python3 tools/add_box_drawing.py [SFD]
 Each glyph is built from its Unicode name: the arms it names and their weight, dashes, arcs,
 diagonals, block fractions and shades. The script owns every glyph in the range and redraws it
 in place, so glyph indices stay put and running it again changes nothing but ModificationTime.
-A glyph whose outline would repeat an earlier one's, moved, becomes a reference to it.
+A glyph whose outline would repeat an earlier one's, moved, becomes a reference to it. The
+glyphs are geometric rather than hand-drawn so they tile. Keep the range complete: the Nerd
+Fonts patcher replaces all of it unless every glyph is there.
 """
 import argparse
 import math

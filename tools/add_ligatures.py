@@ -2,8 +2,12 @@
 
 Usage: python3 tools/add_ligatures.py [SFD]
 
-Replaces every glyph and GSUB lookup an earlier run made, and redraws ⎯ from the pieces, so
-running it again changes nothing but ModificationTime.
+Replaces every glyph and GSUB lookup an earlier run made (the glyphs GENERATED matches and the
+lig_* lookups), and redraws ⎯ (U+23AF) as the `--` line's middle piece, so a row of them joins
+into that line; running it again changes nothing but ModificationTime. Rerun it after adding
+glyphs, since a new glyph lands after the generated ones. Its constants are measurements of
+`- = _ # ~ < > | :`; after redrawing one of those, measure again until
+tests/test_add_ligatures.py's MeasurementTest passes, then rerun it.
 """
 import argparse
 import math

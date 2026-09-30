@@ -2,7 +2,7 @@
 
 Comic Caret is a single-weight monospaced font (MIT), derived from Comic Shanns Mono. The whole
 font is `src/ComicCaret-Regular.sfd`; `fonts/`, `build/` and `dist/` hold gitignored build
-outputs.
+outputs. Font files are never committed; they ship as GitHub release assets.
 
 ## Commands
 
@@ -12,21 +12,17 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 ./build.sh                              # SFD -> fonts/ComicCaret-Regular.{otf,ttf}
 ./build.sh --nerd                       # also Nerd Fonts patched copies in build/nerd/
 ./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
-python3 tools/add_ligatures.py          # rebuild the ligature glyphs and lookups in the SFD
-python3 tools/add_box_drawing.py        # rebuild box drawing and block elements in the SFD
-python3 tools/add_marks.py              # rebuild the combining marks, anchors and ccmp in the SFD
-python3 tools/add_powerline.py          # rebuild the Powerline symbols in the SFD
-python3 tools/add_shapes.py             # rebuild the spinner frames (◐ ◜ ◰ ☰ ✷ …) in the SFD
-tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
-python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
+python3 tools/add_<what>.py             # regenerate a generated range in the SFD (see below)
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
+python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
+tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/render_specimen.py        # the README's images in docs/images/ (committed)
 python3 tools/bump_version.py X.Y.Z     # start the next version: SFD Version: and CHANGELOG head
 ```
 
-`proof_sheet.py` takes `--before HEAD` (any commit) to add the font built from that commit's
-SFD, `--text=TEXT` (repeatable) and `--features` to proof other glyphs, and `--line-height EM`
-(repeatable) to check that box drawing meets across lines.
+`proof_sheet.py` takes `--text=TEXT` (repeatable) and `--features` to proof other glyphs,
+`--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
+that box drawing meets across lines.
 
 Rebuild after every SFD change, then run the checks:
 
@@ -36,22 +32,10 @@ hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading
 uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
 ```
 
-`tests/test_fontbakery.py` runs Font Bakery's universal profile on each built font and expects
-exactly the problems its `known()` lists, each with its reason; it skips without `uvx`. To read
-a full report, run `uvx fontbakery==1.1.0 check-universal --skip-network` on one font at a
-time: together, the two read as one style twice and fail the family checks. Its network checks
-fail offline and whenever a newer Font Bakery is out, so the test skips them too.
-
-Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it does
-not affect this font.
-
 ## Releasing
 
-Font files are never committed; they ship as GitHub release assets.
-
-The version being worked on heads `CHANGELOG.md` as "unreleased"; start the next one with
-`tools/bump_version.py X.Y.Z`, which sets the SFD `Version:` through FontForge and the heading
-together.
+The version being worked on heads `CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y.Z`
+starts the next one, setting the SFD `Version:` and the heading together.
 
 1. `python3 tools/bump_version.py --release` gives the heading this month. If glyphs changed,
    rerun `tools/render_specimen.py` so the README shows them.
@@ -60,20 +44,19 @@ together.
 3. `python3 tools/bump_version.py --check-tag vX.Y.Z` refuses a tag that isn't that release.
    Tag the commit and attach both zips from `dist/` to a GitHub release.
 
-## Editing the SFD
+## The SFD
 
 - Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
-  index, so hand edits silently break composites.
+  index, so hand edits silently break composites. Before writing FontForge Python, read
+  `docs/fontforge-pitfalls.md`: the module's quirks the tools work around.
 - Every glyph, `.notdef` included, is 550 wide, except the combining marks (U+0300…), which
   are 0 wide with their ink over the cell, where terminals that don't shape text draw them,
   and the blank zero-width format characters (`project.ZERO_WIDTH`).
+- Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`), hhea = typo =
+  900/−350 (1.25 em) with `USE_TYPO_METRICS`.
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
-- Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`), hhea = typo =
-  900/−350 (1.25 em) with `USE_TYPO_METRICS`. Box-drawing strokes overlap their neighbours:
-  verticals span −485…1035 (they meet up to 1.5 em line height), horizontals −10…560. Block
-  elements fill the cell and the line box exactly.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
   ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
   8–14: maker, designer, description, URLs and license.
@@ -82,53 +65,23 @@ together.
 - SFD diffs are noisy: saves rewrite `ModificationTime` and hints, and deleting a glyph
   renumbers every later index.
 
-## FontForge Python pitfalls
+## Generated glyphs
 
-- Assigning `glyph.foreground` drops hint masks; call `glyph.autoHint()` afterwards.
-- `glyph.transform()` also shifts `vwidth`; transform `glyph.foreground.dup()` and assign it back.
-- Composites keep stale bounds in the process that edited their base glyph; hint them and
-  generate from a fresh process.
-- `glyph.unicode = -1` switches the font to a `Custom` encoding; set
-  `font.encoding = "UnicodeBmp"` afterwards.
-- Don't save from a process that validated glyphs; it writes `Validated:` into each one it
-  checked.
-- `font.mergeFeature()` prints feature-file errors to stderr and returns normally, merging
-  nothing; check that the lookups exist afterwards. It also drops the first glyph of a class
-  range written `[A-Z]`; write `[A - Z]`.
-- Saving crashes when an `rsub` rule is made only of bare glyph names; write the input glyph as
-  a one-glyph class (`[a]'`).
-- `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the
-  wrong region; cut with `layer.intersect()` against a box.
-- `font.removeGlyph()` keeps the glyph's encoding slot; set `font.encoding = "UnicodeBmp"`
-  afterwards or re-created glyphs land in new slots.
-- `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`.
-- Moving a few points of a contour can leave an extremum that `addExtrema("all")` won't add but
-  `validate()` flags (0x20); keep the points next to the moved ones where they are.
-- `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
-  `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD in
-  reverse order; assign them reversed to keep the file's order.
-- `validate()` flags a mirrored reference (0x10, and 0x8 for its reversed contours) and a glyph
-  whose own outline overlaps its reference (0x4). Mirror into an outline with
-  `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
-- `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
-  another's outline as saved in the font, not from the layer before cleanup.
-- A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
-  `removeOverlap()` then takes them for holes; turn them clockwise (`add_shapes.clockwise`)
-  before a union.
-- The autohinter writes a NaN into a hint mask of any outline that contains ☐'s, and reading
-  the SFD back drops that glyph's later hints, so a rerun never comes out the same. Build such
-  glyphs as references to ☐ (◰–◳, ⧆), which `validate()` flags for overlapping (0x4), as ∄;
-  `test_sanity.py` lists them.
-- Adding an anchor from Python marks the glyph's hints stale, and so does `autoHint()` on
-  every glyph (a few come out different, ☐ with a NaN); add anchors through a merged feature
-  file, which doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge
-  keeps an anchor a glyph already has; remove the anchor classes first.
-- A new contextual lookup goes before the others in the SFD, so the last generator to run
-  decides their order: run `tools/add_marks.py`, then `tools/add_ligatures.py`.
-- FontForge 20251009 gives every glyph of a TTF one advance when all but the zero-width ones
-  share it, so the marks and the zero-width format characters come out a cell wide;
-  `tools/mark_advances.py` rewrites the TTF's `hmtx`, and `tools/generate.py` and `build.sh`
-  run it. OTFs are right.
+Each generator owns a range of glyphs and redraws it in place, so a rerun changes nothing; its
+`tests/test_add_<what>.py` fails while the SFD is out of date. Change those glyphs only in the
+generator, rerun it, then `./build.sh`. Each generator's docstring has the details.
+
+- `tools/add_ligatures.py`: the ligatures from `src/ligatures.fea` and ⎯; it owns every glyph
+  its `GENERATED` pattern matches and every `lig_*` lookup.
+- `tools/add_marks.py`: the combining marks, every glyph's mark anchors and the `ccmp`, `mark`
+  and `mkmk` lookups (`marks_*`).
+- `tools/add_box_drawing.py`: Box Drawing and Block Elements (U+2500–U+259F).
+- `tools/add_powerline.py`: the Powerline symbols (U+E0A0–E0A2, U+E0B0–E0B3).
+- `tools/add_shapes.py`: the spinner frames (◐ ◜ ◰ ☰ ✷ …, its `CODES`) and their components.
+
+After adding or redrawing any glyph, run `tools/add_marks.py`, then `tools/add_ligatures.py`
+last: a new glyph lands after the generated ones, and the last generator to run decides the
+lookups' order.
 
 ## Designing glyphs
 
@@ -140,62 +93,33 @@ together.
 - When the hand-drawn style calls for something else, say why in the commit message.
 - Draw new strokes in the font's own hand: round ends, the stem weight (about 90), the wobble.
   Reuse an existing stroke where one fits; move and shorten strokes rather than scaling them.
-  The exceptions are ∞ (8's loop, scaled to fit; every reference draws ∞ lighter than its
-  letters) and the `*.small` components of superscripts, subscripts, fractions and signs: the
-  regular glyph at 0.45 (figures, ⁱ ⁿ and the signs), 0.52 (the small parentheses, which reach
-  past the figures as far as the references' do), 0.55 (ª º) or 0.41 (™ © ®), thickened with
-  `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
-  right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned to
-  match. ▹ is the same kind of exception: ▷ at 0.59 thinned to a 41 outline, since at the full
-  stroke its counter fills in at 16 px. Its white stays 4 short of Maple Mono's, the only
-  reference's, whose outline is 37; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. ▫ (☐ at 0.52) and ◦ (○ at 0.48)
-  are scaled so their rings come out about 41 too, ⧉'s squares are the hyphen's stroke at 0.79
-  so the one behind keeps clear of the one in front, and ⏺ ⏵ are ● ▶ scaled to ⏸'s height. The
-  keyboard symbols ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ take the same 0.79 stroke, for their detail, so key hints
-  such as ⌃⌥⌘⇧ read at one weight.
-- Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side, then
-  squeezed at the ends to stay 20 inside the cell; ❰ ❱ are two hyphen strokes pushed out the
-  same, and ⏸'s bars are `|` pushed out 40, to weigh as much as ⏵ ⏺. No symbol comes closer to
-  the cell's edges than ● (15), so two side by side don't touch; `test_symbols.py` lists the
-  exceptions. Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white
-  shapes are rings of the hyphen's stroke, or of `o`'s for ○.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
-  height. Where three strokes share the cell (φ Φ ψ Ψ), the middle one takes the bar's weight
-  (78), and the sides reach as far out as `w`'s, to keep up with the references' lighter
-  strokes.
-- Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
-  are references to it; the tonos is the acute turned 25° steeper, and beside a capital it
-  stands to the left, reaching into the cell before (all but Ά) no further than the
-  references' 112 (`test_sanity.py` lists them).
-- Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
-  rotated about the cell center.
-- `tests/test_legibility.py` holds the rules for confusable characters, the colon and
-  semicolon, brackets and letter widths; read it before changing them.
-- The reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from the Fira
-  Code 6.2 release, Maple Mono 7.9 Regular (the Nerd Font build works too) and
-  `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`).
+  height, and bring no symbol closer to the cell's edges than ● (15), so two side by side
+  don't touch.
+- Center symmetric ink in the cell; turned glyphs such as ¡ ¿ are references rotated 180°
+  about the cell center.
+- `docs/design-notes.md` records how the scaled parts, heavy marks, shapes and Greek were
+  sized, and where the reference fonts live; `tests/test_legibility.py` holds the rules for
+  confusable characters, the colon and semicolon, brackets and letter widths. Read them before
+  changing what they cover.
 
 ## Writing tests
 
 A test fails when the font is broken, never because a glyph was redrawn on purpose. How a glyph
-looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
+looks is judged on the proof sheet, not asserted.
 
-- Put each check where its kind lives:
-  - `test_sanity.py`: what breaks text for every glyph: the cell, the line box, `validate()`,
-    hints, empty or unused glyphs.
-  - `test_consistency.py`: what whole classes share: rows, centering, the math axis, mirrored
-    pairs, accented letters built on their letter with marks clear of it, no copied outlines,
-    Braille dots.
-  - `test_built.py`: what generating the fonts must keep; `test_metadata.py`: names and
-    declared metrics.
-  - `test_legibility.py`, `test_latin.py`, `test_greek.py`, `test_symbols.py`: rules for single
-    glyphs.
-- Prefer a class rule. Add a new glyph to its class in `test_consistency.py` (`ROWS`,
+- Put each check where its kind lives: `test_sanity.py` for what breaks text for every glyph
+  (the cell, the line box, `validate()`, hints, empty or unused glyphs); `test_consistency.py`
+  for what whole classes share (rows, centering, the math axis, mirrored pairs, accented
+  letters, no copied outlines); `test_built.py` for what generating the fonts must keep;
+  `test_metadata.py` for names and declared metrics; `test_legibility.py`, `test_latin.py`,
+  `test_greek.py` and `test_symbols.py` for rules on single glyphs.
+- Prefer a class rule: add a new glyph to its class in `test_consistency.py` (`ROWS`,
   `CENTERED`, `ON_AXIS`, `MIRRORED`) rather than writing a test for it.
 - A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a
   counter or gap is at least the narrowest reference's, parts don't touch, a glyph is built from
-  another (a reference, turned or mirrored). Never assert a coordinate, width or offset that only
-  records today's design: if the only fix for a failure is to edit the number, don't write it.
+  another. Never assert a coordinate, width or offset that only records today's design: if the
+  only fix for a failure is to edit the number, don't write it.
 - Take thresholds from the font (another glyph, `os2_xheight`, the hyphen's middle) or from a
   reference font's floor, and say in a comment where each number comes from.
 - A known exception goes in the test's exception list with its reason.
@@ -205,32 +129,3 @@ looks is judged on the proof sheet (`tools/proof_sheet.py`), not asserted.
 ## Other
 
 - Add user-visible changes to `CHANGELOG.md`.
-- Ligatures are generated. `tools/add_ligatures.py` owns every glyph its `GENERATED` pattern
-  matches (`LIG`, `*.sta`, `*.liga`, …) and every `lig_*` lookup, and rebuilds them from
-  `src/ligatures.fea` on each run. It also redraws ⎯ (U+23AF) as the `--` line's middle piece,
-  so a row of them joins into that line. Change them only there, then rerun it and `./build.sh`;
-  `tests/test_add_ligatures.py` fails while the SFD is out of date. A new glyph lands after the
-  generated ones, so rerun it after adding glyphs too. Its constants are
-  measurements of `- = _ # ~ < > | :`; after redrawing one of those, measure again until
-  `MeasurementTest` passes, then rerun it.
-- Combining marks are generated too. `tools/add_marks.py` draws each as a reference to its
-  spacing accent, gives every encoded glyph a mark anchor above and below (a letter's from its
-  accented forms, so e + U+0301 matches é), and builds the `ccmp`, `mark` and `mkmk` lookups;
-  its lookups are named `marks_*`. Rerun it after adding or redrawing glyphs, then
-  `tools/add_ligatures.py`; `tests/test_add_marks.py` fails while the SFD is out of date.
-- Box Drawing and Block Elements (U+2500–U+259F) are generated too, geometric rather than
-  hand-drawn so they tile. `tools/add_box_drawing.py` draws each glyph from its Unicode name
-  and redraws the range in place; change them only there, then rerun it and `./build.sh`.
-  `tests/test_add_box_drawing.py` fails while the SFD is out of date. Keep the range complete:
-  the Nerd Fonts patcher replaces all of it unless every glyph is there.
-- The Powerline symbols (U+E0A0–E0A2, U+E0B0–E0B3) are generated by `tools/add_powerline.py`
-  from the box drawing stroke and the font's own letters; change them only there, then rerun it
-  and `./build.sh`. `tests/test_add_powerline.py` fails while the SFD is out of date. The Nerd
-  Fonts patcher keeps them because `build.sh` passes `--careful`.
-- The spinner frames are generated too: the halves, quarters, arcs and corner cuts of ○ and
-  ☐ (◐–◓ ◴–◷ ◜–◡ ◰–◳ ◢–◥ ▮ ▯), the rings ◎ ⦾ ⦿ ⧇ ⧆ ⊙ ∙ ◌ ◍, the trigrams ☰–☷, the stars
-  ✷ ✸ ✹ ✺, ⊶ ⊷, ☖ ☗ ▰ ▱ and ‼. `tools/add_shapes.py` cuts, stacks and turns the font's own
-  ○ ● ☐ ■ ◦ ✶ ∗ `!` into them (its `CODES`) and owns the components it builds them from
-  (`COMPONENTS`: `asterisk.small` and `square.*`); change them only there, then rerun it,
-  `tools/add_marks.py`, `tools/add_ligatures.py` and `./build.sh`. `tests/test_add_shapes.py`
-  fails while the SFD is out of date.
