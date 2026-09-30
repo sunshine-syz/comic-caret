@@ -19,7 +19,7 @@ import measure
 from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
-           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿")
+           "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -468,8 +468,11 @@ class BuiltFromTest(unittest.TestCase):
     def test_same_shapes_are_references(self):
         # Where every reference draws two characters alike, one is the other: ∆ as Fira Code,
         # the only reference with ∆, draws it. And ′ is the modifier prime ʹ: Maple Mono, the
-        # only reference with ′, draws the two alike, only set apart in the cell.
-        for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ")):
+        # only reference with ′, draws the two alike, only set apart in the cell. The modifier
+        # letters ʼ ʻ are ’ ‘ (Intel One Mono and Maple Mono; Fira Code's ʼ is its own
+        # apostrophe, which here would read as ') and ʺ is ″ (Fira Code and Maple Mono).
+        for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ"), ("ʼ", "’"),
+                           ("ʻ", "‘"), ("ʺ", "″")):
             with self.subTest(glyph=char):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
