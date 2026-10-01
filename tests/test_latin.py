@@ -86,6 +86,12 @@ def code_page_range(path):
     raise ValueError(f"{path.name} has no OS/2 table")
 
 
+def hyphen_stroke(font):
+    """The stroke's weight: the hyphen's, at its middle."""
+    [(h0, h1)] = measure.spans_at_x(font["hyphen"].foreground, ADVANCE / 2)
+    return h1 - h0
+
+
 class CoverageTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -129,8 +135,7 @@ class LookalikeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
-        [(h0, h1)] = measure.spans_at_x(cls.font["hyphen"].foreground, ADVANCE / 2)
-        cls.stroke = h1 - h0  # the hyphen's, at its middle
+        cls.stroke = hyphen_stroke(cls.font)
 
     def test_slash_runs_past_the_letter(self):
         # Past O, Ø reads apart from our slashed zero, whose slash stays inside it: by at least
@@ -225,30 +230,29 @@ class CapitalTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
-        [(h0, h1)] = measure.spans_at_x(cls.font["hyphen"].foreground, ADVANCE / 2)
-        cls.stroke = h1 - h0  # the hyphen's, at its middle
+        cls.stroke = hyphen_stroke(cls.font)
 
     def test_J_bar_stays_left_of_the_stem(self):
         # No reference carries J's bar past the stem on the right: Fira Code's and Maple
         # Mono's runs left from it, Intel One Mono's J has none. Ours was the I's bar once,
-        # 114 units past the stem. What the top reaches beyond the stem's right edge is the
-        # hand's wobble, under a quarter of a stroke.
+        # 114 units past the stem. What the top reaches beyond the stem's right edge is its
+        # round end's bulge, within the hand's wobble.
         layer = self.font["J"].foreground
         _, _, right, top = layer.boundingBox()
         [(_, stem)] = measure.spans_at_y(layer, top - 150)  # on the stem, below the bar
-        self.assertLess(right - stem, self.stroke / 4)
+        self.assertLess(right - stem, TOLERANCE)
 
     def test_Y_stem_stands_straight_under_the_notch(self):
         # Fira Code, Intel One Mono and Maple Mono all set Y's stem vertical under the notch;
         # ours once ran on down the right arm's slant, its foot 96 left of the notch. The foot
         # and the stem's middle both stay within a quarter of the stem's width of the notch:
-        # the I's and T's stems drift 7 and 11 over their whole height.
+        # the I's and T's stems drift 6 and 11 over their whole height.
         layer = self.font["Y"].foreground
         _, bottom, _, top = layer.boundingBox()
         notch = next(y for y in range(round(bottom), round(top), 2)  # the first line that
                      if len(measure.spans_at_y(layer, y)) == 2)        # crosses both arms
         (_, left), (right, _) = measure.spans_at_y(layer, notch)
-        foot = bottom + 50  # above the round end
+        foot = bottom + self.stroke / 2  # above the round end
         [(x0, x1)] = measure.spans_at_y(layer, foot)
         [(m0, m1)] = measure.spans_at_y(layer, (foot + notch) / 2)
         for part, centre in (("foot", (x0 + x1) / 2), ("middle", (m0 + m1) / 2)):
