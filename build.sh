@@ -151,6 +151,8 @@ done
 
 if [[ -n $nerd_variants ]]; then
   fetch_patcher
+  # Start empty so a variant or font from an earlier run can't pass for a fresh one.
+  rm -rf "$NERD_OUT"
   mkdir -p "$NERD_OUT"
   for variant in "${variants[@]}"; do
     flag=$(nerd_flag "$variant")

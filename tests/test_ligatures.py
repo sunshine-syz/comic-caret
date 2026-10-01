@@ -14,12 +14,11 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from add_ligatures import GENERATED, OVERLAP
 from measure import ink, spans_at_x
-from project import ADVANCE, ROOT, SFD, STYLES, font_file
+from project import ADVANCE, SFD, STYLES, font_file, nerd_fonts
 
 # Each built font, with the SFD it is built from.
 FONTS = {font_file(style, ext): sfd for style, sfd in STYLES.items() for ext in ("otf", "ttf")}
 REGULAR = font_file("Regular", "ttf")
-NERD_DIR = ROOT / "build" / "nerd"
 
 
 def hb_shape(font, text, *options):
@@ -319,16 +318,21 @@ class LigatureShapingTest(unittest.TestCase):
 class NerdFontTest(unittest.TestCase):
     """Nerd Fonts builds keep the ligatures through the patcher.
 
-    They are built only by ./build.sh --nerd or --release, so without a current build the
-    tests skip; the release steps in CLAUDE.md run them after building.
+    They are built only by ./build.sh --nerd or --release, so a font older than the SFDs is
+    skipped by name, and the whole class when none is current; the release steps in CLAUDE.md
+    run them after building.
     """
 
     @classmethod
     def setUpClass(cls):
-        cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
-        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
-        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < newest_sfd:
+        cls.fonts, cls.stale = nerd_fonts()
+        if not cls.fonts:
             raise unittest.SkipTest("no Nerd Fonts build newer than the SFDs")
+
+    def test_stale_builds_are_skipped(self):
+        for font in self.stale:
+            with self.subTest(font=font.name):
+                self.skipTest("older than the SFDs; rebuild with ./build.sh --nerd")
 
     def test_patched_fonts_keep_the_ligatures(self):
         for font in self.fonts:

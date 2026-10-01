@@ -13,10 +13,9 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from make_italic import AXIS, SLANT
-from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file
+from project import ADVANCE, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
-NERD_DIR = ROOT / "build" / "nerd"
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
 
@@ -196,16 +195,20 @@ class NerdFontTest(unittest.TestCase):
     The patcher swaps in its own box set unless the font has all of U+2500–U+259F, its own
     Braille unless --careful finds all of U+2800–U+28FF, its own Powerline symbols where
     --careful doesn't find ours, and fills U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱) only where the font has
-    no glyph. The builds are made only by ./build.sh --nerd or
-    --release, so without a current build the tests skip.
+    no glyph. The builds are made only by ./build.sh --nerd or --release, so a font older than
+    the SFDs is skipped by name, and the whole class when none is current.
     """
 
     @classmethod
     def setUpClass(cls):
-        cls.fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
-        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
-        if not cls.fonts or min(f.stat().st_mtime for f in cls.fonts) < newest_sfd:
+        cls.fonts, cls.stale = nerd_fonts()
+        if not cls.fonts:
             raise unittest.SkipTest("no Nerd Fonts build newer than the SFDs")
+
+    def test_stale_builds_are_skipped(self):
+        for font in self.stale:
+            with self.subTest(font=font.name):
+                self.skipTest("older than the SFDs; rebuild with ./build.sh --nerd")
 
     def test_patched_fonts_keep_the_zero_widths(self):
         # But in the Mono variant, where the patcher gives every glyph one advance on purpose.
