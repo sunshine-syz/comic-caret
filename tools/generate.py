@@ -12,7 +12,8 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from mark_advances import read_tables, write_tables, zero_mark_advances
+from mark_advances import zero_mark_advances
+from sfnt import read_tables, write_tables
 
 CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
 CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset

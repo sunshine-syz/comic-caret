@@ -16,6 +16,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import measure
+import sfnt
 from project import ADVANCE, ROOT, SFD
 from test_consistency import ROUNDING, TOLERANCE
 
@@ -76,14 +77,12 @@ def code_page(codec):
     return chars
 
 
+OS2_CODE_PAGES = 78  # offset of OS/2.ulCodePageRange1
+
+
 def code_page_range(path):
     """ulCodePageRange1 of the font's OS/2 table, read from the file itself."""
-    data = path.read_bytes()
-    for i in range(struct.unpack_from(">H", data, 4)[0]):
-        tag, _, offset, _ = struct.unpack_from(">4sLLL", data, 12 + 16 * i)
-        if tag == b"OS/2":
-            return struct.unpack_from(">L", data, offset + 78)[0]
-    raise ValueError(f"{path.name} has no OS/2 table")
+    return struct.unpack_from(">L", sfnt.tables(path)[b"OS/2"], OS2_CODE_PAGES)[0]
 
 
 def hyphen_stroke(font):

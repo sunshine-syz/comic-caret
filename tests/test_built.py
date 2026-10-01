@@ -20,7 +20,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from bump_version import sfd_version
 from make_italic import AXIS, SLANT
-from mark_advances import read_tables
+import sfnt
 from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
@@ -79,14 +79,9 @@ def advances(font):
     return widths
 
 
-def tables(font):
-    """{tag: table bytes} of the font file."""
-    return dict(read_tables(font.read_bytes())[2])
-
-
 def english_names(font):
     """{name ID: text} of the font file's Windows English (US) name records."""
-    table = tables(font)[b"name"]
+    table = sfnt.tables(font)[b"name"]
     _, count, strings = struct.unpack_from(">3H", table)
     names = {}
     for i in range(count):
@@ -99,7 +94,7 @@ def english_names(font):
 
 def cmap_encodings(font):
     """{(platform, encoding)} of the font file's cmap subtables."""
-    cmap = tables(font)[b"cmap"]
+    cmap = sfnt.tables(font)[b"cmap"]
     count = struct.unpack_from(">H", cmap, 2)[0]
     return {struct.unpack_from(">HH", cmap, 4 + 8 * i) for i in range(count)}
 
@@ -201,11 +196,11 @@ class BuiltFontTest(unittest.TestCase):
         # FFTM is FontForge's record of when it and the font were made; nothing else reads it.
         for font in self.fonts:
             with self.subTest(font=font.name):
-                self.assertNotIn(b"FFTM", set(tables(font)))
+                self.assertNotIn(b"FFTM", set(sfnt.tables(font)))
 
     def test_formats_share_the_modification_date(self):
         # Both are dated by SOURCE_DATE_EPOCH, so the two files of one build agree.
-        otf, ttf = (struct.unpack_from(">q", tables(font)[b"head"], HEAD_MODIFIED)[0]
+        otf, ttf = (struct.unpack_from(">q", sfnt.tables(font)[b"head"], HEAD_MODIFIED)[0]
                     for font in self.fonts)
         self.assertEqual(otf, ttf)
 
@@ -235,7 +230,7 @@ class GenerateDateTest(unittest.TestCase):
                     env={**os.environ, "SOURCE_DATE_EPOCH": str(epoch)})
                 self.assertEqual(result.returncode, 0, result.stderr)
                 with self.subTest(format=ext):
-                    head = tables(out)[b"head"]
+                    head = sfnt.tables(out)[b"head"]
                     self.assertEqual(struct.unpack_from(">q", head, HEAD_MODIFIED)[0],
                                      epoch + MAC_EPOCH)
 
