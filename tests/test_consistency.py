@@ -31,8 +31,8 @@ ROWS = {
     "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞØĐĲĿꝚabcdefhiklmnorstuvwxzıĸß0123456789"
                   "¼½¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞æœðøđħŀłŧſꝛ"
                   "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ"), 1),
-    "x-height": ("acemnorsuvwxzıĸµŋæœøȷꝛαγεηικνοπρσςτυφχψω", 3),
-    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞØĐĲĿꝚ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
+    "x-height": ("acemnoqrsuvwxzıĸµŋæœøȷꝛαγεηικνοπρσςτυφχψω", 3),
+    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁĦŦŊǷẞØĐĲĿꝚ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱"), 3),
     "ascender": ("bdfhklßþðđħŀłſβδζθλξℓ", 3),
     "descender": ("gjpqyþµŋŊƒĳȷƿ¶βγζηξρςφχψϗ", 1),
