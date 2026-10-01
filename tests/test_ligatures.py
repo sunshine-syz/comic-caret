@@ -15,7 +15,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from add_ligatures import GENERATED
 from helpers import NerdBuilds, require_current_build
-from measure import ink, spans_at_x
+from measure import ink, spans_at_x, vertical_edges
 from project import ADVANCE, FORMATS, OVERLAP, SFD, STYLES, font_file, style_of
 
 # Each built font, with the SFD it is built from.
@@ -49,13 +49,7 @@ def names(font, text, calt=True):
 
 def seam(layer, x):
     """(y0, y1) of each straight vertical edge at x, where a piece is cut to meet the next."""
-    edges = []
-    for contour in layer:
-        for i in range(len(contour)):
-            a, b = contour[i], contour[(i + 1) % len(contour)]
-            if a.on_curve and b.on_curve and abs(a.x - x) < 0.5 and abs(b.x - x) < 0.5:
-                edges.append((min(a.y, b.y), max(a.y, b.y)))
-    return sorted(edges)
+    return sorted((y0, y1) for ex, y0, y1 in vertical_edges(layer) if abs(ex - x) < 0.5)
 
 
 def unmet(edges, other, x, inward, cover):

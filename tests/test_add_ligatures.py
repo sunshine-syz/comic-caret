@@ -11,7 +11,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
 from add_ligatures import GENERATED
-from measure import gap, ink, spans_at_x, spans_at_y
+from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
 from project import ADVANCE, AXIS, OVERLAP, SFD
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
@@ -24,28 +24,6 @@ FIRA_HEAD_GAP = 133
 def widths_at(layer, y):
     """Widths of the strokes a horizontal line at y crosses, left to right."""
     return [x1 - x0 for x0, x1 in spans_at_y(layer, y)]
-
-
-def flat_edges(layer, length):
-    """Straight horizontal edges at least `length` long, as (y, x0, x1)."""
-    edges = []
-    for contour in layer:
-        for i in range(len(contour)):
-            a, b = contour[i], contour[(i + 1) % len(contour)]
-            if a.on_curve and b.on_curve and a.y == b.y and abs(a.x - b.x) >= length:
-                edges.append((a.y, min(a.x, b.x), max(a.x, b.x)))
-    return edges
-
-
-def cut_edges(layer, length):
-    """Straight vertical edges at least `length` long, as (x, y0, y1): strokes cut flat."""
-    edges = []
-    for contour in layer:
-        for i in range(len(contour)):
-            a, b = contour[i], contour[(i + 1) % len(contour)]
-            if a.on_curve and b.on_curve and a.x == b.x and abs(a.y - b.y) >= length:
-                edges.append((a.x, min(a.y, b.y), max(a.y, b.y)))
-    return edges
 
 
 def one_layer(contour):
@@ -171,7 +149,8 @@ class GlyphShapeTest(unittest.TestCase):
         # edge as wide as the stroke.
         for pipe in TRIANGLES:
             with self.subTest(pipe=pipe):
-                self.assertEqual(flat_edges(self.font[pipe].foreground, 20), [])
+                flat = [e for e in horizontal_edges(self.font[pipe].foreground) if e[2] - e[1] >= 20]
+                self.assertEqual(flat, [])
 
     def test_corners_are_one_round_end(self):
         # Two stroke ends side by side would leave two caps with a notch between them.
@@ -193,9 +172,10 @@ class GlyphShapeTest(unittest.TestCase):
             name = glyph.glyphname
             if not GENERATED.fullmatch(name):
                 continue
-            edges = [e for e in cut_edges(glyph.foreground, 20) if e[0] not in seams]
+            edges = [e for e in vertical_edges(glyph.foreground)
+                     if e[2] - e[1] >= 20 and e[0] not in seams]
             if not name.startswith(("underscore.", "numbersign.")):
-                edges += flat_edges(glyph.foreground, 20)
+                edges += [e for e in horizontal_edges(glyph.foreground) if e[2] - e[1] >= 20]
             if edges:
                 cut[name] = edges
         self.assertEqual(cut, {})

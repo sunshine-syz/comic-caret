@@ -18,17 +18,12 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_powerline
 import lig_geometry as geo
 import measure
+from helpers import outline
 from add_box_drawing import LIGHT
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "add_powerline.py"
-
-
-def points(layer):
-    """The outline as a set of points, so two outlines compare whatever their contours' order
-    and starting points."""
-    return {(round(p.x), round(p.y), p.on_curve) for contour in layer for p in contour}
 
 
 class GeneratorTest(unittest.TestCase):
@@ -65,7 +60,7 @@ class SeparatorTest(unittest.TestCase):
                             (add_powerline.LEFT_THIN, add_powerline.RIGHT_THIN)):
             with self.subTest(left=f"U+{left:04X}"):
                 mirrored = geo.mirrored_x(self.font[right].foreground, ADVANCE / 2)
-                self.assertEqual(points(mirrored), points(self.font[left].foreground))
+                self.assertEqual(outline(mirrored), outline(self.font[left].foreground))
 
     def test_thin_separators_take_the_box_drawing_stroke(self):
         # The stroke's thickness, measured across the lower arm at right angles to it. The

@@ -5,10 +5,24 @@ import sys
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import FORMATS, STYLES, nerd_fonts, stale_build  # noqa: E402
+from project import ADVANCE, FORMATS, STYLES, nerd_fonts, stale_build  # noqa: E402
 
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
+
+
+def outline(contours):
+    """The points of a layer (or any contours), contour by contour, in an order that ignores
+    where each contour starts and which comes first: two drawings of one outline compare
+    equal."""
+    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in contours)
+
+
+def bullet_seam(font):
+    """The white between two ● side by side: as far apart as a symbol's parts must stay to
+    read apart at 16 px."""
+    x0, _, x1, _ = font[ord("●")].boundingBox()
+    return 2 * min(x0, ADVANCE - x1)
 
 
 def require_current_build(styles=tuple(STYLES), formats=FORMATS):

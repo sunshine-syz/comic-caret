@@ -17,7 +17,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import measure
-from helpers import ROW_TOLERANCE
+from helpers import ROW_TOLERANCE, bullet_seam, outline
 from project import ADVANCE, ROUNDING, SFD, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
@@ -93,15 +93,6 @@ def linear(matrix):
     return tuple(round(v, 6) for v in matrix[:4])
 
 
-def points(contour):
-    return sorted((p.x, p.y, p.on_curve) for p in contour)
-
-
-def shape(layer):
-    """The layer's points, contour by contour, in an order that ignores where each starts."""
-    return sorted(points(c) for c in layer)
-
-
 def weight_tolerance(font):
     """How far a stroke drawn from another may stray from its weight: as far as the pen's
     weight strays along |'s straight middle, and both edges' rounding."""
@@ -116,12 +107,12 @@ def pieces_of(layer):
     """Each outline of the layer with the counters inside it."""
     contours = list(layer)
     pieces = []
-    for outline in contours:
-        if not outline.isClockwise():
+    for shell in contours:
+        if not shell.isClockwise():
             continue
-        x0, y0, x1, y1 = outline.boundingBox()
+        x0, y0, x1, y1 = shell.boundingBox()
         piece = fontforge.layer()
-        piece += outline
+        piece += shell
         for counter in contours:
             a0, b0, a1, b1 = counter.boundingBox()
             if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
@@ -331,7 +322,7 @@ class ShapeTest(unittest.TestCase):
             with self.subTest(shape=black):
                 [outer] = [c for c in self.font[ord(white)].foreground if c.isClockwise()]
                 [own] = list(self.font[ord(black)].foreground)
-                self.assertEqual(points(own), points(outer))
+                self.assertEqual(outline([own]), outline([outer]))
 
     def test_small_shapes_are_about_half_size(self):
         for small, large in (("▸", "▶"), ("▹", "▷"), ("▪", "■"), ("▫", "□")):
@@ -441,24 +432,10 @@ class ApartTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
-        x0, _, x1, _ = cls.font[ord("●")].boundingBox()
-        cls.seam = 2 * min(x0, ADVANCE - x1)
+        cls.seam = bullet_seam(cls.font)
 
     def pieces(self, char):
-        """The glyph's separate pieces: each outline with the counters inside it."""
-        contours = list(self.font[ord(char)].foreground)
-        outlines = [c for c in contours if c.isClockwise()]
-        pieces = []
-        for outline in outlines:
-            x0, y0, x1, y1 = outline.boundingBox()
-            layer = fontforge.layer()
-            layer += outline
-            for counter in contours:
-                a0, b0, a1, b1 = counter.boundingBox()
-                if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
-                    layer += counter
-            pieces.append(layer)
-        return pieces
+        return pieces_of(self.font[ord(char)].foreground)
 
     def test_pieces_keep_apart(self):
         # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
@@ -608,8 +585,7 @@ class LetterlikeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
-        x0, _, x1, _ = cls.font[ord("●")].boundingBox()
-        cls.seam = 2 * min(x0, ADVANCE - x1)
+        cls.seam = bullet_seam(cls.font)
 
     def pieces(self, char):
         return pieces_of(self.font[ord(char)].foreground)
@@ -688,7 +664,7 @@ class KeyHintTest(unittest.TestCase):
         arrow = max(pieces, key=lambda p: p.boundingBox()[3] - p.boundingBox()[1])
         [bar] = [p for p in pieces if p is not arrow]
         dy = arrow.boundingBox()[1] - up.boundingBox()[1]
-        self.assertEqual(shape(arrow), shape(geo.transformed(up, psMat.translate(0, dy))))
+        self.assertEqual(outline(arrow), outline(geo.transformed(up, psMat.translate(0, dy))))
         # The shaft's walls, a quarter of the way up: ⇧'s head takes its upper half.
         _, y0, _, y1 = up.boundingBox()
         (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
@@ -753,13 +729,6 @@ class CurrencyTest(unittest.TestCase):
         cls.stroke = (min(thickness) - 2 * ROUNDING, max(thickness) + 2 * ROUNDING)
         cls.weight = weight_tolerance(cls.font)
 
-    def flattened(self, char):
-        glyph = self.font[ord(char)]
-        layer = glyph.foreground.dup()
-        for name, matrix, *_ in glyph.references:
-            layer += geo.transformed(self.font[name].foreground, matrix)
-        return layer
-
     def test_letter_signs_keep_their_letters_height(self):
         for sign, letter in LETTER_SIGNS.items():
             with self.subTest(sign=sign):
@@ -771,7 +740,8 @@ class CurrencyTest(unittest.TestCase):
     def bars(self, sign, x):
         """The bars' (bottom, top) at x, lowest first."""
         _, count, topmost = BARS[sign]
-        spans = sorted(measure.spans_at_x(self.flattened(sign), x))
+        ink = measure.ink(self.font, self.font[ord(sign)].glyphname)
+        spans = sorted(measure.spans_at_x(ink, x))
         bars = spans[-count:] if topmost else spans[:count]
         self.assertEqual(len(bars), count)
         return bars

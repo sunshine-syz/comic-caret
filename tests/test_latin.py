@@ -17,7 +17,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import measure
 import sfnt
-from helpers import require_current_build
+from helpers import bullet_seam, require_current_build
 from project import ADVANCE, ROUNDING, SFD, WOBBLE, font_file
 
 TTF = font_file("Regular", "ttf")
@@ -397,8 +397,7 @@ class FigureTest(unittest.TestCase):
     def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
         # The bar keeps at least ●●'s seam from its letter, as a symbol's parts do
         # (test_symbols), so they stay apart at 16 px.
-        left, _, right, _ = self.font[ord("●")].boundingBox()
-        seam = 2 * min(left, ADVANCE - right)
+        seam = bullet_seam(self.font)
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
             with self.subTest(glyph=name):
                 bar = self.part(name, "bar.ordinal")

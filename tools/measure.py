@@ -21,6 +21,27 @@ def spans_at_x(layer, x):
     return sorted((y0, y1) for _, y0, _, y1 in (contour.boundingBox() for contour in band))
 
 
+def _straight_segments(layer):
+    """(a, b) for each segment of the outline drawn straight, between two on-curve points."""
+    for contour in layer:
+        for i in range(len(contour)):
+            a, b = contour[i], contour[(i + 1) % len(contour)]
+            if a.on_curve and b.on_curve:
+                yield a, b
+
+
+def vertical_edges(layer):
+    """(x, y0, y1) of each straight upright edge: where a stroke is cut flat across."""
+    return [(a.x, min(a.y, b.y), max(a.y, b.y))
+            for a, b in _straight_segments(layer) if abs(a.x - b.x) < 0.5]
+
+
+def horizontal_edges(layer):
+    """(y, x0, x1) of each straight level edge."""
+    return [(a.y, min(a.x, b.x), max(a.x, b.x))
+            for a, b in _straight_segments(layer) if abs(a.y - b.y) < 0.5]
+
+
 def counter(layer, y):
     """The white between the strokes a horizontal line at y crosses, summed."""
     spans = spans_at_y(layer, y)

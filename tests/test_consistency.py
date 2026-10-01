@@ -23,7 +23,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_box_drawing
 import lig_geometry as geo
 import measure
-from helpers import ROW_TOLERANCE
+from helpers import ROW_TOLERANCE, outline
 from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE, is_letter, is_mark
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
@@ -108,11 +108,6 @@ BRAILLE_DOTS = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (0, 3), (1, 3)) 
 
 def open_font():
     return fontforge.open(str(SFD))
-
-
-def outline(layer):
-    """The layer's points, contour by contour, in an order that ignores where each starts."""
-    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
 
 
 def box(font, char):

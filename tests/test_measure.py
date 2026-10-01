@@ -105,5 +105,23 @@ class AreaTest(unittest.TestCase):
         self.assertAlmostEqual(measure.covered(inner, outer), 0.5)
 
 
+class EdgeTest(unittest.TestCase):
+    def test_a_rectangle_has_two_edges_each_way(self):
+        layer = geo.rect(0, 0, 100, 50)
+        self.assertEqual(sorted(measure.vertical_edges(layer)), [(0, 0, 50), (100, 0, 50)])
+        self.assertEqual(sorted(measure.horizontal_edges(layer)), [(0, 0, 100), (50, 0, 100)])
+
+    def test_curves_and_slants_are_not_edges(self):
+        slanted = fontforge.contour()
+        slanted.moveTo(0, 0)
+        slanted.lineTo(40, 100)
+        slanted.lineTo(100, 100)
+        slanted.closed = True
+        layer = fontforge.layer()
+        layer += slanted
+        self.assertEqual(measure.vertical_edges(layer), [])
+        self.assertEqual(measure.horizontal_edges(layer), [(100, 40, 100)])
+
+
 if __name__ == "__main__":
     unittest.main()
