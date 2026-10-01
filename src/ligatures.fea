@@ -152,7 +152,7 @@ feature calt {
     rsub [greater.arrow]' [hyphen less greater] by greater;
     # <!-- before a tag keeps its run's end, which keeps the next rule from reverting it.
     rsub exclam.tight_r hyphen.sta [hyphen.end]' [less] by hyphen.end;
-    rsub [hyphen.end]' [hyphen less greater] by hyphen;
+    rsub [hyphen.end]' less by hyphen;
     rsub [hyphen.mid]' [hyphen greater] by hyphen;
     rsub [hyphen.sta]' [hyphen greater] by hyphen;
     rsub [less.shaft]' [hyphen] by less;
@@ -177,7 +177,7 @@ feature calt {
   lookup lig_equal_unwind {
     rsub [greater.darrow]' [less] @TagStart by greater.darrow;  # as in lig_hyphen_unwind
     rsub [greater.darrow]' [equal less greater] by greater;
-    rsub [equal.end]' [equal less greater] by equal;
+    rsub [equal.end]' less by equal;
     rsub [equal.mid]' [equal greater] by equal;
     rsub [equal.sta]' [equal greater] by equal;
     rsub [less.darrow]' [equal] by less;

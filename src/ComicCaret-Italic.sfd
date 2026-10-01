@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790822346
+ModificationTime: 1790833175
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -827,7 +827,7 @@ EndFPST
 ReverseChain2: revcov "lig_equal_unwind contextual 2" 0 0 0 1
  1 0 1
   Coverage: 9 equal.end
-  FCoverage: 18 equal less greater
+  FCoverage: 4 less
   Replace: 5 equal
 EndFPST
 ReverseChain2: revcov "lig_equal_unwind contextual 1" 0 0 0 1
@@ -938,7 +938,7 @@ EndFPST
 ReverseChain2: revcov "lig_hyphen_unwind contextual 5" 0 0 0 1
  1 0 1
   Coverage: 10 hyphen.end
-  FCoverage: 19 hyphen less greater
+  FCoverage: 4 less
   Replace: 6 hyphen
 EndFPST
 ReverseChain2: revcov "lig_hyphen_unwind contextual 4" 0 0 0 1
