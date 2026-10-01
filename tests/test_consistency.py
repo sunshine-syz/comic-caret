@@ -85,7 +85,9 @@ MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
 MERGED_BELOW = 10  # a merged ogonek or cedilla lies below this height or inside its letter
 MARK_CLEARANCE = 20  # the closest a mark may come to its letter
-MARK_OFFCENTER = 30  # C's circumflex, over an open side, sits 22 right of the ink's middle
+# How far a mark may sit from its letter's middle: as far as the references' marks over C's open
+# side, Fira Code's Ĉ Č Ċ with x scaled to our advance (Intel One Mono's 28, Maple Mono's 2).
+MARK_OFFCENTER = 46
 STEM_BASES = {"dotlessi", "dotlessj", "l"}  # their marks sit over the stem, not the ink's middle
 # Accents a letter places by hand away from where its anchor puts a combining mark: ì's grave
 # leans left of the stem and í's acute right, and the anchor takes the middle of its accents.

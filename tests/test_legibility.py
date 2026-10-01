@@ -157,11 +157,14 @@ class BracketTest(unittest.TestCase):
 
 
 # The narrowest counter each glyph may have along the line at y: the narrowest reference's at
-# the same letter height, or today's for R, which is already narrower.
+# the same letter height.
 FLOORS = {
     "n": [(236, 194)], "h": [(236, 194)], "u": [(236, 194)], "d": [(236, 211)],
     "H": [(167, 211)], "N": [(334, 155)], "U": [(334, 217)], "D": [(334, 238)],
-    "B": [(167, 232), (501, 218)], "R": [(501, 211)], "eight": [(167, 256), (501, 222)],
+    "B": [(167, 232), (501, 218)], "eight": [(167, 256), (501, 222)],
+    # Today's, which falls short of the narrowest reference's: Maple Mono's 245 (Fira Code's
+    # 247, Intel One Mono's 275).
+    "R": [(501, 211)],
 }
 
 

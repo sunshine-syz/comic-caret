@@ -28,12 +28,15 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 
 # Known exceptions.
 # How far a glyph may run into the next cell: ď's caron, kept by choice, as far as Intel One
-# Mono's (93); ⎯, the -- line's middle piece, as far as the line's pieces overlap so a row of
-# them joins (OVERLAP in tools/add_ligatures.py); and the tonos left of a capital, which
-# stands in the cell before, as in Fira Code and Maple Mono: a word starts there, so that cell
-# holds a space.
+# Mono's give or take the hand's wobble; ⎯, the -- line's middle piece, as far as the line's
+# pieces overlap so a row of them joins (OVERLAP in tools/add_ligatures.py); and the tonos left
+# of a capital, which stands in the cell before, as in Fira Code and Maple Mono: a word starts
+# there, so that cell holds a space.
+WOBBLE = 10  # test_consistency's TOLERANCE: the hand's wobble
+# Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).
+DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
 TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Maple Mono's 106)
-INK_OUTSIDE_CELL = {"dcaron": 100, "uni23AF": 10,
+INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": 10,
                     **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                                      "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
 # ∄'s rotated E and slash overlap, and so do ☐ and the quarter of ■ in ◰ ◱ ◲ ◳ (references,
