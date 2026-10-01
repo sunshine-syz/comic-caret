@@ -128,9 +128,10 @@ sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 
 ## Building from source
 
 You need [FontForge](https://fontforge.org/) (`brew install fontforge` on macOS). The Nerd Fonts
-builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`). The
-Font Bakery test runs it through [`uv`](https://docs.astral.sh/uv/)'s `uvx`, which fetches it
-the first time, and skips without `uvx`.
+builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`) and
+`git`. `tools/proof_sheet.py` also needs `hb-info`, and `./build.sh --release` needs `zip` and
+`shasum`. The Font Bakery test runs it through [`uv`](https://docs.astral.sh/uv/)'s `uvx`,
+which fetches it the first time, and skips without `uvx`.
 
 ```sh
 ./build.sh                          # fonts/ComicCaret-{Regular,Italic}.otf and .ttf

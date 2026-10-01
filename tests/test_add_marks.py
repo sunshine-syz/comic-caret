@@ -29,7 +29,8 @@ class GeneratorTest(unittest.TestCase):
         # since the last run, or when a mark was edited by hand, as well as when a run is not
         # repeatable. tools/add_ligatures.py runs after it, as CLAUDE.md says: FontForge puts
         # a new contextual lookup before the others, so the last of the two to run decides
-        # their order in the SFD.
+        # their order in the SFD. This ordered rerun covers add_ligatures.py too, so it has no
+        # rerun test of its own.
         with tempfile.TemporaryDirectory() as tmp:
             copy = pathlib.Path(tmp) / SFD.name
             shutil.copy(SFD, copy)

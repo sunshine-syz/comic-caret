@@ -108,8 +108,10 @@ if [[ -n $release ]]; then
     exit 2
   fi
   # The zips are named after the SFD's version, so they must be built from a commit.
-  if [[ -n $(git status --porcelain) ]]; then
-    echo "--release needs a clean checkout; commit or stash first" >&2
+  dirty=$(git status --porcelain)
+  if [[ -n $dirty ]]; then
+    echo "--release needs a clean checkout, but git status found:" >&2
+    echo "$dirty" >&2
     exit 1
   fi
   nerd_variants=default,mono

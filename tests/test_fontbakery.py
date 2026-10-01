@@ -87,8 +87,9 @@ def known():
     return {
         "ttf": {
             soft_hyphen, no_stat, caret_slope,
-            # FontForge writes one more hmtx entry than needed: 4, where the spec asks for 3
-            # after the zero-width .null.
+            # tools/mark_advances.py gives the combining marks, which sit mid glyph order, a
+            # zero advance, so the run of equal advances the spec lets hmtx drop can only
+            # start after the last mark.
             ("WARN", "opentype/monospace", "bad-numberOfHMetrics", frozenset()),
             # ď is a reference to d and caron.alt, which the check can't inspect.
             ("WARN", "alt_caron", "decomposed-outline", frozenset({"dcaron"})),

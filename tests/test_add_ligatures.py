@@ -3,10 +3,7 @@
 Run: python3 -m unittest discover tests
 """
 import pathlib
-import shutil
-import subprocess
 import sys
-import tempfile
 import unittest
 
 import fontforge
@@ -15,19 +12,13 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import add_ligatures
 from add_ligatures import AXIS, GENERATED, OVERLAP
 from measure import gap, ink, spans_at_x, spans_at_y
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, SFD
 
-GENERATOR = ROOT / "tools" / "add_ligatures.py"
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
 # it, with its cell scaled to ours.
 FIRA_HEAD_GAP = 133
-
-
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
 
 
 def widths_at(layer, y):
@@ -64,15 +55,6 @@ def one_layer(contour):
 
 
 class GeneratorTest(unittest.TestCase):
-    def test_rerunning_changes_nothing(self):
-        # Fails when src/ligatures.fea or the generator changed without a rerun, or when a
-        # generated glyph was edited by hand, as well as when a run is not repeatable.
-        with tempfile.TemporaryDirectory() as tmp:
-            copy = pathlib.Path(tmp) / SFD.name
-            shutil.copy(SFD, copy)
-            subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(without_timestamp(copy), without_timestamp(SFD))
-
     def test_generated_names_match_only_generated_glyphs(self):
         # The generator deletes every glyph whose name matches GENERATED before rebuilding, so
         # a hand-made glyph with such a name would silently disappear.

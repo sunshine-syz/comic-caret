@@ -129,7 +129,8 @@ looks is judged on the proof sheet, not asserted.
   on both styles; the rules on glyphs and classes run on the regular, which the italic is
   derived from.
 - Prefer a class rule: add a new glyph to its class in `test_consistency.py` (`ROWS`,
-  `CENTERED`, `ON_AXIS`, `MIRRORED`) rather than writing a test for it.
+  `CENTERED`, `ON_AXIS`, `MIRRORED`, `MIRRORED_OUTLINES`, the left glyphs of `MIRRORED` that must be their right one
+  mirrored exactly) rather than writing a test for it.
 - A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a
   counter or gap is at least the narrowest reference's, parts don't touch, a glyph is built from
   another. Never assert a coordinate, width or offset that only records today's design: if the
