@@ -29,6 +29,8 @@ OTS_EXCLUDE_NEWER = "2026-09-30"
 SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)'
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
+MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
+HEAD_MODIFIED = 28  # offset of head.modified
 
 
 def shaped(font, text):
@@ -71,10 +73,14 @@ def advances(font):
     return widths
 
 
+def tables(font):
+    """{tag: table bytes} of the font file."""
+    return dict(read_tables(font.read_bytes())[2])
+
+
 def english_names(font):
     """{name ID: text} of the font file's Windows English (US) name records."""
-    _, _, tables = read_tables(font.read_bytes())
-    table = dict(tables)[b"name"]
+    table = tables(font)[b"name"]
     _, count, strings = struct.unpack_from(">3H", table)
     names = {}
     for i in range(count):
@@ -83,6 +89,13 @@ def english_names(font):
             start = strings + offset
             names[name_id] = table[start:start + length].decode("utf-16-be")
     return names
+
+
+def cmap_encodings(font):
+    """{(platform, encoding)} of the font file's cmap subtables."""
+    cmap = tables(font)[b"cmap"]
+    count = struct.unpack_from(">H", cmap, 2)[0]
+    return {struct.unpack_from(">HH", cmap, 4 + 8 * i) for i in range(count)}
 
 
 def opening_warnings(font):
@@ -127,9 +140,10 @@ class BuiltFontTest(unittest.TestCase):
         cls.marks = [(chr(g.unicode), g.glyphname, g.boundingBox())
                      for g in glyphs if takes_no_cell(chr(g.unicode))]
         cls.widths = {g.glyphname: g.width for g in sfd.glyphs()}
-        # Not the unique ID (3), which records the build rather than the font. The version
-        # string takes the form the OpenType spec gives it.
-        cls.font_names = {1: sfd.familyname, 2: cls.style, 4: sfd.fullname,
+        # The version string takes the form the OpenType spec gives it, and the unique ID the
+        # one fontmake gives it, which names the release rather than the day of the build.
+        cls.font_names = {1: sfd.familyname, 2: cls.style,
+                          3: f"{sfd.version};{sfd.os2_vendor};{sfd.fontname}", 4: sfd.fullname,
                           5: f"Version {sfd.version}", 6: sfd.fontname}
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
@@ -175,6 +189,25 @@ class BuiltFontTest(unittest.TestCase):
                                               if typographic in names}
                 self.assertEqual({name_id: names.get(name_id) for name_id in expected},
                                  expected)
+
+    def test_fonts_carry_no_fontforge_table(self):
+        # FFTM is FontForge's record of when it and the font were made; nothing else reads it.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                self.assertNotIn(b"FFTM", set(tables(font)))
+
+    def test_formats_share_the_modification_date(self):
+        # Both are dated by SOURCE_DATE_EPOCH, so the two files of one build agree.
+        otf, ttf = (struct.unpack_from(">q", tables(font)[b"head"], HEAD_MODIFIED)[0]
+                    for font in self.fonts)
+        self.assertEqual(otf, ttf)
+
+    def test_cmap_has_no_mac_roman_subtable(self):
+        # Every current platform reads the Unicode subtables; the Mac Roman one only repeats
+        # 256 of their characters in an old encoding.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                self.assertNotIn(MAC_ROMAN, cmap_encodings(font))
 
     def test_hint_masks_name_only_the_glyphs_stems(self):
         # A CFF hint mask has a bit for each of the glyph's stems; one set past them is

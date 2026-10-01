@@ -133,8 +133,8 @@ if [[ -n $nerd_variants ]]; then
 fi
 
 mkdir -p "$OUT_DIR"
-# FontForge stamps the build date into the unique ID (name ID 3). Use the last commit's time
-# instead, so building the same commit on another day gives the same bytes. HEAD rather than
+# FontForge dates the fonts' head.modified by the build. Use the last commit's time instead,
+# so building the same commit on another day gives the same bytes. HEAD rather than
 # the SFD's last commit, because a shallow clone (the CI default) can't see the latter.
 if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && epoch=$(git log -1 --format=%ct 2>/dev/null) &&
   [[ -n $epoch ]]; then
