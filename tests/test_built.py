@@ -4,11 +4,13 @@ the font's names; and they pass ots, the sanitizer browsers run web fonts throug
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
 import json
+import os
 import pathlib
 import shutil
 import struct
 import subprocess
 import sys
+import tempfile
 import unicodedata
 import unittest
 
@@ -17,7 +19,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from make_italic import AXIS, SLANT
 from mark_advances import read_tables
-from project import ADVANCE, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
+from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
@@ -31,6 +33,8 @@ OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
 HEAD_MODIFIED = 28  # offset of head.modified
+MAC_EPOCH = 2082844800  # seconds from 1904-01-01, where head's dates count from, to 1970-01-01
+GENERATE = ROOT / "tools" / "generate.py"
 
 
 def shaped(font, text):
@@ -215,6 +219,21 @@ class BuiltFontTest(unittest.TestCase):
         # malformed, and FontForge warns about it as it reads the glyph.
         otf = font_file(self.style, "otf")
         self.assertEqual([line for line in opening_warnings(otf) if "Hint mask" in line], [])
+
+
+class GenerateDateTest(unittest.TestCase):
+    def test_both_formats_carry_the_build_time(self):
+        epoch = 1700000000
+        with tempfile.TemporaryDirectory() as tmp:
+            for ext in ("otf", "ttf"):
+                out = pathlib.Path(tmp) / f"ComicCaret-Regular.{ext}"
+                subprocess.run(["fontforge", "-quiet", "-script", str(GENERATE), str(SFD), str(out)],
+                               check=True, capture_output=True,
+                               env={**os.environ, "SOURCE_DATE_EPOCH": str(epoch)})
+                with self.subTest(format=ext):
+                    head = tables(out)[b"head"]
+                    self.assertEqual(struct.unpack_from(">q", head, HEAD_MODIFIED)[0],
+                                     epoch + MAC_EPOCH)
 
 
 class ItalicBuiltFontTest(BuiltFontTest):

@@ -2,9 +2,11 @@
 
 Usage: fontforge -quiet -script tools/generate.py SOURCE.sfd OUTPUT.otf|OUTPUT.ttf
 """
+import os
 import pathlib
 import struct
 import sys
+import time
 
 import fontforge
 import psMat
@@ -15,6 +17,8 @@ from mark_advances import read_tables, write_tables, zero_mark_advances
 CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
 CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset
 MAC_ROMAN = (1, 0)                   # the platform and encoding of the subtable to drop
+HEAD_MODIFIED = 28                   # offset of head.modified
+MAC_EPOCH = 2082844800               # seconds from 1904-01-01, where head's dates count, to 1970
 
 
 def is_composite(glyph):
@@ -69,12 +73,23 @@ def without_mac_roman(cmap):
             + subtables)
 
 
-def drop_mac_roman_cmap(path):
-    """Rewrite the font file at `path` without its Mac Roman cmap subtable."""
+def finish_tables(path, modified):
+    """Rewrite the font file at `path` without its Mac Roman cmap subtable, and with
+    head.modified set to `modified` (seconds since 1970).
+
+    FontForge dates the OTF by the SFD's ModificationTime, so stamping here gives both formats
+    of a build the same date. write_tables recomputes the checksums the edits invalidate.
+    """
     version, search, tables = read_tables(path.read_bytes())
-    path.write_bytes(write_tables(version, search,
-                                  [(tag, without_mac_roman(table) if tag == b"cmap" else table)
-                                   for tag, table in tables]))
+    out = []
+    for tag, table in tables:
+        if tag == b"cmap":
+            table = without_mac_roman(table)
+        elif tag == b"head":
+            table = (table[:HEAD_MODIFIED] + struct.pack(">q", modified + MAC_EPOCH)
+                     + table[HEAD_MODIFIED + 8:])
+        out.append((tag, table))
+    path.write_bytes(write_tables(version, search, out))
 
 
 def main(source, output):
@@ -86,12 +101,6 @@ def main(source, output):
     # names the day of the build.
     font.appendSFNTName("English (US)", "UniqueID",
                         f"{font.version};{font.os2_vendor};{font.fontname}")
-    # FontForge dates head.modified by the SFD's ModificationTime until a glyph changes, and
-    # then by SOURCE_DATE_EPOCH (the time now without it), as flattening does in the TTF.
-    # Setting the blank space's advance to itself changes a glyph and nothing that ships, so
-    # both formats get the same date.
-    space = font["space"]
-    space.width = space.width
     # CFF has no components, so only the TTF needs this. Leaving the OTF path alone keeps its
     # stored hints valid.
     if output.endswith(".ttf"):
@@ -101,7 +110,10 @@ def main(source, output):
     # "no-FFTM-table" FontForge's record of when it and the font were made.
     font.generate(output, flags=("opentype", "no-mac-names", "no-FFTM-table"))
     path = pathlib.Path(output)
-    drop_mac_roman_cmap(path)
+    # build.sh sets it to the last commit's time so a rebuild gives the same bytes; a direct run
+    # (proof_sheet.py --before) takes the time now.
+    modified = int(os.environ.get("SOURCE_DATE_EPOCH", time.time()))
+    finish_tables(path, modified)
     if output.endswith(".ttf"):
         zero_mark_advances(path)
 
