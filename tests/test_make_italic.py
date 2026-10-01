@@ -74,6 +74,16 @@ class GeneratorTest(unittest.TestCase):
         self.assertEqual(sorted(styles), sorted(g.glyphname for g in font.glyphs()))
         self.assertLessEqual(set(styles.values()), {SLANTED, UPRIGHT, CURSIVE})
 
+    def test_unencoded_unreferenced_glyph_must_be_classed(self):
+        # Only the generators' glyphs are known to slant; any other one has to be classed.
+        font = fontforge.font()
+        # glyphs() skips an unencoded glyph until something is set on it.
+        font.createChar(-1, "colon.eq").width = 550
+        self.assertEqual(make_italic.classify(font)["colon.eq"], SLANTED)
+        font.createChar(-1, "mystery").width = 550
+        with self.assertRaisesRegex(SystemExit, "mystery"):
+            make_italic.classify(font)
+
 
 class ItalicTest(unittest.TestCase):
     @classmethod

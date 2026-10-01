@@ -43,7 +43,7 @@ import psMat
 import lig_geometry as geo
 import measure
 from add_box_drawing import KAPPA
-from add_ligatures import AXIS
+from add_ligatures import AXIS, GENERATED
 from add_shapes import clockwise
 from project import ITALIC_SFD, SFD, save_checked, validation_errors
 
@@ -122,7 +122,8 @@ def classify(font):
 
     An encoded glyph goes by its character; .notdef, a box, stays upright. An unencoded part
     follows the glyphs built from it, and a ligature piece, which only a substitution reaches,
-    is an operator's and slants.
+    is an operator's and slants. Any other unencoded glyph nothing references stops the
+    generator: only the generators' glyphs are known to slant, so it has to be classed.
     """
     styles = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE)}
     users = collections.defaultdict(set)
@@ -137,6 +138,9 @@ def classify(font):
         for name in pending:
             found = {styles.get(user) for user in users[name]}
             if not users[name]:
+                if not GENERATED.fullmatch(name):
+                    sys.exit(f"{name} is unencoded and no glyph uses it: class it upright or "
+                             "slanted in make_italic.py")
                 styles[name] = SLANTED
             elif None in found:
                 left.append(name)  # a user is itself unclassified yet
