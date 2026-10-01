@@ -286,7 +286,8 @@ class ItalicMarkShapingTest(MarkShapingTest):
 
 class SanitizerTest(unittest.TestCase):
     """Every built font passes ots, which rejects a font whose tables break the spec's rules
-    before a browser loads it. Skips without uvx."""
+    before a browser loads it. A Nerd Fonts build older than the SFDs is skipped by name, as in
+    NerdFontTest. Skips without uvx."""
 
     @classmethod
     def setUpClass(cls):
@@ -294,14 +295,19 @@ class SanitizerTest(unittest.TestCase):
             raise unittest.SkipTest("uvx is not installed")
         for style in STYLES:
             require_current_build(style)
-        # The Nerd Fonts builds older than the SFDs are skipped by name in NerdFontTest.
-        cls.fonts = [font for fonts in FONTS.values() for font in fonts] + nerd_fonts()[0]
+        nerd, cls.stale = nerd_fonts()
+        cls.fonts = [font for fonts in FONTS.values() for font in fonts] + nerd
 
     def test_fonts_pass_the_sanitizer(self):
         for font in self.fonts:
             with self.subTest(font=font.name):
                 result = sanitize(font)
                 self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_stale_nerd_builds_are_skipped(self):
+        for font in self.stale:
+            with self.subTest(font=font.name):
+                self.skipTest("older than the SFDs; rebuild with ./build.sh --nerd")
 
 
 class NerdFontTest(unittest.TestCase):

@@ -165,16 +165,19 @@ class ImageTest(unittest.TestCase):
         self.assertTrue(any(ligated(line) for line in CODE if line))
 
     def test_the_committed_images_are_current(self):
-        # The bytes depend on the toolchain as well: another FontForge or HarfBuzz can move a
-        # point by a unit, so the images are rendered with the one that builds the release.
+        # The bytes depend on the toolchain as well: another FontForge, HarfBuzz or cairo
+        # (hb-view's SVG output) can move a point by a unit, so the images are rendered with
+        # the one that builds the release.
         if reason := render_specimen.stale_build():
             self.skipTest(reason)
+        rerun = "rerun python3 tools/render_specimen.py"
         for name, svg in self.svgs.items():
             image = OUT / f"{name}.svg"
             with self.subTest(image=name):
+                self.assertTrue(image.exists(), f"{image.relative_to(ROOT)} is missing; {rerun}")
                 self.assertTrue(image.read_bytes() == svg.encode("utf-8"),
-                                f"{image.relative_to(ROOT)} is out of date; "
-                                "rerun python3 tools/render_specimen.py")
+                                f"{image.relative_to(ROOT)} differs from a fresh render "
+                                f"(a glyph or toolchain change); {rerun}")
 
 
 if __name__ == "__main__":
