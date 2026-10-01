@@ -15,11 +15,13 @@ import sys
 
 import fontforge
 
-from project import ROOT, SFD, STYLES
+from project import ROOT, STYLES
 
 CHANGELOG = ROOT / "CHANGELOG.md"
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 HEADING = re.compile(r"^## (\S+) \((.+)\)$", re.MULTILINE)
+FIRST_HEADING = re.compile(r"^## .*$", re.MULTILINE)
+VALID_HEADING = re.compile(rf"## ({VERSION.pattern}) \((unreleased|\d{{4}}-(?:0[1-9]|1[0-2]))\)")
 UNRELEASED = "unreleased"
 
 
@@ -27,7 +29,7 @@ class VersionError(Exception):
     """A version or tag that doesn't fit the SFD and the changelog; nothing was written."""
 
 
-def sfd_version(sfd=SFD):
+def sfd_version(sfd):
     # Reading the text is enough, and far quicker than opening the SFD in FontForge.
     match = re.search(r"^Version: (.+)$", sfd.read_text(encoding="utf-8"), re.MULTILINE)
     if match is None:
@@ -41,10 +43,24 @@ def headings(text):
 
 
 def newest(text, changelog):
-    heads = headings(text)
-    if not heads:
+    """The first `## ` heading, which must be well formed: a skipped one would let an older
+    heading's version be read as the head."""
+    first = FIRST_HEADING.search(text)
+    if first is None:
         raise VersionError(f"{changelog.name} has no version heading")
-    return heads[0]
+    valid = VALID_HEADING.fullmatch(first.group())
+    if valid is None:
+        raise VersionError(f"{changelog.name}'s first heading, {first.group()!r}, is not "
+                           f"'## X.Y.Z (unreleased)' or '## X.Y.Z (YYYY-MM)'")
+    return valid.group(1), valid.group(2), first
+
+
+def check_sfds(sfds, version, changelog):
+    """Refuse unless every SFD is at `version`, the changelog's head."""
+    for sfd in sfds:
+        if sfd_version(sfd) != version:
+            raise VersionError(f"{changelog.name} heads with {version}, but {sfd.name} is "
+                               f"{sfd_version(sfd)}")
 
 
 def ordered(version):
@@ -76,34 +92,34 @@ def start(version, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
     changelog.write_text(text, encoding="utf-8")
 
 
-def release(sfd=SFD, changelog=CHANGELOG, today=None):
+def release(sfds=tuple(STYLES.values()), changelog=CHANGELOG, today=None):
     """Give the changelog's unreleased head this month; returns the tag to make."""
     text = changelog.read_text(encoding="utf-8")
     version, month, head = newest(text, changelog)
     if month != UNRELEASED:
         raise VersionError(f"{version} was released in {month}; start the next version first")
-    if version != sfd_version(sfd):
-        raise VersionError(f"{changelog.name} heads with {version}, but {sfd.name} is "
-                           f"{sfd_version(sfd)}")
-    today = today or datetime.datetime.now(datetime.UTC).date()
+    check_sfds(sfds, version, changelog)
+    # The release is named for the maintainer's calendar, not UTC's.
+    today = today or datetime.date.today()
     changelog.write_text(text[:head.start()] + f"## {version} ({today:%Y-%m})"
                          + text[head.end():], encoding="utf-8")
     return f"v{version}"
 
 
-def check_tag(tag, sfd=SFD, changelog=CHANGELOG):
-    """Refuse `tag` unless it names the SFD's version, released at the changelog's head."""
-    version = sfd_version(sfd)
+def check_tag(tag, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+    """Refuse `tag` unless it names the SFDs' version, released at the changelog's head."""
+    version, month, _ = newest(changelog.read_text(encoding="utf-8"), changelog)
+    check_sfds(sfds, version, changelog)
+    if tag == version:
+        raise VersionError(f"{tag} lacks its leading v; the tag is v{version}")
     if tag != f"v{version}":
         raise VersionError(f"{tag} doesn't name the SFD's version; the tag is v{version}")
-    head, month, _ = newest(changelog.read_text(encoding="utf-8"), changelog)
-    if head != version:
-        raise VersionError(f"{changelog.name} heads with {head}, not {version}")
     if month == UNRELEASED:
         raise VersionError(f"{version} is unreleased; run tools/bump_version.py --release first")
 
 
-def main():
+def main(argv=None, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+    """Returns the exit code; the files are parameters so tests can use copies."""
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("version", nargs="?", help="start this version, X.Y.Z")
@@ -111,21 +127,24 @@ def main():
                         help="date the changelog's unreleased head with this month")
     action.add_argument("--check-tag", metavar="TAG",
                         help="exit non-zero unless TAG is v + the released version")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         if args.release:
-            tag = release()
-            print(f"Dated {tag[1:]} in {CHANGELOG.name}; commit, build and check, then tag {tag}.")
+            tag = release(sfds, changelog)
+            print(f"Dated {tag[1:]} in {changelog.name}; commit, build and check, then tag {tag}.")
         elif args.check_tag:
-            check_tag(args.check_tag)
-            print(f"{args.check_tag} matches {SFD.name} and {CHANGELOG.name}.")
+            check_tag(args.check_tag, sfds, changelog)
+            names = ", ".join(sfd.name for sfd in sfds)
+            print(f"{args.check_tag} matches {names} and {changelog.name}.")
         else:
-            start(args.version)
-            names = ", ".join(sfd.name for sfd in STYLES.values())
-            print(f"{names} and {CHANGELOG.name} are at {args.version}, unreleased.")
+            start(args.version, sfds, changelog)
+            names = ", ".join(sfd.name for sfd in sfds)
+            print(f"{names} and {changelog.name} are at {args.version}, unreleased.")
     except VersionError as error:
-        sys.exit(str(error))
+        print(error, file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

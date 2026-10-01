@@ -1,5 +1,7 @@
 """tools/bump_version.py on copies of the SFD and a changelog, never the real ones."""
+import contextlib
 import datetime
+import io
 import pathlib
 import re
 import sys
@@ -9,7 +11,7 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import bump_version
 from bump_version import VersionError
-from project import SFD
+from project import ITALIC_SFD, SFD
 
 RELEASED = "# Changelog\n\n## 1.1.0 (2026-10)\n\n- Two.\n\n## 1.0.0 (2026-09)\n\n- One.\n"
 UNRELEASED = "# Changelog\n\n## 1.2.0 (unreleased)\n\n- Three.\n\n" + RELEASED[len("# Changelog\n\n"):]
@@ -22,10 +24,10 @@ class BumpVersionTest(unittest.TestCase):
         self.dir = pathlib.Path(tmp.name)
         self.changelog = self.dir / "CHANGELOG.md"
 
-    def sfd_at(self, version):
-        """A copy of the SFD whose Version: is `version`, as text: no FontForge save."""
-        sfd = self.dir / SFD.name
-        text = SFD.read_text(encoding="utf-8")
+    def sfd_at(self, version, source=SFD):
+        """A copy of `source` whose Version: is `version`, as text: no FontForge save."""
+        sfd = self.dir / source.name
+        text = source.read_text(encoding="utf-8")
         sfd.write_text(re.sub(r"^Version: .*$", f"Version: {version}", text, count=1,
                               flags=re.MULTILINE), encoding="utf-8")
         return sfd
@@ -73,7 +75,7 @@ class BumpVersionTest(unittest.TestCase):
     def test_release_dates_the_unreleased_head(self):
         sfd = self.sfd_at("1.2.0")
         self.write_changelog(UNRELEASED)
-        tag = bump_version.release(sfd, self.changelog, datetime.date(2026, 11, 3))
+        tag = bump_version.release([sfd], self.changelog, datetime.date(2026, 11, 3))
         self.assertEqual(tag, "v1.2.0")
         self.assertEqual(self.heads()[0], "## 1.2.0 (2026-11)")
 
@@ -83,22 +85,93 @@ class BumpVersionTest(unittest.TestCase):
                 sfd = self.sfd_at(version)
                 self.write_changelog(text)
                 with self.assertRaises(VersionError):
-                    bump_version.release(sfd, self.changelog, datetime.date(2026, 11, 3))
+                    bump_version.release([sfd], self.changelog, datetime.date(2026, 11, 3))
                 self.assertEqual(self.changelog.read_text(encoding="utf-8"), text)
 
     def test_check_tag_accepts_only_the_released_version(self):
         sfd = self.sfd_at("1.1.0")
         self.write_changelog(RELEASED)
-        bump_version.check_tag("v1.1.0", sfd, self.changelog)
+        bump_version.check_tag("v1.1.0", [sfd], self.changelog)
         for tag in ("v1.1.1", "1.1.0", "v1.0.0"):
             with self.subTest(tag=tag), self.assertRaises(VersionError):
-                bump_version.check_tag(tag, sfd, self.changelog)
+                bump_version.check_tag(tag, [sfd], self.changelog)
 
     def test_check_tag_refuses_an_unreleased_version(self):
         sfd = self.sfd_at("1.2.0")
         self.write_changelog(UNRELEASED)
         with self.assertRaises(VersionError):
-            bump_version.check_tag("v1.2.0", sfd, self.changelog)
+            bump_version.check_tag("v1.2.0", [sfd], self.changelog)
+
+    def test_check_tag_names_a_missing_v(self):
+        sfd = self.sfd_at("1.1.0")
+        self.write_changelog(RELEASED)
+        with self.assertRaisesRegex(VersionError, "leading v"):
+            bump_version.check_tag("1.1.0", [sfd], self.changelog)
+
+    def test_check_tag_refuses_when_the_sfd_and_the_changelog_disagree(self):
+        sfd = self.sfd_at("1.0.0")
+        self.write_changelog(RELEASED)
+        for tag in ("v1.0.0", "v1.1.0"):
+            with self.subTest(tag=tag), self.assertRaisesRegex(VersionError, sfd.name):
+                bump_version.check_tag(tag, [sfd], self.changelog)
+
+    def test_release_and_check_tag_refuse_when_only_the_italic_differs(self):
+        regular = self.sfd_at("1.2.0")
+        italic = self.sfd_at("1.1.0", ITALIC_SFD)
+        for text, call in ((UNRELEASED, lambda: bump_version.release(
+                                [regular, italic], self.changelog, datetime.date(2026, 11, 3))),
+                           (RELEASED, lambda: bump_version.check_tag(
+                               "v1.1.0", [self.sfd_at("1.1.0"), self.sfd_at("1.0.0", ITALIC_SFD)],
+                               self.changelog))):
+            with self.subTest(text=text[:30]):
+                self.write_changelog(text)
+                with self.assertRaisesRegex(VersionError, ITALIC_SFD.name):
+                    call()
+                self.assertEqual(self.changelog.read_text(encoding="utf-8"), text)
+
+    def test_only_the_first_heading_counts_and_it_must_be_well_formed(self):
+        sfd = self.sfd_at("1.1.0")
+        older = RELEASED[len("# Changelog\n\n"):]
+        for heading in ("## 1.2.0 (Unreleased)", "## 1.2 (unreleased)", "## 1.2.0 (2026-13)",
+                        "## 1.2.0 (2026-00)", "## 1.2.0 (2026-9)", "## 1.2.0", "## 1.2.0 (soon)",
+                        "##  1.2.0 (unreleased)"):
+            text = f"# Changelog\n\n{heading}\n\n- Three.\n\n{older}"
+            with self.subTest(heading=heading):
+                self.write_changelog(text)
+                for call in (lambda: bump_version.release([sfd], self.changelog),
+                             lambda: bump_version.check_tag("v1.1.0", [sfd], self.changelog),
+                             lambda: bump_version.start("1.3.0", [sfd], self.changelog)):
+                    with self.assertRaisesRegex(VersionError, re.escape(repr(heading))):
+                        call()
+                self.assertEqual(self.changelog.read_text(encoding="utf-8"), text)
+
+    def test_release_dates_by_the_local_month_by_default(self):
+        sfd = self.sfd_at("1.2.0")
+        self.write_changelog(UNRELEASED)
+        today = datetime.date.today()
+        bump_version.release([sfd], self.changelog)
+        self.assertEqual(self.heads()[0], f"## 1.2.0 ({today:%Y-%m})")
+
+    def test_main_exit_codes(self):
+        regular = self.sfd_at("1.2.0")
+        italic = self.sfd_at("1.2.0", ITALIC_SFD)
+        sfds = [regular, italic]
+        self.write_changelog(UNRELEASED)
+
+        def run(*argv):
+            return bump_version.main(list(argv), sfds, self.changelog)
+
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(run("--check-tag", "v1.2.0"), 1)  # still unreleased
+            self.assertEqual(run("--release"), 0)
+            self.assertEqual(run("--release"), 1)  # already dated
+            self.assertEqual(run("--check-tag", "v1.2.0"), 0)
+            self.assertEqual(run("--check-tag", "1.2.0"), 1)
+            self.assertEqual(run("1.2.0"), 1)  # not above the last release
+            self.assertEqual(run("1.3.0"), 0)
+            self.assertEqual(bump_version.sfd_version(italic), "1.3.0")
+            self.assertEqual(self.heads()[0], "## 1.3.0 (unreleased)")
+            self.assertEqual(run("1.x"), 1)
 
 
 if __name__ == "__main__":
