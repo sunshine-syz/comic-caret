@@ -18,13 +18,15 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import add_shapes
 import lig_geometry as geo
 import measure
 from project import ADVANCE, ROOT, SFD
+from test_consistency import TOLERANCE  # the hand's wobble
+from test_make_italic import ROUNDING
 
 GENERATOR = ROOT / "tools" / "add_shapes.py"
-TOLERANCE = 10  # the hand's wobble, as in test_consistency.py
 # A spinner's frames share one box, so it turns without pulsing (the arcs and the stars have
 # rules of their own).
 FAMILIES = ("◐◑◒◓", "◴◵◶◷", "◰◱◲◳", "☰☱☲☳☴☵☶☷", "⊶⊷", "☖☗", "▰▱", "▮▯", "◎⊙⦾⦿◌◍", "⧆⧇")
@@ -35,7 +37,6 @@ HOLDS = {"◐": "○", "◑": "○", "◒": "○", "◓": "○", "◴": "○", "
 TRIGRAMS = {"☰": "", "☱": "top", "☲": "middle", "☳": "top middle", "☴": "bottom",
             "☵": "top bottom", "☶": "middle bottom", "☷": "top middle bottom"}
 STARS = {"✷": 8, "✸": 8, "✹": 12, "✺": 16}  # points
-# ‼'s dots keep at least Maple Mono's white between them (the only reference's, at our em).
 
 
 def without_timestamp(path):
@@ -140,40 +141,45 @@ class FrameTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_arcs_are_the_quarters_and_halves_of_the_circle(self):
-        # Each arc's box is the part of ○'s box its name gives, cut at the middle.
+        # Each arc's box is the part of ○'s box its name gives, cut at the middle, to the
+        # rounding of its points.
         x0, y0, x1, y1 = box(self.font, "○")
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
         want = {"◜": (x0, cy, cx, y1), "◝": (cx, cy, x1, y1), "◞": (cx, y0, x1, cy),
                 "◟": (x0, y0, cx, cy), "◠": (x0, cy, x1, y1), "◡": (x0, y0, x1, cy)}
         off = {char: box(self.font, char) for char, b in want.items()
-               if any(abs(a - c) > 1 for a, c in zip(box(self.font, char), b))}
+               if any(abs(a - c) > ROUNDING for a, c in zip(box(self.font, char), b))}
         self.assertEqual(off, {})
 
     def test_triangles_are_the_squares_corners(self):
         # ◢ fills ■'s lower right half: its box is ■'s, and its ink covers the corner and
         # not the opposite one. ◣ is ◢ mirrored and ◤ ◥ are ◢ ◣ turned (test_consistency
-        # and test_symbols).
+        # and test_symbols). Where the diagonal cuts ■'s rounded corners, alike at both ends,
+        # ◢'s box falls short of ■'s by as far as ■'s ink lies in from the corner along it.
         x0, y0, x1, y1 = box(self.font, "■")
-        ink = self.ink("◢")
+        square, ink = self.ink("■"), self.ink("◢")
+        inset = next(d for d in range(round(x1 - x0))
+                     if any(a <= x0 + d <= b for a, b in measure.spans_at_y(square, y0 + d)))
         for got, want in zip(ink.boundingBox(), (x0, y0, x1, y1)):
-            self.assertAlmostEqual(got, want, delta=TOLERANCE + 2)
+            self.assertAlmostEqual(got, want, delta=inset + ROUNDING)
         near = (x1 - x0) / 10
         self.assertTrue(any(a <= x1 - near <= b for a, b in measure.spans_at_y(ink, y0 + near)))
         self.assertFalse(any(a <= x0 + near <= b for a, b in measure.spans_at_y(ink, y1 - near)))
 
     def test_bars_are_the_square_narrowed(self):
-        # ▯ keeps ☐'s height and stroke; ▮ is ▯ filled (test_symbols). About half as wide,
-        # as Fira Code's, the only reference's.
+        # ▯ keeps ☐'s height and stroke, to the rounding of its points, which were only moved
+        # sideways; ▮ is ▯ filled (test_symbols). About half as wide, as Fira Code's, the only
+        # reference's.
         _, y0, _, y1 = box(self.font, "☐")
         bx0, by0, bx1, by1 = box(self.font, "▯")
-        self.assertAlmostEqual(by0, y0, delta=1)
-        self.assertAlmostEqual(by1, y1, delta=1)
+        self.assertAlmostEqual(by0, y0, delta=ROUNDING)
+        self.assertAlmostEqual(by1, y1, delta=ROUNDING)
         self.assertLess(bx1 - bx0, 0.6 * (by1 - by0))
         box_walls = measure.spans_at_y(self.ink("☐"), (y0 + y1) / 2)
         bar_walls = measure.spans_at_y(self.ink("▯"), (y0 + y1) / 2)
         self.assertEqual(len(bar_walls), 2)
         for (a, b), (c, d) in zip(bar_walls, box_walls):
-            self.assertAlmostEqual(b - a, d - c, delta=2)
+            self.assertAlmostEqual(b - a, d - c, delta=2 * ROUNDING)  # both sides of a wall
 
     def only_reference(self, char):
         glyph = self.font[ord(char)]

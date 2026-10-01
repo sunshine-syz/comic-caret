@@ -14,9 +14,12 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
+from test_consistency import ROW_TOLERANCE
+from test_consistency import TOLERANCE as MIDDLE_TOLERANCE  # the hand's wobble
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
@@ -25,7 +28,18 @@ SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔�
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
-MIDDLE_TOLERANCE = 10  # test_consistency's TOLERANCE: the hand's wobble
+# How far a stroke drawn from another may stray from its weight: as far as the pen's weight
+# strays along one stroke, |'s (76-80).
+WEIGHT_TOLERANCE = 4
+# How far ≠'s slash runs past ='s bars: at least the narrowest reference's, Fira Code's below its
+# bars at our cap height (Intel One Mono's 147, Maple Mono's 174).
+NOT_EQUAL_REACH = 146
+# The white between ≈'s waves: at least the narrowest reference's, Intel One Mono's at our cap
+# height (Fira Code's 79, Maple Mono's 85).
+APPROX_GAP = 69
+# How much taller ✓ ✗ ✕ stand than ×: at least the least of the references', Maple Mono's ✕ at
+# our cap height (its ✓ 103 and ✗ 131; Intel One Mono's ✓ 99, Fira Code's 327).
+MARK_OVER_TIMES = 68
 # Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
 # head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
 # another arrow than its → too; it stands where → does (BuiltFromTest).
@@ -135,8 +149,8 @@ class OperatorTest(unittest.TestCase):
         _, bottom, _, top = glyph.boundingBox()
         _, bar_bottom, _, bar_top = self.font["equal"].boundingBox()
         self.assertEqual(len(glyph.foreground), 1)  # slash and bars are one outline
-        self.assertGreaterEqual(top - bar_top, 60)
-        self.assertGreaterEqual(bar_bottom - bottom, 60)
+        self.assertGreaterEqual(top - bar_top, NOT_EQUAL_REACH)
+        self.assertGreaterEqual(bar_bottom - bottom, NOT_EQUAL_REACH)
 
     def test_identical_bars_are_three_equal_bars(self):
         equal = measure.spans_at_x(self.font["equal"].foreground, 275)
@@ -159,7 +173,7 @@ class OperatorTest(unittest.TestCase):
         waves = [geo.transformed(tilde, matrix)
                  for _, matrix, *_ in self.font["approxequal"].references]
         self.assertEqual(len(waves), 2)
-        self.assertGreaterEqual(measure.gap(*waves), 60)
+        self.assertGreaterEqual(measure.gap(*waves), APPROX_GAP)
 
     def test_infinity_has_two_matching_holes(self):
         # At least the narrowest reference's holes, 155 wide and 169 tall.
@@ -250,14 +264,14 @@ class MarkTest(unittest.TestCase):
         for code in (0x2713, 0x2717, 0x2715):
             with self.subTest(mark=chr(code)):
                 _, y0, _, y1 = self.font[code].boundingBox()
-                self.assertGreaterEqual((y1 - y0) - (t1 - t0), 100)
+                self.assertGreaterEqual((y1 - y0) - (t1 - t0), MARK_OVER_TIMES)
 
     def test_ballot_x_is_not_the_letter_x(self):
-        # About as wide as it is tall and under cap height, as Maple Mono's (494 × 486); at X's
-        # tall, narrow proportions [✗] and [X] look the same.
+        # About as wide as it is tall and off the cap-height row, as Maple Mono's (494 × 486); at
+        # X's tall, narrow proportions [✗] and [X] look the same.
         x0, y0, x1, y1 = self.font[0x2717].boundingBox()
         self.assertAlmostEqual((x1 - x0) / (y1 - y0), 1, delta=0.1)
-        self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - 60)
+        self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - ROW_TOLERANCE)
 
     def test_replacement_character_is_a_diamond_with_a_question_mark(self):
         contours = list(self.font[0xFFFD].foreground)
@@ -652,13 +666,14 @@ class KeyHintTest(unittest.TestCase):
         [bar] = [p for p in pieces if p is not arrow]
         dy = arrow.boundingBox()[1] - up.boundingBox()[1]
         self.assertEqual(shape(arrow), shape(geo.transformed(up, psMat.translate(0, dy))))
-        _, y0, _, _ = up.boundingBox()
-        (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + 100)  # the shaft's walls
+        # The shaft's walls, a quarter of the way up: ⇧'s head takes its upper half.
+        _, y0, _, y1 = up.boundingBox()
+        (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
         bx0, by0, bx1, by1 = bar.boundingBox()
         self.assertLess(by1, arrow.boundingBox()[1])
-        self.assertAlmostEqual(by1 - by0, l1 - l0, delta=4)
-        self.assertAlmostEqual(bx0, l0, delta=4)
-        self.assertAlmostEqual(bx1, r1, delta=4)
+        self.assertAlmostEqual(by1 - by0, l1 - l0, delta=WEIGHT_TOLERANCE)
+        self.assertAlmostEqual(bx0, l0, delta=MIDDLE_TOLERANCE)
+        self.assertAlmostEqual(bx1, r1, delta=MIDDLE_TOLERANCE)
 
     def test_page_arrows_are_the_arrows_with_two_bars(self):
         # ↑ and ↓ whole, with two bars of the hyphen's stroke across the shaft, reaching past
@@ -671,13 +686,14 @@ class KeyHintTest(unittest.TestCase):
                 self.assertGreaterEqual(measure.covered(arrow, layer), 0.99)
                 _, y0, _, y1 = arrow.boundingBox()
                 [(s0, s1)] = measure.spans_at_y(arrow, (y0 + y1) / 2)  # the shaft
-                for x in (s0 - 30, s1 + 30):
+                # Half a stroke out from the shaft: clear of it, short of the bars' round ends.
+                for x in (s0 - (h1 - h0) / 2, s1 + (h1 - h0) / 2):
                     own = measure.spans_at_x(arrow, x)
                     bars = [span for span in measure.spans_at_x(layer, x)
                             if not any(abs(span[0] - a) < 2 and abs(span[1] - b) < 2 for a, b in own)]
                     self.assertEqual(len(bars), 2, (x, bars))
                     for a, b in bars:
-                        self.assertAlmostEqual(b - a, h1 - h0, delta=6)
+                        self.assertAlmostEqual(b - a, h1 - h0, delta=WEIGHT_TOLERANCE)
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
@@ -755,13 +771,15 @@ class CurrencyTest(unittest.TestCase):
         _, b0, _, b1 = self.font["B"].boundingBox()
         self.assertGreaterEqual(y1 - b1, TICK_REACH)
         self.assertGreaterEqual(b0 - y0, TICK_REACH)
-        [(s0, s1)] = measure.spans_at_y(self.font["bar"].foreground, 300)
+        bar = self.font["bar"].foreground
+        _, bar0, _, bar1 = bar.boundingBox()
+        [(s0, s1)] = measure.spans_at_y(bar, (bar0 + bar1) / 2)  # |'s stroke, at its middle
         for y in (b1 + TICK_REACH / 2, b0 - TICK_REACH / 2):
             with self.subTest(y=y):
                 ticks = measure.spans_at_y(layer, y)
                 self.assertEqual(len(ticks), 2)
                 for a, b in ticks:
-                    self.assertAlmostEqual(b - a, s1 - s0, delta=4)
+                    self.assertAlmostEqual(b - a, s1 - s0, delta=WEIGHT_TOLERANCE)
 
     def test_dong_is_the_letter_over_the_em_dash(self):
         # The em dash only moved, to lie under the letter, clear of it.
@@ -778,12 +796,16 @@ class CurrencyTest(unittest.TestCase):
 
     def test_lira_bars_cross_the_stem(self):
         # Two bars left of t's stem, where nothing else of t is, and no sliver of its crossbar
-        # left on either side: every span beside the stem is at least a stroke thick.
+        # left on either side: every span beside the stem is at least a stroke thick. The stem
+        # stands alone halfway from x-height to t's top, above the bars; half a stroke beside
+        # it a sliver would cling, and the bars are still at full weight.
         low, _ = self.stroke
         layer = self.font[ord("₺")].foreground
-        [(x0, x1)] = measure.spans_at_y(layer, 560)  # the stem above the bars
-        self.assertEqual(len(measure.spans_at_x(layer, x0 - 60)), 2)
-        for x in (x0 - 60, x1 + 60):
+        _, _, _, top = self.font["t"].boundingBox()
+        [(x0, x1)] = measure.spans_at_y(layer, (self.font.os2_xheight + top) / 2)
+        beside = low / 2
+        self.assertEqual(len(measure.spans_at_x(layer, x0 - beside)), 2)
+        for x in (x0 - beside, x1 + beside):
             with self.subTest(x=x):
                 for y0, y1 in measure.spans_at_x(layer, x):
                     self.assertGreaterEqual(y1 - y0, low)

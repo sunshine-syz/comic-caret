@@ -15,8 +15,11 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import measure
-from project import ROOT, SFD
+from project import ADVANCE, ROOT, SFD
+from test_consistency import TOLERANCE
+from test_make_italic import ROUNDING
 
 TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
@@ -28,6 +31,12 @@ COUNTER_FLOOR = {"o": 115 / 285, "a": 103 / 285, "four": 71 / 360}
 # ™ © ® are lighter, as in every reference (43-66): an M at 74 has no room left for its
 # counters, and a ring at our full weight crowds the letter inside it.
 SIGN_STEM = (56, 4)
+# The closest a fraction's slash comes to its figures: the narrowest reference's, Fira Code's ⅖ ⅘
+# scaled to our cell (Maple Mono's ½ ¼ 22, Intel One Mono's ⅔ ⅖ 28).
+FRACTION_CLEARANCE = 21
+# The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
+# cell (Fira Code's 33; Intel One Mono has no ‰).
+PER_MILLE_CLEARANCE = 22
 COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"}}
@@ -119,25 +128,28 @@ class LookalikeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
+        [(h0, h1)] = measure.spans_at_x(cls.font["hyphen"].foreground, ADVANCE / 2)
+        cls.stroke = h1 - h0  # the hyphen's, at its middle
 
     def test_slash_runs_past_the_letter(self):
-        # Past O, Ø reads apart from our slashed zero, whose slash stays inside it.
+        # Past O, Ø reads apart from our slashed zero, whose slash stays inside it: by at least
+        # half a stroke, so the slash's round end clears the bowl.
         for slashed, letter in (("Oslash", "O"), ("oslash", "o")):
             with self.subTest(glyph=slashed):
                 _, bottom, _, top = self.font[slashed].boundingBox()
                 _, letter_bottom, _, letter_top = self.font[letter].boundingBox()
-                self.assertGreaterEqual(top - letter_top, 40)
-                self.assertGreaterEqual(letter_bottom - bottom, 40)
+                self.assertGreaterEqual(top - letter_top, self.stroke / 2)
+                self.assertGreaterEqual(letter_bottom - bottom, self.stroke / 2)
 
     def test_zero_slash_stays_inside(self):
         ring = max(self.font["zero"].foreground, key=lambda c: c.boundingBox()[3])
         self.assertEqual(ring.boundingBox(), self.font["zero"].boundingBox())
 
     def test_H_bar_clears_the_crossbar(self):
-        # A gap of at least a stem keeps Ħ from reading as a filled block.
-        spans = measure.spans_at_x(measure.ink(self.font, "Hbar"), 275)
+        # A gap of at least a stroke keeps Ħ from reading as a filled block.
+        spans = measure.spans_at_x(measure.ink(self.font, "Hbar"), ADVANCE / 2)
         self.assertEqual(len(spans), 2)
-        self.assertGreaterEqual(spans[1][0] - spans[0][1], 80)
+        self.assertGreaterEqual(spans[1][0] - spans[0][1], self.stroke)
 
     def test_sharp_s_stays_open_at_the_bottom(self):
         # The 3's lower end stops short of the stem, or ß reads as B: at least as far as the
@@ -199,11 +211,12 @@ class LookalikeTest(unittest.TestCase):
         rings = [c for c in contours if c.isClockwise() and c.boundingBox()[3] < 300]
         self.assertEqual(len(rings), 2)  # the lower two, side by side
         left, right = sorted((c.boundingBox() for c in rings), key=lambda b: b[0])
+        # 5 has no source: Fira Code's rings keep 14 apart, more than ours (10); Maple Mono's join.
         self.assertGreaterEqual(right[0] - left[2], 5)
         for contour in rings:
             ring = fontforge.layer()
             ring += contour
-            self.assertGreaterEqual(measure.gap(slash, ring), 20)
+            self.assertGreaterEqual(measure.gap(slash, ring), PER_MILLE_CLEARANCE)
 
 
 class CompositeTest(unittest.TestCase):
@@ -308,20 +321,27 @@ class FigureTest(unittest.TestCase):
             bar = self.part(name, "slash.fraction")
             for figure in figures:
                 with self.subTest(glyph=name, figure=figure):
-                    self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)), 20)
+                    self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)),
+                                            FRACTION_CLEARANCE)
 
     def test_fractions_place_their_figures_where_one_half_does(self):
         # Every numerator's ink stands centred where ½'s 1 is, its top at the 1's, and every
         # denominator where ½'s 2 is, its bottom at the 2's, so a row of fractions lines up.
+        # Centred within the hand's wobble, as glyphs are in the cell; tops and bottoms to the
+        # rounding of both figures' offsets.
         one = self.part("onehalf", "one.small")
         two = self.part("onehalf", "two.small")
         for name, (numerator, denominator) in FRACTIONS.items():
             with self.subTest(glyph=name):
                 num, den = self.part(name, numerator), self.part(name, denominator)
-                self.assertAlmostEqual(measure.ink_center(num), measure.ink_center(one), delta=5)
-                self.assertAlmostEqual(num.boundingBox()[3], one.boundingBox()[3], delta=2)
-                self.assertAlmostEqual(measure.ink_center(den), measure.ink_center(two), delta=5)
-                self.assertAlmostEqual(den.boundingBox()[1], two.boundingBox()[1], delta=2)
+                self.assertAlmostEqual(measure.ink_center(num), measure.ink_center(one),
+                                       delta=TOLERANCE)
+                self.assertAlmostEqual(num.boundingBox()[3], one.boundingBox()[3],
+                                       delta=2 * ROUNDING)
+                self.assertAlmostEqual(measure.ink_center(den), measure.ink_center(two),
+                                       delta=TOLERANCE)
+                self.assertAlmostEqual(den.boundingBox()[1], two.boundingBox()[1],
+                                       delta=2 * ROUNDING)
 
     def test_fraction_bar_is_as_heavy_as_the_figures(self):
         bar = self.font["slash.fraction"].foreground
@@ -331,13 +351,17 @@ class FigureTest(unittest.TestCase):
         self.assertAlmostEqual(across, SMALL_STEM[0], delta=SMALL_STEM[1])
 
     def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
+        # The bar keeps at least ●●'s seam from its letter, as a symbol's parts do
+        # (test_symbols), so they stay apart at 16 px.
+        left, _, right, _ = self.font[ord("●")].boundingBox()
+        seam = 2 * min(left, ADVANCE - right)
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
             with self.subTest(glyph=name):
                 bar = self.part(name, "bar.ordinal")
                 x0, _, x1, _ = bar.boundingBox()
                 [(t0, t1)] = measure.spans_at_x(bar, (x0 + x1) / 2)
                 self.assertAlmostEqual(t1 - t0, SMALL_STEM[0], delta=SMALL_STEM[1])
-                self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)), 20)
+                self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)), seam)
 
     def test_trademark_letters_stay_apart(self):
         self.assertGreaterEqual(measure.gap(self.part("trademark", "T.small"),
