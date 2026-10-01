@@ -41,7 +41,6 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-import measure
 from add_box_drawing import KAPPA
 from add_ligatures import AXIS, GENERATED
 from add_shapes import clockwise
@@ -68,12 +67,11 @@ SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
 UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟↹⇥⇤")
 
 # f's descender, in the stem's own stroke. The regular's foot ends at 70, so from FOOT_TOP up
-# the outline is the stem alone; the new stroke starts OVERLAP inside it, runs down as far as
+# the outline is the stem alone. The foot is cut away there and a stroke as wide as the cut is
+# welded on along it, so no removeOverlap() decides the joint; the stroke runs down as far as
 # j reaches and bends left by FLICK, a quarter ellipse FLATNESS as high as it is wide.
 FOOT_TOP = 80
-OVERLAP = 15
-STEM_SAMPLE = 100  # a height at which the stem is measured
-FLICK = 70         # how far the end reaches left of the stem's middle; 90 and 100 read busier
+FLICK = 70  # how far the end reaches left of the stem's middle; 90 and 100 read busier
 FLATNESS = 0.9
 
 IDENTITY, TURNED = (1, 0, 0, 1), (-1, 0, 0, -1)  # the linear parts that commute with a shear
@@ -96,25 +94,28 @@ def oblique_panose(panose):
 def descending_f(font):
     """The regular's f with its foot dropped and its stem run below the baseline, ending in
     a short flick to the left."""
-    outline = font["f"].foreground.dup()
-    (x0, x1), = measure.spans_at_y(outline, STEM_SAMPLE)
-    middle, width = (x0 + x1) / 2, x1 - x0
-    foot = measure.spans_at_y(outline, FOOT_TOP)
-    if len(foot) != 1 or abs(foot[0][1] - foot[0][0] - width) > 10:
+    stem = geo.trim(font["f"].foreground, y0=FOOT_TOP)
+    # The cut's own ends: the stroke, trimmed at the same height, then ends in the same edge,
+    # and the weld leaves no step.
+    cut = sorted(p.x for contour in stem for p in contour
+                 if p.on_curve and abs(p.y - FOOT_TOP) < 0.5)
+    if len(cut) != 2:
         sys.exit(f"f's foot no longer ends below {FOOT_TOP}; measure it again")
+    x0, x1 = cut
+    middle, width = (x0 + x1) / 2, x1 - x0
     depth = -font["j"].boundingBox()[1]  # the descender row
     rx = FLICK - width / 2
     ry = rx * FLATNESS
     bend = -depth + width / 2 + ry  # where the stem starts to bend
     path = fontforge.contour()
-    path.moveTo(middle, FOOT_TOP + OVERLAP)
+    path.moveTo(middle, FOOT_TOP + width)  # above the cut, which trims the round cap away
     path.lineTo(middle, bend)
     path.cubicTo((middle, bend - KAPPA * ry), (middle - rx + KAPPA * rx, bend - ry),
                  (middle - rx, bend - ry))
     layer = fontforge.layer()
     layer += path
     stroke = clockwise(layer.stroke("circular", width, "round", "round"))
-    return geo.union(geo.trim(outline, y0=FOOT_TOP), stroke)
+    return geo.weld_y(geo.trim(stroke, y1=FOOT_TOP), stem, FOOT_TOP)
 
 
 # The cursive letters: name -> the upright outline to shear, drawn from the regular.

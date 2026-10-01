@@ -57,7 +57,8 @@ def mirrored_y(layer, y):
 def union(*layers):
     """Outlines merged where they cross.
 
-    removeOverlap mishandles edges that coincide exactly; join those with weld instead.
+    removeOverlap mishandles edges that coincide exactly; join those with weld or weld_y
+    instead.
     """
     out = fontforge.layer()
     for layer in layers:
@@ -132,14 +133,15 @@ def snap_edge(layer, x, profile):
     return layer
 
 
-def _edge_start(contour, x):
-    """Index of the on-curve point where the contour's straight vertical edge at x begins."""
+def _edge_start(contour, on_edge, edge):
+    """Index of the on-curve point where the contour's straight edge begins: the first
+    segment between two on-curve points that are both on_edge."""
     count = len(contour)
     for i in range(count):
         a, b = contour[i], contour[(i + 1) % count]
-        if a.on_curve and b.on_curve and abs(a.x - x) < 0.5 and abs(b.x - x) < 0.5:
+        if a.on_curve and b.on_curve and on_edge(a) and on_edge(b):
             return i
-    raise ValueError(f"no vertical edge at x = {x}")
+    raise ValueError(f"no {edge}")
 
 
 def weld(left, right, x):
@@ -148,10 +150,20 @@ def weld(left, right, x):
     Splices the point lists, since removeOverlap fails on edges that coincide exactly.
     `left` lies left of x and `right` right of it.
     """
-    a, b = left[0].dup(), right[0].dup()
+    return _spliced(left, right, lambda p: abs(p.x - x) < 0.5, f"vertical edge at x = {x}")
+
+
+def weld_y(below, above, y):
+    """weld() along the identical flat edge both outlines have at y: `below` lies below y
+    and `above` above it."""
+    return _spliced(below, above, lambda p: abs(p.y - y) < 0.5, f"horizontal edge at y = {y}")
+
+
+def _spliced(first, second, on_edge, edge):
+    a, b = first[0].dup(), second[0].dup()
     # Start each contour just after its edge, so the edge becomes its closing segment.
-    a.makeFirst((_edge_start(a, x) + 1) % len(a))
-    b.makeFirst((_edge_start(b, x) + 1) % len(b))
+    a.makeFirst((_edge_start(a, on_edge, edge) + 1) % len(a))
+    b.makeFirst((_edge_start(b, on_edge, edge) + 1) % len(b))
     joined = fontforge.contour()
     for point in [a[i] for i in range(len(a))] + [b[i] for i in range(1, len(b) - 1)]:
         joined += point

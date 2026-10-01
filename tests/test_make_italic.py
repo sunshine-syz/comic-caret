@@ -19,8 +19,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import lig_geometry as geo
 import make_italic
-from make_italic import AXIS, CURSIVE, CURSIVE_LETTERS, SHEAR, SLANT, SLANTED, UPRIGHT
-from measure import ink
+from make_italic import AXIS, CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
+from measure import ink, spans_at_y
 from project import ITALIC_SFD, ROOT, SFD
 from test_consistency import ROUNDING
 
@@ -136,6 +136,14 @@ class ItalicTest(unittest.TestCase):
         # stroke's lowest point is rounded like every other.
         self.assertAlmostEqual(self.italic["f"].boundingBox()[1],
                                self.regular["j"].boundingBox()[1], delta=ROUNDING)
+
+    def test_cursive_f_descender_is_as_wide_as_the_stem_where_they_meet(self):
+        # No ledge or notch where the descender joins the stem at FOOT_TOP: rows 2 below and 2
+        # above it, clear of the 1-unit band either side that spans_at_y reads, cross strokes
+        # of the same width, but for the points' rounding.
+        f = ink(self.italic, "f")
+        (below,), (above,) = (spans_at_y(f, FOOT_TOP + dy) for dy in (-2, 2))
+        self.assertAlmostEqual(below[1] - below[0], above[1] - above[0], delta=ROUNDING)
 
     def test_anchors_move_with_the_shear(self):
         wrong = {}

@@ -99,7 +99,10 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   plain stem lost the tail that keeps l apart from I and 1. f drops its foot and runs its
   stem 268 below the baseline, as deep as j, ending in a flick 70 left of the stem in the
   stem's own stroke, chosen over ƒ's hook (Maple Mono's f), which reached 72 units left of
-  the cell, and over a plain straight descender. ƒ keeps its own outline.
+  the cell, and over a plain straight descender. The descender takes the stem's width where
+  the foot is cut away, 80 above the baseline, and is welded on along that cut (`geo.weld_y`),
+  so the joint has no ledge and no overlap for `removeOverlap()` to merge. ƒ keeps its own
+  outline.
 - The italic's f, and any glyph the shear cannot express (∙ built on the period, ⋮ on the
   ellipsis turned a quarter), is an outline in the italic; everything else keeps the regular's
   structure, references included.

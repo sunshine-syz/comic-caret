@@ -111,6 +111,15 @@ class WeldTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             geo.weld(geo.rect(0, 0, 100, 50), geo.rect(120, 0, 200, 50), 100)
 
+    def test_weld_y_joins_along_a_horizontal_edge(self):
+        joined = geo.weld_y(geo.rect(0, 0, 100, 50), geo.rect(0, 50, 100, 120), 50)
+        self.assertEqual(len(joined), 1)
+        self.assertEqual(box(joined), (0, 0, 100, 120))
+        self.assertTrue(joined[0].isClockwise())
+        self.assertFalse(joined.selfIntersects())
+        with self.assertRaises(ValueError):
+            geo.weld_y(geo.rect(0, 0, 100, 50), geo.rect(0, 60, 100, 120), 50)
+
 
 class WithoutSpecksTest(unittest.TestCase):
     def test_fills_only_the_small_holes(self):
