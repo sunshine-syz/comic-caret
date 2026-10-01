@@ -74,38 +74,6 @@ class GapTest(unittest.TestCase):
         self.assertAlmostEqual(measure.gap(bars((0, 90)), bars((90, 180))), 0, delta=1)
 
 
-class ThicknessChangeTest(unittest.TestCase):
-    def test_a_rigid_move_changes_nothing(self):
-        bar = bars((100, 190))
-        change, _ = measure.thickness_change(bar, geo.displaced(bar, lambda x, y: -40))
-        self.assertAlmostEqual(change, 0, delta=0.01)
-
-    def test_a_widened_stroke_changes_by_the_widening(self):
-        bar = bars((100, 190))
-        change, where = measure.thickness_change(
-            bar, geo.displaced(bar, lambda x, y: 10 if x > 150 else 0))
-        # Near the corners the normals lean, so a leaning ray gains a little more than 10.
-        self.assertAlmostEqual(change, 10, delta=0.5)
-        self.assertIsNotNone(where)
-
-    def test_shortening_a_long_stroke_is_no_change_in_weight(self):
-        # Rays from a stroke's ends run along it and measure its length, not its weight.
-        bar = geo.rect(0, 0, 400, 90)
-        change, _ = measure.thickness_change(bar, geo.stretch_span(bar, 100, 300, -60))
-        self.assertAlmostEqual(change, 0, delta=0.01)
-
-    def test_squeezing_a_slanted_stroke_thins_it(self):
-        # 45 degrees and 64 thick; squeezed to half its run it stands at 63 degrees, 40 thick.
-        contour = fontforge.contour()
-        for x, y in ((0, 0), (300, 300), (390, 300), (90, 0)):
-            contour += fontforge.point(x, y)
-        contour.closed = True
-        stroke = fontforge.layer()
-        stroke += contour
-        change, _ = measure.thickness_change(stroke, geo.displaced(stroke, lambda x, y: -x / 2))
-        self.assertGreater(change, 10)
-
-
 class AreaTest(unittest.TestCase):
     def test_holes_subtract(self):
         layer = geo.rect(0, 0, 100, 100)

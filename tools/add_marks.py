@@ -96,7 +96,7 @@ def mark_offsets(font, placements):
 
 def add_mark_glyphs(font, offsets):
     for code, accent in MARKS.items():
-        glyph = font[code] if code in font else font.createChar(code, mark_name(code))
+        glyph = font.createChar(code, mark_name(code))
         glyph.foreground = fontforge.layer()
         glyph.references = ((accent, psMat.translate(*offsets[code])),)
         glyph.width = 0
@@ -192,7 +192,7 @@ def base_anchors(font, placements, offsets, top_y):
 
     anchors = {}
     for glyph in font.glyphs():
-        if glyph.unicode < 0 and glyph.glyphname not in DOTLESS.values():
+        if glyph.unicode < 0:
             continue
         if glyph.unicode in MARKS:
             continue
