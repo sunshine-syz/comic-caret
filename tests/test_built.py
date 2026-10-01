@@ -100,7 +100,8 @@ def cmap_encodings(font):
 
 def opening_warnings(font):
     """The lines FontForge prints while it opens `font`. Its C code writes them to the
-    process's stderr, past Python's sys.stderr, so only a subprocess can catch them."""
+    process's stderr, past Python's sys.stderr, so a subprocess is the simplest way to catch
+    them."""
     result = subprocess.run([sys.executable, "-c", OPEN, str(font)],
                             capture_output=True, text=True, check=True)
     return result.stderr.splitlines()

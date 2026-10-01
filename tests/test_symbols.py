@@ -161,7 +161,8 @@ class OperatorTest(unittest.TestCase):
         self.assertGreaterEqual(bar_bottom - bottom, NOT_EQUAL_REACH)
 
     def test_identical_bars_are_three_equal_bars(self):
-        # ='s bars, as heavy as ='s and spaced as ='s within the hand's wobble.
+        # ≡'s bars weigh as ='s, within the pen's measured weight tolerance, and are spaced as
+        # ='s, within the hand's wobble.
         equal = measure.spans_at_x(self.font["equal"].foreground, 275)
         bars = measure.spans_at_x(self.font["equivalence"].foreground, 275)
         self.assertEqual(len(bars), 3)
@@ -699,9 +700,11 @@ class KeyHintTest(unittest.TestCase):
                 [(s0, s1)] = measure.spans_at_y(arrow, (y0 + y1) / 2)  # the shaft
                 # Half a stroke out from the shaft: clear of it, short of the bars' round ends.
                 for x in (s0 - (h1 - h0) / 2, s1 + (h1 - h0) / 2):
+                    # Not the arrow's own spans, which may differ by both outlines' rounding.
                     own = measure.spans_at_x(arrow, x)
                     bars = [span for span in measure.spans_at_x(layer, x)
-                            if not any(abs(span[0] - a) < 2 and abs(span[1] - b) < 2 for a, b in own)]
+                            if not any(max(abs(span[0] - a), abs(span[1] - b)) <= 2 * ROUNDING
+                                       for a, b in own)]
                     self.assertEqual(len(bars), 2, (x, bars))
                     for a, b in bars:
                         self.assertAlmostEqual(b - a, h1 - h0, delta=self.weight)
@@ -735,7 +738,8 @@ class CurrencyTest(unittest.TestCase):
         # The stroke's thickness along the hyphen's straight middle, which the bars stretch.
         thickness = [y1 - y0 for x in range(round(x0) + 100, round(x1) - 100, 10)
                      for y0, y1 in measure.spans_at_x(hyphen, x)]
-        cls.stroke = (min(thickness) - 2, max(thickness) + 2)  # rounded outlines
+        # Give or take both edges' rounding, as weight_tolerance() allows.
+        cls.stroke = (min(thickness) - 2 * ROUNDING, max(thickness) + 2 * ROUNDING)
         cls.weight = weight_tolerance(cls.font)
 
     def flattened(self, char):

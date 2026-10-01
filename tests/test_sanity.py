@@ -4,8 +4,8 @@ Run: python3 -m unittest discover tests
 
 These assert rules every glyph must follow (see CLAUDE.md), not the shape of any one glyph:
 what breaking would show as clipped, overlapping or broken text. test_consistency.py holds
-the rules classes of glyphs share, and test_built.py the built fonts'; test_fontbakery.py
-runs Font Bakery on the built fonts, and CLAUDE.md gives the OTS command.
+the rules classes of glyphs share, and test_built.py the built fonts', which it runs through
+ots; test_fontbakery.py runs Font Bakery on them.
 """
 import pathlib
 import sys
@@ -16,10 +16,12 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import lig_geometry as geo
 import make_italic
 from measure import ink
 from project import ADVANCE, ITALIC_SFD, SFD, ZERO_WIDTH, validation_errors
+from test_consistency import TOLERANCE as WOBBLE  # the hand's wobble
 
 LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
@@ -32,7 +34,6 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 # pieces overlap so a row of them joins (OVERLAP in tools/add_ligatures.py); and the tonos left
 # of a capital, which stands in the cell before, as in Fira Code and Maple Mono: a word starts
 # there, so that cell holds a space.
-WOBBLE = 10  # test_consistency's TOLERANCE: the hand's wobble
 # Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).
 DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
 TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Maple Mono's 106)

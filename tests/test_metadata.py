@@ -99,9 +99,11 @@ class MetadataTest(unittest.TestCase):
         # monospaced fonts read it.
         self.assertEqual((panose[FAMILY], panose[PROPORTION]), (LATIN_TEXT, MONOSPACED))
         # PANOSE's weights, 2 Very Light to 11 Extra Black, run in the order of usWeightClass's
-        # hundreds, and the family keeps the two in step: the regular measures 6 Medium by
-        # PANOSE's rule and the italic, measured across its slant, 5 Book, so both declare 5
-        # with usWeightClass 400, as Intel One Mono's and Maple Mono's 400 do.
+        # hundreds, and for the weights this family ships it keeps the two in step at hundreds
+        # plus one, a convention rather than PANOSE's mapping (its Light is 3, where 300 would
+        # give 4): the regular measures 6 Medium by PANOSE's rule and the italic, measured
+        # across its slant, 5 Book, so both declare 5 with usWeightClass 400, as Intel One
+        # Mono's and Maple Mono's 400 do.
         self.assertEqual(panose[WEIGHT], self.font.os2_weight // 100 + 1)
 
 

@@ -285,9 +285,11 @@ class SmallFigureTest(unittest.TestCase):
                     self.assertAlmostEqual(ratio(base), ratio(group[0]), delta=0.03)
 
     def test_trademark_letters_match(self):
+        # As tall as each other within the hand's wobble, shrunk with the letters.
         _, t0, _, t1 = self.font["T.small"].boundingBox()
         _, m0, _, m1 = self.font["M.small"].boundingBox()
-        self.assertAlmostEqual(t1 - t0, m1 - m0, delta=4)
+        _, b0, _, b1 = self.font["T"].boundingBox()
+        self.assertAlmostEqual(t1 - t0, m1 - m0, delta=TOLERANCE * (t1 - t0) / (b1 - b0))
 
 
 class FigureTest(unittest.TestCase):
