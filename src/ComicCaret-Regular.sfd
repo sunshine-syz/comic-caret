@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790876534
+ModificationTime: 1790876851
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -12027,50 +12027,28 @@ StartChar: quotedblleft
 Encoding: 8220 8220 299
 Width: 550
 Flags: W
-HStem: 442 241 492 241
-VStem: 117 173 257 173
+HStem: 452 241
+VStem: 105 173 273 173
 AnchorPoint: "bottom" 275 0 basechar 0
-AnchorPoint: "top" 275 783 basechar 0
+AnchorPoint: "top" 275 743 basechar 0
 LayerCount: 2
 Fore
-Refer: 296 8216 N 1 0 0 1 -62 -10 2
-Refer: 296 8216 N 1 0 0 1 78 40 2
+Refer: 296 8216 N 1 0 0 1 -74 0 2
+Refer: 296 8216 N 1 0 0 1 94 0 2
 EndChar
 
 StartChar: quotedblright
 Encoding: 8221 8221 300
 Width: 550
 Flags: W
-HStem: 426 257 479 21G<173 178.5>
-VStem: 267 168
+HStem: 426 257
+VStem: 108 168 274 168
 AnchorPoint: "bottom" 275 0 basechar 0
-AnchorPoint: "top" 275 783 basechar 0
+AnchorPoint: "top" 275 733 basechar 0
 LayerCount: 2
 Fore
-SplineSet
-292 675 m 0x60
- 288 663 283 649 277 634 c 0
- 271 619 264 604 258 588 c 0
- 252 572 246 557 240 543 c 0
- 234 529 229 518 224 509 c 0
- 215 494 205 486 192 482 c 0
- 186 480 181 479 176 479 c 0
- 170 479 164 480 159 483 c 0
- 150 488 141 495 131 504 c 0
- 126 509 123 514 123 521 c 0
- 123 527 125 533 129 540 c 0
- 134 549 140 562 148 577 c 0
- 156 592 164 609 171 625 c 0
- 178 641 185 657 192 673 c 0
- 199 689 204 701 208 711 c 0
- 213 724 222 732 235 733 c 0
- 238 733 240 733 243 733 c 0
- 252 733 261 732 269 728 c 0
- 277 725 284 719 290 709 c 0
- 293 704 295 697 295 691 c 0
- 295 686 294 681 292 675 c 0x60
-EndSplineSet
-Refer: 297 8217 N 1 0 0 1 80 0 2
+Refer: 297 8217 N 1 0 0 1 -79 0 2
+Refer: 297 8217 N 1 0 0 1 87 0 2
 EndChar
 
 StartChar: dagger
@@ -17752,13 +17730,13 @@ StartChar: quotedblbase
 Encoding: 8222 8222 616
 Width: 550
 Flags: W
-VStem: 107 193 249 193
+VStem: 91 193 265 193
 AnchorPoint: "bottom" 275 0 basechar 0
 AnchorPoint: "top" 275 530 basechar 0
 LayerCount: 2
 Fore
-Refer: 13 44 N 1 0 0 1 -50 50 2
-Refer: 13 44 N 1 0 0 1 92 0 2
+Refer: 13 44 N 1 0 0 1 -66 0 2
+Refer: 13 44 N 1 0 0 1 108 0 2
 EndChar
 
 StartChar: Lambda

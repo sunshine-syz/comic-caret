@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790876535
+ModificationTime: 1790876852
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -12548,52 +12548,28 @@ StartChar: quotedblleft
 Encoding: 8220 8220 299
 Width: 550
 Flags: W
-HStem: 442 241<227.568 278.614> 492 241<378.568 429.614>
-VStem: 196 138 347 138
+HStem: 452 241<217.568 268.614 385.568 436.614>
+VStem: 186 138 354 138
 AnchorPoint: "bottom" 218 0 basechar 0
-AnchorPoint: "top" 384 783 basechar 0
+AnchorPoint: "top" 376 743 basechar 0
 LayerCount: 2
 Fore
-Refer: 296 8216 N 1 0 0 1 -64 -10 2
-Refer: 296 8216 N 1 0 0 1 87 40 2
+Refer: 296 8216 N 1 0 0 1 -74 0 2
+Refer: 296 8216 N 1 0 0 1 94 0 2
 EndChar
 
 StartChar: quotedblright
 Encoding: 8221 8221 300
 Width: 550
 Flags: W
-HStem: 426 257 479 21G<218 223.5>
-VStem: 310 203
+HStem: 426 257
+VStem: 151 203 317 203
 AnchorPoint: "bottom" 218 0 basechar 0
-AnchorPoint: "top" 384 783 basechar 0
+AnchorPoint: "top" 374 733 basechar 0
 LayerCount: 2
 Fore
-SplineSet
-378 675 m 0x60
- 372 663 364 649 355 634 c 0
- 345 619 335 604 326 588 c 0
- 316 572 307 557 298 543 c 0
- 289 529 282 518 275 509 c 0
- 263 494 251 486 237 482 c 0
- 231 480 226 479 221 479 c 0
- 215 479 209 480 204 483 c 0
- 197 488 189 495 181 504 c 0
- 178 508 176 511 176 516 c 0
- 176 517 176 519 177 521 c 0
- 178 527 181 533 187 540 c 0
- 194 549 202 562 213 577 c 0
- 225 592 236 609 247 625 c 0
- 257 641 267 657 278 673 c 0
- 288 689 296 701 302 711 c 0
- 310 724 320 732 334 733 c 0
- 337 733 339 733 342 733 c 0
- 351 733 359 732 367 728 c 0
- 374 725 380 719 384 709 c 0
- 385 705 385 701 385 696 c 0
- 385 695 385 693 385 691 c 0
- 384 686 382 681 378 675 c 0x60
-EndSplineSet
-Refer: 297 8217 N 1 0 0 1 80 0 2
+Refer: 297 8217 N 1 0 0 1 -79 0 2
+Refer: 297 8217 N 1 0 0 1 87 0 2
 EndChar
 
 StartChar: dagger
@@ -18386,13 +18362,13 @@ StartChar: quotedblbase
 Encoding: 8222 8222 616
 Width: 550
 Flags: W
-VStem: 27 249 158 249
+VStem: 0 249 174 249
 AnchorPoint: "bottom" 218 0 basechar 0
 AnchorPoint: "top" 330 530 basechar 0
 LayerCount: 2
 Fore
-Refer: 13 44 N 1 0 0 1 -39 50 2
-Refer: 13 44 N 1 0 0 1 92 0 2
+Refer: 13 44 N 1 0 0 1 -66 0 2
+Refer: 13 44 N 1 0 0 1 108 0 2
 EndChar
 
 StartChar: Lambda

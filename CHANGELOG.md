@@ -11,6 +11,7 @@
 - The italic's tab keys ↹ ⇥ ⇤ stay upright, like the other key hints ⌘ ⌥ ⌃ ⇧, instead of slanting.
 - Ĉ's circumflex sat 22 units right of where Ć Ċ Č centre their accents, and î's 20 units left of where ï ĩ ī put theirs, over the place of i's dot. Both now sit with the rest, where a combining circumflex (U+0302) after `C` or `ı` lands too, so the two draw the same Ĉ and î where nothing composes them; each of the three reference fonts places Ĉ's mark as it does Ċ's and Č's, and keeps î's over the dot's place.
 - Þ's stem rose 88 units above the other capitals, with the bowl high on it. The stem now stops at the cap height and the bowl is centred on it, as Fira Code, Intel One Mono and Maple Mono draw theirs, so it still reads apart from P.
+- “ ” „ set one of their marks about 50 units higher than the other, a handwritten touch. Both marks now stand level, at the height of the single ‘ ’ and the comma, as all three reference fonts keep them, with at least as much white between them as the narrowest reference's, and ”'s left mark is ’ itself rather than a near copy of it.
 
 ## 1.6.0 (2026-09)
 

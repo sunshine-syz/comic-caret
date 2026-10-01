@@ -38,7 +38,9 @@ FRACTION_CLEARANCE = 21
 PER_MILLE_CLEARANCE = 22
 COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
-              "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"}}
+              "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"},
+              "quotedblleft": {"quoteleft"}, "quotedblright": {"quoteright"},
+              "quotedblbase": {"comma"}}
 # small component: (height as a fraction of the glyph's, and which of the strokes a line there
 # crosses is upright): the stem, a bowl's side or the round side of 2 and 3. 7 has no upright
 # stroke.
