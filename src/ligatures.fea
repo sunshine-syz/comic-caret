@@ -121,7 +121,7 @@ feature calt {
   #    inner one, except in a shell heredoc (<<-EOF). In <!-- the < is an arrow of its own
   #    and the -- runs on; it may follow the > that ends a tag or an arrow (</p><!--
   #    --><!--). An arrow's head stays before a tag, as in --><p>, and so does <!--, as in
-  #    <!--<div>-->, whose -- run may start after the > that ends the tag, though >- is
+  #    <!--<div>-->, whose --> may start right after the > that ends the tag, though >- is
   #    otherwise an inward head.
   lookup lig_hyphen_build {
     sub [greater greater.arrow] less' lookup lig_comment exclam' lookup lig_comment hyphen
@@ -136,7 +136,7 @@ feature calt {
     sub less' lookup lig_arrow hyphen;
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_end;
-    sub @TagEnd greater hyphen' lookup lig_sta [hyphen greater];
+    sub @TagEnd greater hyphen' lookup lig_sta hyphen greater;
     ignore sub @HyphenRun hyphen';
     sub hyphen' lookup lig_sta [hyphen greater];
     sub [hyphen.sta hyphen.mid] greater' lookup lig_shaft greater;
@@ -196,7 +196,9 @@ feature calt {
   # 4. Runs of _ # ~, whatever their neighbours. ~ pieces alternate: after one that ends
   #    high (.sta, .mid.low) comes one that starts high (.mid, .end), and the reverse. A <
   #    before a ~ run, or a > after one, is a wave arrow's head, the < only when no operator
-  #    comes before it and the > only when none follows it; a < head ends high.
+  #    comes before it and the > only when none follows it; a < head ends high. A run whose
+  #    > is no head has no < head either: <~>= is plain, as ~>= is, and <~~>= keeps only the
+  #    ~~ run of ~~>=.
   lookup lig_runs {
     sub [underscore.sta underscore.mid] underscore' lookup lig_mid underscore;
     sub [underscore.sta underscore.mid] underscore' lookup lig_end;
@@ -218,6 +220,25 @@ feature calt {
     sub [asciitilde.sta asciitilde.mid.low] greater' lookup lig_warrow;
     sub asciitilde.mid greater' lookup lig_warrow_low;
   } lig_runs;
+
+  # The < head is set before the run's end is known, so a run that ends in a plain > is
+  # unwound right to left to plain glyphs, however long it is, and built again without heads.
+  lookup lig_wave_unwind {
+    rsub [asciitilde.end]' [greater] by asciitilde;
+    rsub [asciitilde.end.low]' [greater] by asciitilde;
+    rsub [asciitilde.mid]' [asciitilde] by asciitilde;
+    rsub [asciitilde.mid.low]' [asciitilde] by asciitilde;
+    rsub [asciitilde.sta]' [asciitilde] by asciitilde;
+    rsub [less.warrow]' [asciitilde] by less;
+  } lig_wave_unwind;
+
+  lookup lig_wave_rebuild {
+    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_mid asciitilde;
+    sub [asciitilde.sta asciitilde.mid.low] asciitilde' lookup lig_end;
+    sub asciitilde.mid asciitilde' lookup lig_mid_low asciitilde;
+    sub asciitilde.mid asciitilde' lookup lig_end_low;
+    sub asciitilde' lookup lig_sta asciitilde;
+  } lig_wave_rebuild;
 
   # 5. Pipes, and <> as a diamond.
   lookup lig_pipes {

@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790841344
+ModificationTime: 1790863065
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -91,6 +91,8 @@ Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_bui
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  "lig_equal_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_runs" { "lig_runs contextual 0"  "lig_runs contextual 1"  "lig_runs contextual 2"  "lig_runs contextual 3"  "lig_runs contextual 4"  "lig_runs contextual 5"  "lig_runs contextual 6"  "lig_runs contextual 7"  "lig_runs contextual 8"  "lig_runs contextual 9"  "lig_runs contextual 10"  "lig_runs contextual 11"  "lig_runs contextual 12"  "lig_runs contextual 13"  "lig_runs contextual 14"  "lig_runs contextual 15"  "lig_runs contextual 16"  "lig_runs contextual 17"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 8 0 0 "lig_wave_unwind" { "lig_wave_unwind contextual 0"  "lig_wave_unwind contextual 1"  "lig_wave_unwind contextual 2"  "lig_wave_unwind contextual 3"  "lig_wave_unwind contextual 4"  "lig_wave_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_wave_rebuild" { "lig_wave_rebuild contextual 0"  "lig_wave_rebuild contextual 1"  "lig_wave_rebuild contextual 2"  "lig_wave_rebuild contextual 3"  "lig_wave_rebuild contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_pipes" { "lig_pipes contextual 0"  "lig_pipes contextual 1"  "lig_pipes contextual 2"  "lig_pipes contextual 3"  "lig_pipes contextual 4"  "lig_pipes contextual 5"  "lig_pipes contextual 6"  "lig_pipes contextual 7"  "lig_pipes contextual 8"  "lig_pipes contextual 9"  "lig_pipes contextual 10"  "lig_pipes contextual 11"  "lig_pipes contextual 12"  "lig_pipes contextual 13"  "lig_pipes contextual 14"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_diamond" { "lig_diamond contextual 0"  "lig_diamond contextual 1"  "lig_diamond contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_tight" { "lig_tight contextual 0"  "lig_tight contextual 1"  "lig_tight contextual 2"  "lig_tight contextual 3"  "lig_tight contextual 4"  "lig_tight contextual 5"  "lig_tight contextual 6"  "lig_tight contextual 7"  "lig_tight contextual 8"  "lig_tight contextual 9"  "lig_tight contextual 10"  "lig_tight contextual 11"  "lig_tight contextual 12"  "lig_tight contextual 13"  "lig_tight contextual 14"  "lig_tight contextual 15"  "lig_tight contextual 16"  "lig_tight contextual 17"  "lig_tight contextual 18"  "lig_tight contextual 19"  "lig_tight contextual 20"  "lig_tight contextual 21"  "lig_tight contextual 22"  "lig_tight contextual 23"  "lig_tight contextual 24"  "lig_tight contextual 25"  "lig_tight contextual 26"  "lig_tight contextual 27"  "lig_tight contextual 28"  "lig_tight contextual 29"  "lig_tight contextual 30"  "lig_tight contextual 31"  "lig_tight contextual 32"  "lig_tight contextual 33"  "lig_tight contextual 34"  "lig_tight contextual 35"  "lig_tight contextual 36"  "lig_tight contextual 37"  "lig_tight contextual 38"  "lig_tight contextual 39"  "lig_tight contextual 40"  "lig_tight contextual 41"  "lig_tight contextual 42"  "lig_tight contextual 43"  "lig_tight contextual 44"  "lig_tight contextual 45"  "lig_tight contextual 46"  "lig_tight contextual 47"  "lig_tight contextual 48"  "lig_tight contextual 49"  "lig_tight contextual 50"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
@@ -628,6 +630,78 @@ ChainSub2: coverage "lig_pipes contextual 0" 0 0 0 1
   FCoverage: 7 greater
  0
 EndFPST
+ChainSub2: glyph "lig_wave_rebuild contextual 4" 0 0 0 1
+ String: 10 asciitilde
+ BString: 0 
+ FString: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_sta"
+EndFPST
+ChainSub2: glyph "lig_wave_rebuild contextual 3" 0 0 0 1
+ String: 10 asciitilde
+ BString: 14 asciitilde.mid
+ FString: 0 
+ 1
+  SeqLookup: 0 "lig_end_low"
+EndFPST
+ChainSub2: glyph "lig_wave_rebuild contextual 2" 0 0 0 1
+ String: 10 asciitilde
+ BString: 14 asciitilde.mid
+ FString: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_mid_low"
+EndFPST
+ChainSub2: coverage "lig_wave_rebuild contextual 1" 0 0 0 1
+ 1 1 0
+  Coverage: 10 asciitilde
+  BCoverage: 33 asciitilde.sta asciitilde.mid.low
+ 1
+  SeqLookup: 0 "lig_end"
+EndFPST
+ChainSub2: coverage "lig_wave_rebuild contextual 0" 0 0 0 1
+ 1 1 1
+  Coverage: 10 asciitilde
+  BCoverage: 33 asciitilde.sta asciitilde.mid.low
+  FCoverage: 10 asciitilde
+ 1
+  SeqLookup: 0 "lig_mid"
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 5" 0 0 0 1
+ 1 0 1
+  Coverage: 11 less.warrow
+  FCoverage: 10 asciitilde
+  Replace: 4 less
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 4" 0 0 0 1
+ 1 0 1
+  Coverage: 14 asciitilde.sta
+  FCoverage: 10 asciitilde
+  Replace: 10 asciitilde
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 3" 0 0 0 1
+ 1 0 1
+  Coverage: 18 asciitilde.mid.low
+  FCoverage: 10 asciitilde
+  Replace: 10 asciitilde
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 2" 0 0 0 1
+ 1 0 1
+  Coverage: 14 asciitilde.mid
+  FCoverage: 10 asciitilde
+  Replace: 10 asciitilde
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 1" 0 0 0 1
+ 1 0 1
+  Coverage: 18 asciitilde.end.low
+  FCoverage: 7 greater
+  Replace: 10 asciitilde
+EndFPST
+ReverseChain2: revcov "lig_wave_unwind contextual 0" 0 0 0 1
+ 1 0 1
+  Coverage: 14 asciitilde.end
+  FCoverage: 7 greater
+  Replace: 10 asciitilde
+EndFPST
 ChainSub2: glyph "lig_runs contextual 17" 0 0 0 1
  String: 7 greater
  BString: 14 asciitilde.mid
@@ -1010,11 +1084,12 @@ ChainSub2: coverage "lig_hyphen_build contextual 12" 0 0 0 1
  0
 EndFPST
 ChainSub2: coverage "lig_hyphen_build contextual 11" 0 0 0 1
- 1 2 1
+ 1 2 2
   Coverage: 6 hyphen
   BCoverage: 7 greater
   BCoverage: 180 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine slash quotedbl quotesingle
-  FCoverage: 14 hyphen greater
+  FCoverage: 6 hyphen
+  FCoverage: 7 greater
  1
   SeqLookup: 0 "lig_sta"
 EndFPST

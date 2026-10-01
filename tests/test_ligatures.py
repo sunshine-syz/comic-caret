@@ -119,7 +119,7 @@ LIGATED = {
     "--><A>": hyphens(3, right="greater.arrow") + ["less", "A", "greater"],
     "x=><li>": ["x"] + equals(2, right="greater.darrow") + ["less", "l", "i", "greater"],
     "x=><a>": ["x"] + equals(2, right="greater.darrow") + ["less", "a", "greater"],
-    # A - run after the > that ends a tag, though >- is otherwise an inward head
+    # --> right after the > that ends a tag, though >- is otherwise an inward head
     "</p>-->": ["less", "slash", "p", "greater"] + hyphens(3, right="greater.arrow"),
     "<====>": equals(6, "less.darrow", "greater.darrow"),
     # A - and an = family side by side: each part joins on its own
@@ -150,6 +150,8 @@ LIGATED = {
     "<~": ["less.warrow", "asciitilde.end"],
     "<~~": ["less.warrow", "asciitilde.mid", "asciitilde.end.low"],
     "<~>": ["less.warrow", "asciitilde.mid", "greater.warrow.low"],
+    # A run whose > is no head has no < head either, however long: ~~ is drawn as in ~~>=
+    "<~~>=": ["less", "asciitilde.sta", "asciitilde.end", "greater", "equal"],
     # HTML comments
     "<!--": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"],
     "<!-- x -->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "space", "x",
@@ -236,13 +238,13 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # A shell heredoc's <<-, whatever letter its delimiter starts with
     "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF", "cat <<-ARGS", "<<-abc",
-    # An arrow before a < that opens no tag, and a lone - after a tag's >
-    "-><", "=><", "-><1", "x>-1",
+    # An arrow before a < that opens no tag, and a - after a tag's > that doesn't start -->
+    "-><", "=><", "-><1", "x>-1", "a>--b", "x>->y",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
-    # Wave arrows followed by another operator, and Ruby's <<~ heredoc
-    "~>>", "~>=", "<<~", "=~", "!~",
+    # One- and two-headed wave arrows followed by another operator, and Ruby's <<~ heredoc
+    "~>>", "~>=", "<~>>", "<~>=", "<<~", "=~", "!~",
     # <!-- without its -- run
     "<!-",
     # Lone run characters
