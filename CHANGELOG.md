@@ -6,7 +6,7 @@
 - ☐'s hints in the OTFs counted stems it didn't have and left its top stroke unhinted, as in □ ◰ ◱ ◲ ◳ ⧆ ⧇, which are built on it; FontForge warned whenever it opened them. All of them are now hinted in full.
 - The PANOSE classification, which said only that the font is monospaced, now describes the rest of its design: a rounded sans of book weight with no stroke contrast and a large x-height, the italic as its oblique form, so systems that pick a substitute font by PANOSE find a closer one.
 - The plain fonts' unique ID (name ID 3) names the release, as `1.6.1;NONE;ComicCaret-Regular`, the form fontmake gives it, where FontForge's held a date.
-- `a>--b` and `x>->y` no longer draw a `--` line or a `->` arrow after the `>`: after a `>` that may end a tag, a `-` joins only as `-->`, which closes a comment, as in `</p>-->` and `<!--<div>-->`.
+- `a>--b` and `x>->y` no longer draw a `--` line or a `->` arrow after the `>`: a `-` right after a `>` joins only as `-->`, which closes a comment, as in `<!--<a href="x">-->`, unless the `>` closes a short tag such as `<code>`, `</p>` or `<br/>`, so `<code>--help</code>`, `</p>--->` and `<a>->` join as before.
 - A wave arrow followed by another operator now loses its `<` head too, not only its `>` one, at any length: `<~>=` and `<~>>` are plain, as `~>=` and `~>>` are, and `<~~>=` keeps only the `~~` that `~~>=` draws.
 
 ## 1.6.0 (2026-09)

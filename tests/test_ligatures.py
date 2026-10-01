@@ -119,8 +119,14 @@ LIGATED = {
     "--><A>": hyphens(3, right="greater.arrow") + ["less", "A", "greater"],
     "x=><li>": ["x"] + equals(2, right="greater.darrow") + ["less", "l", "i", "greater"],
     "x=><a>": ["x"] + equals(2, right="greater.darrow") + ["less", "a", "greater"],
-    # --> right after the > that ends a tag, though >- is otherwise an inward head
+    # A run or arrow right after a short tag, though >- is otherwise an inward head
     "</p>-->": ["less", "slash", "p", "greater"] + hyphens(3, right="greater.arrow"),
+    "</p>--->": ["less", "slash", "p", "greater"] + hyphens(4, right="greater.arrow"),
+    "<code>--help</code>": (["less", "c", "o", "d", "e", "greater"] + hyphens(2)
+                            + ["h", "e", "l", "p", "less", "slash", "c", "o", "d", "e", "greater"]),
+    "<li>-- item": ["less", "l", "i", "greater"] + hyphens(2) + ["space", "i", "t", "e", "m"],
+    "<a>->": ["less", "a", "greater"] + hyphens(2, right="greater.arrow"),
+    "<a>->>": ["less", "a", "greater", "hyphen.sta", "greater.shaft", "greater.twohead"],
     "<====>": equals(6, "less.darrow", "greater.darrow"),
     # A - and an = family side by side: each part joins on its own
     "-=>": ["hyphen"] + equals(2, right="greater.darrow"),
@@ -165,6 +171,10 @@ LIGATED = {
     "<!--<": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "less"],
     "<!--<div>-->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end",
                       "less", "d", "i", "v", "greater"] + hyphens(3, right="greater.arrow")),
+    # After any other tag only --> joins, and a>--b is plain
+    '<!--<p id="x">-->': (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end",
+                           "less", "p", "space", "i", "d", "equal", "quotedbl", "x", "quotedbl",
+                           "greater"] + hyphens(3, right="greater.arrow")),
     # != !== :=
     "!=": ["LIG", "exclam_equal.liga"],
     "a!=b": ["a", "LIG", "exclam_equal.liga", "b"],
@@ -238,8 +248,9 @@ PLAIN = [
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # A shell heredoc's <<-, whatever letter its delimiter starts with
     "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF", "cat <<-ARGS", "<<-abc",
-    # An arrow before a < that opens no tag, and a - after a tag's > that doesn't start -->
-    "-><", "=><", "-><1", "x>-1", "a>--b", "x>->y",
+    # An arrow before a < that opens no tag, and a - after a > that closes no short tag and
+    # doesn't start -->
+    "-><", "=><", "-><1", "x>-1", "a>--b", "x>->y", "0>--->1",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
@@ -288,6 +299,19 @@ class LigatureShapingTest(unittest.TestCase):
                     with self.subTest(font=font.name, text=text):
                         self.assertEqual(names(font, text),
                                          plain + names(font, run) + ["greater", "equal"])
+
+    def test_a_run_right_after_a_short_tag_joins_as_it_does_alone(self):
+        # >- is otherwise an inward head. A short tag opens, closes or closes itself, and
+        # HTML's element names run to 10 characters (blockquote, figcaption): one name of
+        # each length.
+        elements = ["a", "h1", "div", "code", "table", "button", "article", "fieldset",
+                    "plaintext", "blockquote"]
+        for font in FONTS:
+            run = names(font, "--")
+            for element in elements:
+                for tag in (f"<{element}>", f"</{element}>", f"<{element}/>"):
+                    with self.subTest(font=font.name, tag=tag):
+                        self.assertEqual(names(font, tag + "--"), names(font, tag) + run)
 
     def test_every_glyph_advances_one_cell(self):
         for font in FONTS:
