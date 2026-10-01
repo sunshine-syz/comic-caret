@@ -177,23 +177,24 @@ class Layout:
     def line(self, x, baseline, text, size, gap=0, calt=False, classes=None, font=FONT):
         """Draw one line of `text` from x on the baseline, `gap` px between cells. `classes`
         colors every glyph, as a class name, or each by its character, as a list."""
+        self._draw(x, baseline, text, size, gap, calt, classes, font, lambda cluster: True)
+
+    def styled(self, x, baseline, text, size, italic, gap=0, calt=False, classes=None):
+        """As line(), with the characters `italic` marks (one bool each) drawn in the italic.
+        Both styles shape alike, so a glyph comes from the style of the character it starts
+        at; keep a ligature's characters in one style."""
+        for font, slanted in ((FONT, False), (ITALIC, True)):
+            self._draw(x, baseline, text, size, gap, calt, classes, font,
+                       lambda cluster: italic[cluster] == slanted)
+
+    def _draw(self, x, baseline, text, size, gap, calt, classes, font, keep):
+        """Draw the glyphs of `text` shaped with `font` whose cluster `keep` accepts."""
         if isinstance(classes, str) or classes is None:
             classes = [classes] * len(text)
         pitch = ADVANCE * size / 1000 + gap
         for path, cell, cluster in glyphs(text, calt, font):
-            self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
-
-    def styled(self, x, baseline, text, size, italic, calt=False, classes=None):
-        """As line(), with the characters `italic` marks (one bool each) drawn in the italic.
-        Both styles shape alike, so a glyph comes from the style of the character it starts
-        at; keep a ligature's characters in one style."""
-        if isinstance(classes, str) or classes is None:
-            classes = [classes] * len(text)
-        pitch = ADVANCE * size / 1000
-        for font, slanted in ((FONT, False), (ITALIC, True)):
-            for path, cell, cluster in glyphs(text, calt, font):
-                if italic[cluster] == slanted:
-                    self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
+            if keep(cluster):
+                self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
 
     def spans(self, x, baseline, spans, size):
         """Draw (class or None, text) spans one after another."""
