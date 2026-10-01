@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790866043
+ModificationTime: 1790876111
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -8657,13 +8657,13 @@ Encoding: 238 238 153
 Width: 550
 GlyphClass: 2
 Flags: W
-HStem: -16 81<74.238 251 342 487.761> 378 81<109.283 254> 530 73<111.188 173.697 344.303 406.714>
-VStem: 107 303<562 602.323> 251 91<65 379.901>
+HStem: -16 81<74.238 251 342 487.761> 378 81<109.283 254> 530 73<131.188 193.697 364.303 426.714>
+VStem: 127 303<562 602.323> 251 91<65 379.901>
 AnchorPoint: "bottom" 281 0 basechar 0
 AnchorPoint: "top" 281 710 basechar 0
 LayerCount: 2
 Fore
-Refer: 278 710 N 1 0 0 1 -16 0 2
+Refer: 278 710 N 1 0 0 1 4 0 2
 Refer: 213 305 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" i uni0302
 EndChar
@@ -9180,14 +9180,14 @@ Encoding: 264 264 176
 Width: 550
 GlyphClass: 2
 Flags: W
-HStem: -29 84<199.006 366.466> 485 21G<465.5 480> 591 76<299.795 417.231> 718 73<153.188 215.697 386.303 448.714>
-VStem: 38 93<135.343 358.485> 149 303<750 790.323> 423 96<497.505 563.626>
+HStem: -29 84<199.006 366.466> 485 21G<465.5 480> 591 76<299.795 417.231> 718 73<132.188 194.697 365.303 427.714>
+VStem: 38 93<135.343 358.485> 128 303<750 790.323> 423 96<497.505 563.626>
 AnchorPoint: "bottom" 278 0 basechar 0
 AnchorPoint: "top" 278 898 basechar 0
 LayerCount: 2
 Fore
 Refer: 36 67 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 26 188 2
+Refer: 278 710 N 1 0 0 1 5 188 2
 Ligature2: "marks_compose" C uni0302
 EndChar
 

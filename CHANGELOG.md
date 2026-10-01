@@ -9,6 +9,7 @@
 - `a>--b` and `x>->y` no longer draw a `--` line or a `->` arrow after the `>`: a `-` right after a `>` joins only as `-->`, which closes a comment, as in `<!--<a href="x">-->`, unless the `>` closes a short tag (no attributes, a name of up to 10 letters and digits) such as `<code>`, `</p>` or `<br/>`, so `<code>--help</code>`, `</p>--->` and `<a>->` join as before.
 - A wave arrow followed by another operator now loses its `<` head too, not only its `>` one, at any length: `<~>=` and `<~>>` are plain, as `~>=` and `~>>` are, and `<~~>=` keeps only the `~~` that `~~>=` draws.
 - The italic's tab keys ↹ ⇥ ⇤ stay upright, like the other key hints ⌘ ⌥ ⌃ ⇧, instead of slanting.
+- Ĉ's circumflex sat 22 units right of where Ć Ċ Č centre their accents, and î's 20 units left of where ï ĩ ī put theirs, over the place of i's dot. Both now sit with the rest, where a combining circumflex (U+0302) after `C` or `ı` lands too, so the two draw the same Ĉ and î where nothing composes them; each of the three reference fonts places Ĉ's mark as it does Ċ's and Č's, and keeps î's over the dot's place.
 
 ## 1.6.0 (2026-09)
 
