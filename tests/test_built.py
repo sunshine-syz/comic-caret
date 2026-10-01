@@ -13,10 +13,12 @@ import sys
 import tempfile
 import unicodedata
 import unittest
+import zipfile
 
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+from bump_version import sfd_version
 from make_italic import AXIS, SLANT
 from mark_advances import read_tables
 from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
@@ -371,6 +373,54 @@ class NerdFontTest(unittest.TestCase):
             with self.subTest(font=nerd.name):
                 self.assertEqual(shape(nerd, text),
                                  shape(plain[nerd_style(nerd), nerd.suffix], text))
+
+
+class ReleaseZipTest(unittest.TestCase):
+    """The zips ./build.sh --release makes hold the fonts of this version and nothing else.
+
+    The Nerd Fonts zip takes everything build/nerd/ holds, so a Mono or Propo variant left
+    there, or any stray file, would ship. A zip of another version or older than the SFDs
+    says nothing about the font as it is now, so the class skips.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.version = sfd_version(SFD)
+        cls.plain = ROOT / "dist" / f"ComicCaret-{cls.version}.zip"
+        cls.nerd = ROOT / "dist" / f"ComicCaretNerdFont-{cls.version}.zip"
+        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
+        for zip_path in (cls.plain, cls.nerd):
+            if not zip_path.exists():
+                raise unittest.SkipTest(f"no {zip_path.name}; build it with ./build.sh --release")
+            if zip_path.stat().st_mtime <= newest_sfd:
+                raise unittest.SkipTest(f"{zip_path.name} is older than the SFDs")
+
+    @staticmethod
+    def fonts(prefix):
+        return {f"{prefix}-{style}.{ext}" for style in STYLES for ext in ("otf", "ttf")}
+
+    def test_the_plain_zip_holds_the_fonts_and_the_license(self):
+        with zipfile.ZipFile(self.plain) as zf:
+            self.assertEqual(sorted(zf.namelist()), sorted(self.fonts("ComicCaret") | {"LICENSE.md"}))
+
+    def test_the_nerd_zip_holds_only_the_default_variant(self):
+        with zipfile.ZipFile(self.nerd) as zf:
+            self.assertEqual(sorted(zf.namelist()),
+                             sorted(self.fonts("ComicCaretNerdFont") | {"ICON-LICENSES.txt", "LICENSE.md"}))
+
+    def test_every_font_is_of_this_version(self):
+        for zip_path in (self.plain, self.nerd):
+            with zipfile.ZipFile(zip_path) as zf, tempfile.TemporaryDirectory() as tmp:
+                for name in zf.namelist():
+                    if name.endswith((".otf", ".ttf")):
+                        with self.subTest(zip=zip_path.name, font=name):
+                            font = pathlib.Path(zf.extract(name, tmp))
+                            self.assertTrue(english_names(font)[5].startswith(f"Version {self.version}"))
+
+    def test_the_license_is_the_repositorys(self):
+        for zip_path in (self.plain, self.nerd):
+            with self.subTest(zip=zip_path.name), zipfile.ZipFile(zip_path) as zf:
+                self.assertEqual(zf.read("LICENSE.md"), (ROOT / "LICENSE.md").read_bytes())
 
 
 if __name__ == "__main__":
