@@ -276,6 +276,19 @@ class LigatureShapingTest(unittest.TestCase):
                 with self.subTest(font=font.name, text=text):
                     self.assertEqual(names(font, text), names(font, text, calt=False))
 
+    def test_a_wave_run_whose_greater_is_no_head_has_no_heads(self):
+        # A > before another operator is no head, so a < before the run is none either, and
+        # the run draws as it does alone, whatever its length. Runs of 1 to 5 reach every
+        # piece and both ends, with and without a < before them.
+        for font in FONTS:
+            for count in range(1, 6):
+                run = "~" * count
+                for before, plain in (("", []), ("<", ["less"])):
+                    text = before + run + ">="
+                    with self.subTest(font=font.name, text=text):
+                        self.assertEqual(names(font, text),
+                                         plain + names(font, run) + ["greater", "equal"])
+
     def test_every_glyph_advances_one_cell(self):
         for font in FONTS:
             for text in [*LIGATED, *PLAIN]:

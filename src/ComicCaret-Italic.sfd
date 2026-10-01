@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790863065
+ModificationTime: 1790863997
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -91,7 +91,7 @@ Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_bui
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  "lig_equal_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_runs" { "lig_runs contextual 0"  "lig_runs contextual 1"  "lig_runs contextual 2"  "lig_runs contextual 3"  "lig_runs contextual 4"  "lig_runs contextual 5"  "lig_runs contextual 6"  "lig_runs contextual 7"  "lig_runs contextual 8"  "lig_runs contextual 9"  "lig_runs contextual 10"  "lig_runs contextual 11"  "lig_runs contextual 12"  "lig_runs contextual 13"  "lig_runs contextual 14"  "lig_runs contextual 15"  "lig_runs contextual 16"  "lig_runs contextual 17"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 8 0 0 "lig_wave_unwind" { "lig_wave_unwind contextual 0"  "lig_wave_unwind contextual 1"  "lig_wave_unwind contextual 2"  "lig_wave_unwind contextual 3"  "lig_wave_unwind contextual 4"  "lig_wave_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 8 0 0 "lig_wave_unwind" { "lig_wave_unwind contextual 0"  "lig_wave_unwind contextual 1"  "lig_wave_unwind contextual 2"  "lig_wave_unwind contextual 3"  "lig_wave_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_wave_rebuild" { "lig_wave_rebuild contextual 0"  "lig_wave_rebuild contextual 1"  "lig_wave_rebuild contextual 2"  "lig_wave_rebuild contextual 3"  "lig_wave_rebuild contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_pipes" { "lig_pipes contextual 0"  "lig_pipes contextual 1"  "lig_pipes contextual 2"  "lig_pipes contextual 3"  "lig_pipes contextual 4"  "lig_pipes contextual 5"  "lig_pipes contextual 6"  "lig_pipes contextual 7"  "lig_pipes contextual 8"  "lig_pipes contextual 9"  "lig_pipes contextual 10"  "lig_pipes contextual 11"  "lig_pipes contextual 12"  "lig_pipes contextual 13"  "lig_pipes contextual 14"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_diamond" { "lig_diamond contextual 0"  "lig_diamond contextual 1"  "lig_diamond contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
@@ -666,17 +666,11 @@ ChainSub2: coverage "lig_wave_rebuild contextual 0" 0 0 0 1
  1
   SeqLookup: 0 "lig_mid"
 EndFPST
-ReverseChain2: revcov "lig_wave_unwind contextual 5" 0 0 0 1
+ReverseChain2: revcov "lig_wave_unwind contextual 4" 0 0 0 1
  1 0 1
   Coverage: 11 less.warrow
   FCoverage: 10 asciitilde
   Replace: 4 less
-EndFPST
-ReverseChain2: revcov "lig_wave_unwind contextual 4" 0 0 0 1
- 1 0 1
-  Coverage: 14 asciitilde.sta
-  FCoverage: 10 asciitilde
-  Replace: 10 asciitilde
 EndFPST
 ReverseChain2: revcov "lig_wave_unwind contextual 3" 0 0 0 1
  1 0 1

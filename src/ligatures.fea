@@ -222,13 +222,13 @@ feature calt {
   } lig_runs;
 
   # The < head is set before the run's end is known, so a run that ends in a plain > is
-  # unwound right to left to plain glyphs, however long it is, and built again without heads.
+  # unwound right to left, however long it is, and built again without heads: back to its
+  # .sta, which the rebuild carries on from, or past its < head to plain glyphs.
   lookup lig_wave_unwind {
     rsub [asciitilde.end]' [greater] by asciitilde;
     rsub [asciitilde.end.low]' [greater] by asciitilde;
     rsub [asciitilde.mid]' [asciitilde] by asciitilde;
     rsub [asciitilde.mid.low]' [asciitilde] by asciitilde;
-    rsub [asciitilde.sta]' [asciitilde] by asciitilde;
     rsub [less.warrow]' [asciitilde] by less;
   } lig_wave_unwind;
 
