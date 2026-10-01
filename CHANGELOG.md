@@ -1,11 +1,11 @@
 # Changelog
 
-## 1.6.1 (unreleased)
+## 1.6.5 (2026-10)
 
 - Releases no longer include ComicCaret Nerd Font Mono; the Nerd Font zip holds only the default ComicCaret Nerd Font (Regular and Italic, OTF and TTF). For icons shrunk to one cell, build it from source with `./build.sh --nerd=mono`.
 - ☐'s hints in the OTFs counted stems it didn't have and left its top stroke unhinted, as in □ ◰ ◱ ◲ ◳ ⧆ ⧇, which are built on it; FontForge warned whenever it opened them. All of them are now hinted in full.
 - The PANOSE classification, which said only that the font is monospaced, now describes the rest of its design: a rounded sans of book weight with no stroke contrast and a large x-height, the italic as its oblique form, so systems that pick a substitute font by PANOSE find a closer one.
-- The plain fonts' unique ID (name ID 3) names the release, as `1.6.1;NONE;ComicCaret-Regular`, the form fontmake gives it, where FontForge's held a date.
+- The plain fonts' unique ID (name ID 3) names the release, as `1.6.5;NONE;ComicCaret-Regular`, the form fontmake gives it, where FontForge's held a date.
 - `a>--b` and `x>->y` no longer draw a `--` line or a `->` arrow after the `>`: a `-` right after a `>` joins only as `-->`, which closes a comment, as in `<!--<a href="x">-->`, unless the `>` closes a short tag (no attributes, a name of up to 10 letters and digits) such as `<code>`, `</p>` or `<br/>`, so `<code>--help</code>`, `</p>--->` and `<a>->` join as before.
 - A wave arrow followed by another operator now loses its `<` head too, not only its `>` one, at any length: `<~>=` and `<~>>` are plain, as `~>=` and `~>>` are, and `<~~>=` keeps only the `~~` that `~~>=` draws.
 - The italic's tab keys ↹ ⇥ ⇤ stay upright, like the other key hints ⌘ ⌥ ⌃ ⇧, instead of slanting.
