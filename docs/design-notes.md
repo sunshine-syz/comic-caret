@@ -89,9 +89,9 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and spinner frames,
   the status marks ✓ ✗ ⚠ ℹ, ⏺ ⏵ ⏸ ⎿ ⧉ and �. Two choices go against Maple Mono, which slants
   them: ☐ ☑ ☒ stay upright because ours are squares of the hyphen's stroke like □ ■, and the
-  spinner frames ◰ ◱ ◲ ◳ are built on ☐; the white arrows ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟ and the tab keys ↹ ⇥ ⇤ stay upright
-  because they are key hints that read beside ⌘ ⌥ ⌃, which Maple Mono lacks. • ‣ ∙ stay too, as ◉ ⊙
-  and ▸ are built on them, and ℹ, which stands beside ⚠.
+  spinner frames ◰ ◱ ◲ ◳ are built on ☐; the white arrows ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟ and the tab keys ↹ ⇥ ⇤
+  stay upright because they are key hints that read beside ⌘ ⌥ ⌃, which Maple Mono lacks.
+  • ‣ ∙ stay too, as ◉ ⊙ and ▸ are built on them, and ℹ, which stands beside ⚠.
 - **Dots** shear with the letters, as Maple Mono's and Monaspace's do; round dots that only
   move with the slant looked the same at 14 px and would need a special case.
 - **Cursive letters**: only f. The regular's single-storey a and g already read as italic

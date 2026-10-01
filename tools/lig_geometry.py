@@ -160,6 +160,9 @@ def weld_y(below, above, y):
 
 
 def _spliced(first, second, on_edge, edge):
+    """Join the two outlines along their shared edge. Each is one contour with exactly one flat
+    edge on the line; the two run in opposite directions along it, and the first match is the
+    one taken."""
     a, b = first[0].dup(), second[0].dup()
     # Start each contour just after its edge, so the edge becomes its closing segment.
     a.makeFirst((_edge_start(a, on_edge, edge) + 1) % len(a))

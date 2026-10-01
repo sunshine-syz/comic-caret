@@ -100,7 +100,7 @@ def descending_f(font):
     cut = sorted(p.x for contour in stem for p in contour
                  if p.on_curve and abs(p.y - FOOT_TOP) < 0.5)
     if len(cut) != 2:
-        sys.exit(f"f's foot no longer ends below {FOOT_TOP}; measure it again")
+        sys.exit(f"f is not a single stem at y = {FOOT_TOP}; measure its foot again")
     x0, x1 = cut
     middle, width = (x0 + x1) / 2, x1 - x0
     depth = -font["j"].boundingBox()[1]  # the descender row

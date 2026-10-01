@@ -301,9 +301,9 @@ class LigatureShapingTest(unittest.TestCase):
                                          plain + names(font, run) + ["greater", "equal"])
 
     def test_a_run_right_after_a_short_tag_joins_as_it_does_alone(self):
-        # >- is otherwise an inward head. A short tag opens, closes or closes itself, and
-        # HTML's element names run to 10 characters (blockquote, figcaption): one name of
-        # each length.
+        # >- is otherwise an inward head. A short tag opens, closes or closes itself. The rules
+        # cover names of up to 10 letters and digits, enough for HTML's longest (blockquote,
+        # figcaption): one name of each length.
         elements = ["a", "h1", "div", "code", "table", "button", "article", "fieldset",
                     "plaintext", "blockquote"]
         for font in FONTS:
@@ -312,6 +312,16 @@ class LigatureShapingTest(unittest.TestCase):
                 for tag in (f"<{element}>", f"</{element}>", f"<{element}/>"):
                     with self.subTest(font=font.name, tag=tag):
                         self.assertEqual(names(font, tag + "--"), names(font, tag) + run)
+
+    def test_a_comment_closes_after_a_tag_ending_in_any_character_a_tag_can_end_in(self):
+        # A tag's last character before > is a letter or digit, a slash, or a closing quote.
+        tags = ["<!--<input disabled>", '<!--<img src="x"/>', '<!--<img alt="x">',
+                "<!--<a href='x'>", "<!--<h1>"]
+        arrow = hyphens(3, right="greater.arrow")
+        for font in FONTS:
+            for tag in tags:
+                with self.subTest(font=font.name, tag=tag):
+                    self.assertEqual(names(font, tag + "-->")[-3:], arrow)
 
     def test_every_glyph_advances_one_cell(self):
         for font in FONTS:
