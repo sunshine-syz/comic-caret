@@ -42,9 +42,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from add_box_drawing import KAPPA
 from add_ligatures import GENERATED
-from add_shapes import clockwise
 from project import AXIS, ITALIC_SFD, SFD, save_checked, validation_errors
 
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
@@ -111,11 +109,9 @@ def descending_f(font):
     path = fontforge.contour()
     path.moveTo(middle, FOOT_TOP + width)  # above the cut, which trims the round cap away
     path.lineTo(middle, bend)
-    path.cubicTo((middle, bend - KAPPA * ry), (middle - rx + KAPPA * rx, bend - ry),
+    path.cubicTo((middle, bend - geo.KAPPA * ry), (middle - rx + geo.KAPPA * rx, bend - ry),
                  (middle - rx, bend - ry))
-    layer = fontforge.layer()
-    layer += path
-    stroke = clockwise(layer.stroke("circular", width, "round", "round"))
+    stroke = geo.stroked(path, width)
     return geo.weld_y(geo.trim(stroke, y1=FOOT_TOP), stem, FOOT_TOP)
 
 

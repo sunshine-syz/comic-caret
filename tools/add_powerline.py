@@ -18,7 +18,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from add_box_drawing import KAPPA, LIGHT
+from add_box_drawing import LIGHT
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, SFD, save_checked, validation_errors
 
 BRANCH, LINE_NUMBER, PADLOCK = 0xE0A0, 0xE0A1, 0xE0A2
@@ -48,36 +48,13 @@ KEYHOLE_Y, KEYHOLE_RADIUS = 175, 45
 SLOT_WIDTH, SLOT_BOTTOM = 50, 40
 
 
-def polygon(points):
-    """A closed straight-sided outline through `points`, as a layer."""
-    contour = fontforge.contour()
-    contour.moveTo(*points[0])
-    for point in points[1:]:
-        contour.lineTo(*point)
-    contour.closed = True
-    layer = fontforge.layer()
-    layer += contour
-    return layer
 
 
-def circle(cx, cy, r):
-    """A clockwise circle of four cubic quarters, as a layer."""
-    k = KAPPA * r
-    contour = fontforge.contour()
-    contour.moveTo(cx, cy + r)
-    contour.cubicTo((cx + k, cy + r), (cx + r, cy + k), (cx + r, cy))
-    contour.cubicTo((cx + r, cy - k), (cx + k, cy - r), (cx, cy - r))
-    contour.cubicTo((cx - k, cy - r), (cx - r, cy - k), (cx - r, cy))
-    contour.cubicTo((cx - r, cy + k), (cx - k, cy + r), (cx, cy + r))
-    contour.closed = True
-    layer = fontforge.layer()
-    layer += contour
-    return layer
 
 
 def rounded_rect(x0, y0, x1, y1, r):
     """A clockwise rectangle with quarter-circle corners of radius r, as a layer."""
-    k = KAPPA * r
+    k = geo.KAPPA * r
     contour = fontforge.contour()
     contour.moveTo(x0, y0 + r)
     contour.lineTo(x0, y1 - r)
@@ -94,26 +71,14 @@ def rounded_rect(x0, y0, x1, y1, r):
     return layer
 
 
-def stroked(path, width=LIGHT):
-    """An open centre-line contour drawn as a stroke with round ends and joins."""
-    layer = fontforge.layer()
-    layer += path
-    return layer.stroke("circular", width, "round", "round")
 
 
-def holes(layer):
-    """The outline's contours turned to run the other way, so they cut holes where they lie
-    inside another outline."""
-    out = layer.dup()
-    for contour in out:
-        contour.reverseDirection()
-    return out
 
 
 def solid_separator():
     """: a triangle from the cell's left edge to a point on its right edge, filling the line
     box, so the segment it ends meets it without a seam."""
-    return polygon([(0, LINE_BOTTOM), (0, LINE_TOP), (ADVANCE, MIDDLE)])
+    return geo.polygon([(0, LINE_BOTTOM), (0, LINE_TOP), (ADVANCE, MIDDLE)])
 
 
 def thin_separator():
@@ -122,7 +87,7 @@ def thin_separator():
     run, rise = ADVANCE, MIDDLE - LINE_BOTTOM
     # The stroke's thickness measured horizontally: what moves the outer edge onto the inner.
     inset = LIGHT * math.hypot(run, rise) / rise
-    return geo.cleanup(polygon([(0, LINE_BOTTOM), (0, LINE_BOTTOM + inset * rise / run),
+    return geo.cleanup(geo.polygon([(0, LINE_BOTTOM), (0, LINE_BOTTOM + inset * rise / run),
                                 (ADVANCE - inset, MIDDLE), (0, LINE_TOP - inset * rise / run),
                                 (0, LINE_TOP), (ADVANCE, MIDDLE)]))
 
@@ -134,9 +99,9 @@ def branch():
     fork.moveTo(TRUNK_X, FORK_Y)
     fork.cubicTo((TRUNK_X, FORK_Y + 300), (BRANCH_X, BRANCH_DOT_Y - 380),
                  (BRANCH_X, BRANCH_DOT_Y - DOT))
-    dots = (circle(TRUNK_X, TRUNK_TOP, DOT), circle(TRUNK_X, TRUNK_BOTTOM, DOT),
-            circle(BRANCH_X, BRANCH_DOT_Y, DOT))
-    return geo.cleanup(geo.union(trunk, stroked(fork), *dots))
+    dots = (geo.circle(TRUNK_X, TRUNK_TOP, DOT), geo.circle(TRUNK_X, TRUNK_BOTTOM, DOT),
+            geo.circle(BRANCH_X, BRANCH_DOT_Y, DOT))
+    return geo.cleanup(geo.union(trunk, geo.stroked(fork, LIGHT), *dots))
 
 
 def letter(font, name, scale, bottom):
@@ -160,13 +125,13 @@ def padlock():
     """: a rounded body with a keyhole, and a shackle whose legs run into the body."""
     x0, y0, x1, y1 = BODY
     cx = ADVANCE / 2
-    ring = circle(cx, y1, SHACKLE_RADIUS)
-    ring += holes(circle(cx, y1, SHACKLE_RADIUS - LIGHT))[0]
+    ring = geo.circle(cx, y1, SHACKLE_RADIUS)
+    ring += geo.holes(geo.circle(cx, y1, SHACKLE_RADIUS - LIGHT))[0]
     shackle = geo.trim(ring, y0=y1 - SHACKLE_LEGS)
     solid = geo.union(rounded_rect(x0, y0, x1, y1, CORNER), shackle)
-    keyhole = geo.union(circle(cx, KEYHOLE_Y, KEYHOLE_RADIUS),
+    keyhole = geo.union(geo.circle(cx, KEYHOLE_Y, KEYHOLE_RADIUS),
                         geo.rect(cx - SLOT_WIDTH / 2, SLOT_BOTTOM, cx + SLOT_WIDTH / 2, KEYHOLE_Y))
-    solid += holes(keyhole)
+    solid += geo.holes(keyhole)
     return geo.cleanup(solid)
 
 

@@ -161,5 +161,58 @@ class CleanupTest(unittest.TestCase):
         self.assertTrue(all(p.x == int(p.x) and p.y == int(p.y) for p in cleaned[0]))
 
 
+class ShapeTest(unittest.TestCase):
+    SQUARE = [(0, 0), (0, 100), (100, 100), (100, 0)]
+
+    def test_a_polygon_runs_clockwise_whichever_way_its_points_go(self):
+        for points in (self.SQUARE, self.SQUARE[::-1]):
+            with self.subTest(first_turn=points[1]):
+                [contour] = geo.polygon(points)
+                self.assertTrue(contour.isClockwise())
+
+    def test_a_stroke_is_one_clockwise_outline_whichever_way_it_runs(self):
+        for p0, p1 in (((0, 0), (100, 0)), ((100, 0), (0, 0))):
+            with self.subTest(start=p0):
+                [contour] = geo.line(p0, p1, 40)
+                self.assertTrue(contour.isClockwise())
+                self.assertEqual(box(geo.line(p0, p1, 40)), (-20, -20, 120, 20))
+
+    def test_a_circle_is_round_and_clockwise(self):
+        [contour] = geo.circle(50, 50, 40)
+        self.assertTrue(contour.isClockwise())
+        self.assertEqual(box(geo.circle(50, 50, 40)), (10, 10, 90, 90))
+
+    def test_holes_cut_where_they_lie(self):
+        ring = geo.rect(0, 0, 100, 100)
+        ring += geo.holes(geo.rect(30, 30, 70, 70))
+        self.assertEqual(sorted(c.isClockwise() for c in geo.cleanup(ring)), [False, True])
+
+    def test_clip_keeps_what_lies_inside_the_mask_either_way_round(self):
+        for points in ([(0, 0), (0, 100), (50, 100), (50, 0)],
+                       [(50, 0), (50, 100), (0, 100), (0, 0)]):
+            mask = fontforge.layer()
+            contour = fontforge.contour()
+            contour.moveTo(*points[0])
+            for point in points[1:]:
+                contour.lineTo(*point)
+            contour.closed = True
+            mask += contour
+            with self.subTest(clockwise=contour.isClockwise()):
+                self.assertEqual(box(geo.clip(geo.rect(0, 0, 100, 100), mask)), (0, 0, 50, 100))
+
+    def test_as_ring_and_outer(self):
+        ring = geo.rect(0, 0, 100, 100)
+        ring += geo.rect(30, 30, 70, 70)  # both clockwise: no hole yet
+        made = geo.as_ring(ring)
+        self.assertEqual(sorted(c.isClockwise() for c in made), [False, True])
+        self.assertEqual(box(geo.outer(made)), (0, 0, 100, 100))
+
+    def test_centred_and_turned(self):
+        square = geo.rect(0, 0, 100, 100)
+        self.assertEqual(box(geo.centred(square, 275, 269)), (225, 219, 325, 319))
+        self.assertEqual(box(geo.transformed(square, geo.turned(275, 269))),
+                         (450, 438, 550, 538))
+
+
 if __name__ == "__main__":
     unittest.main()

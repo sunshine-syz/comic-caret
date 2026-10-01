@@ -48,7 +48,6 @@ DASH_GAP = {2: 128, 3: 68, 4: 46}
 DASH_COUNT = {"DOUBLE": 2, "TRIPLE": 3, "QUADRUPLE": 4}
 
 ARC_RADIUS = ADVANCE // 2  # of the centre line, as in Intel One Mono: arcs span half a cell
-KAPPA = 4 * (math.sqrt(2) - 1) / 3  # control-point distance of a cubic quarter circle
 
 # Shades are a grid of pixels 55 x 62.5, which repeats in every cell so shaded areas tile.
 SHADE_GRID = (10, 20)
@@ -249,14 +248,14 @@ def arc(vertical, horizontal):
     contour = fontforge.contour()
     contour.moveTo(MIDDLE_X - sx * half, y_end)
     contour.lineTo(MIDDLE_X - sx * half, cy)
-    contour.cubicTo((MIDDLE_X - sx * half, cy - sy * KAPPA * outer),
-                    (cx - sx * KAPPA * outer, MIDDLE_Y - sy * half),
+    contour.cubicTo((MIDDLE_X - sx * half, cy - sy * geo.KAPPA * outer),
+                    (cx - sx * geo.KAPPA * outer, MIDDLE_Y - sy * half),
                     (cx, MIDDLE_Y - sy * half))
     contour.lineTo(x_end, MIDDLE_Y - sy * half)
     contour.lineTo(x_end, MIDDLE_Y + sy * half)
     contour.lineTo(cx, MIDDLE_Y + sy * half)
-    contour.cubicTo((cx - sx * KAPPA * inner, MIDDLE_Y + sy * half),
-                    (MIDDLE_X + sx * half, cy - sy * KAPPA * inner),
+    contour.cubicTo((cx - sx * geo.KAPPA * inner, MIDDLE_Y + sy * half),
+                    (MIDDLE_X + sx * half, cy - sy * geo.KAPPA * inner),
                     (MIDDLE_X + sx * half, cy))
     contour.lineTo(MIDDLE_X + sx * half, y_end)
     contour.closed = True

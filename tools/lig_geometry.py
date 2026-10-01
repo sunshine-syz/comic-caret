@@ -1,15 +1,17 @@
-"""Outline operations for building glyphs from existing outlines.
+"""Outline operations for drawing glyphs and building them from existing outlines.
 
-tools/add_ligatures.py builds the ligatures with them.
+The generators (tools/add_*.py) and tools/make_italic.py draw with them.
 
-Each function takes FontForge layers and returns a new layer, leaving its inputs alone;
-snap_edge is the exception and edits its argument in place. Outlines are clockwise, as in
-the SFD.
+Each function returns a new layer (or matrix) and leaves its inputs alone; snap_edge is the
+exception and edits its argument in place. Outlines are clockwise, as in the SFD.
 """
+import math
+
 import fontforge
 import psMat
 
 FAR = 3000  # beyond every outline in the font
+KAPPA = 4 * (math.sqrt(2) - 1) / 3  # control-point distance of a cubic quarter circle
 
 
 def rect(x0, y0, x1, y1):
@@ -34,6 +36,112 @@ def transformed(layer, matrix):
     out = layer.dup()
     out.transform(matrix)
     return out
+
+
+def clockwise(layer):
+    """Every contour turned to run clockwise, as a filled outline must; a stroked path or a
+    polygon can come out the other way, which removeOverlap would take for a hole."""
+    out = layer.dup()
+    for contour in out:
+        if not contour.isClockwise():
+            contour.reverseDirection()
+    return out
+
+
+def polygon(points):
+    """A closed straight-sided outline through `points`, as a layer, clockwise whichever way
+    the points run."""
+    contour = fontforge.contour()
+    contour.moveTo(*points[0])
+    for point in points[1:]:
+        contour.lineTo(*point)
+    contour.closed = True
+    layer = fontforge.layer()
+    layer += contour
+    return clockwise(layer)
+
+
+def circle(cx, cy, r):
+    """A clockwise circle of four cubic quarters, as a layer."""
+    k = KAPPA * r
+    contour = fontforge.contour()
+    contour.moveTo(cx, cy + r)
+    contour.cubicTo((cx + k, cy + r), (cx + r, cy + k), (cx + r, cy))
+    contour.cubicTo((cx + r, cy - k), (cx + k, cy - r), (cx, cy - r))
+    contour.cubicTo((cx - k, cy - r), (cx - r, cy - k), (cx - r, cy))
+    contour.cubicTo((cx - r, cy + k), (cx - k, cy + r), (cx, cy + r))
+    contour.closed = True
+    layer = fontforge.layer()
+    layer += contour
+    return layer
+
+
+def stroked(path, width):
+    """The open contour `path` drawn as a stroke of `width` with round ends and joins,
+    clockwise."""
+    layer = fontforge.layer()
+    layer += path
+    return clockwise(layer.stroke("circular", width, "round", "round"))
+
+
+def line(p0, p1, width):
+    """A straight stroke with round ends."""
+    contour = fontforge.contour()
+    contour.moveTo(*p0)
+    contour.lineTo(*p1)
+    return stroked(contour, width)
+
+
+def holes(layer):
+    """The outline's contours turned to run the other way, so they cut holes where they lie
+    inside another outline."""
+    out = layer.dup()
+    for contour in out:
+        contour.reverseDirection()
+    return out
+
+
+def clip(layer, mask):
+    """The part of `layer` inside the one-contour `mask`."""
+    out = layer.dup()
+    out += clockwise(mask)
+    out.intersect()
+    return out
+
+
+def as_ring(layer):
+    """The outline with its widest contour clockwise and the others counter-clockwise: a
+    ring, whichever way a stroke came out."""
+    out = layer.dup()
+    widest = max(out, key=lambda c: c.boundingBox()[2] - c.boundingBox()[0])
+    for contour in out:
+        if contour.isClockwise() != (contour == widest):
+            contour.reverseDirection()
+    return out
+
+
+def outer(layer):
+    """The outline's clockwise contour: a ring filled in."""
+    [contour] = [c for c in layer if c.isClockwise()]
+    out = fontforge.layer()
+    out += contour
+    return out
+
+
+def moved(layer, dx, dy):
+    """`layer` shifted by (dx, dy)."""
+    return transformed(layer, psMat.translate(dx, dy))
+
+
+def centred(layer, cx, cy):
+    """`layer` shifted so its bounding box is centred on (cx, cy)."""
+    x0, y0, x1, y1 = layer.boundingBox()
+    return moved(layer, cx - (x0 + x1) / 2, cy - (y0 + y1) / 2)
+
+
+def turned(cx, cy):
+    """The matrix that turns an outline 180° about (cx, cy)."""
+    return about(psMat.rotate(math.pi), cx, cy)
 
 
 def _reflected(layer, matrix):

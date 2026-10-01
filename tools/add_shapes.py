@@ -29,7 +29,6 @@ import psMat
 
 import lig_geometry as geo
 import measure
-from add_powerline import polygon
 from project import ADVANCE, AXIS, SFD, save_checked, validation_errors
 
 CX = ADVANCE / 2  # the cell's middle; ○ ● ☐ ■ center on it and on AXIS
@@ -98,65 +97,20 @@ class Ref:
         self.parts = [(name, matrix) for name, matrix in parts]
 
 
-def clockwise(layer):
-    """Every contour turned to run clockwise, as a filled outline must; a stroked path or a
-    polygon can come out the other way, which removeOverlap would take for a hole."""
-    out = layer.dup()
-    for contour in out:
-        if not contour.isClockwise():
-            contour.reverseDirection()
-    return out
 
 
-def clip(layer, mask):
-    """The part of `layer` inside the one-contour `mask`."""
-    out = layer.dup()
-    out += clockwise(mask)
-    out.intersect()
-    return out
 
 
-def as_ring(layer):
-    """The outline with its widest contour clockwise and the others counter-clockwise: a
-    ring, whichever way a stroke came out."""
-    out = layer.dup()
-    widest = max(out, key=lambda c: c.boundingBox()[2] - c.boundingBox()[0])
-    for contour in out:
-        if contour.isClockwise() != (contour == widest):
-            contour.reverseDirection()
-    return out
 
 
-def outer(layer):
-    """The outline's clockwise contour: a ring filled in."""
-    [contour] = [c for c in layer if c.isClockwise()]
-    out = fontforge.layer()
-    out += contour
-    return out
 
 
-def line(p0, p1, width):
-    """A straight stroke with round ends."""
-    contour = fontforge.contour()
-    contour.moveTo(*p0)
-    contour.lineTo(*p1)
-    layer = fontforge.layer()
-    layer += contour
-    return layer.stroke("circular", width, "round", "round")
 
 
-def moved(layer, dx, dy):
-    return geo.transformed(layer, psMat.translate(dx, dy))
 
 
-def centred(layer, cx=CX, cy=AXIS):
-    x0, y0, x1, y1 = layer.boundingBox()
-    return moved(layer, cx - (x0 + x1) / 2, cy - (y0 + y1) / 2)
 
 
-def turned(cx=CX, cy=AXIS):
-    """The matrix that turns a glyph 180° about the cell's centre."""
-    return geo.about(psMat.rotate(math.pi), cx, cy)
 
 
 def glyph_for(font, key):
@@ -188,7 +142,7 @@ def bar(font, x0, x1, yc):
     hx0, _, hx1, _ = hyphen.boundingBox()
     layer = geo.stretch_span(hyphen, hx0 + 60, hx1 - 60, (x1 - x0) - (hx1 - hx0))
     bx0, by0, bx1, by1 = layer.boundingBox()
-    return moved(layer, x0 - bx0, yc - (by0 + by1) / 2)
+    return geo.moved(layer, x0 - bx0, yc - (by0 + by1) / 2)
 
 
 def inset(points, d):
@@ -214,9 +168,9 @@ def inset(points, d):
 def ring_and_fill(points, stroke):
     """(ring, fill): a closed polygon drawn as a ring of `stroke` with round corners, filling
     the polygon, and the ring filled in."""
-    path = clockwise(polygon(inset(points, stroke / 2)))
-    ring = as_ring(geo.cleanup(path.stroke("circular", stroke, "round", "round")))
-    return ring, outer(ring)
+    path = geo.polygon(inset(points, stroke / 2))
+    ring = geo.as_ring(geo.cleanup(path.stroke("circular", stroke, "round", "round")))
+    return ring, geo.outer(ring)
 
 
 def circle_cuts(font):
@@ -243,17 +197,17 @@ def square_cuts(font):
     # ■ cut along its diagonal from the top right to the bottom left, by a triangle that
     # reaches well past it.
     far = 200
-    lower_right = geo.cleanup(clip(square, polygon([(x1 + far, y1 + far), (x1 + far, y0 - far),
+    lower_right = geo.cleanup(geo.clip(square, geo.polygon([(x1 + far, y1 + far), (x1 + far, y0 - far),
                                                     (x0 - far, y0 - far)])))
     out[LOWER_RIGHT] = lower_right
     out[LOWER_LEFT] = geo.mirrored_x(lower_right, CX)
-    out[UPPER_LEFT] = Ref((f"uni{LOWER_RIGHT:04X}", turned()))
-    out[UPPER_RIGHT] = Ref((f"uni{LOWER_LEFT:04X}", turned()))
+    out[UPPER_LEFT] = Ref((f"uni{LOWER_RIGHT:04X}", geo.turned(CX, AXIS)))
+    out[UPPER_RIGHT] = Ref((f"uni{LOWER_LEFT:04X}", geo.turned(CX, AXIS)))
     # ▯: ☐ with the straight middle of its top and bottom shrunk, its corners kept.
     width = round(NARROW * (y1 - y0))
-    narrow = centred(geo.stretch_span(box, x0 + 100, x1 - 100, width - (x1 - x0)))
+    narrow = geo.centred(geo.stretch_span(box, x0 + 100, x1 - 100, width - (x1 - x0)), CX, AXIS)
     out[WHITE_BAR] = geo.cleanup(narrow)
-    out[BLACK_BAR] = outer(out[WHITE_BAR])
+    out[BLACK_BAR] = geo.outer(out[WHITE_BAR])
     return out
 
 
@@ -281,15 +235,15 @@ def rings(font):
     for k in range(DASHES):
         a0, a1 = k * span - span / 2 + gap / 2, k * span + span / 2 - gap / 2
         reach = 2 * r_out
-        wedge = polygon([(CX, AXIS)] + [(CX + reach * math.cos(a), AXIS + reach * math.sin(a))
+        wedge = geo.polygon([(CX, AXIS)] + [(CX + reach * math.cos(a), AXIS + reach * math.sin(a))
                                         for a in (a0, (a0 + a1) / 2, a1)])
-        pieces.append(clip(ring, wedge))
+        pieces.append(geo.clip(ring, wedge))
     out[DOTTED] = geo.cleanup(geo.union(*pieces))
     # ◍: bars of ◦'s stroke spaced evenly across the counter, ending inside the ring: cut by
     # ● shrunk into the ring's band, since removeOverlap mishandles ends on the ring's edge.
     step = (inner_right - inner_left) / (FILL_BARS + 1)
     inside = geo.transformed(disc, geo.about(psMat.scale(r_mid / r_out), CX, AXIS))
-    bars = [clip(geo.rect(x - THIN / 2, ry0, x + THIN / 2, ry1), inside)
+    bars = [geo.clip(geo.rect(x - THIN / 2, ry0, x + THIN / 2, ry1), inside)
             for x in (inner_left + step * (k + 1) for k in range(FILL_BARS))]
     out[FILLED] = geo.cleanup(geo.union(ring, *bars))
     # ⧆: ☐ over `*` at half size, thickened back like the small figures, centred in the cell.
@@ -297,7 +251,7 @@ def rings(font):
     ax0, ay0, ax1, ay1 = asterisk.boundingBox()
     small = geo.transformed(asterisk, geo.about(psMat.scale(ASTERISK_SCALE),
                                                 (ax0 + ax1) / 2, (ay0 + ay1) / 2))
-    out[SMALL_ASTERISK] = geo.cleanup(centred(weighted(font, SMALL_ASTERISK, small, 12)))
+    out[SMALL_ASTERISK] = geo.cleanup(geo.centred(weighted(font, SMALL_ASTERISK, small, 12), CX, AXIS))
     out[SQUARED_ASTERISK] = Ref((box_name, psMat.identity()), (SMALL_ASTERISK, psMat.identity()))
     return out
 
@@ -328,11 +282,11 @@ def stars(font):
             a = 90 * DEG + k * math.pi / points
             r = radius if k % 2 == 0 else radius * inner
             corners.append((CX + r * math.cos(a), AXIS + r * math.sin(a)))
-        poly = clockwise(polygon(corners))
-        pushed = clockwise(poly.stroke("circular", 2 * TIP, "round", "round"))
+        poly = geo.polygon(corners)
+        pushed = geo.clockwise(poly.stroke("circular", 2 * TIP, "round", "round"))
         out[code] = geo.cleanup(geo.union(poly, pushed))
     reach = radius + TIP - SPOKE / 2
-    spokes = [line((CX - reach * math.cos(a), AXIS - reach * math.sin(a)),
+    spokes = [geo.line((CX - reach * math.cos(a), AXIS - reach * math.sin(a)),
                    (CX + reach * math.cos(a), AXIS + reach * math.sin(a)), SPOKE)
               for a in (90 * DEG + k * math.pi / SPOKES for k in range(SPOKES))]
     out[ASTERISK_STAR] = geo.cleanup(geo.union(*spokes))
@@ -348,11 +302,11 @@ def joined_rounds(font):
     small_ring = weighted(font, ORIGINAL_OF, geo.transformed(ring, psMat.scale(scale)), 6)
     small_disc = geo.transformed(disc, psMat.scale(scale))
     left, right = CX - 150, CX + 150
-    link = line((left + SMALL_ROUND / 2 - 10, AXIS), (right - SMALL_ROUND / 2 + 10, AXIS), THIN)
-    return {ORIGINAL_OF: geo.cleanup(geo.union(centred(small_ring, left), link,
-                                               centred(small_disc, right))),
-            IMAGE_OF: geo.cleanup(geo.union(centred(small_disc, left), link,
-                                            centred(small_ring, right)))}
+    link = geo.line((left + SMALL_ROUND / 2 - 10, AXIS), (right - SMALL_ROUND / 2 + 10, AXIS), THIN)
+    return {ORIGINAL_OF: geo.cleanup(geo.union(geo.centred(small_ring, left, AXIS), link,
+                                               geo.centred(small_disc, right, AXIS))),
+            IMAGE_OF: geo.cleanup(geo.union(geo.centred(small_disc, left, AXIS), link,
+                                            geo.centred(small_ring, right, AXIS)))}
 
 
 def polygons(font):

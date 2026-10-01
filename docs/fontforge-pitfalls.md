@@ -58,8 +58,8 @@ around. Read this before writing code that edits the SFD.
 - `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
   another's outline as saved in the font, not from the layer before cleanup.
 - A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
-  `removeOverlap()` then takes them for holes; turn them clockwise (`add_shapes.clockwise`)
-  before a union.
+  `removeOverlap()` then takes them for holes; turn them clockwise (`lig_geometry.clockwise`;
+  `lig_geometry.polygon` and `stroked` already do) before a union.
 
 ## Features and lookups
 
