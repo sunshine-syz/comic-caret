@@ -154,9 +154,10 @@ class PlacementTest(unittest.TestCase):
 
     def test_the_math_axis_is_the_hyphens_middle(self):
         # The generators center box drawing, the ligatures and the shapes on AXIS; the
-        # hyphen is what the rest of the font's operators center on.
+        # hyphen is what the rest of the font's operators center on. AXIS is the hyphen's
+        # middle rounded to a whole unit, so a middle on a half unit still passes.
         _, y0, _, y1 = self.font["hyphen"].boundingBox()
-        self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=ROUNDING)
+        self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=ROUNDING / 2)
 
     def test_operators_sit_on_the_math_axis(self):
         _, y0, _, y1 = self.font["hyphen"].boundingBox()

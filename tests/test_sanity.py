@@ -24,7 +24,7 @@ from project import (ADVANCE, ITALIC_SFD, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, W
 
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
 # by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
-BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
+BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + OVERLAP
 
 # Known exceptions.
 # How far a glyph may run into the next cell: ď's caron, kept by choice, as far as Intel One
