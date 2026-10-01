@@ -22,6 +22,8 @@ around. Read this before writing code that edits the SFD.
   slot; set the encoding again afterwards or re-created glyphs land in new slots.
 - Don't save from a process that validated glyphs; it writes `Validated:` into each one it
   checked. `project.save_checked()` validates in a fresh process instead.
+  A saved `Validated:` line survives reopening, width changes and `autoHint()`; assigning the
+  glyph a fresh `fontforge.layer()` clears it, and a blank glyph then saves without `Fore`.
 - `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
   `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD
   in reverse order; assign them reversed to keep the file's order.

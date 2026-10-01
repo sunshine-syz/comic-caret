@@ -35,6 +35,7 @@ FRACTION_CLEARANCE = 21
 # The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
 # cell (Fira Code's 33; Intel One Mono has no ‰).
 PER_MILLE_CLEARANCE = 22
+# “ ” „ are two of their single mark (‘ ’ or the comma), level, not a copied outline.
 COMPOSITES = {"periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"},

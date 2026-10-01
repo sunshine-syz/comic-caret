@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790877681
+ModificationTime: 1790878440
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -18587,8 +18587,6 @@ Flags: W
 AnchorPoint: "bottom" 218 0 basechar 0
 AnchorPoint: "top" 330 530 basechar 0
 LayerCount: 2
-Fore
-Validated: 1
 EndChar
 
 StartChar: periodcentered
