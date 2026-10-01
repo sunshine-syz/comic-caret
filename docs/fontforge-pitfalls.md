@@ -83,6 +83,13 @@ around. Read this before writing code that edits the SFD.
   `font.changed = True` don't.
 - Every font FontForge writes has a Mac Roman cmap subtable, whatever the flags, which
   `tools/generate.py` drops.
+- Homebrew's FontForge 20251009 on macOS and the Linux build of the same version write some
+  outlines differently: a curve split into more segments, or a control point a unit away,
+  rehinted to match. A generator test that reruns a generator should compare with
+  `tests/sfd_files.differences()`, which allows 2 units of outline drift, unless its output
+  doesn't drift: `add_box_drawing` and `add_marks` compare exactly with `without_timestamp()`.
+- A font made with `fontforge.font()` saves with `OnlyBitmaps: 1` until it is reopened with a
+  glyph drawn in; the fixture in `tests/test_sfd_files.py` draws its base in a reopened copy.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
   does not affect this font.
 - `tests/test_fontbakery.py` runs Font Bakery's universal profile on each built font and

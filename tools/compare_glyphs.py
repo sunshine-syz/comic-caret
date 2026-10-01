@@ -3,11 +3,11 @@
 Usage: python3 tools/compare_glyphs.py [--italic] [--anchor cap|x] TEXT [FONT ...]
 
 With no FONT arguments it reads src/ComicCaret-Regular.sfd and every font in
-build/cache/reference/ (see "Designing glyphs" in CLAUDE.md); with --italic, the italic SFD and
-every font in build/cache/reference/italic/. For each character of TEXT it
-prints each font's ink box: x scaled so the advance becomes 550, with the center's offset from
-the cell center, and y scaled so the reference's cap height (or x-height, with --anchor x)
-matches ours. Cap and x-height are the tops of H and x, as in our OS/2 values.
+build/cache/reference/ (see "Designing glyphs" in CLAUDE.md); with --italic, the italic SFD
+and every font in build/cache/reference/italic/. For each character of TEXT it prints each
+font's ink box: x scaled so the advance becomes 550, with the center's offset from the cell
+center, and y scaled so the reference's cap height (or x-height, with --anchor x) matches
+ours. Cap and x-height are the tops of H and x, as in our OS/2 values.
 """
 import argparse
 import contextlib

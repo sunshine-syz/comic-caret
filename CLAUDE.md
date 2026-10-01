@@ -23,8 +23,9 @@ python3 tools/bump_version.py X.Y.Z     # start the next version: both SFDs' Ver
 ```
 
 `proof_sheet.py` takes `--text=TEXT` (repeatable) and `--features` to proof other glyphs,
-`--italic` to proof the italic against the italic references, `--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
-that box drawing meets across lines.
+`--italic` to proof the italic against the italic references, `--before REV` to add the font
+built from that commit's SFD, and `--line-height EM` to check that box drawing meets across
+lines.
 
 After every change to the regular, rerun `tools/make_italic.py`, rebuild, rerun
 `tools/render_specimen.py`, then run the checks:
@@ -73,7 +74,9 @@ starts the next one, setting both SFDs' `Version:` and the heading together.
 
 Each generator owns a range of glyphs and redraws it in place, so a rerun changes nothing; its
 `tests/test_add_<what>.py` fails while the SFD is out of date. Change those glyphs only in the
-generator, rerun it, then `./build.sh`. Each generator's docstring has the details.
+generator, rerun it, then `./build.sh`. Each generator's docstring has the details. A new
+generator's rerun test compares with `tests/sfd_files.differences()`; see
+`docs/fontforge-pitfalls.md`.
 
 - `tools/add_ligatures.py`: the ligatures from `src/ligatures.fea` and ⎯; it owns every glyph
   its `GENERATED` pattern matches and every `lig_*` lookup.

@@ -229,9 +229,11 @@ class GenerateDateTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             for ext in ("otf", "ttf"):
                 out = pathlib.Path(tmp) / f"ComicCaret-Regular.{ext}"
-                subprocess.run(["fontforge", "-quiet", "-script", str(GENERATE), str(SFD), str(out)],
-                               check=True, capture_output=True,
-                               env={**os.environ, "SOURCE_DATE_EPOCH": str(epoch)})
+                result = subprocess.run(
+                    ["fontforge", "-quiet", "-script", str(GENERATE), str(SFD), str(out)],
+                    check=False, text=True, capture_output=True,
+                    env={**os.environ, "SOURCE_DATE_EPOCH": str(epoch)})
+                self.assertEqual(result.returncode, 0, result.stderr)
                 with self.subTest(format=ext):
                     head = tables(out)[b"head"]
                     self.assertEqual(struct.unpack_from(">q", head, HEAD_MODIFIED)[0],
@@ -401,12 +403,14 @@ class ReleaseZipTest(unittest.TestCase):
 
     def test_the_plain_zip_holds_the_fonts_and_the_license(self):
         with zipfile.ZipFile(self.plain) as zf:
-            self.assertEqual(sorted(zf.namelist()), sorted(self.fonts("ComicCaret") | {"LICENSE.md"}))
+            self.assertEqual(sorted(zf.namelist()),
+                             sorted(self.fonts("ComicCaret") | {"LICENSE.md"}))
 
     def test_the_nerd_zip_holds_only_the_default_variant(self):
         with zipfile.ZipFile(self.nerd) as zf:
             self.assertEqual(sorted(zf.namelist()),
-                             sorted(self.fonts("ComicCaretNerdFont") | {"ICON-LICENSES.txt", "LICENSE.md"}))
+                             sorted(self.fonts("ComicCaretNerdFont")
+                                    | {"ICON-LICENSES.txt", "LICENSE.md"}))
 
     def test_every_font_is_of_this_version(self):
         for zip_path in (self.plain, self.nerd):
@@ -415,7 +419,9 @@ class ReleaseZipTest(unittest.TestCase):
                     if name.endswith((".otf", ".ttf")):
                         with self.subTest(zip=zip_path.name, font=name):
                             font = pathlib.Path(zf.extract(name, tmp))
-                            self.assertTrue(english_names(font)[5].startswith(f"Version {self.version}"))
+                            # The Nerd Fonts patcher appends ";Nerd Fonts X.Y.Z" to the version.
+                            release = english_names(font)[5].split(";")[0]
+                            self.assertEqual(release, f"Version {self.version}")
 
     def test_the_license_is_the_repositorys(self):
         for zip_path in (self.plain, self.nerd):

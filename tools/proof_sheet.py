@@ -21,10 +21,10 @@ import subprocess
 import sys
 import tempfile
 
-from project import ITALIC_SFD, ROOT, SFD, reference_fonts
+from project import ITALIC_SFD, ROOT, SFD, font_file, reference_fonts
 
-BUILT = ROOT / "fonts" / "ComicCaret-Regular.ttf"
-BUILT_ITALIC = ROOT / "fonts" / "ComicCaret-Italic.ttf"
+BUILT = font_file("Regular", "ttf")
+BUILT_ITALIC = font_file("Italic", "ttf")
 SMALL = (12, 13, 14, 16)  # px: common editor and terminal sizes
 MAGNIFY = 3               # the small sizes are also shown this much larger, pixels kept hard
 LARGE = 64                # px: the outlines themselves

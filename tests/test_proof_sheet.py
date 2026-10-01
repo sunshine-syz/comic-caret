@@ -84,6 +84,11 @@ class ProofSheetTest(unittest.TestCase):
         if FIRA.exists():
             self.assertTrue(any("Fira Code" in caption for caption in captions))
 
+    def test_italic_proofs_the_italic_and_not_the_regular(self):
+        _, page = self.sheet("--italic", "--text=a")
+        self.assertIn("fonts/ComicCaret-Italic.ttf", page)
+        self.assertNotIn("fonts/ComicCaret-Regular.ttf", page)
+
     def test_names_the_commit_it_was_rendered_at(self):
         _, page = self.sheet(TTF, "--text=a")
         self.assertIn(git("rev-parse", "--short", "HEAD").stdout.strip(), page)

@@ -275,12 +275,19 @@ class MarkTest(unittest.TestCase):
 
     def test_marks_are_larger_than_times(self):
         _, t0, _, t1 = self.font["multiply"].boundingBox()
+        over = {}
+        for mark, floor in MARK_OVER_TIMES.items():
+            _, y0, _, y1 = self.font[ord(mark)].boundingBox()
+            over[mark] = (y1 - y0) - (t1 - t0)
+        # The exceptions are exactly the marks below their own floor, so one redrawn to its
+        # floor fails until its entry goes.
+        short = {mark for mark, floor in MARK_OVER_TIMES.items() if over[mark] < floor}
+        self.assertEqual(short, set(SHORT_MARKS), over)
         for mark, floor in MARK_OVER_TIMES.items():
             with self.subTest(mark=mark):
-                _, y0, _, y1 = self.font[ord(mark)].boundingBox()
                 if mark in SHORT_MARKS:
                     floor = min(MARK_OVER_TIMES.values())
-                self.assertGreaterEqual((y1 - y0) - (t1 - t0), floor)
+                self.assertGreaterEqual(over[mark], floor, SHORT_MARKS.get(mark))
 
     def test_ballot_x_is_not_the_letter_x(self):
         # About as wide as it is tall and off the cap-height row, as Maple Mono's (494 × 486); at
