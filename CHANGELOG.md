@@ -2,6 +2,8 @@
 
 ## 1.6.1 (unreleased)
 
+- Releases no longer include ComicCaret Nerd Font Mono; the Nerd Font zip holds only the default ComicCaret Nerd Font (Regular and Italic, OTF and TTF). For icons shrunk to one cell, build it from source with `./build.sh --nerd=mono`.
+
 ## 1.6.0 (2026-09)
 
 - An italic, Comic Caret Italic, in the same zips as the regular and in both Nerd Font editions, so editors and terminals no longer slant the regular themselves. It is the regular slanted 12°, between Maple Mono's 10° and Intel One Mono's 16°, about the line of `-` `=` and the arrows, so the ligatures keep joining across cells and every character keeps its cell. Letters, digits, marks, punctuation, currency, operators and arrows slant, as in both references; box drawing, block elements, Braille, the Powerline symbols, the shapes and spinner frames, the status marks ✓ ✗ ⚠ ℹ, the checkboxes ☐ ☑ ☒ and the key hints ⌘ ⌥ ⌃ ⇧ stay upright. `f` gets a descender as deep as `j`'s, ending in a short flick to the left, in the font's own stroke; the other letters keep their shapes, since the regular's single-storey `a` and `g` already read as italic forms. `tools/make_italic.py` generates the italic's source from the regular's.

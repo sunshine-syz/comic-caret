@@ -103,17 +103,14 @@ The ligatures use the `calt` (contextual alternates) OpenType feature:
 ## Nerd Font edition
 
 `ComicCaretNerdFont-<version>.zip` adds the [Nerd Fonts](https://www.nerdfonts.com/) icons
-(file-type, Git and OS icons, and the extra Powerline separators). It holds two families;
-install the OTF or the TTF of the one you want:
-
-| Family | Icons |
-|---|---|
-| ComicCaret Nerd Font | Full size; wide icons overhang into the next cell |
-| ComicCaret Nerd Font Mono | Shrunk to fit one cell, for terminals that clip wider glyphs |
-
-Both come in Regular and Italic, install alongside plain Comic Caret and keep its ligatures. The icons come from the icon
-sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 2.0 and OFL
+(file-type, Git and OS icons, and the extra Powerline separators) in the family ComicCaret Nerd
+Font, in Regular and Italic. Full-size wide icons overhang into the next cell. Install the OTF
+or the TTF; it sits alongside plain Comic Caret and keeps its ligatures. The icons come from the
+icon sets Nerd Fonts collects and keep their own licenses, such as CC BY 4.0, Apache 2.0 and OFL
 1.1; `ICON-LICENSES.txt` in the zip lists them.
+
+For icons shrunk to fit one cell, build ComicCaret Nerd Font Mono from source with
+`./build.sh --nerd=mono`.
 
 ## Character set
 
@@ -136,7 +133,7 @@ which fetches it the first time, and skips without `uvx`.
 ```sh
 ./build.sh                          # fonts/ComicCaret-{Regular,Italic}.otf and .ttf
 ./build.sh --nerd                   # also ComicCaret Nerd Font in build/nerd/
-./build.sh --nerd=default,mono      # ... and ComicCaret Nerd Font Mono
+./build.sh --nerd=default,mono      # ... and a local ComicCaret Nerd Font Mono
 ./build.sh --release                # both release zips in dist/, from a clean checkout
 python3 -m unittest discover tests  # after building
 ```

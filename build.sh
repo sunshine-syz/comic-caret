@@ -27,8 +27,8 @@ Builds $OUT_DIR/ComicCaret-{Regular,Italic}.{otf,ttf} from $SOURCES.
                        default  icons overhang into the next cell (default)
                        mono     icons fit one cell; every glyph stays 550 wide
                        propo    icons keep their own advance widths (not monospaced)
-  --release          From a clean checkout, build the fonts and the default and mono Nerd
-                     Fonts, and zip them into $DIST/ for a GitHub release.
+  --release          From a clean checkout, build the fonts and the default Nerd Font
+                     edition, and zip them into $DIST/ for a GitHub release.
 EOF
 }
 
@@ -72,7 +72,7 @@ write_icon_licenses() {
   fi
   {
     cat <<EOF
-Icons in ComicCaret Nerd Font and ComicCaret Nerd Font Mono
+Icons in ComicCaret Nerd Font
 
 The Nerd Fonts $NERD_FONTS_VERSION font patcher (https://github.com/ryanoasis/nerd-fonts)
 added these icons. LICENSE.md covers Comic Caret's own glyphs; each icon set below keeps
@@ -114,7 +114,7 @@ if [[ -n $release ]]; then
     echo "$dirty" >&2
     exit 1
   fi
-  nerd_variants=default,mono
+  nerd_variants=default
   # Start empty so fonts and variants from earlier builds don't end up in the zips: fonts/ is
   # gitignored, so a stale file there passes the clean-checkout check.
   rm -rf "$OUT_DIR" "$NERD_OUT" "$DIST"
