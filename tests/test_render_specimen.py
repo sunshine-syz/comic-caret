@@ -10,12 +10,13 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import render_specimen
 from add_ligatures import GENERATED
-from project import ADVANCE
+from project import ADVANCE, ROOT
 from render_specimen import (
     CODE,
     IMAGES,
     ITALIC,
     LIGATURES,
+    OUT,
     WIDTH,
     Layout,
     glyphs,
@@ -162,6 +163,18 @@ class ImageTest(unittest.TestCase):
 
     def test_the_code_uses_ligatures(self):
         self.assertTrue(any(ligated(line) for line in CODE if line))
+
+    def test_the_committed_images_are_current(self):
+        # The bytes depend on the toolchain as well: another FontForge or HarfBuzz can move a
+        # point by a unit, so the images are rendered with the one that builds the release.
+        if reason := render_specimen.stale_build():
+            self.skipTest(reason)
+        for name, svg in self.svgs.items():
+            image = OUT / f"{name}.svg"
+            with self.subTest(image=name):
+                self.assertTrue(image.read_bytes() == svg.encode("utf-8"),
+                                f"{image.relative_to(ROOT)} is out of date; "
+                                "rerun python3 tools/render_specimen.py")
 
 
 if __name__ == "__main__":

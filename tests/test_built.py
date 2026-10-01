@@ -1,9 +1,12 @@
-"""The built fonts keep what the SFD holds: every character, its advance and its outline.
+"""The built fonts keep what the SFD holds: every character, its advance and its outline, and
+the font's names; and they pass ots, the sanitizer browsers run web fonts through.
 
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
 import json
 import pathlib
+import shutil
+import struct
 import subprocess
 import sys
 import unicodedata
@@ -13,11 +16,18 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from make_italic import AXIS, SLANT
+from mark_advances import read_tables
 from project import ADVANCE, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
+# ots, invoked as in CLAUDE.md. Pinned, and resolved as of a day as Font Bakery is, so that a
+# stricter release can't fail a sound font; bump them on purpose.
+OTS = "opentype-sanitizer==9.2.0"
+OTS_EXCLUDE_NEWER = "2026-09-30"
+SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)'
+WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 
 
 def shaped(font, text):
@@ -60,6 +70,27 @@ def advances(font):
     return widths
 
 
+def english_names(font):
+    """{name ID: text} of the font file's Windows English (US) name records."""
+    _, _, tables = read_tables(font.read_bytes())
+    table = dict(tables)[b"name"]
+    _, count, strings = struct.unpack_from(">3H", table)
+    names = {}
+    for i in range(count):
+        *key, name_id, length, offset = struct.unpack_from(">6H", table, 6 + 12 * i)
+        if tuple(key) == WINDOWS_ENGLISH:
+            start = strings + offset
+            names[name_id] = table[start:start + length].decode("utf-16-be")
+    return names
+
+
+def sanitize(font):
+    """ots run on `font`: its exit status, and what it printed."""
+    command = ["uvx", "--exclude-newer", OTS_EXCLUDE_NEWER, "--from", OTS, "python", "-c",
+               SANITIZE, str(font)]
+    return subprocess.run(command, capture_output=True, text=True, check=False)
+
+
 def require_current_build(style):
     for font in FONTS[style]:
         if not font.exists() or font.stat().st_mtime < STYLES[style].stat().st_mtime:
@@ -87,6 +118,10 @@ class BuiltFontTest(unittest.TestCase):
         cls.marks = [(chr(g.unicode), g.glyphname, g.boundingBox())
                      for g in glyphs if takes_no_cell(chr(g.unicode))]
         cls.widths = {g.glyphname: g.width for g in sfd.glyphs()}
+        # Not the unique ID (3), which records the build rather than the font. The version
+        # string takes the form the OpenType spec gives it.
+        cls.font_names = {1: sfd.familyname, 2: cls.style, 4: sfd.fullname,
+                          5: f"Version {sfd.version}", 6: sfd.fontname}
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
         # But the combining marks and the zero-width format characters, which take no room.
@@ -119,6 +154,18 @@ class BuiltFontTest(unittest.TestCase):
                 wrong = {name: width for name, width in advances(font).items()
                          if name in self.widths and width != self.widths[name]}
                 self.assertEqual(wrong, {})
+
+    def test_fonts_carry_the_names_of_the_sfd(self):
+        # The typographic family and subfamily, where a font has them, name the same family
+        # and style as 1 and 2 do for a regular or an italic.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                names = english_names(font)
+                expected = self.font_names | {typographic: self.font_names[legacy]
+                                              for typographic, legacy in ((16, 1), (17, 2))
+                                              if typographic in names}
+                self.assertEqual({name_id: names.get(name_id) for name_id in expected},
+                                 expected)
 
 
 class ItalicBuiltFontTest(BuiltFontTest):
@@ -186,6 +233,26 @@ class ItalicMarkShapingTest(MarkShapingTest):
     style = "Italic"
     slant = SLANT
     rounding = 2  # a sheared outline's points and its anchors are each rounded to units
+
+
+class SanitizerTest(unittest.TestCase):
+    """Every built font passes ots, which rejects a font whose tables break the spec's rules
+    before a browser loads it. Skips without uvx."""
+
+    @classmethod
+    def setUpClass(cls):
+        if shutil.which("uvx") is None:
+            raise unittest.SkipTest("uvx is not installed")
+        for style in STYLES:
+            require_current_build(style)
+        # The Nerd Fonts builds older than the SFDs are skipped by name in NerdFontTest.
+        cls.fonts = [font for fonts in FONTS.values() for font in fonts] + nerd_fonts()[0]
+
+    def test_fonts_pass_the_sanitizer(self):
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                result = sanitize(font)
+                self.assertEqual(result.returncode, 0, result.stderr)
 
 
 class NerdFontTest(unittest.TestCase):

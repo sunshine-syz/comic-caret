@@ -351,12 +351,19 @@ IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures
           "italic": italic}
 
 
-def main():
-    argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
+def stale_build():
+    """Why the fonts the images are drawn from don't show the SFDs' glyphs, or None."""
     for style, sfd in STYLES.items():
         font = font_file(style, "ttf")
         if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
-            sys.exit(f"{font.name} is missing or older than {sfd.name}; run ./build.sh")
+            return f"{font.name} is missing or older than {sfd.name}; run ./build.sh"
+    return None
+
+
+def main():
+    argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
+    if reason := stale_build():
+        sys.exit(reason)
     OUT.mkdir(parents=True, exist_ok=True)
     for name, draw in IMAGES.items():
         try:
