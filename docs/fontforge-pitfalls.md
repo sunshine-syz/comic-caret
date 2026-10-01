@@ -76,10 +76,11 @@ around. Read this before writing code that edits the SFD.
   `tools/mark_advances.py` rewrites the TTF's `hmtx`, and `tools/generate.py` and `build.sh`
   run it. OTFs are right.
 - A font's `head.modified` is the SFD's `ModificationTime` until a glyph changes in the
-  process, and then `SOURCE_DATE_EPOCH`, or the time now without it; `tools/generate.py`
-  sets the blank space's width to itself so that both formats get the latter. A real setter
-  redates the font even when it assigns the value already there, but `glyph.changed = True`
-  and `font.changed = True` don't.
+  process, and then `SOURCE_DATE_EPOCH`, or the time now without it, so the TTF, whose
+  composites are flattened, and the OTF would disagree; `tools/generate.py` writes
+  `head.modified` itself when it rewrites the tables. A real setter redates the font even
+  when it assigns the value already there, but `glyph.changed = True` and
+  `font.changed = True` don't.
 - Every font FontForge writes has a Mac Roman cmap subtable, whatever the flags, which
   `tools/generate.py` drops.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
