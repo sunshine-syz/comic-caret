@@ -18,7 +18,7 @@ Every glyph of the regular falls in one of three sets, decided by classify():
 - UPRIGHT: what is drawn as a picture, which Maple Mono and Intel One Mono leave untouched in
   their italics: Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and
   the spinner frames, the status marks ✓ ✗ ⚠ ℹ, the checkboxes ☐ ☑ ☒ and the key hints ⌘ ⌥
-  ⌃ ⇧. Copied unchanged, hints included.
+  ⌃ ⇧ ↹ ⇥ ⇤. Copied unchanged, hints included.
 - CURSIVE: letters given a cursive form, drawn from the regular's own strokes and then
   sheared. f drops its foot and runs its stem below the baseline, as deep as j, ending in a
   short flick to the left (proofed against ƒ's hook, which Maple Mono's f has, and against
@@ -63,8 +63,9 @@ UPRIGHT_BLOCKS = (range(0x2300, 0x2400), range(0x2500, 0x27C0), range(0x2800, 0x
 SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
 # Outside them, what is a picture: the spinner frames ∙ ⊙ ⊶ ⊷ (and ⊙ is built on ∙), • and
 # ‣, which are the dot of ◉ and ▸ itself, ℹ, which stands beside ⚠, and the white arrows
-# ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟, key hints that read with ⌘ ⌥ ⌃ (Maple Mono slants them, and has no ⌘).
-UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟")
+# ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟ and the tab keys ↹ ⇥ ⇤, key hints that read with ⌘ ⌥ ⌃ (Maple Mono slants
+# them, and has no ⌘). ↵ ↩ are arrows and slant.
+UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟↹⇥⇤")
 
 # f's descender, in the stem's own stroke. The regular's foot ends at 70, so from FOOT_TOP up
 # the outline is the stem alone; the new stroke starts OVERLAP inside it, runs down as far as

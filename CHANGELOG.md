@@ -8,6 +8,7 @@
 - The plain fonts' unique ID (name ID 3) names the release, as `1.6.1;NONE;ComicCaret-Regular`, the form fontmake gives it, where FontForge's held a date.
 - `a>--b` and `x>->y` no longer draw a `--` line or a `->` arrow after the `>`: a `-` right after a `>` joins only as `-->`, which closes a comment, as in `<!--<a href="x">-->`, unless the `>` closes a short tag such as `<code>`, `</p>` or `<br/>`, so `<code>--help</code>`, `</p>--->` and `<a>->` join as before.
 - A wave arrow followed by another operator now loses its `<` head too, not only its `>` one, at any length: `<~>=` and `<~>>` are plain, as `~>=` and `~>>` are, and `<~~>=` keeps only the `~~` that `~~>=` draws.
+- The italic's tab keys ↹ ⇥ ⇤ stay upright, like the other key hints ⌘ ⌥ ⌃ ⇧, instead of slanting.
 
 ## 1.6.0 (2026-09)
 
