@@ -136,9 +136,11 @@ mkdir -p "$OUT_DIR"
 # FontForge dates the fonts' head.modified by the build. Use the last commit's time instead,
 # so building the same commit on another day gives the same bytes. HEAD rather than
 # the SFD's last commit, because a shallow clone (the CI default) can't see the latter.
-if [[ -z ${SOURCE_DATE_EPOCH:-} ]] && epoch=$(git log -1 --format=%ct 2>/dev/null) &&
-  [[ -n $epoch ]]; then
-  export SOURCE_DATE_EPOCH=$epoch
+# Outside a git checkout, such as a source archive, take one time for the whole build:
+# otherwise each FontForge process stamps its own, and the formats disagree.
+if [[ -z ${SOURCE_DATE_EPOCH:-} ]]; then
+  epoch=$(git log -1 --format=%ct 2>/dev/null) || epoch=
+  export SOURCE_DATE_EPOCH=${epoch:-$(date +%s)}
 fi
 # One process per format: generating the OTF first alters the in-memory outlines, so a
 # TTF generated after it in the same session gets a different glyf table.
