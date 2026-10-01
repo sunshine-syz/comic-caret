@@ -12,7 +12,6 @@ import unicodedata
 import unittest
 
 import fontforge
-import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
@@ -36,7 +35,7 @@ FRACTION_CLEARANCE = 21
 # The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
 # cell (Fira Code's 33; Intel One Mono has no ‰).
 PER_MILLE_CLEARANCE = 22
-COMPOSITES = {"uni00AD": {"hyphen"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
+COMPOSITES = {"periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"},
               "quotedblleft": {"quoteleft"}, "quotedblright": {"quoteright"},
@@ -232,9 +231,13 @@ class CompositeTest(unittest.TestCase):
                 self.assertEqual({r for r, *_ in self.font[name].references}, refs)
                 self.assertEqual(len(self.font[name].foreground), 0)
 
-    def test_soft_hyphen_is_the_hyphen(self):
-        [(_, matrix, *_)] = self.font["uni00AD"].references
-        self.assertEqual(matrix, psMat.identity())
+    def test_soft_hyphen_is_blank_and_a_cell_wide(self):
+        # Shaping renderers draw nothing for it; terminals that reserve a cell keep one; and
+        # one that draws a zero-width character's glyph over the previous cell (Alacritty)
+        # must not strike through the letter before it.
+        glyph = self.font["uni00AD"]
+        self.assertEqual((len(glyph.references), len(glyph.foreground), glyph.width),
+                         (0, 0, ADVANCE))
 
 
 class SmallFigureTest(unittest.TestCase):
