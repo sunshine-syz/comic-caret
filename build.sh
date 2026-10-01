@@ -113,8 +113,9 @@ if [[ -n $release ]]; then
     exit 1
   fi
   nerd_variants=default,mono
-  # Start empty so variants from earlier builds don't end up in the zip.
-  rm -rf "$NERD_OUT" "$DIST"
+  # Start empty so fonts and variants from earlier builds don't end up in the zips: fonts/ is
+  # gitignored, so a stale file there passes the clean-checkout check.
+  rm -rf "$OUT_DIR" "$NERD_OUT" "$DIST"
 fi
 
 # Reject bad variants before the slow steps.

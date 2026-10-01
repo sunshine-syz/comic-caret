@@ -122,8 +122,10 @@ class ItalicTest(unittest.TestCase):
                 self.assertTrue(unmatched(points(expected), points(ink(self.italic, name))))
 
     def test_cursive_f_sits_on_the_descender_row(self):
-        # Its descender goes as deep as j's, the shallowest of the regular's descenders.
-        self.assertEqual(self.italic["f"].boundingBox()[1], self.regular["j"].boundingBox()[1])
+        # Its descender goes as deep as j's, the shallowest of the regular's descenders; the
+        # stroke's lowest point is rounded like every other.
+        self.assertAlmostEqual(self.italic["f"].boundingBox()[1],
+                               self.regular["j"].boundingBox()[1], delta=ROUNDING)
 
     def test_anchors_move_with_the_shear(self):
         wrong = {}

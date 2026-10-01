@@ -14,7 +14,9 @@ around. Read this before writing code that edits the SFD.
   caret slope from `fontname`, `fullname`, `italicangle` and `os2_stylemap`; `tools/make_italic.py`
   sets only those. It writes the italic's caret slope in hundredths (100/21 for 12°).
 - Composites keep stale bounds in the process that edited their base glyph; hint them and
-  generate from a fresh process.
+  generate from a fresh process. `glyph.unlinkRef()` likewise bakes the base's outline as the
+  composite last saw it, not the base's current `foreground`: unlink before editing the base,
+  as `tools/make_italic.py` does before it shears anything.
 - `glyph.unicode = -1` switches the font to a `Custom` encoding; set
   `font.encoding = "UnicodeBmp"` afterwards. `font.removeGlyph()` keeps the glyph's encoding
   slot; set the encoding again afterwards or re-created glyphs land in new slots.

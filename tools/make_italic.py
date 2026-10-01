@@ -150,6 +150,12 @@ def classify(font):
     return styles
 
 
+def conjugable(matrix):
+    """Whether a reference with this matrix can stay one under the shear: only a translation
+    or a 180° turn commutes with it; anything else needs the outline."""
+    return tuple(matrix[:4]) in (IDENTITY, TURNED)
+
+
 def conjugated(matrix):
     """The reference matrix that draws a slanted base where the regular's matrix drew its
     upright base, so the composite is the shear of the regular's. Only a translation or a
@@ -160,8 +166,9 @@ def conjugated(matrix):
 
 def slant(glyph):
     """Shear the glyph in place: outline, references and anchors, then rehint it."""
-    if any(tuple(matrix[:4]) not in (IDENTITY, TURNED) for _, matrix, *_ in glyph.references):
-        glyph.unlinkRef()
+    if any(not conjugable(matrix) for _, matrix, *_ in glyph.references):
+        sys.exit(f"{glyph.glyphname} keeps a reference the shear cannot express; "
+                 "build() unlinks those first")
     if len(glyph.foreground):
         layer = glyph.foreground.dup()
         layer.transform(SHEAR)
@@ -186,7 +193,10 @@ def build(font):
         font[name].references = ()
         font[name].foreground = draw(font)
     styles = classify(font)
-    # Before any base is sheared: an upright glyph keeps a slanted part's regular outline.
+    # Every unlink comes before any base is sheared: unlinkRef() bakes the base's outline as
+    # the composite last saw it, not its current foreground, so an upright glyph on a slanted
+    # part and a slanted glyph whose part is turned a quarter must take the regular's outline
+    # now, not by luck later.
     for glyph in font.glyphs():
         parts = {styles[name] for name, *_ in glyph.references}
         if styles[glyph.glyphname] == UPRIGHT and parts - {UPRIGHT}:
@@ -194,6 +204,9 @@ def build(font):
             glyph.autoHint()
         elif styles[glyph.glyphname] != UPRIGHT and UPRIGHT in parts:
             sys.exit(f"{glyph.glyphname} slants but is built on an upright glyph")
+        elif (styles[glyph.glyphname] != UPRIGHT
+              and any(not conjugable(matrix) for _, matrix, *_ in glyph.references)):
+            glyph.unlinkRef()  # slant() rehints it
     for glyph in font.glyphs():
         if styles[glyph.glyphname] != UPRIGHT:
             slant(glyph)
