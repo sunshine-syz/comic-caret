@@ -13,18 +13,16 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+# the tests' shared SFD comparison
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_powerline
 import lig_geometry as geo
 import measure
 from add_box_drawing import LIGHT, LINE_BOTTOM, LINE_TOP
 from project import ADVANCE, ROOT, SFD
+from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "add_powerline.py"
-
-
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
 
 
 def points(layer):
@@ -40,7 +38,7 @@ class GeneratorTest(unittest.TestCase):
             copy = pathlib.Path(tmp) / SFD.name
             shutil.copy(SFD, copy)
             subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(without_timestamp(copy), without_timestamp(SFD))
+            self.assertEqual(differences(SFD, copy), [])
 
     def test_the_font_has_every_symbol(self):
         font = fontforge.open(str(SFD))

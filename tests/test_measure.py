@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import math
 import pathlib
 import sys
 import unittest
@@ -72,6 +73,22 @@ class GapTest(unittest.TestCase):
 
     def test_touching_outlines_have_no_gap(self):
         self.assertAlmostEqual(measure.gap(bars((0, 90)), bars((90, 180))), 0, delta=1)
+
+
+class OutlineDistanceTest(unittest.TestCase):
+    def test_an_extra_contour_is_as_far_as_its_farthest_point_either_way_round(self):
+        # The extra bar's right edge, x = 390, lies 300 from the shared bar's, x = 90; every
+        # point of the shared bar lies on both outlines, so only measuring both ways finds it.
+        one, two = bars((0, 90)), bars((0, 90), (300, 390))
+        self.assertAlmostEqual(measure.outline_distance(one, two), 300, delta=1)
+        self.assertAlmostEqual(measure.outline_distance(two, one), 300, delta=1)
+
+    def test_an_empty_layer_is_infinitely_far_from_a_drawn_one(self):
+        self.assertEqual(measure.outline_distance(fontforge.layer(), bars((0, 90))), math.inf)
+        self.assertEqual(measure.outline_distance(bars((0, 90)), fontforge.layer()), math.inf)
+
+    def test_two_empty_layers_coincide(self):
+        self.assertEqual(measure.outline_distance(fontforge.layer(), fontforge.layer()), 0)
 
 
 class AreaTest(unittest.TestCase):

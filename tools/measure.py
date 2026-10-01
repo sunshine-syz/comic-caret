@@ -120,3 +120,33 @@ def gap(first, second, steps=16):
             if x0 - best <= x <= x1 + best and y0 - best <= y <= y1 + best:
                 best = min(best, min(_to_segment((x, y), a, b) for a, b in edges))
     return best
+
+
+def outline_distance(first, second, steps=16):
+    """How far apart two outlines lie: the farthest any point sampled on one lies from the
+    other's polyline, either way round (their Hausdorff distance), each flattened to `steps`
+    points a segment. Small for two drawings of one path, however their curves are split or
+    where their contours start; 0 for two empty layers and infinite when only one is
+    empty."""
+    lines = [[_polyline(contour, steps) for contour in layer] for layer in (first, second)]
+    farthest = 0
+    for mine, theirs in (lines, lines[::-1]):
+        edges = [(min(ax, bx), max(ax, bx), min(ay, by), max(ay, by), (ax, ay), (bx, by))
+                 for line in theirs for (ax, ay), (bx, by) in zip(line, line[1:] + line[:1])]
+        start = 0
+        for x, y in (point for line in mine for point in line):
+            nearest = math.inf
+            # The next point along is nearest an edge next to this one's, so search from there.
+            for k in itertools.chain(range(start, len(edges)), range(start)):
+                x0, x1, y0, y1, a, b = edges[k]
+                # An edge whose box lies farther than the nearest so far can't be nearer.
+                if not (x0 - nearest <= x <= x1 + nearest and y0 - nearest <= y <= y1 + nearest):
+                    continue
+                distance = _to_segment((x, y), a, b)
+                if distance < nearest:
+                    nearest, start = distance, k
+                    # A point this near can't raise the farthest.
+                    if nearest <= farthest:
+                        break
+            farthest = max(farthest, nearest)
+    return farthest

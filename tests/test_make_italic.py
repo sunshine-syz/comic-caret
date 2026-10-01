@@ -16,20 +16,17 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
+# the tests' shared tolerances and SFD comparison
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
 from make_italic import AXIS, CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
 from measure import ink, spans_at_y
 from project import ITALIC_SFD, ROOT, SFD
+from sfd_files import differences
 from test_consistency import ROUNDING
 
 GENERATOR = ROOT / "tools" / "make_italic.py"
-
-
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
 
 
 def points(layer):
@@ -66,7 +63,7 @@ class GeneratorTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out = pathlib.Path(tmp) / ITALIC_SFD.name
             subprocess.run([sys.executable, str(GENERATOR), str(out)], check=True)
-            self.assertEqual(without_timestamp(out), without_timestamp(ITALIC_SFD))
+            self.assertEqual(differences(ITALIC_SFD, out), [])
 
     def test_every_glyph_has_one_style(self):
         font = fontforge.open(str(SFD))

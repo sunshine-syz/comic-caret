@@ -18,11 +18,13 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
+# the tests' shared tolerances and SFD comparison
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_shapes
 import lig_geometry as geo
 import measure
 from project import ADVANCE, ROOT, SFD
+from sfd_files import differences
 from test_consistency import ROUNDING, TOLERANCE  # TOLERANCE: the hand's wobble
 
 GENERATOR = ROOT / "tools" / "add_shapes.py"
@@ -38,11 +40,6 @@ TRIGRAMS = {"☰": "", "☱": "top", "☲": "middle", "☳": "top middle", "☴"
 STARS = {"✷": 8, "✸": 8, "✹": 12, "✺": 16}  # points
 
 
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
-
-
 def box(font, char):
     return font[ord(char)].boundingBox()
 
@@ -54,7 +51,7 @@ class GeneratorTest(unittest.TestCase):
             copy = pathlib.Path(tmp) / SFD.name
             shutil.copy(SFD, copy)
             subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(without_timestamp(copy), without_timestamp(SFD))
+            self.assertEqual(differences(SFD, copy), [])
 
     def test_the_font_has_every_frame(self):
         font = fontforge.open(str(SFD))

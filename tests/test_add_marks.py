@@ -13,14 +13,12 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+# the tests' shared SFD comparison
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from project import ROOT, SFD
+from sfd_files import without_timestamp
 
 GENERATORS = [ROOT / "tools" / "add_marks.py", ROOT / "tools" / "add_ligatures.py"]
-
-
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
 
 
 class GeneratorTest(unittest.TestCase):

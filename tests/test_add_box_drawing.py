@@ -12,15 +12,13 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+# the tests' shared SFD comparison
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_box_drawing
 from project import ROOT, SFD
+from sfd_files import without_timestamp
 
 GENERATOR = ROOT / "tools" / "add_box_drawing.py"
-
-
-def without_timestamp(path):
-    return [line for line in path.read_text(encoding="utf-8").splitlines()
-            if not line.startswith("ModificationTime: ")]
 
 
 class GeneratorTest(unittest.TestCase):
