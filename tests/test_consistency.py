@@ -28,35 +28,45 @@ LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and mar
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
-    "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞabcdefhiklmnorstuvwxzıĸß0123456789¼½¾"
-                  "⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
+    "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞØĐĲĿꝚabcdefhiklmnorstuvwxzıĸß0123456789"
+                  "¼½¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞æœðøđħŀłŧſꝛ"
                   "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ"), 1),
-    "x-height": ("acemnorsuvwxzıĸµŋαγεηικνοπρσςτυφχψω", 3),
-    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
+    "x-height": ("acemnorsuvwxzıĸµŋæœøȷꝛαγεηικνοπρσςτυφχψω", 3),
+    "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁŊǷẞØĐĲĿꝚ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱"), 3),
-    "ascender": ("bdfhklßþβδζθλξℓ", 3),
-    "descender": ("gjpqyþµŋŊƒ¶βγζηξρςφχψϗ", 1),
+    "ascender": ("bdfhklßþðđħŀłſβδζθλξℓ", 3),
+    "descender": ("gjpqyþµŋŊƒĳȷƿ¶βγζηξρςφχψϗ", 1),
     "superscript": ("¹²³⁰⁴⁵⁶⁷⁸⁹", 3),
     "superscript baseline": ("¹²³⁰⁴⁵⁶⁷⁸⁹ⁱⁿ", 1),
     "subscript": ("₀₁₂₃₄₅₆₇₈₉", 3),
 }
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
-OFF_ROW = {("cap height", "Þ")}  # its stem rises 88 past cap height
+OFF_ROW = {
+    ("cap height", "Þ"),  # its stem rises 88 past cap height
+    # The slash runs 45 past the bowl at both ends; Fira Code's and Intel One Mono's run
+    # further (57 and more), Maple Mono's less (7 to 25).
+    ("baseline", "Ø"), ("cap height", "Ø"), ("baseline", "ø"), ("x-height", "ø"),
+    # Where a's foot meets e's bowl it dips 26 lower than o; the references' æ go no lower
+    # than their o.
+    ("baseline", "æ"),
+}
 
 # Symmetric glyphs; the brackets, which the legibility pass centered; the figures, and the
 # small ones of the superscripts and subscripts, which stand in the middle of the cell like
-# them; and the prompt, CLI and math symbols, which the reference fonts center by their ink box.
+# them; the spacing accents and low quotes, which Fira Code centers too; and the symbols,
+# which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%…/\\()[]{}╳•°₩₦№"
             "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪"
-            "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼")
+            "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼"
+            "·¤¦†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˜˝ˆˇ")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
            "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤⇦⇨⇩"
-           "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙")
+           "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙–—∞")
 # The <= >= ligatures, by glyph name: centred on the axis like ≤ ≥, as the references' are.
 ON_AXIS_GLYPHS = ("less_equal.liga", "greater_equal.liga")
 # The superscript and subscript signs, on the middle of their small figures, as in both

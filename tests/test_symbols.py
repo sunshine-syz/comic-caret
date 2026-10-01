@@ -20,7 +20,8 @@ from project import ADVANCE, SFD
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
-           "◐◑◒◓◴◵◶◷◜◝◞◟◠◡◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼")
+           "◐◑◒◓◴◵◶◷◜◝◞◟◠◡◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼"
+           "↑↓≤≥−∀∃∄•†‡…‰™€–—‘’‚“”„‹›«»")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
@@ -35,9 +36,10 @@ HEAVY_INK = 1.45
 # hand's wobble.
 BULLET_WIDTH = 220 - MIDDLE_TOLERANCE
 # Every symbol keeps at least as far inside the cell as ●, the widest full-size shape, so two
-# side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. ∞ (8's loop, scaled
-# to fit) and � (Comic Shanns's own) came with 1.0.0, 11 inside the cell.
-OWN_SIDES = "∞�"
+# side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. These come no closer
+# to the edges than a reference's: ∞ and � (11 inside) as Fira Code's ∞ and Maple Mono's �,
+# which run past the cell, and ™ (13) as Fira Code's, 11 inside on the left.
+OWN_SIDES = "∞�™"
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫", "▮": "▯",
          "☗": "☖", "▰": "▱"}
@@ -56,7 +58,8 @@ TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("�
           "▼": ("▶", -90), "▽": ("▷", -90), "▾": ("▸", -90), "▿": ("▹", -90),
           "⋮": ("…", 90), "⇣": ("⇡", 180), "⇓": ("⇑", 180), "↰": ("↳", 180),
           "↱": ("↲", 180), "∇": ("∆", 180), "↙": ("↗", 180), "↘": ("↖", 180),
-          "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180), "◤": ("◢", 180), "◥": ("◣", 180)}
+          "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180), "◤": ("◢", 180), "◥": ("◣", 180),
+          "¡": ("!", 180), "¿": ("?", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
 # The white across ▹'s middle. Maple Mono's, the only reference's, is 161 at our cap height;
 # ours is 4 narrower, its outline a little heavier (41 against 37) to stay nearer our weight.
