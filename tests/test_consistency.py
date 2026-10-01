@@ -85,13 +85,19 @@ MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
 MERGED_BELOW = 10  # a merged ogonek or cedilla lies below this height or inside its letter
 MARK_CLEARANCE = 20  # the closest a mark may come to its letter
-# How far a mark may sit from its letter's middle: as far as the references' marks over C's open
-# side, Fira Code's Ĉ Č Ċ with x scaled to our advance (Intel One Mono's 28, Maple Mono's 2).
-MARK_OFFCENTER = 46
+# Marks above sit on their letter's middle within TOLERANCE, as the references' symmetric marks
+# over A O U do (within 4). Ĉ's circumflex leans 22 toward C's open side, and may go as far as
+# the references' over C, the edge of the range the three cover: Fira Code's 46 with x scaled
+# to our advance (Intel One Mono's 28, Maple Mono's 2).
+OFF_CENTER = {"Ccircumflex": 46}
 STEM_BASES = {"dotlessi", "dotlessj", "l"}  # their marks sit over the stem, not the ink's middle
-# Accents a letter places by hand away from where its anchor puts a combining mark: ì's grave
-# leans left of the stem and í's acute right, and the anchor takes the middle of its accents.
-OWN_PLACEMENT = {("dotlessi", "grave.accent")}
+# Accents a letter places by hand away from where its anchor puts a combining mark. i's anchor
+# is over its dot, where ï ĩ ī put theirs: ì's grave leans 38 left of it and í's acute 19
+# right, as Intel One Mono's and Maple Mono's lean (27 to 43); î's circumflex sits 20 left,
+# toward the flag, where the references keep theirs over the dot (within 6). Ĉ's circumflex
+# sits 21 right of the mark, which C's anchor centres on C (OFF_CENTER).
+OWN_PLACEMENT = {("dotlessi", "grave.accent"), ("dotlessi", "acute"),
+                 ("dotlessi", "circumflex"), ("C", "circumflex")}
 
 BOX_DRAWING = range(0x2500, 0x2580)
 BLOCK_ELEMENTS = range(0x2580, 0x25A0)
@@ -285,7 +291,7 @@ class CompositionTest(unittest.TestCase):
             for name, mark in marks:
                 m0, bottom, m1, _ = mark.boundingBox()
                 offset = (m0 + m1) / 2 - (x0 + x1) / 2
-                if bottom >= top and abs(offset) > MARK_OFFCENTER:
+                if bottom >= top and abs(offset) > OFF_CENTER.get(glyph.glyphname, TOLERANCE):
                     off[(glyph.glyphname, name)] = round(offset)
         self.assertEqual(off, {})
 
@@ -406,7 +412,7 @@ class MarkTest(unittest.TestCase):
             ax0, ay0, _, _ = self.placed(letter, mark).boundingBox()
             px0, py0, _, _ = geo.transformed(self.font[accent].foreground,
                                              refs[accent]).boundingBox()
-            if abs(ax0 - px0) > MARK_OFFCENTER or abs(ay0 - py0) > ROW_TOLERANCE:
+            if abs(ax0 - px0) > TOLERANCE or abs(ay0 - py0) > ROW_TOLERANCE:
                 off[(glyph.glyphname, mark.glyphname)] = (round(ax0 - px0), round(ay0 - py0))
         self.assertEqual(off, {})
 
