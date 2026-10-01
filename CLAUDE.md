@@ -26,12 +26,12 @@ python3 tools/bump_version.py X.Y.Z     # start the next version: both SFDs' Ver
 `--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
 that box drawing meets across lines.
 
-After every change to the regular, rerun `tools/make_italic.py`, rebuild, then run the checks:
+After every change to the regular, rerun `tools/make_italic.py`, rebuild, rerun
+`tools/render_specimen.py`, then run the checks:
 
 ```sh
-python3 -m unittest discover tests  # SFD rules, built fonts, shaping, Font Bakery; known exceptions are in the tests
+python3 -m unittest discover tests  # SFD rules, built fonts, shaping, ots, Font Bakery, README images
 hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading '-' reads as an option
-uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)' fonts/ComicCaret-Regular.otf
 ```
 
 ## Releasing
@@ -39,8 +39,7 @@ uvx --from opentype-sanitizer python -c 'import ots, sys; sys.exit(ots.sanitize(
 The version being worked on heads `CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y.Z`
 starts the next one, setting both SFDs' `Version:` and the heading together.
 
-1. `python3 tools/bump_version.py --release` gives the heading this month. If glyphs changed,
-   rerun `tools/render_specimen.py` so the README shows them.
+1. `python3 tools/bump_version.py --release` gives the heading this month.
 2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd
    Fonts builds it made, which they skip otherwise.
 3. `python3 tools/bump_version.py --check-tag vX.Y.Z` refuses a tag that isn't that release.
@@ -89,7 +88,9 @@ last: a new glyph lands after the generated ones, and the last generator to run 
 lookups' order. Then `tools/make_italic.py`, which rewrites the whole italic SFD from the
 regular; `tests/test_make_italic.py` fails while it is out of date. A new glyph slants unless
 its block or character is listed as upright there; a picture, such as a shape or a status
-mark, goes in the upright set.
+mark, goes in the upright set. Then `./build.sh` and `tools/render_specimen.py`:
+`tests/test_render_specimen.py` fails while the README's images in `docs/images/` are out of
+date.
 
 ## Designing glyphs
 
@@ -117,7 +118,9 @@ mark, goes in the upright set.
 ## Writing tests
 
 A test fails when the font is broken, never because a glyph was redrawn on purpose. How a glyph
-looks is judged on the proof sheet, not asserted.
+looks is judged on the proof sheet, not asserted. Only the checks that generated output is
+current (a generator's range, the italic, the README's images) fail after a deliberate change,
+and only until it is regenerated.
 
 - Put each check where its kind lives: `test_sanity.py` for what breaks text for every glyph
   (the cell, the line box, `validate()`, hints, empty or unused glyphs); `test_consistency.py`

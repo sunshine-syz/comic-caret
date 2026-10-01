@@ -22,8 +22,8 @@ from project import ADVANCE, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
-# ots, invoked as in CLAUDE.md. Pinned, and resolved as of a day as Font Bakery is, so that a
-# stricter release can't fail a sound font; bump them on purpose.
+# ots, the sanitizer browsers run web fonts through. Pinned, and resolved as of a day as Font
+# Bakery is, so that a stricter release can't fail a sound font; bump them on purpose.
 OTS = "opentype-sanitizer==9.2.0"
 OTS_EXCLUDE_NEWER = "2026-09-30"
 SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)'
