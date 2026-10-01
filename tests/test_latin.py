@@ -225,6 +225,18 @@ class CapitalTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
+        [(h0, h1)] = measure.spans_at_x(cls.font["hyphen"].foreground, ADVANCE / 2)
+        cls.stroke = h1 - h0  # the hyphen's, at its middle
+
+    def test_J_bar_stays_left_of_the_stem(self):
+        # No reference carries J's bar past the stem on the right: Fira Code's and Maple
+        # Mono's runs left from it, Intel One Mono's J has none. Ours was the I's bar once,
+        # 114 units past the stem. What the top reaches beyond the stem's right edge is the
+        # hand's wobble, under a quarter of a stroke.
+        layer = self.font["J"].foreground
+        _, _, right, top = layer.boundingBox()
+        [(_, stem)] = measure.spans_at_y(layer, top - 150)  # on the stem, below the bar
+        self.assertLess(right - stem, self.stroke / 4)
 
     def test_Y_stem_stands_straight_under_the_notch(self):
         # Fira Code, Intel One Mono and Maple Mono all set Y's stem vertical under the notch;
