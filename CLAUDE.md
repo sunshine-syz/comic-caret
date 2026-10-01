@@ -72,8 +72,9 @@ starts the next one, setting both SFDs' `Version:` and the heading together.
 
 ## Generated glyphs
 
-Each generator owns a range of glyphs and redraws it in place, so a rerun changes nothing; its
-`tests/test_add_<what>.py` fails while the SFD is out of date. Change those glyphs only in the
+Each generator owns a range of glyphs and redraws it in place, so a rerun changes nothing; a
+rerun test (`tests/test_add_<what>.py`; `test_add_marks.py` holds `add_ligatures`' too, as the
+two must run in order) fails while the SFD is out of date. Change those glyphs only in the
 generator, rerun it, then `./build.sh`. Each generator's docstring has the details. A new
 generator's rerun test compares with `tests/sfd_files.differences()`; see
 `docs/fontforge-pitfalls.md`.

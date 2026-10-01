@@ -4,9 +4,9 @@ How the glyphs are sized and placed, in more detail than the rules in `CLAUDE.md
 reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from the Fira Code
 6.2 release, Maple Mono 7.9 Regular (the Nerd Font build works too) and
 `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`). All three are
-OFL: copy measurements, never outlines. With `--italic`, both tools use the italic references in
-`build/cache/reference/italic/`. `tools/compare_glyphs.py` puts our glyph positions
-next to theirs, and `tools/proof_sheet.py` renders ours beside them.
+OFL: copy measurements, never outlines. `tools/compare_glyphs.py` puts our glyph positions
+next to theirs, and `tools/proof_sheet.py` renders ours beside them; with `--italic`, both use
+the italic references in `build/cache/reference/italic/`.
 
 ## Scaled parts
 

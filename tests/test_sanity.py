@@ -17,6 +17,7 @@ import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
+from add_ligatures import OVERLAP
 import lig_geometry as geo
 import make_italic
 from measure import ink
@@ -37,7 +38,7 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 # Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).
 DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
 TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Maple Mono's 106)
-INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": 10,
+INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": OVERLAP,
                     **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                                      "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
 # ∄'s rotated E and slash overlap, and so do the references to ☐ and a quarter of ■ in ◰ ◱ ◲ ◳.

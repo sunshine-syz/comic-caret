@@ -15,10 +15,11 @@ Every glyph of the regular falls in one of three sets, decided by classify():
   x += (y - AXIS) * SLANT, one map for every glyph, pivoting on the hyphen's middle: a stroke
   at any height moves the same in every glyph, so the ligature pieces still meet at the cell
   seams, while - = and the arrow shafts stay where they are and the lowercase stays centred.
-- UPRIGHT: what is drawn as a picture, which Maple Mono and Intel One Mono leave untouched in
-  their italics: Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and
-  the spinner frames, the status marks ✓ ✗ ⚠ ℹ, the checkboxes ☐ ☑ ☒ and the key hints ⌘ ⌥
-  ⌃ ⇧ ↹ ⇥ ⇤. Copied unchanged, hints included.
+- UPRIGHT: what is drawn as a picture: Box Drawing, Block Elements, Braille, Powerline, the
+  geometric shapes and the spinner frames and the status marks ✓ ✗ ⚠ ℹ, which Maple Mono and
+  Intel One Mono leave untouched in their italics, and the checkboxes ☐ ☑ ☒ and the key hints
+  ⌘ ⌥ ⌃ ⇧ ↹ ⇥ ⇤, which Maple Mono slants (docs/design-notes.md says why they stay). Copied
+  unchanged, hints included.
 - CURSIVE: letters given a cursive form, drawn from the regular's own strokes and then
   sheared. f drops its foot and runs its stem below the baseline, as deep as j, ending in a
   short flick to the left (proofed against ƒ's hook, which Maple Mono's f has, and against
