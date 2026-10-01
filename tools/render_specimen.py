@@ -14,7 +14,7 @@ import re
 import subprocess
 import sys
 
-from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, STYLES, font_file
+from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, font_file, stale_build
 
 FONT, ITALIC = font_file("Regular", "ttf"), font_file("Italic", "ttf")
 OUT = ROOT / "docs" / "images"
@@ -351,18 +351,9 @@ IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures
           "italic": italic}
 
 
-def stale_build():
-    """Why the fonts the images are drawn from don't show the SFDs' glyphs, or None."""
-    for style, sfd in STYLES.items():
-        font = font_file(style, "ttf")
-        if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
-            return f"{font.name} is missing or older than {sfd.name}; run ./build.sh"
-    return None
-
-
 def main():
     argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
-    if reason := stale_build():
+    if reason := stale_build(formats=("ttf",)):
         sys.exit(reason)
     OUT.mkdir(parents=True, exist_ok=True)
     for name, draw in IMAGES.items():

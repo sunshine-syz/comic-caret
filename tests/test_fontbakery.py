@@ -17,7 +17,9 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from add_ligatures import GENERATED
+from helpers import require_current_build
 from project import SFD, STYLES, font_file
 
 # Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
@@ -121,11 +123,7 @@ class FontBakeryTest(unittest.TestCase):
     def setUpClass(cls):
         if shutil.which("uvx") is None:
             raise unittest.SkipTest("uvx is not installed")
-        for ext, fonts in FONTS.items():
-            for font, sfd in zip(fonts, STYLES.values()):
-                if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
-                    raise AssertionError(f"{font.name} is missing or older than {sfd.name}; "
-                                         "run ./build.sh")
+        require_current_build()
         cls.known = known()
 
     def test_fonts_have_only_the_known_problems(self):

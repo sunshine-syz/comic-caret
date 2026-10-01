@@ -18,12 +18,15 @@ import zipfile
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from bump_version import sfd_version
 from make_italic import SLANT
 import sfnt
-from project import ADVANCE, AXIS, ROOT, SFD, STYLES, font_file, nerd_fonts, takes_no_cell
+from helpers import NerdBuilds, require_current_build
+from project import (ADVANCE, AXIS, FORMATS, ROOT, SFD, STYLES, font_file, nerd_fonts, newest_sfd,
+                     style_of, takes_no_cell)
 
-FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
+FONTS = {style: [font_file(style, ext) for ext in FORMATS] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
 BOX_TOLERANCE = 5
 # ots, the sanitizer browsers run web fonts through. Pinned, and resolved as of a day as Font
@@ -109,24 +112,12 @@ def sanitize(font):
     return subprocess.run(command, capture_output=True, text=True, check=False)
 
 
-def require_current_build(style):
-    for font in FONTS[style]:
-        if not font.exists() or font.stat().st_mtime < STYLES[style].stat().st_mtime:
-            raise AssertionError(f"{font.name} is missing or older than {STYLES[style].name}; "
-                                 "run ./build.sh")
-
-
-def nerd_style(font):
-    """The style a Nerd Fonts build was patched from: the last part of its name."""
-    return font.stem.split("-")[-1]
-
-
 class BuiltFontTest(unittest.TestCase):
     style = "Regular"
 
     @classmethod
     def setUpClass(cls):
-        require_current_build(cls.style)
+        require_current_build((cls.style,))
         cls.fonts = FONTS[cls.style]
         sfd = fontforge.open(str(STYLES[cls.style]))
         glyphs = sorted((g for g in sfd.glyphs() if g.unicode >= 0), key=lambda g: g.unicode)
@@ -243,7 +234,7 @@ class MarkShapingTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        require_current_build(cls.style)
+        require_current_build((cls.style,))
         cls.fonts = FONTS[cls.style]
         sfd = fontforge.open(str(STYLES[cls.style]))
         # Not the soft hyphen: shapers skip a default ignorable, and a mark after one goes on
@@ -296,7 +287,7 @@ class ItalicMarkShapingTest(MarkShapingTest):
     rounding = 2  # a sheared outline's points and its anchors are each rounded to units
 
 
-class SanitizerTest(unittest.TestCase):
+class SanitizerTest(NerdBuilds, unittest.TestCase):
     """Every built font passes ots, which rejects a font whose tables break the spec's rules
     before a browser loads it. A Nerd Fonts build older than the SFDs is skipped by name, as in
     NerdFontTest. Skips without uvx."""
@@ -305,8 +296,7 @@ class SanitizerTest(unittest.TestCase):
     def setUpClass(cls):
         if shutil.which("uvx") is None:
             raise unittest.SkipTest("uvx is not installed")
-        for style in STYLES:
-            require_current_build(style)
+        require_current_build()
         nerd, cls.stale = nerd_fonts()
         cls.fonts = [font for fonts in FONTS.values() for font in fonts] + nerd
 
@@ -316,33 +306,16 @@ class SanitizerTest(unittest.TestCase):
                 result = sanitize(font)
                 self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_stale_nerd_builds_are_skipped(self):
-        for font in self.stale:
-            with self.subTest(font=font.name):
-                self.skipTest("older than the SFDs; rebuild with ./build.sh --nerd")
 
-
-class NerdFontTest(unittest.TestCase):
+class NerdFontTest(NerdBuilds, unittest.TestCase):
     """The Nerd Fonts builds keep our box drawing, block elements, Braille, Powerline symbols
     and ❮ ❯ ❰ ❱.
 
     The patcher swaps in its own box set unless the font has all of U+2500–U+259F, its own
     Braille unless --careful finds all of U+2800–U+28FF, its own Powerline symbols where
     --careful doesn't find ours, and fills U+276C–U+2771 (❬ ❭ ❮ ❯ ❰ ❱) only where the font has
-    no glyph. The builds are made only by ./build.sh --nerd or --release, so a font older than
-    the SFDs is skipped by name, and the whole class when none is current.
+    no glyph.
     """
-
-    @classmethod
-    def setUpClass(cls):
-        cls.fonts, cls.stale = nerd_fonts()
-        if not cls.fonts:
-            raise unittest.SkipTest("no Nerd Fonts build newer than the SFDs")
-
-    def test_stale_builds_are_skipped(self):
-        for font in self.stale:
-            with self.subTest(font=font.name):
-                self.skipTest("older than the SFDs; rebuild with ./build.sh --nerd")
 
     def test_patched_fonts_keep_the_zero_widths(self):
         # But in the Mono variant, where the patcher gives every glyph one advance on purpose.
@@ -363,7 +336,7 @@ class NerdFontTest(unittest.TestCase):
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
                 self.assertEqual(shape(nerd, text),
-                                 shape(plain[nerd_style(nerd), nerd.suffix], text))
+                                 shape(plain[style_of(nerd), nerd.suffix], text))
 
 
 class ReleaseZipTest(unittest.TestCase):
@@ -379,11 +352,11 @@ class ReleaseZipTest(unittest.TestCase):
         cls.version = sfd_version(SFD)
         cls.plain = ROOT / "dist" / f"ComicCaret-{cls.version}.zip"
         cls.nerd = ROOT / "dist" / f"ComicCaretNerdFont-{cls.version}.zip"
-        newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
+        newest = newest_sfd()
         for zip_path in (cls.plain, cls.nerd):
             if not zip_path.exists():
                 raise unittest.SkipTest(f"no {zip_path.name}; build it with ./build.sh --release")
-            if zip_path.stat().st_mtime <= newest_sfd:
+            if zip_path.stat().st_mtime <= newest:
                 raise unittest.SkipTest(f"{zip_path.name} is older than the SFDs")
 
     @staticmethod

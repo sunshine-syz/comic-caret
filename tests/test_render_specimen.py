@@ -10,7 +10,7 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import render_specimen
 from add_ligatures import GENERATED
-from project import ADVANCE, ROOT
+from project import ADVANCE, ROOT, stale_build
 from render_specimen import (
     CODE,
     IMAGES,
@@ -168,7 +168,7 @@ class ImageTest(unittest.TestCase):
         # The bytes depend on the toolchain as well: another FontForge, HarfBuzz or cairo
         # (hb-view's SVG output) can move a point by a unit, so the images are rendered with
         # the one that builds the release.
-        if reason := render_specimen.stale_build():
+        if reason := stale_build(formats=("ttf",)):
             self.skipTest(reason)
         rerun = "rerun python3 tools/render_specimen.py"
         for name, svg in self.svgs.items():

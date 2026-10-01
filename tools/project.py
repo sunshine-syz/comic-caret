@@ -58,16 +58,39 @@ def reference_fonts(style="Regular"):
     return sorted(p for p in folder.glob("*") if p.suffix in (".otf", ".ttf"))
 
 
+FORMATS = ("otf", "ttf")
+
+
+def newest_sfd():
+    """When either SFD last changed: a build older than this predates the glyphs it shows."""
+    return max(sfd.stat().st_mtime for sfd in STYLES.values())
+
+
+def stale_build(styles=tuple(STYLES), formats=FORMATS):
+    """Why the built fonts of `styles` in `formats` don't show their SFD's glyphs, or None."""
+    for style in styles:
+        for ext in formats:
+            font, sfd = font_file(style, ext), STYLES[style]
+            if not font.exists() or font.stat().st_mtime < sfd.stat().st_mtime:
+                return f"{font.name} is missing or older than {sfd.name}; run ./build.sh"
+    return None
+
+
+def style_of(font):
+    """The style of a built font, plain or Nerd Fonts patched: the last part of its name."""
+    return font.stem.split("-")[-1]
+
+
 def nerd_fonts():
     """The Nerd Fonts builds in NERD_DIR as (current, stale), each sorted.
 
     A font is current when it is newer than both SFDs, so it was built after the last change to
     the glyphs; a stale one predates them and says nothing about the font as it is now.
     """
-    newest_sfd = max(sfd.stat().st_mtime for sfd in STYLES.values())
+    newest = newest_sfd()
     fonts = sorted(NERD_DIR.glob("*.[ot]tf"))
-    return ([f for f in fonts if f.stat().st_mtime > newest_sfd],
-            [f for f in fonts if f.stat().st_mtime <= newest_sfd])
+    return ([f for f in fonts if f.stat().st_mtime > newest],
+            [f for f in fonts if f.stat().st_mtime <= newest])
 
 
 def validation_errors(glyph):

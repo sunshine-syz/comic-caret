@@ -14,11 +14,13 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import measure
 import sfnt
-from project import ADVANCE, ROOT, ROUNDING, SFD, WOBBLE
+from helpers import require_current_build
+from project import ADVANCE, ROUNDING, SFD, WOBBLE, font_file
 
-TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
+TTF = font_file("Regular", "ttf")
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
 # As heavy for their height as Intel One Mono's and Maple Mono's superscripts (0.16-0.17 of
 # it); at 74, as Fira Code's, the 4's counter in ¼ ¾ closed up.
@@ -118,9 +120,7 @@ class CoverageTest(unittest.TestCase):
 
     def test_built_font_declares_the_code_pages(self):
         # FontForge derives the flags from the cmap; CLAUDE.md keeps them out of the SFD.
-        if not TTF.exists() or TTF.stat().st_mtime < SFD.stat().st_mtime:
-            raise AssertionError(f"{TTF.name} is missing or older than {SFD.name}; "
-                                 "run ./build.sh")
+        require_current_build(("Regular",), ("ttf",))
         declared = code_page_range(TTF)
         for codec, bit in CODE_PAGE_BITS.items():
             with self.subTest(codec=codec):
