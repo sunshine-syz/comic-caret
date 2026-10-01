@@ -13,6 +13,7 @@
 - Þ's stem rose 88 units above the other capitals, with the bowl high on it. The stem now stops at the cap height and the bowl is centred on it, as Fira Code, Intel One Mono and Maple Mono draw theirs, so it still reads apart from P.
 - “ ” „ set one of their marks about 50 units higher than the other, a handwritten touch. Both marks now stand level, at the height of the single ‘ ’ and the comma, as all three reference fonts keep them, with at least as much white between them as the narrowest reference's, and ”'s left mark is ’ itself rather than a near copy of it.
 - The soft hyphen (U+00AD) drew a hyphen, which shaping renderers never show and which Alacritty, giving it no cell, drew over the letter before it; it is now blank and still one cell wide, for the terminals that reserve a cell for it, so nothing strikes through a letter, and Font Bakery no longer reports its outline. Intel One Mono and Maple Mono leave it unmapped; Fira Code draws a hyphen.
+- Y's stem ran on down the slant of the right arm, so its foot stood 96 units left of the notch and the letter leaned; it now stands upright under the notch, as in all three reference fonts, and the notch sits 22 units higher, within the range they cover.
 
 ## 1.6.0 (2026-09)
 

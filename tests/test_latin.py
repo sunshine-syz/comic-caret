@@ -220,6 +220,30 @@ class LookalikeTest(unittest.TestCase):
             self.assertGreaterEqual(measure.gap(slash, ring), PER_MILLE_CLEARANCE)
 
 
+class CapitalTest(unittest.TestCase):
+    """Capitals drawn the way the references agree on."""
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_Y_stem_stands_straight_under_the_notch(self):
+        # Fira Code, Intel One Mono and Maple Mono all set Y's stem vertical under the notch;
+        # ours once ran on down the right arm's slant, its foot 96 left of the notch. The foot
+        # and the stem's middle both stay within a quarter of the stem's width of the notch:
+        # the I's and T's stems drift 7 and 11 over their whole height.
+        layer = self.font["Y"].foreground
+        _, bottom, _, top = layer.boundingBox()
+        notch = next(y for y in range(round(bottom), round(top), 2)  # the first line that
+                     if len(measure.spans_at_y(layer, y)) == 2)        # crosses both arms
+        (_, left), (right, _) = measure.spans_at_y(layer, notch)
+        foot = bottom + 50  # above the round end
+        [(x0, x1)] = measure.spans_at_y(layer, foot)
+        [(m0, m1)] = measure.spans_at_y(layer, (foot + notch) / 2)
+        for part, centre in (("foot", (x0 + x1) / 2), ("middle", (m0 + m1) / 2)):
+            with self.subTest(part=part):
+                self.assertLess(abs(centre - (left + right) / 2), (x1 - x0) / 4)
+
+
 class CompositeTest(unittest.TestCase):
     """Glyphs that are another glyph, or a letter and a mark, as references."""
     @classmethod
