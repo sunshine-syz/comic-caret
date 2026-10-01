@@ -168,7 +168,7 @@ class ImageTest(unittest.TestCase):
         # The bytes depend on the toolchain as well: another FontForge, HarfBuzz or cairo
         # (hb-view's SVG output) can move a point by a unit, so the images are rendered with
         # the one that builds the release.
-        if reason := stale_build(formats=("ttf",)):
+        if reason := stale_build(formats=(render_specimen.FORMAT,)):
             self.skipTest(reason)
         rerun = "rerun python3 tools/render_specimen.py"
         for name, svg in self.svgs.items():

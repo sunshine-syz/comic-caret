@@ -97,22 +97,6 @@ class Ref:
         self.parts = [(name, matrix) for name, matrix in parts]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def glyph_for(font, key):
     """The glyph at a code point, or with a name for a component, created if missing."""
     if key in font:
@@ -197,8 +181,8 @@ def square_cuts(font):
     # ■ cut along its diagonal from the top right to the bottom left, by a triangle that
     # reaches well past it.
     far = 200
-    lower_right = geo.cleanup(geo.clip(square, geo.polygon([(x1 + far, y1 + far), (x1 + far, y0 - far),
-                                                    (x0 - far, y0 - far)])))
+    corner = geo.polygon([(x1 + far, y1 + far), (x1 + far, y0 - far), (x0 - far, y0 - far)])
+    lower_right = geo.cleanup(geo.clip(square, corner))
     out[LOWER_RIGHT] = lower_right
     out[LOWER_LEFT] = geo.mirrored_x(lower_right, CX)
     out[UPPER_LEFT] = Ref((f"uni{LOWER_RIGHT:04X}", geo.turned(CX, AXIS)))
@@ -236,7 +220,7 @@ def rings(font):
         a0, a1 = k * span - span / 2 + gap / 2, k * span + span / 2 - gap / 2
         reach = 2 * r_out
         wedge = geo.polygon([(CX, AXIS)] + [(CX + reach * math.cos(a), AXIS + reach * math.sin(a))
-                                        for a in (a0, (a0 + a1) / 2, a1)])
+                                            for a in (a0, (a0 + a1) / 2, a1)])
         pieces.append(geo.clip(ring, wedge))
     out[DOTTED] = geo.cleanup(geo.union(*pieces))
     # ◍: bars of ◦'s stroke spaced evenly across the counter, ending inside the ring: cut by
@@ -251,7 +235,8 @@ def rings(font):
     ax0, ay0, ax1, ay1 = asterisk.boundingBox()
     small = geo.transformed(asterisk, geo.about(psMat.scale(ASTERISK_SCALE),
                                                 (ax0 + ax1) / 2, (ay0 + ay1) / 2))
-    out[SMALL_ASTERISK] = geo.cleanup(geo.centred(weighted(font, SMALL_ASTERISK, small, 12), CX, AXIS))
+    small = weighted(font, SMALL_ASTERISK, small, 12)
+    out[SMALL_ASTERISK] = geo.cleanup(geo.centred(small, CX, AXIS))
     out[SQUARED_ASTERISK] = Ref((box_name, psMat.identity()), (SMALL_ASTERISK, psMat.identity()))
     return out
 
@@ -287,7 +272,7 @@ def stars(font):
         out[code] = geo.cleanup(geo.union(poly, pushed))
     reach = radius + TIP - SPOKE / 2
     spokes = [geo.line((CX - reach * math.cos(a), AXIS - reach * math.sin(a)),
-                   (CX + reach * math.cos(a), AXIS + reach * math.sin(a)), SPOKE)
+                       (CX + reach * math.cos(a), AXIS + reach * math.sin(a)), SPOKE)
               for a in (90 * DEG + k * math.pi / SPOKES for k in range(SPOKES))]
     out[ASTERISK_STAR] = geo.cleanup(geo.union(*spokes))
     return out

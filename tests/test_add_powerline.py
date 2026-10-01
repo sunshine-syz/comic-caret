@@ -13,7 +13,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-# the tests' shared SFD comparison
+# the tests' shared SFD comparison and helpers
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_powerline
 import lig_geometry as geo

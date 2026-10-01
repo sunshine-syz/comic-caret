@@ -16,7 +16,7 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-# the tests' shared tolerances and SFD comparison
+# the tests' shared SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic

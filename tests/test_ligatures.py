@@ -18,7 +18,7 @@ from helpers import NerdBuilds, require_current_build
 from measure import ink, spans_at_x, vertical_edges
 from project import ADVANCE, FORMATS, OVERLAP, SFD, STYLES, font_file, style_of
 
-# Each built font, with the SFD it is built from.
+# Each built font.
 FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
 REGULAR = font_file("Regular", "ttf")
 
@@ -360,7 +360,7 @@ class LigatureShapingTest(unittest.TestCase):
 class NerdFontTest(NerdBuilds, unittest.TestCase):
     """Nerd Fonts builds keep the ligatures through the patcher.
 
-    The release steps in CLAUDE.md run them after building.
+    The release steps in CLAUDE.md run the Nerd Fonts builds after building the fonts.
     """
 
     def test_patched_fonts_keep_the_ligatures(self):

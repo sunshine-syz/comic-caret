@@ -135,6 +135,8 @@ class BuiltFontTest(unittest.TestCase):
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
         # But the combining marks and the zero-width format characters, which take no room.
+        # Each is shaped alone: a shaper zeroes a mark's advance and puts a run of marks in
+        # canonical order.
         for font in self.fonts:
             with self.subTest(font=font.name):
                 shaped = shape(font, self.text)

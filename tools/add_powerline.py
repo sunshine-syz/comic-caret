@@ -48,10 +48,6 @@ KEYHOLE_Y, KEYHOLE_RADIUS = 175, 45
 SLOT_WIDTH, SLOT_BOTTOM = 50, 40
 
 
-
-
-
-
 def rounded_rect(x0, y0, x1, y1, r):
     """A clockwise rectangle with quarter-circle corners of radius r, as a layer."""
     k = geo.KAPPA * r
@@ -71,10 +67,6 @@ def rounded_rect(x0, y0, x1, y1, r):
     return layer
 
 
-
-
-
-
 def solid_separator():
     """: a triangle from the cell's left edge to a point on its right edge, filling the line
     box, so the segment it ends meets it without a seam."""
@@ -88,8 +80,8 @@ def thin_separator():
     # The stroke's thickness measured horizontally: what moves the outer edge onto the inner.
     inset = LIGHT * math.hypot(run, rise) / rise
     return geo.cleanup(geo.polygon([(0, LINE_BOTTOM), (0, LINE_BOTTOM + inset * rise / run),
-                                (ADVANCE - inset, MIDDLE), (0, LINE_TOP - inset * rise / run),
-                                (0, LINE_TOP), (ADVANCE, MIDDLE)]))
+                                    (ADVANCE - inset, MIDDLE), (0, LINE_TOP - inset * rise / run),
+                                    (0, LINE_TOP), (ADVANCE, MIDDLE)]))
 
 
 def branch():

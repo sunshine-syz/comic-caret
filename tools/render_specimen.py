@@ -16,7 +16,8 @@ import sys
 
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, font_file, stale_build
 
-FONT, ITALIC = font_file("Regular", "ttf"), font_file("Italic", "ttf")
+FORMAT = "ttf"  # the images are drawn from the TTFs
+FONT, ITALIC = font_file("Regular", FORMAT), font_file("Italic", FORMAT)
 OUT = ROOT / "docs" / "images"
 WIDTH = 800               # px; within a README column at 1:1
 MARGIN, PADDING = 24, 20  # around each image, and inside its panel
@@ -354,7 +355,7 @@ IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures
 
 def main():
     argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
-    if reason := stale_build(formats=("ttf",)):
+    if reason := stale_build(formats=(FORMAT,)):
         sys.exit(reason)
     OUT.mkdir(parents=True, exist_ok=True)
     for name, draw in IMAGES.items():

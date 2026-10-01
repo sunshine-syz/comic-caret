@@ -136,10 +136,6 @@ and only until it is regenerated.
   how the italic follows the regular. The sanity, metadata, built-font and shaping suites run
   on both styles; the rules on glyphs and classes run on the regular, which the italic is
   derived from.
-- Shared values and helpers have one home: font-wide constants and code-point classes in
-  `tools/project.py` (the line box, `AXIS`, `ROUNDING`, `WOBBLE`, `is_letter()`), outline
-  measurements in `tools/measure.py`, and test-only helpers in `tests/helpers.py`. A test
-  module never imports from another test module.
 - Prefer a class rule: add a new glyph to its class in `test_consistency.py` (`ROWS`,
   `CENTERED`, `ON_AXIS`, `MIRRORED`, or `MIRRORED_OUTLINES` for the left glyphs of `MIRRORED`
   drawn as exact mirrors of their right) rather than writing a test for it.
@@ -156,3 +152,10 @@ and only until it is regenerated.
 ## Other
 
 - Add user-visible changes to `CHANGELOG.md`.
+- Shared helpers have one home: font-wide constants and code-point classes in `tools/project.py`
+  (the line box, `AXIS`, `ROUNDING`, `WOBBLE`, `is_letter()`), font-table reading and writing in
+  `tools/sfnt.py`, outline measurements in `tools/measure.py`, the outline builders the
+  generators share (`polygon`, `stroked`, `clip`, ...) in `tools/lig_geometry.py`, and test-only
+  helpers in `tests/helpers.py`. A generator never borrows another generator's helpers (a
+  constant such as a stroke weight is fine), and a test module never imports from another test
+  module.

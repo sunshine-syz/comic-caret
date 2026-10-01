@@ -149,7 +149,8 @@ class GlyphShapeTest(unittest.TestCase):
         # edge as wide as the stroke.
         for pipe in TRIANGLES:
             with self.subTest(pipe=pipe):
-                flat = [e for e in horizontal_edges(self.font[pipe].foreground) if e[2] - e[1] >= 20]
+                edges = horizontal_edges(self.font[pipe].foreground)
+                flat = [e for e in edges if e[2] - e[1] >= 20]
                 self.assertEqual(flat, [])
 
     def test_corners_are_one_round_end(self):
