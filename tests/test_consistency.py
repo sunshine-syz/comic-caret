@@ -76,6 +76,7 @@ MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\
             "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩", "⇦⇨", "◣◢", "◜◝", "◟◞",
             "⊶⊷")
 TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
+ROUNDING = 1  # an outline's points and a reference's offset are each rounded to whole units
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
 MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"

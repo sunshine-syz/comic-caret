@@ -23,8 +23,7 @@ import add_shapes
 import lig_geometry as geo
 import measure
 from project import ADVANCE, ROOT, SFD
-from test_consistency import TOLERANCE  # the hand's wobble
-from test_make_italic import ROUNDING
+from test_consistency import ROUNDING, TOLERANCE  # TOLERANCE: the hand's wobble
 
 GENERATOR = ROOT / "tools" / "add_shapes.py"
 # A spinner's frames share one box, so it turns without pulsing (the arcs and the stars have

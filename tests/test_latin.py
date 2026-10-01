@@ -18,8 +18,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import measure
 from project import ADVANCE, ROOT, SFD
-from test_consistency import TOLERANCE
-from test_make_italic import ROUNDING
+from test_consistency import ROUNDING, TOLERANCE
 
 TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
@@ -211,8 +210,8 @@ class LookalikeTest(unittest.TestCase):
         rings = [c for c in contours if c.isClockwise() and c.boundingBox()[3] < 300]
         self.assertEqual(len(rings), 2)  # the lower two, side by side
         left, right = sorted((c.boundingBox() for c in rings), key=lambda b: b[0])
-        # 5 has no source: Fira Code's rings keep 14 apart, more than ours (10); Maple Mono's join.
-        self.assertGreaterEqual(right[0] - left[2], 5)
+        # Apart beyond both rings' rounding; Maple Mono's join, Fira Code's keep 14.
+        self.assertGreater(right[0] - left[2], 2 * ROUNDING)
         for contour in rings:
             ring = fontforge.layer()
             ring += contour

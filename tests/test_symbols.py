@@ -18,7 +18,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import lig_geometry as geo
 import measure
 from project import ADVANCE, SFD
-from test_consistency import ROW_TOLERANCE
+from test_consistency import ROUNDING, ROW_TOLERANCE
 from test_consistency import TOLERANCE as MIDDLE_TOLERANCE  # the hand's wobble
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
@@ -28,9 +28,6 @@ SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔�
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
-# How far a stroke drawn from another may stray from its weight: as far as the pen's weight
-# strays along one stroke, |'s (76-80).
-WEIGHT_TOLERANCE = 4
 # How far ≠'s slash runs past ='s bars: at least the narrowest reference's, Fira Code's below its
 # bars at our cap height (Intel One Mono's 147, Maple Mono's 174).
 NOT_EQUAL_REACH = 146
@@ -103,6 +100,16 @@ def shape(layer):
     return sorted(points(c) for c in layer)
 
 
+def weight_tolerance(font):
+    """How far a stroke drawn from another may stray from its weight: as far as the pen's
+    weight strays along |'s straight middle, and both edges' rounding."""
+    bar = font["bar"].foreground
+    _, y0, _, y1 = bar.boundingBox()
+    widths = [x1 - x0 for y in range(round(y0) + 100, round(y1) - 100, 10)
+              for x0, x1 in measure.spans_at_y(bar, y)]
+    return max(widths) - min(widths) + 2 * ROUNDING
+
+
 def pieces_of(layer):
     """Each outline of the layer with the counters inside it."""
     contours = list(layer)
@@ -143,6 +150,7 @@ class OperatorTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
+        cls.weight = weight_tolerance(cls.font)
 
     def test_not_equal_slash_crosses_both_bars(self):
         glyph = self.font["notequal"]
@@ -153,14 +161,15 @@ class OperatorTest(unittest.TestCase):
         self.assertGreaterEqual(bar_bottom - bottom, NOT_EQUAL_REACH)
 
     def test_identical_bars_are_three_equal_bars(self):
+        # ='s bars, as heavy as ='s and spaced as ='s within the hand's wobble.
         equal = measure.spans_at_x(self.font["equal"].foreground, 275)
         bars = measure.spans_at_x(self.font["equivalence"].foreground, 275)
         self.assertEqual(len(bars), 3)
         gap = equal[1][0] - equal[0][1]
         for (b0, b1), (e0, e1) in zip(bars, equal + equal[:1]):
-            self.assertAlmostEqual(b1 - b0, e1 - e0, delta=4)
+            self.assertAlmostEqual(b1 - b0, e1 - e0, delta=self.weight)
         for lower, upper in itertools.pairwise(bars):
-            self.assertAlmostEqual(upper[0] - lower[1], gap, delta=4)
+            self.assertAlmostEqual(upper[0] - lower[1], gap, delta=MIDDLE_TOLERANCE)
 
     def test_approx_is_two_tildes(self):
         # References, so ≈ follows any redrawing of ~.
@@ -176,7 +185,8 @@ class OperatorTest(unittest.TestCase):
         self.assertGreaterEqual(measure.gap(*waves), APPROX_GAP)
 
     def test_infinity_has_two_matching_holes(self):
-        # At least the narrowest reference's holes, 155 wide and 169 tall.
+        # At least the narrowest reference's holes, 155 wide and 169 tall, and each the other
+        # mirrored within the hand's wobble.
         contours = list(self.font["infinity"].foreground)
         holes = [c.boundingBox() for c in contours if not c.isClockwise()]
         self.assertEqual(len(holes), 2)
@@ -184,8 +194,8 @@ class OperatorTest(unittest.TestCase):
             self.assertGreaterEqual(x1 - x0, 155)
             self.assertGreaterEqual(y1 - y0, 169)
         (a0, b0, a1, b1), (c0, d0, c1, d1) = holes
-        self.assertAlmostEqual(a1 - a0, c1 - c0, delta=4)
-        self.assertAlmostEqual(b1 - b0, d1 - d0, delta=4)
+        self.assertAlmostEqual(a1 - a0, c1 - c0, delta=MIDDLE_TOLERANCE)
+        self.assertAlmostEqual(b1 - b0, d1 - d0, delta=MIDDLE_TOLERANCE)
 
 
 class ArrowTest(unittest.TestCase):
@@ -654,6 +664,7 @@ class KeyHintTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
+        cls.weight = weight_tolerance(cls.font)
 
     def test_caps_lock_is_the_up_arrow_lifted_over_a_bar(self):
         # ⇧'s outline moved up, unchanged, over a bar of ⇧'s own stroke as wide as its shaft.
@@ -671,7 +682,7 @@ class KeyHintTest(unittest.TestCase):
         (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
         bx0, by0, bx1, by1 = bar.boundingBox()
         self.assertLess(by1, arrow.boundingBox()[1])
-        self.assertAlmostEqual(by1 - by0, l1 - l0, delta=WEIGHT_TOLERANCE)
+        self.assertAlmostEqual(by1 - by0, l1 - l0, delta=self.weight)
         self.assertAlmostEqual(bx0, l0, delta=MIDDLE_TOLERANCE)
         self.assertAlmostEqual(bx1, r1, delta=MIDDLE_TOLERANCE)
 
@@ -693,7 +704,7 @@ class KeyHintTest(unittest.TestCase):
                             if not any(abs(span[0] - a) < 2 and abs(span[1] - b) < 2 for a, b in own)]
                     self.assertEqual(len(bars), 2, (x, bars))
                     for a, b in bars:
-                        self.assertAlmostEqual(b - a, h1 - h0, delta=WEIGHT_TOLERANCE)
+                        self.assertAlmostEqual(b - a, h1 - h0, delta=self.weight)
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
@@ -725,6 +736,7 @@ class CurrencyTest(unittest.TestCase):
         thickness = [y1 - y0 for x in range(round(x0) + 100, round(x1) - 100, 10)
                      for y0, y1 in measure.spans_at_x(hyphen, x)]
         cls.stroke = (min(thickness) - 2, max(thickness) + 2)  # rounded outlines
+        cls.weight = weight_tolerance(cls.font)
 
     def flattened(self, char):
         glyph = self.font[ord(char)]
@@ -779,7 +791,7 @@ class CurrencyTest(unittest.TestCase):
                 ticks = measure.spans_at_y(layer, y)
                 self.assertEqual(len(ticks), 2)
                 for a, b in ticks:
-                    self.assertAlmostEqual(b - a, s1 - s0, delta=WEIGHT_TOLERANCE)
+                    self.assertAlmostEqual(b - a, s1 - s0, delta=self.weight)
 
     def test_dong_is_the_letter_over_the_em_dash(self):
         # The em dash only moved, to lie under the letter, clear of it.

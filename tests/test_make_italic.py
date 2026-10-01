@@ -16,15 +16,15 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import lig_geometry as geo
 import make_italic
 from make_italic import AXIS, CURSIVE, CURSIVE_LETTERS, SHEAR, SLANT, SLANTED, UPRIGHT
 from measure import ink
 from project import ITALIC_SFD, ROOT, SFD
+from test_consistency import ROUNDING
 
 GENERATOR = ROOT / "tools" / "make_italic.py"
-# A sheared outline's points and a reference's offset are each rounded to whole units.
-ROUNDING = 1
 
 
 def without_timestamp(path):
