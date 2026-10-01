@@ -24,6 +24,9 @@ from project import SFD, STYLES, font_file
 # with --skip-network: its version check asks PyPI for a newer Font Bakery and its name check
 # asks a web service, so offline, or once a newer one is out, they fail a sound font.
 FONTBAKERY = "fontbakery==1.1.0"
+# The day the findings in known() were last reviewed. With it uv resolves Font Bakery's
+# dependencies as of then, so a new fontTools can't change the findings; bump it with them.
+EXCLUDE_NEWER = "2026-09-30"
 # Font Bakery's statuses that report nothing wrong.
 QUIET = {"PASS", "SKIP", "INFO", "DEBUG"}
 FONTS = {ext: [font_file(style, ext) for style in STYLES] for ext in ("ttf", "otf")}
@@ -40,9 +43,9 @@ def run_fontbakery(fonts):
     with tempfile.TemporaryDirectory() as tmp:
         report = pathlib.Path(tmp) / "report.json"
         # It exits non-zero whenever a check fails or errors; the report says which.
-        result = subprocess.run(["uvx", FONTBAKERY, "check-universal", "--skip-network",
-                                 "--full-lists", "--json", str(report), *map(str, fonts)],
-                                capture_output=True, text=True, check=False)
+        command = ["uvx", "--exclude-newer", EXCLUDE_NEWER, FONTBAKERY, "check-universal",
+                   "--skip-network", "--full-lists", "--json", str(report), *map(str, fonts)]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         if not report.exists():
             raise AssertionError(f"Font Bakery wrote no report for {fonts}:\n"
                                  f"{result.stderr[-2000:]}")
