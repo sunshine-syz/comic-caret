@@ -34,9 +34,12 @@ NOT_EQUAL_REACH = 146
 # The white between ≈'s waves: at least the narrowest reference's, Intel One Mono's at our cap
 # height (Fira Code's 79, Maple Mono's 85).
 APPROX_GAP = 69
-# How much taller ✓ ✗ ✕ stand than ×: at least the least of the references', Maple Mono's ✕ at
-# our cap height (its ✓ 103 and ✗ 131; Intel One Mono's ✓ 99, Fira Code's 327).
-MARK_OVER_TIMES = 68
+# How much taller each mark stands than ×: at least the least of the references that have it,
+# measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
+# Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
+MARK_OVER_TIMES = {"✓": 99, "✗": 131, "✕": 68}
+# Marks short of their floor, held to the least floor until a proof decides their size.
+SHORT_MARKS = {"✗": "106 over × to Maple Mono's 131"}
 # Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
 # head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
 # another arrow than its → too; it stands where → does (BuiltFromTest).
@@ -214,8 +217,8 @@ class ArrowTest(unittest.TestCase):
             with self.subTest(arrow=char):
                 _, y0, _, y1 = self.box(ord(char))
                 _, h0, _, h1 = self.font[head].boundingBox()
-                self.assertAlmostEqual(y0, h0, delta=2)
-                self.assertAlmostEqual(y1, h1, delta=2)
+                self.assertAlmostEqual(y0, h0, delta=2 * ROUNDING)
+                self.assertAlmostEqual(y1, h1, delta=2 * ROUNDING)
 
     def test_vertical_arrows_share_one_height(self):
         # ⇡'s two dashes set it; the solid and two-headed arrows match it.
@@ -223,13 +226,13 @@ class ArrowTest(unittest.TestCase):
         for code in (0x2193, 0x2195, 0x21E1, 0x21E3, 0x21D5, 0x21D1, 0x21D3, 0x21DE, 0x21DF):
             with self.subTest(arrow=chr(code)):
                 _, b0, _, b1 = self.box(code)
-                self.assertAlmostEqual(b1 - b0, y1 - y0, delta=2)
+                self.assertAlmostEqual(b1 - b0, y1 - y0, delta=2 * ROUNDING)
 
     def test_up_down_double_arrow_has_the_double_arrows_heads(self):
         # ⇔ turned, its shaft lengthened: as wide as ⇔ is tall.
         x0, _, x1, _ = self.box(0x21D5)
         _, y0, _, y1 = self.box(0x21D4)
-        self.assertAlmostEqual(x1 - x0, y1 - y0, delta=2)
+        self.assertAlmostEqual(x1 - x0, y1 - y0, delta=2 * ROUNDING)
 
     def test_dashed_arrow_shaft_breaks_into_two_dashes(self):
         # Each gap is at least as wide as the hyphen's stroke, so it stays open at 12 px.
@@ -272,10 +275,12 @@ class MarkTest(unittest.TestCase):
 
     def test_marks_are_larger_than_times(self):
         _, t0, _, t1 = self.font["multiply"].boundingBox()
-        for code in (0x2713, 0x2717, 0x2715):
-            with self.subTest(mark=chr(code)):
-                _, y0, _, y1 = self.font[code].boundingBox()
-                self.assertGreaterEqual((y1 - y0) - (t1 - t0), MARK_OVER_TIMES)
+        for mark, floor in MARK_OVER_TIMES.items():
+            with self.subTest(mark=mark):
+                _, y0, _, y1 = self.font[ord(mark)].boundingBox()
+                if mark in SHORT_MARKS:
+                    floor = min(MARK_OVER_TIMES.values())
+                self.assertGreaterEqual((y1 - y0) - (t1 - t0), floor)
 
     def test_ballot_x_is_not_the_letter_x(self):
         # About as wide as it is tall and off the cap-height row, as Maple Mono's (494 × 486); at
@@ -360,7 +365,7 @@ class ShapeTest(unittest.TestCase):
         first = self.height(MEDIA[0])
         for char in MEDIA[1:]:
             with self.subTest(control=char):
-                self.assertAlmostEqual(self.height(char), first, delta=2)
+                self.assertAlmostEqual(self.height(char), first, delta=2 * ROUNDING)
 
     def test_keyboard_symbols_share_one_band(self):
         # Within the hand's wobble: where two strokes meet in a point, as atop ⇧ and ⌃, their
@@ -566,7 +571,7 @@ class BuiltFromTest(unittest.TestCase):
             ((m[4], m[5]) for _, m, *_ in glyph.references), key=lambda xy: (xy[1], xy[0]))
         colon = sorted(m[5] for _, m, *_ in self.font["colon"].references)
         self.assertEqual((low, low2, top_y), (colon[0], colon[0], colon[1]))
-        self.assertAlmostEqual(top_x, (a + b) / 2, delta=1)
+        self.assertAlmostEqual(top_x, (a + b) / 2, delta=ROUNDING)
 
     def test_marked_boxes_hold_the_whole_box(self):
         # ☑ ☒ are single outlines, since a mark crossing a reference to ☐ fails validate()
@@ -613,8 +618,8 @@ class LetterlikeTest(unittest.TestCase):
         [bar] = [p for p in pieces if p is not n and p is not o]
         _, n0, _, n1 = n.boundingBox()
         _, N0, _, N1 = self.font["N"].boundingBox()
-        self.assertAlmostEqual(n0, N0, delta=1)
-        self.assertAlmostEqual(n1, N1, delta=1)
+        self.assertAlmostEqual(n0, N0, delta=ROUNDING)
+        self.assertAlmostEqual(n1, N1, delta=ROUNDING)
         self.assertAlmostEqual(o.boundingBox()[3], self.font["ordmasculine"].boundingBox()[3],
                                delta=MIDDLE_TOLERANCE)
         self.assertLess(bar.boundingBox()[3], o.boundingBox()[1])
@@ -754,8 +759,8 @@ class CurrencyTest(unittest.TestCase):
             with self.subTest(sign=sign):
                 _, y0, _, y1 = self.font[ord(sign)].boundingBox()
                 _, ly0, _, ly1 = self.font[ord(letter)].boundingBox()
-                self.assertAlmostEqual(y0, ly0, delta=1)  # the sign's outline is rounded
-                self.assertAlmostEqual(y1, ly1, delta=1)
+                self.assertAlmostEqual(y0, ly0, delta=ROUNDING)  # the sign's outline is rounded
+                self.assertAlmostEqual(y1, ly1, delta=ROUNDING)
 
     def bars(self, sign, x):
         """The bars' (bottom, top) at x, lowest first."""

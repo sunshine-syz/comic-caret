@@ -381,8 +381,10 @@ class FigureTest(unittest.TestCase):
                 inside = self.part(name, letter)
                 rx0, ry0, rx1, ry1 = ring.boundingBox()
                 x0, y0, x1, y1 = inside.boundingBox()
-                self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=5)
-                self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=5)
+                # The letters are centered by their boxes; only the reference offset's rounding
+                # to whole units can move the centre.
+                self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=ROUNDING)
+                self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=ROUNDING)
                 self.assertGreaterEqual(measure.gap(ring, inside), 48)
 
 
