@@ -43,7 +43,6 @@ ROWS = {
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
 OFF_ROW = {
-    ("cap height", "Þ"),  # its stem rises 88 past cap height
     # The slash runs 45 past the bowl at both ends; Fira Code's and Intel One Mono's run
     # further (57 and more), Maple Mono's less (7 to 25).
     ("baseline", "Ø"), ("cap height", "Ø"), ("baseline", "ø"), ("x-height", "ø"),
