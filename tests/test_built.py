@@ -27,6 +27,7 @@ BOX_TOLERANCE = 5
 OTS = "opentype-sanitizer==9.2.0"
 OTS_EXCLUDE_NEWER = "2026-09-30"
 SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)'
+OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 
 
@@ -82,6 +83,14 @@ def english_names(font):
             start = strings + offset
             names[name_id] = table[start:start + length].decode("utf-16-be")
     return names
+
+
+def opening_warnings(font):
+    """The lines FontForge prints while it opens `font`. Its C code writes them to the
+    process's stderr, past Python's sys.stderr, so only a subprocess can catch them."""
+    result = subprocess.run([sys.executable, "-c", OPEN, str(font)],
+                            capture_output=True, text=True, check=True)
+    return result.stderr.splitlines()
 
 
 def sanitize(font):
@@ -166,6 +175,12 @@ class BuiltFontTest(unittest.TestCase):
                                               if typographic in names}
                 self.assertEqual({name_id: names.get(name_id) for name_id in expected},
                                  expected)
+
+    def test_hint_masks_name_only_the_glyphs_stems(self):
+        # A CFF hint mask has a bit for each of the glyph's stems; one set past them is
+        # malformed, and FontForge warns about it as it reads the glyph.
+        otf = font_file(self.style, "otf")
+        self.assertEqual([line for line in opening_warnings(otf) if "Hint mask" in line], [])
 
 
 class ItalicBuiltFontTest(BuiltFontTest):

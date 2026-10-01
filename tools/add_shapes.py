@@ -42,9 +42,7 @@ QUADRANTS = {"upper left": dict(x1=CX, y0=AXIS), "lower left": dict(x1=CX, y1=AX
 CIRCLE_QUADRANTS = dict(zip((0x25F4, 0x25F5, 0x25F6, 0x25F7), QUADRANTS.values()))
 SQUARE_QUADRANTS = dict(zip((0x25F0, 0x25F1, 0x25F2, 0x25F3), QUADRANTS.values()))
 # ◰ ◱ ◲ ◳ are references to ☐ and to a quarter of ■, a component of its own, which overlap
-# as ∄'s E and slash do (validate() reports the overlap, 0x4, as it does for ∄). Drawn into
-# one outline with ☐, the autohinter writes a NaN into a hint mask, which drops the glyph's
-# other hints whenever the SFD is read back.
+# as ∄'s E and slash do (validate() reports the overlap, 0x4, as it does for ∄).
 SQUARE_QUARTERS = dict(zip(SQUARE_QUADRANTS, ("square.upperleft", "square.lowerleft",
                                               "square.lowerright", "square.upperright")))
 OVERLAPPING_REFERENCES = 0x4
@@ -58,8 +56,8 @@ NARROW = 0.527  # ▮'s width over its height in Fira Code, the only reference w
 BULLSEYE, CIRCLED_BULLET, CIRCLED_WHITE_BULLET, DOTTED, FILLED = 0x25CE, 0x2299, 0x29BE, 0x25CC, 0x25CD
 FISHEYE, CIRCLED_FISHEYE, BULLET_OPERATOR = 0x25C9, 0x29BF, 0x2219
 SQUARED_ASTERISK, SQUARED_CIRCLE = 0x29C6, 0x29C7
-# ⧆ is references to ☐ and to `*` made small, a component of its own, for the NaN reason
-# above; its parts don't overlap, so validate() is clean.
+# ⧆ is references to ☐ and to `*` made small, a component of its own; its parts don't
+# overlap, so validate() is clean.
 SMALL_ASTERISK = "asterisk.small"
 DASHES = 8          # ◌: Maple Mono's, the only reference's, has eight
 DASH_GAP = 60       # along the ring's middle, so the gaps stay open at 12 px

@@ -29,13 +29,17 @@ around. Read this before writing code that edits the SFD.
   glyph whose own outline overlaps its reference (0x4). Mirror into an outline with
   `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
 - Adding an anchor from Python marks the glyph's hints stale, and so does `autoHint()` on
-  every glyph (a few come out different, ☐ with a NaN); add anchors through a merged feature
-  file, which doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge
-  keeps an anchor a glyph already has; remove the anchor classes first.
-- The autohinter writes a NaN into a hint mask of any outline that contains ☐'s, and reading
-  the SFD back drops that glyph's later hints, so a rerun never comes out the same. Build such
-  glyphs as references to ☐ (◰–◳, ⧆). Where the parts overlap, as ◰–◳'s do, `validate()`
-  flags them (0x4), as it does ∄; `tests/test_sanity.py` lists them.
+  every glyph (a few come out different); add anchors through a merged feature file, which
+  doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge keeps an
+  anchor a glyph already has; remove the anchor classes first.
+- Where a contour starts can make the autohinter write a `nan` into a stem's range. Reading
+  the SFD back drops the stems after it but not the hint masks that count them, and FontForge
+  then warns of a "Hint mask … with too many hints" whenever it opens the built OTF, which
+  `tests/test_built.py` checks. ☐'s counter does this when it starts where its bottom edge
+  ends, and so does any glyph hinted with that outline in it; move such a contour's start with
+  `contour.makeFirst()` until the hints come out without `nan`.
+- References that overlap, as ☐ and the quarter of ■ in ◰–◳ do, make `validate()` flag the
+  glyph (0x4), as ∄'s do; `tests/test_sanity.py` lists them.
 
 ## Outlines
 

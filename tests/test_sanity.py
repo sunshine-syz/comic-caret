@@ -39,8 +39,7 @@ TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Ma
 INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": 10,
                     **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                                      "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
-# ∄'s rotated E and slash overlap, and so do ☐ and the quarter of ■ in ◰ ◱ ◲ ◳ (references,
-# since drawn as one outline the autohinter writes a NaN into their hint masks).
+# ∄'s rotated E and slash overlap, and so do the references to ☐ and a quarter of ■ in ◰ ◱ ◲ ◳.
 VALIDATE_FLAGS = {"uni2204": 0x4, "uni25F0": 0x4, "uni25F1": 0x4, "uni25F2": 0x4, "uni25F3": 0x4}
 # The spaces, the blank Braille pattern and the zero-width format characters.
 BLANK = {"space", "uni00A0", "uni2009", "uni202F", "uni2800",
