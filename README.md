@@ -127,8 +127,9 @@ For icons shrunk to fit one cell, build ComicCaret Nerd Font Mono from source wi
 You need [FontForge](https://fontforge.org/) (`brew install fontforge` on macOS). The Nerd Fonts
 builds also need `curl` and `unzip`, and the tests need HarfBuzz (`hb-shape`, `hb-view`) and
 `git`. `tools/proof_sheet.py` also needs `hb-info`, and `./build.sh --release` needs `zip` and
-`shasum`. The Font Bakery test runs it through [`uv`](https://docs.astral.sh/uv/)'s `uvx`,
-which fetches it the first time, and skips without `uvx`.
+`shasum`. The Font Bakery and ots (OpenType Sanitizer) tests run those tools through
+[`uv`](https://docs.astral.sh/uv/)'s `uvx`, which fetches them the first time, and skip
+without `uvx`.
 
 ```sh
 ./build.sh                          # fonts/ComicCaret-{Regular,Italic}.otf and .ttf

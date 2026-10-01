@@ -76,8 +76,11 @@ around. Read this before writing code that edits the SFD.
   run it. OTFs are right.
 - A font's `head.modified` is the SFD's `ModificationTime` until a glyph changes in the
   process, and then `SOURCE_DATE_EPOCH`, or the time now without it; `tools/generate.py`
-  changes the blank space so that both formats get the latter. Every font FontForge writes has
-  a Mac Roman cmap subtable, whatever the flags, which `tools/generate.py` drops.
+  sets the blank space's width to itself so that both formats get the latter. A real setter
+  redates the font even when it assigns the value already there, but `glyph.changed = True`
+  and `font.changed = True` don't.
+- Every font FontForge writes has a Mac Roman cmap subtable, whatever the flags, which
+  `tools/generate.py` drops.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
   does not affect this font.
 - `tests/test_fontbakery.py` runs Font Bakery's universal profile on each built font and

@@ -12,7 +12,7 @@ Needs Homebrew `fontforge` (its module imports from `python3`), HarfBuzz and `uv
 ```sh
 ./build.sh                              # SFDs -> fonts/ComicCaret-{Regular,Italic}.{otf,ttf}
 ./build.sh --nerd                       # also Nerd Fonts patched copies in build/nerd/
-./build.sh --release                    # everything, zipped into dist/; needs a clean checkout
+./build.sh --release                    # fonts + default Nerd Font, zipped into dist/; clean checkout
 python3 tools/add_<what>.py             # regenerate a generated range in the SFD (see below)
 python3 tools/make_italic.py            # regenerate the italic SFD from the regular (see below)
 python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the reference fonts
@@ -113,7 +113,8 @@ date.
   semicolon, brackets and letter widths. Read them before changing what they cover.
 - The italic's rules are the regular's: its glyphs are the regular's sheared, and its cursive
   letters are built in `tools/make_italic.py` from the regular's strokes, proofed against the
-  Maple Mono and Intel One Mono italics (`build/cache/reference/`, from the same releases).
+  Maple Mono and Intel One Mono italics (`build/scratch/italic-proof/refs/`, from the same
+  releases).
 
 ## Writing tests
 
@@ -132,8 +133,8 @@ and only until it is regenerated.
   on both styles; the rules on glyphs and classes run on the regular, which the italic is
   derived from.
 - Prefer a class rule: add a new glyph to its class in `test_consistency.py` (`ROWS`,
-  `CENTERED`, `ON_AXIS`, `MIRRORED`, `MIRRORED_OUTLINES`, the left glyphs of `MIRRORED` that must be their right one
-  mirrored exactly) rather than writing a test for it.
+  `CENTERED`, `ON_AXIS`, `MIRRORED`, or `MIRRORED_OUTLINES` for the left glyphs of `MIRRORED`
+  drawn as exact mirrors of their right) rather than writing a test for it.
 - A test for one glyph states a relation any redesign must keep: look-alikes stay apart, a
   counter or gap is at least the narrowest reference's, parts don't touch, a glyph is built from
   another. Never assert a coordinate, width or offset that only records today's design: if the
