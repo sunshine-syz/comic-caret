@@ -21,7 +21,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 from bump_version import sfd_version
 from make_italic import SLANT
 import sfnt
-from project import ADVANCE, AXIS, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
+from project import ADVANCE, AXIS, ROOT, SFD, STYLES, font_file, nerd_fonts, takes_no_cell
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.
@@ -63,12 +63,6 @@ def placed(font, text):
                                       x + g["xb"] + g["w"], y + g["yb"])))
         pen += g["ax"]
     return out
-
-
-def takes_no_cell(char):
-    """A combining mark or a zero-width format character: shaped alone, since a shaper zeroes
-    its advance and puts a run of marks in canonical order."""
-    return unicodedata.category(char) == "Mn" or ord(char) in ZERO_WIDTH
 
 
 def advances(font):
@@ -136,11 +130,11 @@ class BuiltFontTest(unittest.TestCase):
         cls.fonts = FONTS[cls.style]
         sfd = fontforge.open(str(STYLES[cls.style]))
         glyphs = sorted((g for g in sfd.glyphs() if g.unicode >= 0), key=lambda g: g.unicode)
-        cls.text = "".join(chr(g.unicode) for g in glyphs if not takes_no_cell(chr(g.unicode)))
-        cls.names = [g.glyphname for g in glyphs if not takes_no_cell(chr(g.unicode))]
-        cls.boxes = [g.boundingBox() for g in glyphs if not takes_no_cell(chr(g.unicode))]
+        cls.text = "".join(chr(g.unicode) for g in glyphs if not takes_no_cell(g.unicode))
+        cls.names = [g.glyphname for g in glyphs if not takes_no_cell(g.unicode)]
+        cls.boxes = [g.boundingBox() for g in glyphs if not takes_no_cell(g.unicode)]
         cls.marks = [(chr(g.unicode), g.glyphname, g.boundingBox())
-                     for g in glyphs if takes_no_cell(chr(g.unicode))]
+                     for g in glyphs if takes_no_cell(g.unicode)]
         cls.widths = {g.glyphname: g.width for g in sfd.glyphs()}
         # The version string takes the form the OpenType spec gives it, and the unique ID the
         # one fontmake gives it, which names the release rather than the day of the build.
@@ -353,7 +347,7 @@ class NerdFontTest(unittest.TestCase):
     def test_patched_fonts_keep_the_zero_widths(self):
         # But in the Mono variant, where the patcher gives every glyph one advance on purpose.
         sfd = fontforge.open(str(SFD))
-        marks = {g.glyphname for g in sfd.glyphs() if g.unicode >= 0 and takes_no_cell(chr(g.unicode))}
+        marks = {g.glyphname for g in sfd.glyphs() if takes_no_cell(g.unicode)}
         for nerd in self.fonts:
             with self.subTest(font=nerd.name):
                 widths = advances(nerd)

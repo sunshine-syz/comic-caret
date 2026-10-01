@@ -27,7 +27,7 @@ import unicodedata
 import fontforge
 import psMat
 
-from project import ADVANCE, SFD, save_checked, validation_errors
+from project import ADVANCE, SFD, is_letter, save_checked, validation_errors
 
 # Combining mark -> the spacing accent it is drawn from.
 MARKS = {0x300: "grave.accent", 0x301: "acute", 0x302: "circumflex", 0x303: "tilde",
@@ -53,12 +53,6 @@ def is_top(code):
     return code not in BELOW
 
 
-def is_letter(glyph):
-    # Not Lm, as in tests/test_consistency.py: ˆ ˇ are modifier letters, and accents here.
-    return (glyph.unicode >= 0
-            and unicodedata.category(chr(glyph.unicode)) in {"Lu", "Ll", "Lt", "Lo"})
-
-
 def letter_placements(font):
     """[(letter, accent, dx, dy)]: each accented letter's letter and accent references, as the
     accent is moved relative to the letter. Accents built on another accent, such as ΅ on
@@ -70,7 +64,7 @@ def letter_placements(font):
             continue
         refs = {name: matrix for name, matrix, *_ in glyph.references}
         marks = [name for name in refs if name in accents]
-        letters = [name for name in refs if name not in accents and is_letter(font[name])]
+        letters = [name for name in refs if name not in accents and is_letter(font[name].unicode)]
         if len(marks) != 1 or len(letters) != 1:
             continue
         (mark,), (letter,) = marks, letters

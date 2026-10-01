@@ -24,9 +24,7 @@ import add_box_drawing
 import lig_geometry as geo
 import measure
 from helpers import ROW_TOLERANCE
-from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE
-
-LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and marks here
+from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE, is_letter, is_mark
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
@@ -121,15 +119,6 @@ def box(font, char):
     return font[ord(char)].boundingBox()
 
 
-def is_mark(glyph):
-    return glyph.unicode >= 0 and unicodedata.category(chr(glyph.unicode)) == "Mn"
-
-
-def is_letter(font, name):
-    code = font[name].unicode
-    return code >= 0 and unicodedata.category(chr(code)) in LETTER
-
-
 class PlacementTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -202,8 +191,7 @@ class CompositionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = open_font()
-        cls.accented = [g for g in cls.font.glyphs() if g.unicode >= 0
-                        and unicodedata.category(chr(g.unicode)) in LETTER
+        cls.accented = [g for g in cls.font.glyphs() if is_letter(g.unicode)
                         and len(unicodedata.normalize("NFD", chr(g.unicode))) > 1]
 
     def base_of(self, glyph):
@@ -217,7 +205,7 @@ class CompositionTest(unittest.TestCase):
         placed; the letter is its reference to a letter, or else its own outline."""
         placed = [(name, geo.transformed(measure.ink(self.font, name), matrix))
                   for name, matrix, *_ in glyph.references]
-        letters = [ink for name, ink in placed if is_letter(self.font, name)]
+        letters = [ink for name, ink in placed if is_letter(self.font[name].unicode)]
         if len(glyph.foreground):
             letters.append(glyph.foreground)
         if len(letters) != 1:
@@ -244,7 +232,8 @@ class CompositionTest(unittest.TestCase):
         def marks(glyph):
             # A reference to a whole letter is the base: A in Á, and L in Ŀ, which NFD leaves
             # whole.
-            return sorted(r[0] for r in glyph.references if not is_letter(self.font, r[0]))
+            return sorted(r[0] for r in glyph.references
+                          if not is_letter(self.font[r[0]].unicode))
 
         differ = []
         for upper in self.font.glyphs():
@@ -265,7 +254,7 @@ class CompositionTest(unittest.TestCase):
 
         close = {}
         for glyph in self.font.glyphs():
-            if glyph.unicode < 0 or not is_letter(self.font, glyph.glyphname):
+            if glyph.unicode < 0 or not is_letter(glyph.unicode):
                 continue
             letter, marks = self.parts(glyph)
             for name, mark in marks:
@@ -357,7 +346,7 @@ class MarkTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = open_font()
-        cls.marks = [g for g in cls.font.glyphs() if is_mark(g)]
+        cls.marks = [g for g in cls.font.glyphs() if is_mark(g.unicode)]
         cls.mark_names = {g.glyphname for g in cls.marks}
         cls.side = {g.glyphname: "top" if anchor(g, "top", "mark") else "bottom"
                     for g in cls.marks}
@@ -400,7 +389,7 @@ class MarkTest(unittest.TestCase):
             accents = [name for name in refs if name in accent_marks]
             # Not ΅, which is the tonos, not a letter, over the dieresis.
             letters = [name for name in refs
-                       if name not in accent_marks and is_letter(self.font, name)]
+                       if name not in accent_marks and is_letter(self.font[name].unicode)]
             if glyph.unicode < 0 or len(accents) != 1 or len(letters) != 1:
                 continue
             (accent,), (letter,) = accents, letters
@@ -419,7 +408,7 @@ class MarkTest(unittest.TestCase):
         acute = self.font[0x301]
         close = {}
         for glyph in self.font.glyphs():
-            if glyph.unicode < 0 or not is_letter(self.font, glyph.glyphname):
+            if glyph.unicode < 0 or not is_letter(glyph.unicode):
                 continue
             mark = self.placed(glyph.glyphname, acute)
             letter = measure.ink(self.font, glyph.glyphname)

@@ -3,6 +3,7 @@ import os
 import pathlib
 import subprocess
 import sys
+import unicodedata
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SFD = ROOT / "src" / "ComicCaret-Regular.sfd"  # the master every glyph is drawn in
@@ -20,6 +21,8 @@ WOBBLE = 10  # how far the hand's wobble strays; centering and mirroring hold wi
 # the combining marks: the zero width space, non-joiner and joiner, the word joiner and the
 # byte order mark. Not the soft hyphen: terminals give it a cell.
 ZERO_WIDTH = frozenset({0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF})
+# Not Lm: ˆ ˇ are modifier letters, which the font draws and places as accents.
+LETTERS = frozenset({"Lu", "Ll", "Lt", "Lo"})
 
 _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
@@ -27,6 +30,22 @@ _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 def font_file(style, ext):
     """The built font of `style` ("Regular" or "Italic") in format `ext` ("otf" or "ttf")."""
     return ROOT / "fonts" / f"ComicCaret-{style}.{ext}"
+
+
+def is_letter(code):
+    """Whether the code point is a letter other than a modifier letter; False for -1, an
+    unencoded glyph."""
+    return code >= 0 and unicodedata.category(chr(code)) in LETTERS
+
+
+def is_mark(code):
+    """Whether the code point is a combining mark, which draws over the character before it."""
+    return code >= 0 and unicodedata.category(chr(code)) == "Mn"
+
+
+def takes_no_cell(code):
+    """A combining mark, or a format character that terminals give no cell: zero wide."""
+    return is_mark(code) or code in ZERO_WIDTH
 
 
 def reference_fonts(style="Regular"):

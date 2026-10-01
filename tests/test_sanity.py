@@ -20,7 +20,7 @@ import lig_geometry as geo
 import make_italic
 from measure import ink
 from project import (ADVANCE, ITALIC_SFD, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, WOBBLE, ZERO_WIDTH,
-                     validation_errors)
+                     takes_no_cell, validation_errors)
 
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
 # by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
@@ -45,13 +45,6 @@ VALIDATE_FLAGS = {"uni2204": 0x4, "uni25F0": 0x4, "uni25F1": 0x4, "uni25F2": 0x4
 # over the letter before it.
 BLANK = {"space", "uni00A0", "uni00AD", "uni2009", "uni202F", "uni2800",
          *(f"uni{code:04X}" for code in ZERO_WIDTH)}
-
-
-def takes_no_cell(glyph):
-    """A combining mark, which draws over the character before it, or a format character
-    that terminals give no cell: zero wide."""
-    return glyph.unicode >= 0 and (unicodedata.category(chr(glyph.unicode)) == "Mn"
-                                   or glyph.unicode in ZERO_WIDTH)
 
 
 def is_box_drawing(glyph):
@@ -103,7 +96,7 @@ class SanityTest(unittest.TestCase):
 
     def test_every_glyph_is_one_cell_wide(self):
         wrong = [g.glyphname for g in self.glyphs
-                 if g.width != (0 if takes_no_cell(g) else ADVANCE)]
+                 if g.width != (0 if takes_no_cell(g.unicode) else ADVANCE)]
         self.assertEqual(wrong, [])
 
     rounding = 0  # how far ink may miss its allowance through rounding
