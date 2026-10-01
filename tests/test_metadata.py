@@ -17,15 +17,19 @@ HOME = "https://github.com/sunshine-syz/comic-caret"
 SET_BY_HAND = range(8, 15)  # name IDs in LangName; FontForge derives 0-7 from other fields
 REGULAR_BIT = 0x0040  # OS/2 fsSelection
 # What every style of the family declares alike: the names set by hand, the em and the line
-# box, the heights, weight and width, PANOSE, the underline, strikeout, subscript and
-# superscript metrics, the copyright, version and vendor.
+# box, the heights, weight and width, the underline, strikeout, subscript and superscript
+# metrics, the copyright, version and vendor. PANOSE differs in the letterform alone.
 SHARED = ("familyname", "weight", "copyright", "version", "em", "ascent", "descent",
           "hhea_ascent", "hhea_descent", "hhea_linegap", "os2_typoascent", "os2_typodescent",
           "os2_typolinegap", "os2_use_typo_metrics", "os2_capheight", "os2_xheight",
-          "os2_weight", "os2_width", "os2_panose", "os2_vendor", "os2_version", "upos",
+          "os2_weight", "os2_width", "os2_vendor", "os2_version", "upos",
           "uwidth", "os2_strikeypos", "os2_strikeysize", "os2_subxsize", "os2_subysize",
           "os2_subxoff", "os2_subyoff", "os2_supxsize", "os2_supysize", "os2_supxoff",
           "os2_supyoff", "encoding")
+# PANOSE 2.0, Latin Text: the places of the digits the tests check, and their values.
+FAMILY, WEIGHT, PROPORTION, LETTERFORM = 0, 2, 3, 7
+LATIN_TEXT, MONOSPACED = 2, 9
+NORMAL_FORMS, TO_OBLIQUE = range(2, 9), 7  # letterforms 2-8 upright, 9-15 the same oblique
 
 
 def lang_name_fields(path=SFD):
@@ -87,11 +91,16 @@ class MetadataTest(unittest.TestCase):
         position, size = self.font.os2_strikeypos, self.font.os2_strikeysize
         self.assertEqual((position - size, position), (bottom, top))
 
-    def test_panose_declares_a_monospaced_latin_font(self):
-        # Family 2 (Latin Text), proportion 9 (Monospaced): apps that list monospaced fonts
-        # read it.
+    def test_panose_classifies_the_font(self):
         panose = self.font.os2_panose
-        self.assertEqual((panose[0], panose[3]), (2, 9))
+        # 0 is "Any": a digit left at it tells font matching nothing.
+        self.assertNotIn(0, panose)
+        # Proportion 9 because every glyph takes one cell (test_sanity.py); apps that list
+        # monospaced fonts read it.
+        self.assertEqual((panose[FAMILY], panose[PROPORTION]), (LATIN_TEXT, MONOSPACED))
+        # Its weights, 2 Very Light to 11 Extra Black, step with usWeightClass's hundreds, as
+        # Intel One Mono's and Maple Mono's do: 400 is 5 Book.
+        self.assertEqual(panose[WEIGHT], self.font.os2_weight // 100 + 1)
 
 
 class ItalicMetadataTest(MetadataTest):
@@ -105,6 +114,17 @@ class ItalicMetadataTest(MetadataTest):
             with self.subTest(field=field):
                 self.assertEqual(getattr(self.font, field), getattr(regular, field))
         self.assertEqual(lang_name_fields(ITALIC_SFD), lang_name_fields(SFD))
+
+    def test_panose_is_the_regulars_with_an_oblique_letterform(self):
+        # The italic is the regular sheared, and PANOSE measures an oblique font along its
+        # slant, so only the letterform changes: the regular's, made oblique by a slant of more
+        # than 5°.
+        regular = fontforge.open(str(SFD)).os2_panose
+        self.assertIn(regular[LETTERFORM], NORMAL_FORMS)
+        self.assertGreater(-self.font.italicangle, 5)
+        oblique = (*regular[:LETTERFORM], regular[LETTERFORM] + TO_OBLIQUE,
+                   *regular[LETTERFORM + 1:])
+        self.assertEqual(self.font.os2_panose, oblique)
 
 
 if __name__ == "__main__":

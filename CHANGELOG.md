@@ -4,6 +4,7 @@
 
 - Releases no longer include ComicCaret Nerd Font Mono; the Nerd Font zip holds only the default ComicCaret Nerd Font (Regular and Italic, OTF and TTF). For icons shrunk to one cell, build it from source with `./build.sh --nerd=mono`.
 - ☐'s hints in the OTFs counted stems it didn't have, so FontForge warned whenever it opened them, and left its top stroke unhinted, as in □ ◰ ◱ ◲ ◳ ⧆ ⧇, which are built on it. All of them are now hinted in full.
+- The PANOSE classification, which said only that the font is monospaced, now describes the rest of its design: a rounded sans of book weight with no stroke contrast and a large x-height, the italic as its oblique form, so systems that pick a substitute font by PANOSE find a closer one.
 
 ## 1.6.0 (2026-09)
 

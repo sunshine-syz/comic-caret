@@ -78,6 +78,18 @@ FLATNESS = 0.9
 IDENTITY, TURNED = (1, 0, 0, 1), (-1, 0, 0, -1)  # the linear parts that commute with a shear
 FONTNAME, FULLNAME = "ComicCaret-Italic", "Comic Caret Italic"
 ITALIC_BIT = 0x0001  # OS/2 fsSelection; the regular sets 0x0040, REGULAR
+# PANOSE (Latin Text) records a slant of more than 5° in its letterform digit, whose oblique
+# shapes 9-15 follow the normal ones 2-8 in the same order.
+LETTERFORM, NORMAL_FORMS, TO_OBLIQUE = 7, range(2, 9), 7
+
+
+def oblique_panose(panose):
+    """The regular's PANOSE with its letterform made oblique: the italic is the regular
+    sheared, and PANOSE measures an oblique font along its slant, so the other digits read the
+    same."""
+    if panose[LETTERFORM] not in NORMAL_FORMS:
+        sys.exit(f"the regular's PANOSE letterform {panose[LETTERFORM]} has no oblique form")
+    return (*panose[:LETTERFORM], panose[LETTERFORM] + TO_OBLIQUE, *panose[LETTERFORM + 1:])
 
 
 def descending_f(font):
@@ -217,6 +229,7 @@ def build(font):
     font.italicangle = -ANGLE
     font.fontname, font.fullname = FONTNAME, FULLNAME
     font.os2_stylemap = ITALIC_BIT
+    font.os2_panose = oblique_panose(font.os2_panose)
 
 
 def check(path):
