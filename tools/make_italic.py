@@ -205,6 +205,7 @@ def slant(glyph):
 
 def build(font):
     """Turn the regular, opened as `font`, into the italic."""
+    panose = oblique_panose(font.os2_panose)
     for name, draw in CURSIVE_LETTERS.items():
         font[name].references = ()
         font[name].foreground = draw(font)
@@ -229,7 +230,7 @@ def build(font):
     font.italicangle = -ANGLE
     font.fontname, font.fullname = FONTNAME, FULLNAME
     font.os2_stylemap = ITALIC_BIT
-    font.os2_panose = oblique_panose(font.os2_panose)
+    font.os2_panose = panose
 
 
 def check(path):
