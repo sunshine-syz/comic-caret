@@ -63,6 +63,10 @@ class GlyphsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             glyphs("a字", False)  # no CJK in the font
 
+    def test_a_combining_mark_is_an_error(self):
+        with self.assertRaisesRegex(ValueError, r"q\u0301.*q\u0301"):
+            glyphs("q\u0301", False)
+
 
 class LayoutTest(unittest.TestCase):
     def test_each_glyph_is_defined_once_and_drawn_where_placed(self):

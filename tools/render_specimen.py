@@ -126,6 +126,13 @@ def glyphs(text, calt, font=FONT):
     shaped = shape(text, features, font)
     if missing := sorted({text[glyph["cl"]] for glyph in shaped if glyph["g"] == ".notdef"}):
         raise ValueError(f"the font has no glyph for {' '.join(missing)}")
+    # Cells are whole, so a mark's zero advance or offset would be lost and it would stack on its
+    # base's cell origin.
+    for glyph in shaped:
+        if not glyph["ax"] or glyph["dx"] or glyph["dy"]:
+            end = min((g["cl"] for g in shaped if g["cl"] > glyph["cl"]), default=len(text))
+            raise ValueError(f"{text!r}: {text[glyph['cl']:end]!r} has a zero-width or offset "
+                             "glyph, such as a combining mark, which this tool can't place")
     # --logical: set the line in its own box, not widened to ink beyond it (box drawing's
     # overlap), so glyphs land on their pen positions.
     svg = harfbuzz("hb-view", text, features, "--font-size=1000", "--margin=0", "--logical",
