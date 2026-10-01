@@ -18,8 +18,8 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from add_box_drawing import KAPPA, LIGHT, LINE_BOTTOM, LINE_TOP
-from project import ADVANCE, SFD, save_checked, validation_errors
+from add_box_drawing import KAPPA, LIGHT
+from project import ADVANCE, LINE_BOTTOM, LINE_TOP, SFD, save_checked, validation_errors
 
 BRANCH, LINE_NUMBER, PADLOCK = 0xE0A0, 0xE0A1, 0xE0A2
 RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT_THIN = 0xE0B0, 0xE0B1, 0xE0B2, 0xE0B3

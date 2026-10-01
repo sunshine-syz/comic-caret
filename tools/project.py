@@ -11,6 +11,11 @@ STYLES = {"Regular": SFD, "Italic": ITALIC_SFD}
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"  # the italic references are in italic/
 NERD_DIR = ROOT / "build" / "nerd"  # the patched fonts of ./build.sh --nerd and --release
 ADVANCE = 550  # every glyph's advance width
+LINE_TOP, LINE_BOTTOM = 900, -350  # the line box: hhea and typo ascender and descender
+AXIS = 269  # the math axis, the hyphen's middle: - = + and the arrows' shafts center on it
+OVERLAP = 10  # how far joining strokes (box drawing, the ligatures) reach into the next cell
+ROUNDING = 1  # an outline's points and a reference's offset are each rounded to whole units
+WOBBLE = 10  # how far the hand's wobble strays; centering and mirroring hold within it
 # The format characters that take no cell (their wcwidth is 0), kept blank and zero wide like
 # the combining marks: the zero width space, non-joiner and joiner, the word joiner and the
 # byte order mark. Not the soft hyphen: terminals give it a cell.

@@ -16,15 +16,12 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
-from add_ligatures import OVERLAP
 import lig_geometry as geo
 import make_italic
 from measure import ink
-from project import ADVANCE, ITALIC_SFD, SFD, ZERO_WIDTH, validation_errors
-from test_consistency import TOLERANCE as WOBBLE  # the hand's wobble
+from project import (ADVANCE, ITALIC_SFD, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, WOBBLE, ZERO_WIDTH,
+                     validation_errors)
 
-LINE_TOP, LINE_BOTTOM = 900, -350  # hhea and typo ascender and descender
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
 # by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
 BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
@@ -32,7 +29,7 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + 10
 # Known exceptions.
 # How far a glyph may run into the next cell: ď's caron, kept by choice, as far as Intel One
 # Mono's give or take the hand's wobble; ⎯, the -- line's middle piece, as far as the line's
-# pieces overlap so a row of them joins (OVERLAP in tools/add_ligatures.py); and the tonos left
+# pieces overlap so a row of them joins (OVERLAP in tools/project.py); and the tonos left
 # of a capital, which stands in the cell before, as in Fira Code and Maple Mono: a word starts
 # there, so that cell holds a space.
 # Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).

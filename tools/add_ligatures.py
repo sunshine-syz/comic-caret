@@ -20,13 +20,11 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import ADVANCE, ROOT, SFD, save_checked, validation_errors
+from project import ADVANCE, AXIS, OVERLAP, ROOT, SFD, save_checked, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
 LINE_EXTENSION = 0x23AF
 
-OVERLAP = 10     # how far joined strokes reach into the neighbouring cell
-AXIS = 269       # math axis: the centre of - = + and of the arrow shafts
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' heads
 

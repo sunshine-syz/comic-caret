@@ -11,7 +11,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import make_italic
-from project import ITALIC_SFD, ROOT, SFD
+from project import ITALIC_SFD, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 
 HOME = "https://github.com/sunshine-syz/comic-caret"
 SET_BY_HAND = range(8, 15)  # name IDs in LangName; FontForge derives 0-7 from other fields
@@ -52,6 +52,13 @@ class MetadataTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
         cls.names = {strid: text for lang, strid, text in cls.font.sfnt_names
                      if lang == "English (US)"}
+
+    def test_the_line_box_is_the_one_the_tools_draw_to(self):
+        # Box drawing, block elements and the Powerline separators fill LINE_BOTTOM..LINE_TOP.
+        self.assertEqual((self.font.hhea_ascent, self.font.hhea_descent),
+                         (LINE_TOP, LINE_BOTTOM))
+        self.assertEqual((self.font.os2_typoascent, self.font.os2_typodescent),
+                         (LINE_TOP, LINE_BOTTOM))
 
     def test_font_declares_its_style(self):
         font = self.font

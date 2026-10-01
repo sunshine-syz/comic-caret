@@ -43,9 +43,9 @@ import psMat
 
 import lig_geometry as geo
 from add_box_drawing import KAPPA
-from add_ligatures import AXIS, GENERATED
+from add_ligatures import GENERATED
 from add_shapes import clockwise
-from project import ITALIC_SFD, SFD, save_checked, validation_errors
+from project import AXIS, ITALIC_SFD, SFD, save_checked, validation_errors
 
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
 SLANT = math.tan(math.radians(ANGLE))

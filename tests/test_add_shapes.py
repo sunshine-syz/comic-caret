@@ -18,14 +18,13 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-# the tests' shared tolerances and SFD comparison
+# the SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_shapes
 import lig_geometry as geo
 import measure
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, AXIS, ROOT, ROUNDING, SFD, WOBBLE
 from sfd_files import differences
-from test_consistency import ROUNDING, TOLERANCE  # TOLERANCE: the hand's wobble
 
 GENERATOR = ROOT / "tools" / "add_shapes.py"
 # A spinner's frames share one box, so it turns without pulsing (the arcs and the stars have
@@ -84,7 +83,7 @@ class FrameTest(unittest.TestCase):
         for family in FAMILIES:
             first = box(self.font, family[0])
             for char in family[1:]:
-                if any(abs(a - b) > TOLERANCE for a, b in zip(box(self.font, char), first)):
+                if any(abs(a - b) > WOBBLE for a, b in zip(box(self.font, char), first)):
                     off[char] = box(self.font, char)
         self.assertEqual(off, {})
 
@@ -233,7 +232,7 @@ class FrameTest(unittest.TestCase):
     def test_squared_asterisk_keeps_clear_of_its_box(self):
         # At least half of ☐'s stroke of white around the ∗, so it reads inside the box.
         box_ink = self.ink("☐")
-        [(a0, a1), *_] = measure.spans_at_y(box_ink, add_shapes.AXIS)
+        [(a0, a1), *_] = measure.spans_at_y(box_ink, AXIS)
         [matrix] = [m for name, m, *_ in self.font[ord("⧆")].references
                     if name == add_shapes.SMALL_ASTERISK]
         asterisk = geo.transformed(measure.ink(self.font, add_shapes.SMALL_ASTERISK), matrix)
@@ -251,7 +250,7 @@ class FrameTest(unittest.TestCase):
             lines = ["bottom", "middle", "top"]  # spans come lowest first
             # A line is whole where the middle shows a bar at the side bar's height.
             whole = [lines[i] for i, (a, b) in enumerate(side)
-                     if any(abs((a + b) - (c + d)) / 2 < TOLERANCE for c, d in middle)]
+                     if any(abs((a + b) - (c + d)) / 2 < WOBBLE for c, d in middle)]
             got = sorted(set(lines) - set(whole), key=lines.index, reverse=True)
             if len(side) != 3 or got != broken.split():
                 wrong[char] = got
@@ -273,7 +272,7 @@ class FrameTest(unittest.TestCase):
             far = sorted(angle for angle, r in reach if r > 0.97 * radius)
             gaps = [b - a for a, b in zip(far, far[1:])] + [far[0] + 2 * math.pi - far[-1]]
             tips = sum(1 for gap in gaps if gap > math.pi / points)
-            if tips != points or abs(max(r for _, r in reach) - radius) > TOLERANCE:
+            if tips != points or abs(max(r for _, r in reach) - radius) > WOBBLE:
                 wrong[char] = tips
         self.assertEqual(wrong, {})
 
@@ -293,7 +292,7 @@ class FrameTest(unittest.TestCase):
         ink = self.ink("☖")
         x0, y0, x1, y1 = ink.boundingBox()
         top = geo.trim(ink, y0=y1 - 10)
-        self.assertAlmostEqual(measure.ink_center(top), ADVANCE / 2, delta=TOLERANCE)
+        self.assertAlmostEqual(measure.ink_center(top), ADVANCE / 2, delta=WOBBLE)
         base = measure.spans_at_y(ink, y0 + 20)
         shoulders = measure.spans_at_y(ink, y1 - add_shapes.SHOGI_SHOULDER)
         self.assertLess(base[-1][1] - base[0][0], shoulders[-1][1] - shoulders[0][0])

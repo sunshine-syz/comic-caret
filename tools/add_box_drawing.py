@@ -19,14 +19,13 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import ADVANCE, SFD, save_checked, validation_errors
+from project import (ADVANCE, AXIS, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, save_checked,
+                     validation_errors)
 
 # The Nerd Fonts patcher replaces the whole range unless the font has every glyph in it.
 CODES = range(0x2500, 0x25A0)
 
-LINE_BOTTOM, LINE_TOP = -350, 900  # the line box, which block elements fill
 LINE_HEIGHT = LINE_TOP - LINE_BOTTOM
-OVERLAP = 10  # how far strokes run into the next cell, so lines join without a seam
 # Verticals run this far past the line box, so they still meet at 1.5 em line spacing, which
 # apps get by adding space evenly above and below.
 REACH = (1500 - LINE_HEIGHT) // 2 + OVERLAP
@@ -34,7 +33,7 @@ LEFT, RIGHT = -OVERLAP, ADVANCE + OVERLAP
 BOTTOM, TOP = LINE_BOTTOM - REACH, LINE_TOP + REACH
 
 MIDDLE_X = ADVANCE // 2  # the centre of the vertical strokes
-MIDDLE_Y = 269           # the centre of the horizontal strokes: the math axis, level with - and →
+MIDDLE_Y = AXIS          # the centre of the horizontal strokes, level with - and →
 
 # Stroke weights. Heavy is twice light, as in Intel One Mono and Maple Mono. A double line is
 # two light strokes a light stroke apart, as in all three reference fonts.

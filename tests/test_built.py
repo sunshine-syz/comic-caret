@@ -19,9 +19,9 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from bump_version import sfd_version
-from make_italic import AXIS, SLANT
+from make_italic import SLANT
 import sfnt
-from project import ADVANCE, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
+from project import ADVANCE, AXIS, ROOT, SFD, STYLES, ZERO_WIDTH, font_file, nerd_fonts
 
 FONTS = {style: [font_file(style, ext) for ext in ("otf", "ttf")] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.

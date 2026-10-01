@@ -20,11 +20,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
-from make_italic import AXIS, CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
+from make_italic import CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
 from measure import ink, spans_at_y
-from project import ITALIC_SFD, ROOT, SFD
+from project import AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import differences
-from test_consistency import ROUNDING
 
 GENERATOR = ROOT / "tools" / "make_italic.py"
 

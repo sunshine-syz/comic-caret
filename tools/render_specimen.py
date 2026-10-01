@@ -14,15 +14,15 @@ import re
 import subprocess
 import sys
 
-from project import ADVANCE, ROOT, STYLES, font_file
+from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, STYLES, font_file
 
 FONT, ITALIC = font_file("Regular", "ttf"), font_file("Italic", "ttf")
 OUT = ROOT / "docs" / "images"
 WIDTH = 800               # px; within a README column at 1:1
 MARGIN, PADDING = 24, 20  # around each image, and inside its panel
 CAP_HEIGHT = 0.668        # the top of H, in em
-LINE = 1.25               # the line box, in em: hhea and typo ascent 900 and descent 350
-ASCENT = 0.72             # the ascender's share of a line: 900 of 1250
+LINE = (LINE_TOP - LINE_BOTTOM) / 1000  # the line box, in em
+ASCENT = LINE_TOP / (LINE_TOP - LINE_BOTTOM)  # the ascender's share of a line
 LIGHT, DARK = "#1f2328", "#e6edf3"  # GitHub's text colors
 COLORS = {  # class: (light, dark), GitHub's syntax and terminal colors
     "comment": ("#59636e", "#9198a1"),

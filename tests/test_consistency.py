@@ -19,10 +19,12 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_box_drawing
 import lig_geometry as geo
 import measure
-from project import ADVANCE, SFD
+from helpers import ROW_TOLERANCE
+from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE
 
 LETTER = {"Lu", "Ll", "Lt", "Lo"}  # not Lm: ˆ ˇ are modifier letters, and marks here
 
@@ -40,8 +42,6 @@ ROWS = {
     "superscript baseline": ("¹²³⁰⁴⁵⁶⁷⁸⁹ⁱⁿ", 1),
     "subscript": ("₀₁₂₃₄₅₆₇₈₉", 3),
 }
-# How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
-ROW_TOLERANCE = 30
 OFF_ROW = {
     # The slash runs 45 past the bowl at both ends; Fira Code's and Intel One Mono's run
     # further (57 and more), Maple Mono's less (7 to 25).
@@ -74,8 +74,6 @@ SMALL_ON_AXIS = {"¹": "⁺⁻⁼⁽⁾", "₁": "₊₋₌₍₎"}
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
             "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩", "⇦⇨", "◣◢", "◜◝", "◟◞",
             "⊶⊷")
-TOLERANCE = 10  # for centering and mirroring; the hand's wobble stays within it
-ROUNDING = 1  # an outline's points and a reference's offset are each rounded to whole units
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
 MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"
@@ -150,20 +148,26 @@ class PlacementTest(unittest.TestCase):
         off = {}
         for char in CENTERED:
             x0, _, x1, _ = box(self.font, char)
-            if abs((x0 + x1) / 2 - ADVANCE / 2) > TOLERANCE:
+            if abs((x0 + x1) / 2 - ADVANCE / 2) > WOBBLE:
                 off[char] = round((x0 + x1) / 2 - ADVANCE / 2)
         self.assertEqual(off, {})
+
+    def test_the_math_axis_is_the_hyphens_middle(self):
+        # The generators center box drawing, the ligatures and the shapes on AXIS; the
+        # hyphen is what the rest of the font's operators center on.
+        _, y0, _, y1 = self.font["hyphen"].boundingBox()
+        self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=ROUNDING)
 
     def test_operators_sit_on_the_math_axis(self):
         _, y0, _, y1 = self.font["hyphen"].boundingBox()
         off = {}
         for char in ON_AXIS:
             _, b0, _, b1 = box(self.font, char)
-            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
+            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
                 off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         for name in ON_AXIS_GLYPHS:
             _, b0, _, b1 = self.font[name].boundingBox()
-            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
+            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
                 off[name] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         self.assertEqual(off, {})
 
@@ -173,7 +177,7 @@ class PlacementTest(unittest.TestCase):
             _, y0, _, y1 = box(self.font, figure)
             for char in signs:
                 _, b0, _, b1 = box(self.font, char)
-                if abs((b0 + b1) / 2 - (y0 + y1) / 2) > TOLERANCE:
+                if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
                     off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         self.assertEqual(off, {})
 
@@ -183,7 +187,7 @@ class PlacementTest(unittest.TestCase):
                 x0, y0, x1, y1 = box(self.font, left)
                 mirrored = (ADVANCE - x1, y0, ADVANCE - x0, y1)
                 for got, want in zip(box(self.font, right), mirrored, strict=True):
-                    self.assertAlmostEqual(got, want, delta=TOLERANCE)
+                    self.assertAlmostEqual(got, want, delta=WOBBLE)
 
     def test_mirrored_outlines_are_their_pair_mirrored(self):
         for left, right in MIRRORED:
@@ -272,7 +276,7 @@ class CompositionTest(unittest.TestCase):
         self.assertEqual(close, {})
 
     def test_marks_above_are_centered_on_their_letter(self):
-        # Within TOLERANCE, as the references' symmetric marks over A O U are (within 4).
+        # Within WOBBLE, as the references' symmetric marks over A O U are (within 4).
         off = {}
         for glyph in self.accented:
             if self.base_of(glyph) in STEM_BASES:
@@ -284,7 +288,7 @@ class CompositionTest(unittest.TestCase):
             for name, mark in marks:
                 m0, bottom, m1, _ = mark.boundingBox()
                 offset = (m0 + m1) / 2 - (x0 + x1) / 2
-                if bottom >= top and abs(offset) > TOLERANCE:
+                if bottom >= top and abs(offset) > WOBBLE:
                     off[(glyph.glyphname, name)] = round(offset)
         self.assertEqual(off, {})
 
@@ -372,7 +376,7 @@ class MarkTest(unittest.TestCase):
             names = [name for name, *_ in mark.references]
             if len(mark.foreground) or len(names) != 1 or names[0] in self.mark_names:
                 wrong[mark.glyphname] = "not one reference to an accent"
-            elif abs((x0 + x1) / 2 - ADVANCE / 2) > TOLERANCE:
+            elif abs((x0 + x1) / 2 - ADVANCE / 2) > WOBBLE:
                 wrong[mark.glyphname] = round((x0 + x1) / 2 - ADVANCE / 2)
         self.assertEqual(wrong, {})
 
@@ -405,7 +409,7 @@ class MarkTest(unittest.TestCase):
             ax0, ay0, _, _ = self.placed(letter, mark).boundingBox()
             px0, py0, _, _ = geo.transformed(self.font[accent].foreground,
                                              refs[accent]).boundingBox()
-            if abs(ax0 - px0) > TOLERANCE or abs(ay0 - py0) > ROW_TOLERANCE:
+            if abs(ax0 - px0) > WOBBLE or abs(ay0 - py0) > ROW_TOLERANCE:
                 off[(glyph.glyphname, mark.glyphname)] = (round(ax0 - px0), round(ay0 - py0))
         self.assertEqual(off, {})
 
@@ -532,7 +536,7 @@ class BoxDrawingTest(unittest.TestCase):
                     centres *= 2  # the strokes of ╳ cross there
                 want = sorted(ADVANCE * (share if d > 0 else 1 - share) for d in directions)
                 if len(centres) != len(want) or any(
-                        abs(got - x) > TOLERANCE for got, x in zip(centres, want)):
+                        abs(got - x) > WOBBLE for got, x in zip(centres, want)):
                     off[(char, share)] = [round(x) for x in centres]
         self.assertEqual(off, {})
 

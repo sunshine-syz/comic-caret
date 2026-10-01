@@ -14,11 +14,9 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
 import measure
 import sfnt
-from project import ADVANCE, ROOT, SFD
-from test_consistency import ROUNDING, TOLERANCE
+from project import ADVANCE, ROOT, ROUNDING, SFD, WOBBLE
 
 TTF = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
@@ -239,7 +237,7 @@ class CapitalTest(unittest.TestCase):
         layer = self.font["J"].foreground
         _, _, right, top = layer.boundingBox()
         [(_, stem)] = measure.spans_at_y(layer, top - 150)  # on the stem, below the bar
-        self.assertLess(right - stem, TOLERANCE)
+        self.assertLess(right - stem, WOBBLE)
 
     def test_Y_stem_stands_straight_under_the_notch(self):
         # Fira Code, Intel One Mono and Maple Mono all set Y's stem vertical under the notch;
@@ -334,7 +332,7 @@ class SmallFigureTest(unittest.TestCase):
         _, t0, _, t1 = self.font["T.small"].boundingBox()
         _, m0, _, m1 = self.font["M.small"].boundingBox()
         _, b0, _, b1 = self.font["T"].boundingBox()
-        self.assertAlmostEqual(t1 - t0, m1 - m0, delta=TOLERANCE * (t1 - t0) / (b1 - b0))
+        self.assertAlmostEqual(t1 - t0, m1 - m0, delta=WOBBLE * (t1 - t0) / (b1 - b0))
 
 
 class FigureTest(unittest.TestCase):
@@ -381,11 +379,11 @@ class FigureTest(unittest.TestCase):
             with self.subTest(glyph=name):
                 num, den = self.part(name, numerator), self.part(name, denominator)
                 self.assertAlmostEqual(measure.ink_center(num), measure.ink_center(one),
-                                       delta=TOLERANCE)
+                                       delta=WOBBLE)
                 self.assertAlmostEqual(num.boundingBox()[3], one.boundingBox()[3],
                                        delta=2 * ROUNDING)
                 self.assertAlmostEqual(measure.ink_center(den), measure.ink_center(two),
-                                       delta=TOLERANCE)
+                                       delta=WOBBLE)
                 self.assertAlmostEqual(den.boundingBox()[1], two.boundingBox()[1],
                                        delta=2 * ROUNDING)
 

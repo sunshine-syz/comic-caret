@@ -14,7 +14,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import measure
-from test_consistency import ROUNDING
+from project import ROUNDING
 
 # The lines FontForge's autohinter writes from a glyph's outline; its hint masks are in the
 # SplineSet. Moving a control point of each glyph by a unit, or splitting a curve of each, and

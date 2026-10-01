@@ -14,12 +14,11 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared tolerances
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import measure
-from project import ADVANCE, SFD
-from test_consistency import ROUNDING, ROW_TOLERANCE
-from test_consistency import TOLERANCE as MIDDLE_TOLERANCE  # the hand's wobble
+from helpers import ROW_TOLERANCE
+from project import ADVANCE, ROUNDING, SFD, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
@@ -48,7 +47,7 @@ HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">"}
 HEAVY_INK = 1.45
 # •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
 # hand's wobble.
-BULLET_WIDTH = 220 - MIDDLE_TOLERANCE
+BULLET_WIDTH = 220 - WOBBLE
 # Every symbol keeps at least as far inside the cell as ●, the widest full-size shape, so two
 # side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. These come no closer
 # to the edges than a reference's: ∞ and � (11 inside) as Fira Code's ∞ and Maple Mono's �,
@@ -173,7 +172,7 @@ class OperatorTest(unittest.TestCase):
         for (b0, b1), (e0, e1) in zip(bars, equal + equal[:1]):
             self.assertAlmostEqual(b1 - b0, e1 - e0, delta=self.weight)
         for lower, upper in itertools.pairwise(bars):
-            self.assertAlmostEqual(upper[0] - lower[1], gap, delta=MIDDLE_TOLERANCE)
+            self.assertAlmostEqual(upper[0] - lower[1], gap, delta=WOBBLE)
 
     def test_approx_is_two_tildes(self):
         # References, so ≈ follows any redrawing of ~.
@@ -198,8 +197,8 @@ class OperatorTest(unittest.TestCase):
             self.assertGreaterEqual(x1 - x0, 155)
             self.assertGreaterEqual(y1 - y0, 169)
         (a0, b0, a1, b1), (c0, d0, c1, d1) = holes
-        self.assertAlmostEqual(a1 - a0, c1 - c0, delta=MIDDLE_TOLERANCE)
-        self.assertAlmostEqual(b1 - b0, d1 - d0, delta=MIDDLE_TOLERANCE)
+        self.assertAlmostEqual(a1 - a0, c1 - c0, delta=WOBBLE)
+        self.assertAlmostEqual(b1 - b0, d1 - d0, delta=WOBBLE)
 
 
 class ArrowTest(unittest.TestCase):
@@ -255,7 +254,7 @@ class ArrowTest(unittest.TestCase):
                 points_left = char != "↪"
                 layer = self.font[ord(char)].foreground
                 [(s0, s1)] = measure.spans_at_x(layer, x0 + 40 if points_left else x1 - 40)
-                self.assertAlmostEqual((s0 + s1) / 2, (y0 + y1) / 2, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual((s0 + s1) / 2, (y0 + y1) / 2, delta=WOBBLE)
 
     def test_two_headed_arrows_show_shaft_between_their_heads(self):
         # Two full-size heads meet in the middle, and ↔ reads as a diamond.
@@ -366,7 +365,7 @@ class ShapeTest(unittest.TestCase):
             first = self.radius(spinner[0])
             for char in spinner[1:]:
                 with self.subTest(frame=char):
-                    self.assertAlmostEqual(self.radius(char), first, delta=MIDDLE_TOLERANCE)
+                    self.assertAlmostEqual(self.radius(char), first, delta=WOBBLE)
 
     def test_media_controls_share_one_height(self):
         first = self.height(MEDIA[0])
@@ -381,9 +380,9 @@ class ShapeTest(unittest.TestCase):
         for char in KEYS[1:]:
             with self.subTest(key=char):
                 _, b0, _, b1 = self.font[ord(char)].boundingBox()
-                self.assertAlmostEqual(b0, y0, delta=MIDDLE_TOLERANCE)
-                self.assertAlmostEqual(b1, y1, delta=MIDDLE_TOLERANCE)
-        self.assertAlmostEqual(self.font[ord("⌃")].boundingBox()[3], y1, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual(b0, y0, delta=WOBBLE)
+                self.assertAlmostEqual(b1, y1, delta=WOBBLE)
+        self.assertAlmostEqual(self.font[ord("⌃")].boundingBox()[3], y1, delta=WOBBLE)
 
     def test_visible_spaces_lie_on_the_underscore(self):
         # ␣ ⍽ stand for a space where _ would go, so their bottoms line up with it.
@@ -391,7 +390,7 @@ class ShapeTest(unittest.TestCase):
         for char in "␣⍽":
             with self.subTest(space=char):
                 self.assertAlmostEqual(self.font[ord(char)].boundingBox()[1], bottom,
-                                       delta=MIDDLE_TOLERANCE)
+                                       delta=WOBBLE)
 
     def test_bullet_is_as_wide_as_the_smallest_reference_bullet(self):
         x0, _, x1, _ = self.font[ord("•")].boundingBox()
@@ -402,7 +401,7 @@ class ShapeTest(unittest.TestCase):
         white, black = self.font[ord("◦")].boundingBox(), self.font[ord("•")].boundingBox()
         for a, b in ((white[0] + white[2], black[0] + black[2]),
                      (white[1] + white[3], black[1] + black[3])):
-            self.assertAlmostEqual(a / 2, b / 2, delta=MIDDLE_TOLERANCE)
+            self.assertAlmostEqual(a / 2, b / 2, delta=WOBBLE)
 
     def test_pointer_is_long_and_flat(self):
         # ► points where ▶ stands, as Maple Mono's (559 × 270) does.
@@ -426,8 +425,8 @@ class HeavyMarkTest(unittest.TestCase):
             with self.subTest(mark=heavy):
                 h0, i0, h1, i1 = self.ink(heavy).boundingBox()
                 l0, m0, l1, m1 = self.ink(light).boundingBox()
-                self.assertAlmostEqual((h0 + h1) / 2, (l0 + l1) / 2, delta=MIDDLE_TOLERANCE)
-                self.assertAlmostEqual((i0 + i1) / 2, (m0 + m1) / 2, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual((h0 + h1) / 2, (l0 + l1) / 2, delta=WOBBLE)
+                self.assertAlmostEqual((i0 + i1) / 2, (m0 + m1) / 2, delta=WOBBLE)
 
     def test_heavy_marks_carry_more_ink(self):
         for heavy, light in HEAVY.items():
@@ -531,7 +530,7 @@ class BuiltFromTest(unittest.TestCase):
                 pairs = zip(self.middle(self.font[ord(char)]), self.middle(self.font[ord(plain)]),
                             strict=True)
                 for a, b in pairs:
-                    self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
+                    self.assertAlmostEqual(a, b, delta=WOBBLE)
 
     def base(self, name):
         """The glyph that `name` is one unmoved reference to, followed down, or `name`."""
@@ -598,7 +597,7 @@ class BuiltFromTest(unittest.TestCase):
         self.assertEqual(sorted(parts), sorted([ring_name, "bullet"]))
         ring, dot = parts[ring_name], parts["bullet"]
         for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
-            self.assertAlmostEqual(a, b, delta=MIDDLE_TOLERANCE)
+            self.assertAlmostEqual(a, b, delta=WOBBLE)
         self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
 
 
@@ -628,7 +627,7 @@ class LetterlikeTest(unittest.TestCase):
         self.assertAlmostEqual(n0, N0, delta=ROUNDING)
         self.assertAlmostEqual(n1, N1, delta=ROUNDING)
         self.assertAlmostEqual(o.boundingBox()[3], self.font["ordmasculine"].boundingBox()[3],
-                               delta=MIDDLE_TOLERANCE)
+                               delta=WOBBLE)
         self.assertLess(bar.boundingBox()[3], o.boundingBox()[1])
         for piece in (o, bar):
             self.assertGreaterEqual(measure.gap(n, piece), self.seam)
@@ -666,9 +665,9 @@ class LetterlikeTest(unittest.TestCase):
                 _, _, rx1, r_top = ring.boundingBox()
                 bx0, b_bottom, _, b_top = body.boundingBox()
                 self.assertLess(rx1, bx0)
-                self.assertAlmostEqual(r_top, b_top, delta=MIDDLE_TOLERANCE)
+                self.assertAlmostEqual(r_top, b_top, delta=WOBBLE)
                 self.assertAlmostEqual(b_bottom, self.font[letter].boundingBox()[1],
-                                       delta=MIDDLE_TOLERANCE)
+                                       delta=WOBBLE)
 
 
 class KeyHintTest(unittest.TestCase):
@@ -696,8 +695,8 @@ class KeyHintTest(unittest.TestCase):
         bx0, by0, bx1, by1 = bar.boundingBox()
         self.assertLess(by1, arrow.boundingBox()[1])
         self.assertAlmostEqual(by1 - by0, l1 - l0, delta=self.weight)
-        self.assertAlmostEqual(bx0, l0, delta=MIDDLE_TOLERANCE)
-        self.assertAlmostEqual(bx1, r1, delta=MIDDLE_TOLERANCE)
+        self.assertAlmostEqual(bx0, l0, delta=WOBBLE)
+        self.assertAlmostEqual(bx1, r1, delta=WOBBLE)
 
     def test_page_arrows_are_the_arrows_with_two_bars(self):
         # ↑ and ↓ whole, with two bars of the hyphen's stroke across the shaft, reaching past
@@ -789,8 +788,8 @@ class CurrencyTest(unittest.TestCase):
         # Both bars run at one height across the left half, before the bowl and the leg join.
         x, *_ = BARS["₹"]
         for (a0, a1), (b0, b1) in zip(self.bars("₹", x), self.bars("₹", 2 * x), strict=True):
-            self.assertAlmostEqual(a0, b0, delta=MIDDLE_TOLERANCE)
-            self.assertAlmostEqual(a1, b1, delta=MIDDLE_TOLERANCE)
+            self.assertAlmostEqual(a0, b0, delta=WOBBLE)
+            self.assertAlmostEqual(a1, b1, delta=WOBBLE)
 
     def test_bitcoin_ticks_pass_through_the_letter(self):
         # Two ticks as thick as | rise above B and drop below it, and nothing else does.

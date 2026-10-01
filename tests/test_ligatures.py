@@ -12,9 +12,9 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from add_ligatures import GENERATED, OVERLAP
+from add_ligatures import GENERATED
 from measure import ink, spans_at_x
-from project import ADVANCE, SFD, STYLES, font_file, nerd_fonts
+from project import ADVANCE, OVERLAP, SFD, STYLES, font_file, nerd_fonts
 
 # Each built font, with the SFD it is built from.
 FONTS = {font_file(style, ext): sfd for style, sfd in STYLES.items() for ext in ("otf", "ttf")}

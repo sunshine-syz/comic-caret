@@ -13,7 +13,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import proof_sheet
-from project import ADVANCE, ROOT, SFD
+from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 
 SCRIPT = ROOT / "tools" / "proof_sheet.py"
 TTF, OTF = (ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("ttf", "otf"))
@@ -123,7 +123,7 @@ class ProofSheetTest(unittest.TestCase):
 
     def test_splits_the_line_height_change_between_top_and_bottom(self):
         # A 900/−350 line box (1.25 em), at a size of one pixel per unit.
-        font = proof_sheet.Font(TTF, "", "", 1000, 900, -350)
+        font = proof_sheet.Font(TTF, "", "", 1000, LINE_TOP, LINE_BOTTOM)
         for line_height, expected in ((1.5, "1025,475,0"), (1.0, "775,225,0")):
             with self.subTest(line_height=line_height):
                 self.assertEqual(proof_sheet.extents(font, 1000, line_height), expected)

@@ -10,9 +10,9 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
-from add_ligatures import AXIS, GENERATED, OVERLAP
+from add_ligatures import GENERATED
 from measure import gap, ink, spans_at_x, spans_at_y
-from project import ADVANCE, SFD
+from project import ADVANCE, AXIS, OVERLAP, SFD
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
@@ -105,7 +105,7 @@ class MeasurementTest(unittest.TestCase):
         for name, tip in al.TIP.items():
             with self.subTest(glyph=name):
                 angle = self.font[name].foreground
-                x0, x1 = self.only(spans_at_y(angle, al.AXIS), "at the point")
+                x0, x1 = self.only(spans_at_y(angle, AXIS), "at the point")
                 self.assertAlmostEqual(x1 if name == "greater" else x0, tip, delta=2)
                 for end_x, end_y in al.ARM_ENDS[name]:
                     self.assertTrue(any(a < end_x < b for a, b in spans_at_y(angle, end_y)),
@@ -140,7 +140,7 @@ class GlyphShapeTest(unittest.TestCase):
         """Mean stroke widths along the upper arm's height, left to right. Hand-drawn strokes
         vary in width along their length, so a single height would compare unlike parts."""
         # Above the arrow shafts, below where the arms of |> <| reach their bar.
-        heights = range(add_ligatures.AXIS + 60, add_ligatures.AXIS + 161, 20)
+        heights = range(AXIS + 60, AXIS + 161, 20)
         rows = [widths_at(self.font[name].foreground, y) for y in heights]
         self.assertEqual(len({len(row) for row in rows}), 1, f"{name}: strokes merge")
         return [sum(column) / len(rows) for column in zip(*rows, strict=True)]

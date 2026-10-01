@@ -30,9 +30,9 @@ import psMat
 import lig_geometry as geo
 import measure
 from add_powerline import polygon
-from project import ADVANCE, SFD, save_checked, validation_errors
+from project import ADVANCE, AXIS, SFD, save_checked, validation_errors
 
-CX, AXIS = ADVANCE / 2, 269  # the cell's middle and the math axis, ○ ● ☐ ■'s centre
+CX = ADVANCE / 2  # the cell's middle; ○ ● ☐ ■ center on it and on AXIS
 DEG = math.pi / 180
 
 CIRCLE, DISC, BOX, SQUARE, WHITE_BULLET = 0x25CB, 0x25CF, 0x2610, 0x25A0, 0x25E6
