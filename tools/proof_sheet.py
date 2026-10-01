@@ -1,12 +1,14 @@
 """Render a review sheet: Comic Caret next to an earlier build of itself and the reference fonts.
 
-Usage: python3 tools/proof_sheet.py OUTDIR [FONT ...] [--before REV] [--text TEXT ...]
-                                    [--features LIST] [--line-height EM ...]
+Usage: python3 tools/proof_sheet.py OUTDIR [FONT ...] [--italic] [--before REV]
+                                    [--text TEXT ...] [--features LIST] [--line-height EM ...]
 
 Writes OUTDIR/index.html and the images it shows; open the page in a browser. With no FONT
 arguments it shows fonts/ComicCaret-Regular.ttf, fonts/ComicCaret-Italic.ttf if it is built,
-and every font in build/cache/reference/.
---before REV adds, second, the font built from the SFD at that commit (HEAD: the last one).
+and every font in build/cache/reference/. With --italic it shows fonts/ComicCaret-Italic.ttf and
+every font in build/cache/reference/italic/ instead.
+--before REV adds, second, the font built from the SFD at that commit (HEAD: the last one); with
+--italic it builds the italic SFD.
 Images are rendered with hb-view and are not committed.
 """
 import argparse
@@ -19,12 +21,10 @@ import subprocess
 import sys
 import tempfile
 
-from project import ROOT, SFD
+from project import ITALIC_SFD, ROOT, SFD, reference_fonts
 
 BUILT = ROOT / "fonts" / "ComicCaret-Regular.ttf"
 BUILT_ITALIC = ROOT / "fonts" / "ComicCaret-Italic.ttf"
-REFERENCE_DIR = ROOT / "build" / "cache" / "reference"
-SFD_PATH = SFD.relative_to(ROOT).as_posix()  # as git names it
 SMALL = (12, 13, 14, 16)  # px: common editor and terminal sizes
 MAGNIFY = 3               # the small sizes are also shown this much larger, pixels kept hard
 LARGE = 64                # px: the outlines themselves
@@ -86,23 +86,24 @@ def git(*args, check=True, text=True):
     return subprocess.run(["git", *args], cwd=ROOT, check=check, capture_output=True, text=text)
 
 
-def resolve(parser, rev):
+def resolve(parser, rev, sfd):
     """The full hash of the commit `rev` names, and how to label its font. Exits through
-    `parser` if there is no such commit or it has no SFD."""
+    `parser` if there is no such commit or it has no `sfd`."""
+    sfd_path = sfd.relative_to(ROOT).as_posix()  # as git names it
     result = git("rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}", check=False)
     if result.returncode:
         parser.error(f"not a commit: {rev}")
     commit = result.stdout.strip()
-    if git("cat-file", "-e", f"{commit}:{SFD_PATH}", check=False).returncode:
-        parser.error(f"{rev} has no {SFD_PATH}")
+    if git("cat-file", "-e", f"{commit}:{sfd_path}", check=False).returncode:
+        parser.error(f"{rev} has no {sfd_path}")
     short = git("rev-parse", "--short", commit).stdout.strip()
     return commit, rev if commit.startswith(rev) else f"{rev} ({short})"
 
 
-def build_at(commit, directory):
-    """The TTF built from the SFD at `commit`, written into `directory`."""
+def build_at(commit, directory, sfd_path):
+    """The TTF built from `sfd_path` (relative to the repo) at `commit`, written into `directory`."""
     sfd, ttf = directory / "before.sfd", directory / "before.ttf"
-    sfd.write_bytes(git("cat-file", "blob", f"{commit}:{SFD_PATH}", text=False).stdout)
+    sfd.write_bytes(git("cat-file", "blob", f"{commit}:{sfd_path}", text=False).stdout)
     generate = ROOT / "tools" / "generate.py"
     result = subprocess.run(["fontforge", "-quiet", "-script", str(generate), str(sfd), str(ttf)],
                             check=False, capture_output=True, text=True)
@@ -119,9 +120,10 @@ def rendered_at():
     return head + (f", with uncommitted changes to {source_dir}/" if changed else "")
 
 
-def default_fonts():
-    references = sorted(p for p in REFERENCE_DIR.glob("*") if p.suffix in (".otf", ".ttf"))
-    return [BUILT, *([BUILT_ITALIC] if BUILT_ITALIC.exists() else []), *references]
+def default_fonts(italic):
+    if italic:
+        return [BUILT_ITALIC, *reference_fonts("Italic")]
+    return [BUILT, *([BUILT_ITALIC] if BUILT_ITALIC.exists() else []), *reference_fonts()]
 
 
 def label(path):
@@ -192,6 +194,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("outdir", type=pathlib.Path)
     parser.add_argument("fonts", nargs="*", type=pathlib.Path, help="default: see above")
+    parser.add_argument("--italic", action="store_true",
+                        help="proof the italic against the italic reference fonts")
     parser.add_argument("--before", metavar="REV",
                         help="also show the font built from the SFD at this commit")
     parser.add_argument("--text", action="append",
@@ -203,11 +207,12 @@ def main():
                         help="set lines this many em apart in every font; repeatable "
                              "(default: each font's own)")
     args = parser.parse_intermixed_args()
-    paths = args.fonts or default_fonts()
+    paths = args.fonts or default_fonts(args.italic)
     missing = [str(path) for path in paths if not path.exists()]
     if missing:
         parser.error(f"no such font: {', '.join(missing)}")
-    before = resolve(parser, args.before) if args.before else None
+    sfd = ITALIC_SFD if args.italic else SFD
+    before = resolve(parser, args.before, sfd) if args.before else None
     blocks = [(text, text, None) for text in args.text] if args.text else BLOCKS
     if args.features is not None:
         blocks = [(title, text, args.features) for title, text, _ in blocks]
@@ -216,7 +221,8 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         if before:
             commit, note = before
-            fonts.insert(1, load(build_at(commit, pathlib.Path(tmp)), note))
+            built = build_at(commit, pathlib.Path(tmp), sfd.relative_to(ROOT).as_posix())
+            fonts.insert(1, load(built, note))
         page = sheet(fonts, blocks, args.line_height or [None], args.outdir)
     (args.outdir / "index.html").write_text(page, encoding="utf-8")
     print(f"Wrote {args.outdir / 'index.html'}")

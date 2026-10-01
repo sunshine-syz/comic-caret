@@ -1,9 +1,10 @@
 """Compare where glyphs sit in Comic Caret and in the reference fonts, in Comic Caret's units.
 
-Usage: python3 tools/compare_glyphs.py [--anchor cap|x] TEXT [FONT ...]
+Usage: python3 tools/compare_glyphs.py [--italic] [--anchor cap|x] TEXT [FONT ...]
 
 With no FONT arguments it reads src/ComicCaret-Regular.sfd and every font in
-build/cache/reference/ (see "Designing glyphs" in CLAUDE.md). For each character of TEXT it
+build/cache/reference/ (see "Designing glyphs" in CLAUDE.md); with --italic, the italic SFD and
+every font in build/cache/reference/italic/. For each character of TEXT it
 prints each font's ink box: x scaled so the advance becomes 550, with the center's offset from
 the cell center, and y scaled so the reference's cap height (or x-height, with --anchor x)
 matches ours. Cap and x-height are the tops of H and x, as in our OS/2 values.
@@ -16,9 +17,7 @@ import sys
 
 import fontforge
 
-from project import ADVANCE, ROOT, SFD
-
-REFERENCE_DIR = ROOT / "build" / "cache" / "reference"
+from project import ADVANCE, ITALIC_SFD, REFERENCE_DIR, SFD, reference_fonts
 
 
 @contextlib.contextmanager
@@ -70,16 +69,19 @@ class Font:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--italic", action="store_true",
+                        help="compare the italic with the italic reference fonts")
     parser.add_argument("--anchor", choices=("cap", "x"), default="cap",
                         help="scale y by cap height (default) or x-height")
     parser.add_argument("text", help="characters to compare")
     parser.add_argument("fonts", nargs="*", help="fonts to compare; the first sets the scale")
     args = parser.parse_args()
 
-    references = sorted(p for p in REFERENCE_DIR.glob("*") if p.suffix in (".otf", ".ttf"))
-    paths = args.fonts or [SFD, *references]
+    style = "Italic" if args.italic else "Regular"
+    paths = args.fonts or [ITALIC_SFD if args.italic else SFD, *reference_fonts(style)]
     if len(paths) < 2:
-        sys.exit(f"No reference fonts in {REFERENCE_DIR}; see \"Designing glyphs\" in CLAUDE.md.")
+        where = REFERENCE_DIR / "italic" if args.italic else REFERENCE_DIR
+        sys.exit(f"No reference fonts in {where}; see \"Designing glyphs\" in CLAUDE.md.")
     fonts = [Font(path, args.anchor) for path in paths]
     for font in fonts:
         font.set_target(fonts[0].anchor)

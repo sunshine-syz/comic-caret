@@ -8,6 +8,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SFD = ROOT / "src" / "ComicCaret-Regular.sfd"  # the master every glyph is drawn in
 ITALIC_SFD = ROOT / "src" / "ComicCaret-Italic.sfd"  # derived from it by tools/make_italic.py
 STYLES = {"Regular": SFD, "Italic": ITALIC_SFD}
+REFERENCE_DIR = ROOT / "build" / "cache" / "reference"  # the italic references are in italic/
 NERD_DIR = ROOT / "build" / "nerd"  # the patched fonts of ./build.sh --nerd and --release
 ADVANCE = 550  # every glyph's advance width
 # The format characters that take no cell (their wcwidth is 0), kept blank and zero wide like
@@ -21,6 +22,16 @@ _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 def font_file(style, ext):
     """The built font of `style` ("Regular" or "Italic") in format `ext` ("otf" or "ttf")."""
     return ROOT / "fonts" / f"ComicCaret-{style}.{ext}"
+
+
+def reference_fonts(style="Regular"):
+    """The reference fonts of `style` ("Regular" or "Italic"), sorted.
+
+    The regulars sit in REFERENCE_DIR and the italics in its italic/ folder; the search is not
+    recursive, so the regular list never picks up the italics.
+    """
+    folder = REFERENCE_DIR / "italic" if style == "Italic" else REFERENCE_DIR
+    return sorted(p for p in folder.glob("*") if p.suffix in (".otf", ".ttf"))
 
 
 def nerd_fonts():

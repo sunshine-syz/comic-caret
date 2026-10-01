@@ -23,7 +23,7 @@ python3 tools/bump_version.py X.Y.Z     # start the next version: both SFDs' Ver
 ```
 
 `proof_sheet.py` takes `--text=TEXT` (repeatable) and `--features` to proof other glyphs,
-`--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
+`--italic` to proof the italic against the italic references, `--before REV` to add the font built from that commit's SFD, and `--line-height EM` to check
 that box drawing meets across lines.
 
 After every change to the regular, rerun `tools/make_italic.py`, rebuild, rerun
@@ -113,8 +113,8 @@ date.
   semicolon, brackets and letter widths. Read them before changing what they cover.
 - The italic's rules are the regular's: its glyphs are the regular's sheared, and its cursive
   letters are built in `tools/make_italic.py` from the regular's strokes, proofed against the
-  Maple Mono and Intel One Mono italics (`build/scratch/italic-proof/refs/`, from the same
-  releases).
+  Maple Mono and Intel One Mono italics (`build/cache/reference/italic/`, from the same
+  releases; `--italic` on `proof_sheet.py` and `compare_glyphs.py` uses them).
 
 ## Writing tests
 
