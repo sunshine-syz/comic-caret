@@ -146,13 +146,16 @@ class BuiltFontTest(unittest.TestCase):
                           5: f"Version {sfd.version}", 6: sfd.fontname}
 
     def test_width_tables_declare_the_cell(self):
-        # Apps that size the cell from these tables rather than from the glyphs read the cell here.
+        # Apps that size the cell from these tables, not from the glyphs, read the cell here.
         for font in self.fonts:
             with self.subTest(font=font.name):
                 tables = sfnt.tables(font)
-                self.assertEqual(struct.unpack_from(">h", tables[b"OS/2"], 2)[0], ADVANCE)  # xAvgCharWidth
-                self.assertEqual(struct.unpack_from(">H", tables[b"hhea"], 10)[0], ADVANCE)  # advanceWidthMax
-                self.assertNotEqual(struct.unpack_from(">I", tables[b"post"], 12)[0], 0)  # isFixedPitch
+                avg_char_width = struct.unpack_from(">h", tables[b"OS/2"], 2)[0]
+                advance_width_max = struct.unpack_from(">H", tables[b"hhea"], 10)[0]
+                is_fixed_pitch = struct.unpack_from(">I", tables[b"post"], 12)[0]
+                self.assertEqual(avg_char_width, ADVANCE)
+                self.assertEqual(advance_width_max, ADVANCE)
+                self.assertNotEqual(is_fixed_pitch, 0)
 
     def test_every_character_reaches_its_glyph_one_cell_wide(self):
         # But the combining marks and the zero-width format characters, which take no room.

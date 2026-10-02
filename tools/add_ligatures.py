@@ -71,7 +71,7 @@ HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_hal
 
 # != !==: the / at 95 %, centred on the bars.
 SLASH_SCALE = 0.95
-EQUAL_MIDDLE = ADVANCE / 2     # stretch line through the middle of the = bars
+EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep

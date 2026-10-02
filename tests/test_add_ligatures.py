@@ -61,6 +61,7 @@ class MeasurementTest(unittest.TestCase):
         # wider cell or a redrawn glyph.
         for name, keep in add_ligatures.TIGHT_KEEP.items():
             x0, _, x1, _ = self.font[name].boundingBox()
+            # Recomputed here, not through tight_shift: this checks the generator's output.
             shift = round((x0 + ADVANCE - x1) / 2 - keep)
             for suffix, sign in (("tight_r", 1), ("tight_l", -1)):
                 with self.subTest(glyph=f"{name}.{suffix}"):

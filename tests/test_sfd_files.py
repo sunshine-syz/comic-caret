@@ -9,10 +9,11 @@ import unittest
 
 import fontforge
 
-# the tests' shared SFD comparison
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from sfd_files import differences  # also puts tools/ on the path
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))  # the tests' shared SFD comparison
+sys.path.insert(0, str(HERE.parent / "tools"))
 from project import ADVANCE
+from sfd_files import differences
 
 # A ring like O, as (x, y, on-curve) going round each contour: its handles lean a little, as
 # the hand's do, so moving one moves the stems the autohinter finds.

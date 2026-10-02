@@ -8,7 +8,6 @@ import math
 import fontforge
 
 import lig_geometry as geo
-from project import ADVANCE
 
 
 def spans_at_y(layer, y):
