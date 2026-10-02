@@ -67,6 +67,7 @@ OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
 ARM_SPAN = (150, 330)  # along an arm from the point: straight, clear of the join and cap
+HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_halves)
 
 # != !==: the / at 95 %, centred on the bars.
 SLASH_SCALE = 0.95
@@ -74,7 +75,7 @@ EQUAL_MIDDLE = 275     # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
-# their height, widening the angle from 374 to 530 like the references' angles.
+# their height, widening the angle from 361 to 517 like the references' angles.
 ANGLE_WIDTH_GAIN = 156
 ARM_ENDS = {"greater": ((128, 498), (131, 40)),   # centres of the upper and lower end caps
             "less": ((419, 498), (422, 40))}
@@ -91,7 +92,7 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
 # <>: each half's angle widened by this, so the diamond is as wide as the references' at the
 # same x-height: 1.70 x-heights, between Maple Mono's 1.67 and Fira Code's 1.76.
-DIAMOND_WIDTH_GAIN = 85
+DIAMOND_WIDTH_GAIN = 98
 
 # How far each glyph moves toward its partner in a tightened pair.
 TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
@@ -175,9 +176,9 @@ def tilde_pieces(font):
 def arm_halves(font, name):
     """< or > split at the axis into its upper and lower arm."""
     angle = outline(font, name)
-    # Each half reaches 30 past the axis so reshaped halves overlap instead of meeting at a
+    # Each half reaches past the axis so reshaped halves overlap instead of meeting at a
     # shallow crossing, which removeOverlap turns into a self-intersection.
-    return geo.trim(angle, y0=AXIS - 30), geo.trim(angle, y1=AXIS + 30)
+    return geo.trim(angle, y0=AXIS - HALF_REACH), geo.trim(angle, y1=AXIS + HALF_REACH)
 
 
 def span_at(layer, y):
@@ -241,13 +242,15 @@ def open_crotch(angle, name, upper, lower):
     slopes = [x_at(edge, AXIS + 1) - x_at(edge, AXIS) for edge in (upper, lower)]
     meet_y = AXIS + (x_at(lower, AXIS) - x_at(upper, AXIS)) / (slopes[0] - slopes[1])
     meet = (x_at(upper, meet_y), meet_y)
-    # Along each edge to twice arm_halves' reach from the axis, then 2 off it into the angle,
+    # Along each edge to twice the halves' reach from the axis, then 2 off it into the angle,
     # so the cut never runs along the edge itself.
-    ux, lx = x_at(upper, AXIS + 60), x_at(lower, AXIS - 60)
+    clear = 2 * HALF_REACH
+    ux, lx = x_at(upper, AXIS + clear), x_at(lower, AXIS - clear)
     arm_side, point_side = OUTWARD[name] * geo.FAR, -OUTWARD[name] * geo.FAR
     opened = geo.clip(angle, geo.polygon([
         (point_side, -geo.FAR), (point_side, geo.FAR), (arm_side, geo.FAR),
-        (arm_side, AXIS + 58), (ux, AXIS + 58), meet, (lx, AXIS - 58), (arm_side, AXIS - 58),
+        (arm_side, AXIS + clear - 2), (ux, AXIS + clear - 2), meet,
+        (lx, AXIS - clear + 2), (arm_side, AXIS - clear + 2),
         (arm_side, -geo.FAR)]))
     # The cut can pass within a unit of an outline point. Rounded now, the two merge in the
     # cleanup that follows instead of leaving a zero-length segment that validate() flags.

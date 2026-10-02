@@ -57,6 +57,10 @@ around. Read this before writing code that edits the SFD.
   but `validate()` flags (0x20); keep the points next to the moved ones where they are.
 - `geo.cleanup()` can move points again on an outline it already cleaned; derive a glyph from
   another's outline as saved in the font, not from the layer before cleanup.
+- A cut that passes within a unit of an outline point leaves two points that `geo.cleanup()`
+  rounds onto one spot, a zero-length segment `validate()` flags (0x4). Round the cut
+  outline first; the cleanup's `removeOverlap()` then merges the two (`open_crotch` in
+  `tools/add_ligatures.py`).
 - A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
   `removeOverlap()` then takes them for holes; turn them clockwise (`lig_geometry.clockwise`;
   `lig_geometry.polygon` and `stroked` already do) before a union.

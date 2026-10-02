@@ -25,7 +25,8 @@ SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔�
            "◐◑◒◓◴◵◶◷◜◝◞◟◠◡◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼"
            "↑↓≤≥−∀∃∄•†‡…‰™€–—‘’‚“”„‹›«»")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
-LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow"}
+LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow", "←": "less.arrow",
+                  "⇐": "less.darrow"}
 SHAFT = 90  # thicker than any stroke; the arrows' shafts are the hyphen's 76-81
 # How far ≠'s slash runs past ='s bars: at least the narrowest reference's, Fira Code's below its
 # bars at our cap height (Intel One Mono's 147, Maple Mono's 174).

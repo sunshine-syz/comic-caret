@@ -141,8 +141,9 @@ class GlyphShapeTest(unittest.TestCase):
                 strokes = self.mean_weights(glyph)
                 head = strokes[-1] if angle == "greater" else strokes[0]
                 self.assertAlmostEqual(head, arm, delta=0.05 * arm)
-                self.assertGreater(self.font[glyph].boundingBox()[3],
-                                   self.font[angle].boundingBox()[3])
+                (_, y0, _, y1), (_, a0, _, a1) = (self.font[name].boundingBox()
+                                                  for name in (glyph, angle))
+                self.assertGreater(y1 - y0, a1 - a0)
 
     def test_pipe_bars_are_as_heavy_as_the_bar(self):
         [bar] = self.mean_weights("bar")
