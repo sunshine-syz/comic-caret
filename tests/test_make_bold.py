@@ -134,9 +134,8 @@ class BoldTest(unittest.TestCase):
         pen's reach (make_bold.pen_of(): the small parts' is lighter, the heavy marks' heavier,
         the tonos's turned) and a unit of rounding: a stem grows half the pen's width on each
         side, a level stroke half its height; ⇪'s top further (LIFTED_FURTHER). Covers a trim
-        or an overlap removal that failed
-        and left its box, and a condensed outline, which takes in each side by at most the pen
-        it then grows by."""
+        or an overlap removal that failed and left its box, and a condensed outline, which
+        takes in each side by at most the pen it then grows by."""
         pens = make_bold.pens(self.regular)
         found = {}
         for name in self.of_class(BOLDER):

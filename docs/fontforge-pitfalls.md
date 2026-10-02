@@ -111,6 +111,10 @@ around. Read this before writing code that edits the SFD.
   glyph drawn in; the fixture in `tests/test_sfd_files.py` draws its base in a reopened copy.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
   does not affect this font.
+- Ignore the 200 or so "Internal Error (overlap)" and "SplinePointListIsClockwise" lines that
+  `tools/make_bold.py` prints on stderr. `removeOverlap()` prints the first on the pen's
+  strokes, and `isClockwise()` the second on the specks they leave. The run still succeeds;
+  the rerun test in `tests/test_make_bold.py` is the check.
 - `tests/test_fontbakery.py` runs Font Bakery's universal profile on each format's three
   styles together and expects exactly the problems its `known()` lists, each with its reason;
   it skips without `uvx`. To read a full report, run its command,

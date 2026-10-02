@@ -32,8 +32,9 @@
 - **An italic of its own.** Comic Caret Italic slants the text and gives `f` a descender, and
   keeps the borders, shapes and status marks upright, so editors that italicize comments and
   keywords no longer slant the regular themselves.
-- **A bold of its own.** Comic Caret Bold draws the text heavier with its counters still open,
-  and keeps the borders, shapes and spinners at the regular's weight, so editors that set
+- **A bold of its own.** Comic Caret Bold draws the text with a heavier pen, as dark as the
+  bolds of other coding fonts. Its `n`, `o` and `e` stay at least as open as in the tightest
+  of them. The borders, shapes and spinners keep the regular's weight. Editors that set
   keywords in bold, and terminals that print bold text, no longer thicken the regular
   themselves.
 

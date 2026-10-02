@@ -35,7 +35,8 @@ _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
 
 def font_file(style, ext):
-    """The built font of `style` ("Regular" or "Italic") in format `ext` ("otf" or "ttf")."""
+    """The built font of `style` ("Regular", "Italic" or "Bold") in format `ext` ("otf" or
+    "ttf")."""
     return ROOT / "fonts" / f"ComicCaret-{style}.{ext}"
 
 

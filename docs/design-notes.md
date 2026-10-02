@@ -192,8 +192,8 @@ what it does to them:
 - `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. The full pen would
   close ẞ's white between stem and diagonal to 56, under Maple Mono Bold's 65, and the small
   4's counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.137).
-- `OUTWARD` and `SCALED`: © ®'s ring grows outward only, by the whole pen, so it stays as
-  heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
+- `OUTWARD` and `SCALED`: © ®'s ring grows outward only, by the small pen's whole width, so it
+  stays as heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©. It comes 8 from the cell's edges, as Fira Code
   Bold's © does. The ring and its letter scale together about the ring's middle: condensed
   alone, the ring would come out lighter than C and close on the letter.

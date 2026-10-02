@@ -6,74 +6,46 @@ The bold is the regular with its strokes made heavier, and its pictures kept as 
 Nothing in the bold SFD is drawn by hand: this script rewrites the whole file from the
 regular, so running it again changes nothing but ModificationTime, and
 tests/test_make_bold.py fails while it is out of date. Change the regular or this script,
-then rerun it and ./build.sh.
+then rerun it and ./build.sh. docs/design-notes.md says how the pen and the rules were chosen,
+and each name list's comment gives the reason for its glyphs.
 
-Every glyph of the regular falls in one of two sets, decided by classify():
+classify() puts every glyph of the regular in one of two sets:
 
-- BOLDER: what a pen writes. Letters, figures, the combining marks, punctuation, symbols,
+- BOLDER: what a pen writes: letters, figures, the combining marks, punctuation, symbols,
   arrows and the ligatures. Each outline grows outward by an elliptical pen, PEN wide and
-  tall: it is stroked with the pen, the stroke's inner edge dropped, and united with the
-  outline.
-  A stem grows half the pen's width on each side and a level stroke half its height, so a
-  bold letter keeps the regular's rows. The small parts (superscripts, fraction figures,
-  ™'s letters) are drawn lighter than full letters, and grow by a pen as much smaller
-  (small_pen()). The heavy marks ✔ ✘ ✖ ❯ ❮ ❰ ❱ ➜ grow by a pen as much larger as the regular
-  gives them more ink than their light marks, so they stay as much heavier (HEAVY); the
-  reference bolds keep theirs as their regulars draw them, lighter against their bold light
-  marks. A stroke the regular draws as another turned, the tonos as the acute, grows by the
-  pen turned with it (TURNED). ª º's bar and ⇪'s, drawn as heavy as the stems beside them,
-  grow as much up and down (ROUND), and ẞ and the small 4, whose white the full pen would
-  close under the reference bolds', grow by a narrower pen (NARROW). © ®'s ring grows outward
-  only, by the whole pen, so it stays as heavy as its letter and keeps its room (OUTWARD). ₩
-  ₦ ₱'s bars keep the regular's round ends, so they weigh as the hyphen clear of the letter
-  (BLUNT).
+  tall (offset()). A stem grows half the pen's width on each side and a level stroke half
+  its height, so a bold letter keeps the regular's rows. Some glyphs take another pen
+  (pen_of()): the small parts a smaller one (small_pen()), the heavy marks a larger one
+  (HEAVY), and the glyphs of TURNED, ROUND, NARROW and OUTWARD the pen as those lists change it.
 - SHARED: what is drawn as a picture, which the reference bolds keep as their regulars draw
-  them: Box Drawing, Block Elements and the geometric shapes, which meet their neighbours'
-  across the cell; Braille; the Powerline symbols, which fill the line box; every frame of a
-  spinner, which turns in one place and must not pulse; the media controls ⏵ ⏸ ⏺, shown side
-  by side at one height; and ☐ ☑ ☒, ☐ being □. .notdef too, a box. Copied unchanged, hints
-  included.
+  them (SHARED_BLOCKS, SHARED_CHARS), and .notdef, a box. Copied unchanged, hints included.
 
 The offset grows every edge alike, so - stays centred on the math axis and the ligature
-pieces, offset by the same pen as the - = < > ~ | they continue, still match at their seams.
-A piece's flat cut end past the cell is trimmed back to the regular's, so it stays flat and
-keeps its overlap with the next piece. Not FontForge's changeWeight(): in its LCG mode it
-keeps the letters' heights but grows a level stroke upward only, so -'s top moved from 311 to
-341 off the axis, its bottom fixed, and the -- pieces stopped matching at their seams (351
-against 341).
+pieces still match at their seams; a piece's flat cut end past the cell is trimmed back to
+the regular's. Not FontForge's changeWeight(): in its LCG mode it grows a level stroke upward
+only, which takes - off the axis. The pen opens no white: a notch whose mouth it shuts is
+filled (notches_filled()).
 
-The pen must not push ink out of the cell, or past the regular's own overhang where it has
-one; nor any glyph but a letter or figure nearer the cell's sides than ●'s side bearing, or
-the regular's ink where that is nearer (side_bounds()), so two symbols side by side stay as
-far apart as ●●. A glyph that would pass its bound is condensed: its outline scaled
-horizontally about its ink centre before the offset, just enough, so every stem still grows
-by the full pen. A composite whose part would pass it moves its references in toward the
-cell's centre instead. © ®'s ring, condensed, would grow lighter than its letter, so the
-ring and the letter scale together about the ring's middle (SCALED).
+The pen must not push ink out of the cell, or past the regular's own overhang; nor any glyph
+but a letter or figure nearer the cell's sides than ●'s side bearing (side_bounds()), so two
+symbols side by side stay as far apart as ●●. A glyph that would pass its bound is condensed
+before the offset, just enough, so every stem still grows by the full pen (fitted()). A
+composite whose part would pass it moves its references in toward the cell's centre instead.
 
 A composite keeps its references, so an accented letter follows its base; a glyph with an
-outline and references has only its outline offset. Three kinds of part are unlinked first:
-a shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the italic;
-a bolder glyph's part turned a quarter (⋮ on …) grows as its outline, since the reference
-would turn the pen too; and a letter a symbol holds unmoved (∆'s Δ, ₫'s đ) grows condensed to
-the symbol's side room, so the letter itself keeps the cell. Θ and ∀ are drawn as one
-outline, each part grown on its own
-(MERGED). ⇕, ⇔ turned, grows as it stands, across only by the pen's height (ACROSS_AS_UP).
-A left glyph the regular draws as its right one mirrored is the bold right one mirrored
-(mirror_pairs()).
+outline and references has only its outline offset. Some parts become the glyph's own outline
+first (unlinked_parts()): a shared glyph's bolder part keeps the regular's outline, and a part
+turned a quarter (⋮ on …) or a letter a symbol holds unmoved (∆'s Δ) grows as the glyph's
+outline. A left glyph the regular draws as its right one mirrored is the bold right one
+mirrored (mirror_pairs()).
 
-Where the pen grows two parts into each other, one moves clear, just far enough to keep the
-regular's gap (APART: i j's dot, ª º's bar, the tonos beside a capital), or both copies of a
-double mark move apart (DOUBLES: “ ” ‖ ‼); each is condensed to keep its own box (OWN_BOX);
-of an outline's pieces, the wider is condensed away from the other (PIECES_APART: ⇥'s arrow
-from its bar, ‰'s zeros from each other, ℃ ℉ №'s letters from their small pieces, which
-grow by the small pen, LIGHT_PIECES), and ‰'s slash shortened at its foot (SLASHES); of two
-pieces condensing can't part, one shrinks (SHRUNK: ※'s dots, ⧉'s front square, ⌦'s ×); ⎋'s
-ring opens wider round its arrow (OPENED); ⇡'s dashes shorten (DASHED); ⇪'s ⇧ is the bold ⇧
-lifted over its bar (LIFTED); or, in one outline, Ħ's upper bar moves up its stems (RAISED).
-An accent the pen grows out of the line box moves down into it, and a mark it grows within
-MARK_CLEARANCE of its letter rises clear, as far on every letter where it stands as high
-(raise_clear()). Widths, anchors and the lookups carry over as they are.
+Where the pen alone would break a rule the regular keeps, a name list says what the bold does
+instead: parts move apart (APART, DOUBLES); an outline keeps its own box (OWN_BOX,
+ACROSS_AS_UP) or scales with its parts (SCALED); parts grow on their own (MERGED); pieces give
+way to each other (PIECES_APART, SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED); a bar
+moves up its stems (RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line
+box moves down into it (lower_into_line()), and a mark it grows within MARK_CLEARANCE of its
+letter rises clear (raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import argparse
 import collections
@@ -130,10 +102,10 @@ SHARED, BOLDER = "shared", "bolder"
 SHARED_BLOCKS = (range(0x2500, 0x2600), range(0x2800, 0x2900), range(0xE000, 0xF900))
 # Outside them: the spinner frames but ‼, which is two ! and grows with them, as the italic
 # slants it; the other frames of a spinner, so none grows and the spinner doesn't pulse: Claude
-# Code's ✢ ✳ ✶ ✻ ✽, and ✶, the star spinner's first frame, which add_shapes.py draws ✷ ✸ ✹ ✺
-# from rather than drawing it; the media controls ⏵ ⏸ ⏺, which status lines show side by side
-# at one height; and ☐, which □ and ■ are (tests/test_symbols.py), and ☑ ☒, ☐ marked, so the
-# three boxes stay alike.
+# Code's ✢ ✳ ✶ ✻ ✽, ✶ being also the star spinner's first frame, which add_shapes.py draws
+# ✷ ✸ ✹ ✺ from; the media controls ⏵ ⏸ ⏺, which status lines show side by side at one height;
+# and ☐, which □ and ■ are (tests/test_symbols.py), and ☑ ☒, ☐ marked, so the three boxes stay
+# alike.
 SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✢✳✶✻✽⏵⏸⏺☐☑☒")
 
 # The heavy marks, each drawn as its light glyph pushed out (docs/design-notes.md), and that
@@ -180,8 +152,8 @@ OUTWARD = ("circle.copyright",)
 
 # The parts that keep their glyphs' side room by scaling about their middle before they grow,
 # the other parts of those glyphs scaling with them about the same point, rather than by
-# condensing: © ®'s ring, which grows outward by the whole pen (OUTWARD) to 8 from the cell's
-# edges. Condensed alone, the ring would come 5 lighter than C, against the 4 that
+# condensing: © ®'s ring, which grows outward by its pen's whole width (OUTWARD) to 8 from the
+# cell's edges. Condensed alone, the ring would come 5 lighter than C, against the 4 that
 # tests/test_latin.py allows, and its counter would close on the letter; scaled with it, both
 # keep their weight and the letter its room.
 SCALED = ("circle.copyright",)
