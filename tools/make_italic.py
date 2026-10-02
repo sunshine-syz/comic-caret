@@ -33,7 +33,6 @@ outlines. Anchors move with the shear, so the mark lookups carry over as they ar
 the ligature lookups.
 """
 import argparse
-import collections
 import math
 import pathlib
 import sys
@@ -42,6 +41,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
+import project
 from add_ligatures import GENERATED
 from project import AXIS, ITALIC_SFD, SFD, save_checked, validation_errors
 
@@ -128,6 +128,13 @@ def encoded_style(code):
     return SLANTED
 
 
+def unused_style(name):
+    if not GENERATED.fullmatch(name):
+        sys.exit(f"{name} is unencoded and no glyph uses it: class it upright or slanted in "
+                 "make_italic.py")
+    return SLANTED
+
+
 def classify(font):
     """{glyph name: SLANTED, UPRIGHT or CURSIVE} for every glyph of the regular.
 
@@ -136,33 +143,8 @@ def classify(font):
     is an operator's and slants. Any other unencoded glyph nothing references stops the
     generator: only the generators' glyphs are known to slant, so it has to be classed.
     """
-    styles = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE)}
-    users = collections.defaultdict(set)
-    for glyph in font.glyphs():
-        for name, *_ in glyph.references:
-            users[name].add(glyph.glyphname)
-        if glyph.unicode >= 0 and glyph.glyphname not in styles:
-            styles[glyph.glyphname] = encoded_style(glyph.unicode)
-    pending = [g.glyphname for g in font.glyphs() if g.glyphname not in styles]
-    while pending:
-        left = []
-        for name in pending:
-            found = {styles.get(user) for user in users[name]}
-            if not users[name]:
-                if not GENERATED.fullmatch(name):
-                    sys.exit(f"{name} is unencoded and no glyph uses it: class it upright or "
-                             "slanted in make_italic.py")
-                styles[name] = SLANTED
-            elif None in found:
-                left.append(name)  # a user is itself unclassified yet
-            elif len(found) == 1:
-                styles[name] = found.pop()
-            else:
-                sys.exit(f"{name} is used by glyphs of different styles: {sorted(users[name])}")
-        if len(left) == len(pending):
-            sys.exit(f"cannot classify {left}: their users depend on each other")
-        pending = left
-    return styles
+    known = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE)}
+    return project.classify(font, known, encoded_style, unused_style)
 
 
 def conjugable(matrix):

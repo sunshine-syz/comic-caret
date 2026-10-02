@@ -1,4 +1,5 @@
 """Paths and font-wide facts that the tools and tests share."""
+import collections
 import os
 import pathlib
 import subprocess
@@ -8,6 +9,7 @@ import unicodedata
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SFD = ROOT / "src" / "ComicCaret-Regular.sfd"  # the master every glyph is drawn in
 ITALIC_SFD = ROOT / "src" / "ComicCaret-Italic.sfd"  # derived from it by tools/make_italic.py
+BOLD_SFD = ROOT / "src" / "ComicCaret-Bold.sfd"  # derived from it by tools/make_bold.py
 STYLES = {"Regular": SFD, "Italic": ITALIC_SFD}
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"  # the italic references are in italic/
 NERD_DIR = ROOT / "build" / "nerd"  # the patched fonts of ./build.sh --nerd and --release
@@ -96,6 +98,42 @@ def nerd_fonts():
 def validation_errors(glyph):
     """The glyph's validate() flags, without the bit that only records that it was checked."""
     return glyph.validate(True) & ~_VALIDATED
+
+
+def classify(font, known, of_code, unused):
+    """{glyph name: class} for every glyph of `font`, for a generator that treats its classes
+    of glyphs differently.
+
+    A glyph in `known` (name -> class) keeps that class, and any other encoded glyph takes
+    of_code(its code point). An unencoded part takes the class of the glyphs built from it,
+    which may be unencoded parts themselves, so they resolve in rounds. One that nothing uses
+    takes unused(its name), which exits when the generator can't class it. Exits naming the
+    glyphs when a part's users disagree or depend on each other.
+    """
+    classes = dict(known)
+    users = collections.defaultdict(set)
+    for glyph in font.glyphs():
+        for name, *_ in glyph.references:
+            users[name].add(glyph.glyphname)
+        if glyph.unicode >= 0 and glyph.glyphname not in classes:
+            classes[glyph.glyphname] = of_code(glyph.unicode)
+    pending = [g.glyphname for g in font.glyphs() if g.glyphname not in classes]
+    while pending:
+        left = []
+        for name in pending:
+            found = {classes.get(user) for user in users[name]}
+            if not users[name]:
+                classes[name] = unused(name)
+            elif None in found:
+                left.append(name)  # a user is itself unclassified yet
+            elif len(found) == 1:
+                classes[name] = found.pop()
+            else:
+                sys.exit(f"{name} is used by glyphs of different classes: {sorted(users[name])}")
+        if len(left) == len(pending):
+            sys.exit(f"cannot classify {left}: their users depend on each other")
+        pending = left
+    return classes
 
 
 def save_checked(font, sfd, script):

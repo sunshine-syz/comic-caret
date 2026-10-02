@@ -24,6 +24,8 @@ around. Read this before writing code that edits the SFD.
   checked. `project.save_checked()` validates in a fresh process instead.
   A saved `Validated:` line survives reopening, width changes and `autoHint()`; assigning the
   glyph a fresh `fontforge.layer()` clears it, and a blank glyph then saves without `Fore`.
+- `glyph.unlinkRef()` unlinks only the first reference, and `glyph.unlinkRef(name)` only
+  the first reference to `name`; call it once for each reference to unlink.
 - `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
   `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD
   in reverse order; assign them reversed to keep the file's order.
