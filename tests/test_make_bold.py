@@ -32,6 +32,11 @@ MOVED_FURTHER = {("dieresistonos", "dieresis")}
 # Known exceptions to a letter's bound being the cell: ∆ and ₫, symbols, hold Δ and đ where
 # they stand, so the two keep the symbols' side room (make_bold.side_bounds()).
 HELD_BY_SYMBOLS = {"uni0394": "∆", "dcroat": "₫"}
+# Known exceptions to an outline keeping the regular's counters: the pen is wider than the
+# narrow wedges of ₦ (39 and 47 wide in the regular) and of ₩'s V's (24 to 29), and shuts them;
+# ₩'s white between its bars narrows from 53-57 to 13-17. Maple Mono Bold's close as far: ₩'s to
+# 10-16, ₦'s to 20-22. They keep their pieces.
+SHUT_COUNTERS = ("uni20A6", "uni20A9")
 # Known exception to how far an outline may grow up: ⇪'s ⇧, the bold ⇧ lifted clear of its bar
 # (make_bold.LIFTED), which grows round, as heavy as ⇧'s shaft walls. It rises by no more than
 # the pens grew the two toward each other, the round bar's reach up and ⇧'s down, past what
@@ -141,6 +146,24 @@ class BoldTest(unittest.TestCase):
                    for side, limit in zip((axis, axis + 2), limits, strict=True)):
                 found[name] = (box, regular_box)
         return found
+
+    def test_bolder_glyphs_keep_their_pieces_and_counters(self):
+        # The pen joins no two pieces, splits none, and opens no white: a notch whose mouth it
+        # shut would be a new counter. Nor does it shut a counter, but the narrow ones
+        # SHUT_COUNTERS names. The regular's outline is united first, as the bold's parts are.
+        def count(layer):
+            return (sum(c.isClockwise() for c in layer),
+                    sum(not c.isClockwise() for c in layer))
+        changed = {}
+        for name in self.of_class(BOLDER):
+            bold, regular = self.outlines(name)
+            if not len(regular):
+                continue
+            (pieces, counters), (was_pieces, was_counters) = count(bold), count(geo.union(regular))
+            shut = name in SHUT_COUNTERS and counters < was_counters
+            if pieces != was_pieces or (counters != was_counters and not shut):
+                changed[name] = ((pieces, counters), (was_pieces, was_counters))
+        self.assertEqual(changed, {})
 
     def test_bolder_glyphs_grow_no_taller_than_the_pen(self):
         # So a bold letter keeps the regular's rows.

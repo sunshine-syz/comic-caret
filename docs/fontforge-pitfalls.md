@@ -51,6 +51,8 @@ around. Read this before writing code that edits the SFD.
 
 ## Outlines
 
+- `layer += other` adds `other`'s own contours, and `removeOverlap()` on the layer then changes
+  them, even collapsing a counter to a point; add `other.dup()`.
 - `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the
   wrong region; cut with `layer.intersect()` against a box, and join two outlines along a flat
   edge they share with `geo.weld()` or `geo.weld_y()`, which splice the contours instead.

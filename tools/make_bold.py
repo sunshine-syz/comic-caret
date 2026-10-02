@@ -92,6 +92,7 @@ from add_shapes import CODES
 from measure import (
     area,
     bullet_side,
+    covered,
     distance,
     gap,
     ink,
@@ -490,9 +491,25 @@ def offset(outline, overlap, pen):
     layer = outline.dup()
     layer.stroke("elliptical", *pen, "round", "round", removeinternal=True,
                  removeoverlap=overlap)
-    layer += outline
+    layer += outline.dup()  # removeOverlap() would change the outline's own contours
     layer.removeOverlap()
     return layer
+
+
+def notches_filled(layer, outline):
+    """The grown `layer` with each hole that lies in none of the counters of `outline`, the one
+    it grew from, filled. The pen opens no white, so such a hole is a notch whose mouth the pen
+    shut (the ~> head's)."""
+    def solid(contour):
+        found = fontforge.layer()
+        found += contour
+        return geo.clockwise(found)
+    counters = [solid(c) for c in outline if not c.isClockwise()]
+    out = fontforge.layer()
+    for contour in layer:
+        if contour.isClockwise() or any(covered(solid(contour), c) > 0 for c in counters):
+            out += contour
+    return out
 
 
 def with_counters(layer, outline):
@@ -551,7 +568,7 @@ def emboldened(name, outline, scratch, pen):
     """
     cuts = cut_ends(name, outline)
     for overlap in ("layer", "none"):
-        layer = offset(outline, overlap, pen)
+        layer = notches_filled(offset(outline, overlap, pen), outline)
         if name in OUTWARD:
             layer = with_counters(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
