@@ -24,7 +24,7 @@ import add_box_drawing
 import lig_geometry as geo
 import measure
 from helpers import ROW_TOLERANCE, outline
-from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE, is_letter, is_mark
+from project import ADVANCE, AXIS, MARK_CLEARANCE, ROUNDING, SFD, WOBBLE, is_letter, is_mark
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
@@ -80,7 +80,6 @@ MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"
 # comma above where Ģ has one below.
 OWN_ACCENTS = {"dcaron", "tcaron", "gcommaaccent"}
 MERGED_BELOW = 10  # a merged ogonek or cedilla lies below this height or inside its letter
-MARK_CLEARANCE = 20  # the closest a mark may come to its letter
 STEM_BASES = {"dotlessi", "dotlessj", "l"}  # their marks sit over the stem, not the ink's middle
 # Accents a letter places by hand away from where its anchor puts a combining mark. i's anchor
 # is over its dot, where î ï ĩ ī put theirs: ì's grave leans 38 left of it and í's acute 19

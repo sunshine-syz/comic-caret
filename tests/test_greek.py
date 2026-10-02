@@ -3,7 +3,7 @@
 Run: python3 -m unittest discover tests
 
 Rows, centering, and accented letters built on their letter with marks clear of it are
-checked in test_consistency.py.
+checked in test_consistency.py. The bold runs these rules too (BoldGreekTest).
 """
 import pathlib
 import sys
@@ -12,9 +12,11 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import measure
-from project import SFD
+from helpers import outline
+from project import BOLD_SFD, SFD
 
 # Google Fonts' Greek Core (the glyphsets package), less what Latin Core already covers:
 # the numeral signs, question mark, tonos, dialytika tonos and ano teleia, the alphabet with its
@@ -33,12 +35,18 @@ LOWER_TONOS = "άέήίόύώ"
 # The white between Θ's bar and its ring, at least the narrowest reference's: Maple Mono's
 # 52 (Fira Code's 54) at our cap height and advance.
 THETA_GAP = 52
+# The same for the bold, from the reference bolds with a Θ: Fira Code's 35.5 (Maple Mono's
+# 37.5).
+BOLD_THETA_GAP = 35
 
 
 class GreekTest(unittest.TestCase):
+    sfd = SFD
+    theta_gap = THETA_GAP
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def glyph(self, char):
         return self.font[ord(char)]
@@ -89,13 +97,38 @@ class GreekTest(unittest.TestCase):
                 self.assertLess((x0 + x1) / 2, beside)
                 self.assertGreaterEqual(y1, letter.boundingBox()[3])
 
-    def test_theta_bar_stays_clear_of_the_ring(self):
-        # Θ is O and a bar; at 12 px a bar that nearly meets the ring reads as ⊖.
+    def theta_parts(self):
+        """(ring, bar): O, where Θ places it, and Θ's own outline."""
         theta = self.glyph("Θ")
         [(name, matrix, *_)] = theta.references
         self.assertEqual(name, "O")
-        ring = geo.transformed(measure.ink(self.font, "O"), matrix)
-        self.assertGreaterEqual(measure.gap(ring, theta.foreground), THETA_GAP)
+        return geo.transformed(measure.ink(self.font, "O"), matrix), theta.foreground
+
+    def test_theta_bar_stays_clear_of_the_ring(self):
+        # Θ is O and a bar; at 12 px a bar that nearly meets the ring reads as ⊖.
+        self.assertGreaterEqual(measure.gap(*self.theta_parts()), self.theta_gap)
+
+
+class BoldGreekTest(GreekTest):
+    sfd = BOLD_SFD
+    theta_gap = BOLD_THETA_GAP
+
+    def theta_parts(self):
+        # Known exception: the bold draws Θ as one outline (make_bold.MERGED), as its bar
+        # beside a reference to the bold O fails validate(). The ring is O's outline, and the
+        # bar is the outline inside its counter.
+        ring, bar = fontforge.layer(), fontforge.layer()
+        contours = list(self.glyph("Θ").foreground)
+        counters = [c.boundingBox() for c in contours if not c.isClockwise()]
+        for contour in contours:
+            x0, y0, x1, y1 = contour.boundingBox()
+            if contour.isClockwise() and any(a0 < x0 and x1 < a1 and b0 < y0 and y1 < b1
+                                             for a0, b0, a1, b1 in counters):
+                bar += contour
+            else:
+                ring += contour
+        self.assertEqual(outline(ring), outline(self.font["O"].foreground))
+        return ring, bar
 
 
 if __name__ == "__main__":

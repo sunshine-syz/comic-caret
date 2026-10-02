@@ -46,9 +46,14 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + OVERLAP
 # Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).
 DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
 TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Maple Mono's 106)
+TONOS_CAPITALS = ("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos", "Upsilontonos",
+                  "Omegatonos")
 INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": OVERLAP,
-                    **dict.fromkeys(("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
-                                     "Upsilontonos", "Omegatonos"), TONOS_OVERHANG)}
+                    **dict.fromkeys(TONOS_CAPITALS, TONOS_OVERHANG)}
+# The bold's tonos moves left, clear of the heavier capital, as far as the furthest reference
+# bold's goes: Fira Code's Ύ, 195 at our advance (Maple Mono's 141).
+BOLD_TONOS_OVERHANG = 195
+BOLD_INK_OUTSIDE_CELL = {**INK_OUTSIDE_CELL, **dict.fromkeys(TONOS_CAPITALS, BOLD_TONOS_OVERHANG)}
 # ∄'s rotated E and slash overlap, and so do the references to ☐ and a quarter of ■ in ◰ ◱ ◲ ◳.
 VALIDATE_FLAGS = {"uni2204": 0x4, "uni25F0": 0x4, "uni25F1": 0x4, "uni25F2": 0x4, "uni25F3": 0x4}
 # The spaces, the blank Braille pattern and the zero-width format characters.
@@ -111,6 +116,7 @@ class SanityTest(unittest.TestCase):
         self.assertEqual(wrong, [])
 
     rounding = 0  # how far ink may miss its allowance through rounding
+    outside_cell = INK_OUTSIDE_CELL
 
     def box(self, glyph):
         return glyph.boundingBox()
@@ -120,7 +126,7 @@ class SanityTest(unittest.TestCase):
         for glyph in self.visible:
             x0, _, x1, _ = self.box(glyph)
             reach = max(-x0, x1 - ADVANCE) - self.rounding
-            if not is_box_drawing(glyph) and reach > INK_OUTSIDE_CELL.get(glyph.glyphname, 0):
+            if not is_box_drawing(glyph) and reach > self.outside_cell.get(glyph.glyphname, 0):
                 outside[glyph.glyphname] = reach
         self.assertEqual(outside, {})
 
@@ -199,6 +205,7 @@ class BoldSanityTest(SanityTest):
     """The same rules for the bold, whose strokes grow within the regular's cell and line box."""
 
     sfd = BOLD_SFD
+    outside_cell = BOLD_INK_OUTSIDE_CELL
 
 
 if __name__ == "__main__":

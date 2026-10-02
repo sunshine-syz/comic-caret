@@ -106,18 +106,18 @@ class BoldTest(unittest.TestCase):
 
     def outgrown(self, axis):
         """{name: (bold box, regular box)} for each bolder glyph whose outline reaches past
-        the regular's it grew from, along `axis` (0 across, 1 up and down), by more than half
-        its pen (make_bold.pen_of(): the small parts' is lighter) and a unit of rounding: a
-        stem grows half the pen's width on each side, a level stroke half its height. Covers
-        a trim or an overlap removal that failed and left its box, and a condensed outline,
-        which takes in each side by at most the pen it then grows by."""
+        the regular's it grew from, along `axis` (0 across, 1 up and down), by more than its
+        pen's reach (make_bold.pen_of(): the small parts' is lighter, the tonos's turned) and a
+        unit of rounding: a stem grows half the pen's width on each side, a level stroke half
+        its height. Covers a trim or an overlap removal that failed and left its box, and a
+        condensed outline, which takes in each side by at most the pen it then grows by."""
         small = make_bold.small_pen(self.regular)
         found = {}
         for name in self.of_class(BOLDER):
             bold, regular = self.outlines(name)
             if not len(regular):
                 continue
-            limit = make_bold.pen_of(name, small)[axis] / 2 + ROUNDING
+            limit = make_bold.reach(make_bold.pen_of(name, small))[axis] + ROUNDING
             box, regular_box = bold.boundingBox(), regular.boundingBox()
             if any(abs(box[side] - regular_box[side]) > limit for side in (axis, axis + 2)):
                 found[name] = (box, regular_box)
@@ -155,15 +155,14 @@ class BoldTest(unittest.TestCase):
     def test_references_and_lookups_carry_over(self):
         # Every glyph keeps the regular's references but those the bold draws as its outline
         # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
-        # move, out of the line box's top, into the cell or clear of a part the pen grew it
-        # into, by no more than the pen grew the two: its width across, half its height up or
-        # down, and a unit of rounding.
+        # move, out of the line box's top, into the cell, or clear of a part or a letter the
+        # pen grew it into, by no more than the pen can grow two parts toward each other, its
+        # width, and a unit of rounding, across or up and down.
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
 
         def moved_too_far(found, expected):
-            return any(abs(m[4] - e[4]) > PEN[0] + ROUNDING
-                       or abs(m[5] - e[5]) > PEN[1] / 2 + ROUNDING
+            return any(max(abs(m[4] - e[4]), abs(m[5] - e[5])) > PEN[0] + ROUNDING
                        for (_, m), (_, e) in zip(found, expected, strict=True))
         wrong = {}
         for glyph in self.regular.glyphs():
