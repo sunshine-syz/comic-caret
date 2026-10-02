@@ -4,6 +4,14 @@
 
 - R's bowl narrowed toward its top right, so the white inside it, 211 units across at three quarters of the cap height, was narrower than in any of the three reference fonts (Maple Mono's, the narrowest, is 245 at the same letter height). The bowl's shoulder is now filled out, keeping R's own stroke, leg and join, and leaves 255; Ŕ Ř Ŗ follow it.
 - The white inside ▹ was 2 units narrower than in Maple Mono's, the only reference font with ▹. ▹ is now 3% larger, its outline as heavy as before, leaving 9 more than Maple Mono's; ▸ ◃ ◂ ▵ ▴ ▿ ▾ ‣, which are built on it, grow with it.
+- Seven characters sat outside the range the three reference fonts cover, and now sit within it, each keeping its own strokes:
+  - ¬ was larger than any reference's (456 × 289 to their 338–366 × 190–207), its bar high above the hyphen. It is now 350 × 203, its bar on the hyphen's line, as Fira Code's is.
+  - ¦ stopped short of `|` at both ends. It now runs as far as `|`, as in Fira Code and Maple Mono, broken in the middle by a gap as tall as theirs.
+  - × is 30 units smaller each way, 385 × 369 (the references are 321–400 wide), so it stands further apart from `x`, and ✗ stands as far above it as Maple Mono's does.
+  - ¢ sat 100 units above the baseline, its c 40 units wider than `c` and its stroke reaching 783, above the capitals. It is now `c` itself on the baseline, its stroke running from −148 to 640, within the references' reach.
+  - ∂'s hook rose to 703, above `6` and the capitals; it now tops out at 676, as Fira Code's does, below `6`.
+  - The spacing ogonek ˛ sat 28 units right of the cell's middle and is now centered, as in the references; the combining ogonek (U+0328) and ą ę į ų are unchanged.
+  - The Braille patterns sat 14 units right of the cell's middle; the grid is now centered, as Maple Mono's is.
 
 ## 1.6.5 (2026-10)
 

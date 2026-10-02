@@ -33,12 +33,15 @@ NOT_EQUAL_REACH = 146
 # The white between ≈'s waves: at least the narrowest reference's, Intel One Mono's at our cap
 # height (Fira Code's 79, Maple Mono's 85).
 APPROX_GAP = 69
+# The white between ¦'s pieces: at least the narrowest reference's, Maple Mono's at our cap
+# height (Fira Code's 192).
+BROKEN_BAR_GAP = 162
 # How much taller each mark stands than ×: at least the least of the references that have it,
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
 MARK_OVER_TIMES = {"✓": 99, "✗": 131, "✕": 68}
 # Marks short of their floor, held to the least floor until a proof decides their size.
-SHORT_MARKS = {"✗": "106 over × to Maple Mono's 131"}
+SHORT_MARKS = {}
 # Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
 # head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
 # another arrow than its → too; it stands where → does (BuiltFromTest).
@@ -174,6 +177,28 @@ class OperatorTest(unittest.TestCase):
                  for _, matrix, *_ in self.font["approxequal"].references]
         self.assertEqual(len(waves), 2)
         self.assertGreaterEqual(measure.gap(*waves), APPROX_GAP)
+
+    def test_not_sign_bar_lies_on_the_hyphen(self):
+        # Its bar is the hyphen's stroke, as Fira Code's is, and the drop hangs below it.
+        [(b0, b1)] = measure.spans_at_x(self.font["logicalnot"].foreground, ADVANCE / 2)
+        _, h0, _, h1 = self.font["hyphen"].boundingBox()
+        self.assertAlmostEqual((b0 + b1) / 2, (h0 + h1) / 2, delta=WOBBLE)
+
+    def test_broken_bar_is_the_bar_broken(self):
+        # As long as |, as in both references that have ¦, broken into two pieces.
+        layer = self.font["brokenbar"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        _, b0, _, b1 = self.font["bar"].boundingBox()
+        self.assertAlmostEqual(y0, b0, delta=WOBBLE)
+        self.assertAlmostEqual(y1, b1, delta=WOBBLE)
+        x0, _, x1, _ = layer.boundingBox()
+        (_, low), (high, _) = measure.spans_at_x(layer, (x0 + x1) / 2)
+        self.assertGreaterEqual(high - low, BROKEN_BAR_GAP)
+
+    def test_partial_stands_no_taller_than_six(self):
+        # Its hook tops out at 6's height or under, as in both references that have ∂.
+        self.assertLessEqual(self.font["partialdiff"].boundingBox()[3],
+                             self.font["six"].boundingBox()[3])
 
     def test_infinity_has_two_matching_holes(self):
         # At least the narrowest reference's holes, 155 wide and 169 tall, and each the other
@@ -703,6 +728,9 @@ LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t", "₦": "N", "₱": "P"}
 BARS = {"₽": (300, 1, False), "₩": (40, 2, False), "₹": (120, 2, True), "₦": (40, 2, False),
         "₱": (40, 2, False)}
 TICK_REACH = 100  # ₿'s ticks past B: Maple Mono's, the only reference's, reach 130
+# How far ¢'s stroke runs past its c, above and below: at least the narrowest reference's,
+# Maple Mono's at our cap height (Fira Code's 138 below and Intel One Mono's 130).
+CENT_REACH = 117
 # Dash look-alike -> the dash it is: the hyphen for ‐ and the non-breaking hyphen ‑, the en
 # dash for the figure dash ‒ and the em dash for the horizontal bar ―, as their Unicode names
 # say and as the references that have them draw them.
@@ -774,6 +802,16 @@ class CurrencyTest(unittest.TestCase):
                 self.assertEqual(len(ticks), 2)
                 for a, b in ticks:
                     self.assertAlmostEqual(b - a, s1 - s0, delta=self.weight)
+
+    def test_cent_is_c_with_a_stroke_through_it(self):
+        # c whole, as each reference's ¢ holds its c, with a stroke past both ends.
+        cent = self.font["cent"].foreground
+        c = self.font["c"].foreground
+        self.assertGreaterEqual(measure.covered(c, cent), 0.99)
+        _, y0, _, y1 = cent.boundingBox()
+        _, c0, _, c1 = c.boundingBox()
+        self.assertGreaterEqual(y1 - c1, CENT_REACH)
+        self.assertGreaterEqual(c0 - y0, CENT_REACH)
 
     def test_dong_is_the_letter_over_the_em_dash(self):
         # The em dash only moved, to lie under the letter, clear of it.
