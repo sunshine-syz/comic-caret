@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SOURCES="src/ComicCaret-Regular.sfd src/ComicCaret-Italic.sfd"
+SOURCES="src/ComicCaret-Regular.sfd src/ComicCaret-Italic.sfd src/ComicCaret-Bold.sfd"
 OUT_DIR=fonts
 NERD_OUT=build/nerd
 DIST=dist
@@ -20,7 +20,7 @@ usage() {
   cat <<EOF
 Usage: ./build.sh [--nerd[=VARIANTS] | --release]
 
-Builds $OUT_DIR/ComicCaret-{Regular,Italic}.{otf,ttf} from $SOURCES.
+Builds $OUT_DIR/ComicCaret-{Regular,Italic,Bold}.{otf,ttf} from $SOURCES.
 
   --nerd[=VARIANTS]  Also patch every built font with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:

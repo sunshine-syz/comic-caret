@@ -10,8 +10,9 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+import make_bold
 import make_italic
-from project import ITALIC_SFD, LINE_BOTTOM, LINE_TOP, ROOT, SFD
+from project import BOLD_SFD, ITALIC_SFD, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 
 HOME = "https://github.com/sunshine-syz/comic-caret"
 SET_BY_HAND = range(8, 15)  # name IDs in LangName; FontForge derives 0-7 from other fields
@@ -136,6 +137,35 @@ class ItalicMetadataTest(MetadataTest):
         oblique = (*regular[:LETTERFORM], regular[LETTERFORM] + TO_OBLIQUE,
                    *regular[LETTERFORM + 1:])
         self.assertEqual(self.font.os2_panose, oblique)
+
+
+class BoldMetadataTest(MetadataTest):
+    sfd = BOLD_SFD
+    style = (make_bold.FONTNAME, make_bold.FULLNAME, "Bold", 0, make_bold.BOLD_BIT)
+
+    def test_everything_but_the_weight_is_the_regulars(self):
+        regular = fontforge.open(str(SFD))
+        weight = {"weight", "os2_weight", "os2_strikeypos", "os2_strikeysize"}
+        for field in set(SHARED) - weight:
+            with self.subTest(field=field):
+                self.assertEqual(getattr(self.font, field), getattr(regular, field))
+        self.assertEqual(lang_name_fields(BOLD_SFD), lang_name_fields(SFD))
+
+    def test_declared_heights_are_the_tops_of_x_and_H(self):
+        # The heights stay the regular's, shared by the family; the bold's pen grows a level
+        # stroke up by half its height, so the tops may stand that far above them.
+        reach = make_bold.PEN[1] / 2
+        for glyph, declared in (("x", self.font.os2_xheight), ("H", self.font.os2_capheight)):
+            with self.subTest(glyph=glyph):
+                top = self.font[glyph].boundingBox()[3]
+                self.assertGreaterEqual(top, declared)
+                self.assertLessEqual(top - declared, reach)
+
+    def test_panose_is_the_regulars_with_a_bold_weight(self):
+        regular = fontforge.open(str(SFD)).os2_panose
+        differing = [i for i, (a, b) in enumerate(zip(self.font.os2_panose, regular)) if a != b]
+        self.assertEqual(differing, [WEIGHT])
+        self.assertEqual(self.font.os2_panose[WEIGHT], 8)
 
 
 if __name__ == "__main__":

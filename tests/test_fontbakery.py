@@ -107,6 +107,17 @@ def known():
             # FontForge adds nonmarkingreturn to every TTF.
             ("WARN", "unreachable_glyphs", "unreachable-glyphs",
              frozenset({"nonmarkingreturn"})),
+            # The bold's heavier strokes join parts that stay apart in the regular: ⇥ ⇤ lose
+            # the gap between bar and arrow, ↹ its two bars' gaps, and ☑'s tick, grown into
+            # the box, makes a third contour. The four above hold for the bold as well.
+            ("WARN", "contour_count", "contour-count",
+             frozenset({"uni2204", "uni20B9", "uni20B1", "uni25CC",
+                        "uni21E4", "uni21E5", "uni21B9", "uni2611"})),
+            # The bold draws the shapes' parts as outlines of their own glyphs, so no
+            # composite in its TTF reaches them, as none in any CFF does.
+            ("WARN", "unreachable_glyphs", "unreachable-glyphs",
+             frozenset({"nonmarkingreturn", "asterisk.small", "square.upperleft",
+                        "square.upperright", "square.lowerleft", "square.lowerright"})),
         },
         "otf": {
             soft_hyphen, no_stat, caret_slope,

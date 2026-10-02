@@ -49,6 +49,7 @@ OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
 HEAD_MODIFIED = 28  # offset of head.modified
+HEAD_MAC_STYLE = 44  # offset of head.macStyle; bit 0 is bold
 MAC_EPOCH = 2082844800  # seconds from 1904-01-01, where head's dates count from, to 1970-01-01
 GENERATE = ROOT / "tools" / "generate.py"
 
@@ -215,6 +216,13 @@ class BuiltFontTest(unittest.TestCase):
         otf = font_file(self.style, "otf")
         self.assertEqual([line for line in opening_warnings(otf) if "Hint mask" in line], [])
 
+    def test_mac_style_has_the_bold_bit_in_the_bold_alone(self):
+        # make_bold leaves macStyle to FontForge, which derives it from the weight.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                mac_style = struct.unpack_from(">H", sfnt.tables(font)[b"head"], HEAD_MAC_STYLE)[0]
+                self.assertEqual(mac_style & 1, int(self.style == "Bold"))
+
 
 class GenerateDateTest(unittest.TestCase):
     def test_both_formats_carry_the_build_time(self):
@@ -235,6 +243,10 @@ class GenerateDateTest(unittest.TestCase):
 
 class ItalicBuiltFontTest(BuiltFontTest):
     style = "Italic"
+
+
+class BoldBuiltFontTest(BuiltFontTest):
+    style = "Bold"
 
 
 class MarkShapingTest(unittest.TestCase):
@@ -298,6 +310,10 @@ class ItalicMarkShapingTest(MarkShapingTest):
     style = "Italic"
     slant = SLANT
     rounding = 2  # a sheared outline's points and its anchors are each rounded to units
+
+
+class BoldMarkShapingTest(MarkShapingTest):
+    style = "Bold"
 
 
 class SanitizerTest(NerdBuilds, unittest.TestCase):
