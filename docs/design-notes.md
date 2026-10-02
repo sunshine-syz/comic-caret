@@ -248,7 +248,7 @@ what it does to them:
 - `OUTWARD`: © ®'s ring grows outward only, by the small pen's whole width, so it stays as
   heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©.
-- `BLUNT`: ₩ ₦'s bars run 30 to 47 past their letter on both sides. The pen lengthens their
+- `BLUNT`: ₩ ₦'s bars run 31 to 52 past their letter on both sides. The pen lengthens their
   round ends, which tapers the bars' run clear of the letter, so the bars would reach the
   hyphen's weight only inside it. So the sign keeps its regular box, condensed, and a second
   pen, as tall but a unit wide, is united with the first: the bars' ends keep the regular's

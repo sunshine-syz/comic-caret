@@ -234,7 +234,7 @@ OPENED = ("uni238B",)
 # so it stays open at 12 px (tests/test_symbols.py).
 DASHED = ("uni21E1",)
 
-# The signs whose bars run past their letter on both sides, 30 to 47 units: ₩ ₦. The pen
+# The signs whose bars run past their letter on both sides, 31 to 52 units: ₩ ₦. The pen
 # lengthens a round end by half its width, which tapers the bars' run clear of the letter, so
 # they would reach the hyphen's weight only inside it (tests/test_symbols.py); ₱'s, 70 left of
 # its P, reach it there with the pen alone. So the sign keeps its regular box, condensed, and

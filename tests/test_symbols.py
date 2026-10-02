@@ -778,10 +778,10 @@ class KeyHintTest(unittest.TestCase):
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
 LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t", "₦": "N", "₱": "P"}
 # Where a sign's bars cross a vertical line: (x from the cell's middle, how many bars, whether
-# they are the topmost spans there rather than the lowest). ₽'s bowl lies over its bar, W's arm
-# over ₩'s bars, and ₹'s leg under its bars; ₦'s and ₱'s bars run out left of their letters,
-# alone there (past the bars' rounded ends, which taper like the hyphen's).
-BARS = {"₽": (25, 1, False), "₩": (-235, 2, False), "₹": (-155, 2, True), "₦": (-235, 2, False),
+# they are the topmost spans there rather than the lowest). ₽'s bowl lies over its bar and ₹'s
+# leg under its bars; ₦'s, ₱'s and ₩'s bars run out left of their letters, alone there at their
+# height (past the bars' rounded ends, which taper like the hyphen's).
+BARS = {"₽": (25, 1, False), "₩": (-245, 2, False), "₹": (-155, 2, True), "₦": (-235, 2, False),
         "₱": (-235, 2, False)}
 TICK_REACH = 100  # ₿'s ticks past B: Maple Mono's, the only reference's, reach 130
 # How far ¢'s stroke runs past its c, above and below: at least the narrowest reference's,
