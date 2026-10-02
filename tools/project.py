@@ -43,6 +43,12 @@ def is_letter(code):
     return code >= 0 and unicodedata.category(chr(code)) in LETTERS
 
 
+def is_figure(code):
+    """Whether the code point is a figure: a digit, a fraction, a superscript or subscript, or a
+    Roman numeral; False for -1, an unencoded glyph."""
+    return code >= 0 and unicodedata.category(chr(code)).startswith("N")
+
+
 def is_mark(code):
     """Whether the code point is a combining mark, which draws over the character before it."""
     return code >= 0 and unicodedata.category(chr(code)) == "Mn"

@@ -17,9 +17,9 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
-from make_bold import BOLDER, PEN, SHARED
+from make_bold import BOLDER, LETTERLIKE, PEN, SHARED
 from measure import area, ink, vertical_edges
-from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD
+from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD, is_figure, is_letter
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "make_bold.py"
@@ -111,17 +111,18 @@ class BoldTest(unittest.TestCase):
     def outgrown(self, axis):
         """{name: (bold box, regular box)} for each bolder glyph whose outline reaches past
         the regular's it grew from, along `axis` (0 across, 1 up and down), by more than its
-        pen's reach (make_bold.pen_of(): the small parts' is lighter, the tonos's turned) and a
-        unit of rounding: a stem grows half the pen's width on each side, a level stroke half
-        its height. Covers a trim or an overlap removal that failed and left its box, and a
-        condensed outline, which takes in each side by at most the pen it then grows by."""
-        small = make_bold.small_pen(self.regular)
+        pen's reach (make_bold.pen_of(): the small parts' is lighter, the heavy marks' heavier,
+        the tonos's turned) and a unit of rounding: a stem grows half the pen's width on each
+        side, a level stroke half its height. Covers a trim or an overlap removal that failed
+        and left its box, and a condensed outline, which takes in each side by at most the pen
+        it then grows by."""
+        pens = make_bold.pens(self.regular)
         found = {}
         for name in self.of_class(BOLDER):
             bold, regular = self.outlines(name)
             if not len(regular):
                 continue
-            limit = make_bold.reach(make_bold.pen_of(name, small))[axis] + ROUNDING
+            limit = make_bold.reach(make_bold.pen_of(name, pens))[axis] + ROUNDING
             box, regular_box = bold.boundingBox(), regular.boundingBox()
             if any(abs(box[side] - regular_box[side]) > limit for side in (axis, axis + 2)):
                 found[name] = (box, regular_box)
@@ -133,6 +134,24 @@ class BoldTest(unittest.TestCase):
 
     def test_bolder_glyphs_grow_no_wider_than_the_pen(self):
         self.assertEqual(self.outgrown(0), {})
+
+    def test_symbols_keep_their_side_room(self):
+        # Each glyph but the letters and figures keeps the room from the cell's sides the
+        # regular gives it, down to ●'s side, so two side by side stay as far apart as ●●
+        # (tests/test_symbols.py). The letterlike symbols, ℓ ℹ among them, count as symbols. A
+        # letter or figure, as the cell is drawn round its stems, keeps to the cell or its
+        # overhang, as tests/test_sanity.py holds it.
+        side = make_bold.bullet_side(self.regular)
+        wrong = {}
+        for glyph in self.regular.glyphs():
+            code = glyph.unicode
+            if code < 0 or (is_letter(code) or is_figure(code)) and code not in LETTERLIKE:
+                continue
+            x0, _, x1, _ = glyph.boundingBox()
+            b0, _, b1, _ = self.bold[glyph.glyphname].boundingBox()
+            if b0 < min(x0, side) or b1 > max(x1, ADVANCE - side):
+                wrong[glyph.glyphname] = ((b0, b1), (x0, x1))
+        self.assertEqual(wrong, {})
 
     def test_pieces_keep_their_overlap(self):
         # A ligature piece cut flat past the cell, where it overlaps the next piece, ends at the
@@ -158,33 +177,29 @@ class BoldTest(unittest.TestCase):
 
     def test_references_and_lookups_carry_over(self):
         # Every glyph keeps the regular's references but those the bold draws as its outline
-        # (make_bold.unlinked_parts()), each turned and scaled as in the regular; a shared
-        # glyph refers to a part's stand-in in its place (make_bold.stand_ins()). A part may
+        # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
         # move, out of the line box's top, into the cell, or clear of a part or a letter the
         # pen grew it into, by no more than the pen grew the two toward each other, and a unit
         # of rounding: the pen's width across, and up or down, the part's pen's reach and a
         # full pen's (make_bold.reach()).
-        small = make_bold.small_pen(self.regular)
+        pens = make_bold.pens(self.regular)
 
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
 
         def moved_too_far(glyph, found, expected):
             for (part, m), (_, e) in zip(found, expected, strict=True):
-                up = make_bold.reach(make_bold.pen_of(part, small))[1] + PEN[1] / 2
+                up = make_bold.reach(make_bold.pen_of(part, pens))[1] + PEN[1] / 2
                 if (glyph, part) in MOVED_FURTHER:
                     up = PEN[0]
                 if abs(m[4] - e[4]) > PEN[0] + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:
                     return True
             return False
-        standing = make_bold.stand_ins(self.regular, self.classes)
         wrong = {}
         for glyph in self.regular.glyphs():
             name = glyph.glyphname
             unlinked = make_bold.unlinked_parts(glyph, self.classes)
-            expected = sorted((part, tuple(matrix)) for part, matrix
-                              in make_bold.relinked(glyph, self.classes, standing)
-                              if part not in unlinked)
+            expected = [ref for ref in listed(glyph) if ref[0] not in unlinked]
             found = listed(self.bold[name])
             if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in expected]
                     or moved_too_far(name, found, expected)):

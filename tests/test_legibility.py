@@ -21,7 +21,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import lig_geometry as geo
 import make_bold
 import measure
-from project import ADVANCE, BOLD_SFD, SFD
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD
 
 
 def offsets(glyph, name):
@@ -244,14 +244,20 @@ class AtSignTest(unittest.TestCase):
         [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
         return h1 - h0
 
+    @staticmethod
+    def stem_whites(at):
+        """The white between the strokes down the right-hand stroke of @'s outline `at`, the
+        a's stem."""
+        _, y0, _, y1 = at.boundingBox()
+        stem = measure.spans_at_y(at, (y0 + y1) / 2)[-1]
+        spans = measure.spans_at_x(at, sum(stem) / 2)
+        return [upper[0] - lower[1] for lower, upper in itertools.pairwise(spans)]
+
     def test_loop_stays_clear_of_the_stem(self):
-        # Down the right-hand stroke, the a's stem, the loop passes with at least the hyphen's
-        # thickness of white, so they stay apart at 12 px as ⇡'s dashes do.
-        _, y0, _, y1 = self.at.boundingBox()
-        stem = measure.spans_at_y(self.at, (y0 + y1) / 2)[-1]
-        spans = measure.spans_at_x(self.at, sum(stem) / 2)
-        for lower, upper in itertools.pairwise(spans):
-            self.assertGreaterEqual(upper[0] - lower[1], self.stem_white())
+        # Down the a's stem, the loop passes with at least the hyphen's thickness of white, so
+        # they stay apart at 12 px as ⇡'s dashes do.
+        for white in self.stem_whites(self.at):
+            self.assertGreaterEqual(white, self.stem_white())
 
 
 class LetterFollowUpTest(unittest.TestCase):
@@ -346,17 +352,14 @@ class BoldAtSignTest(AtSignTest):
     at_gap, at_counter = BOLD_AT_GAP, BOLD_AT_COUNTER
 
     def stem_white(self):
-        # Known exception: the bold's loop keeps ⇡'s white from the a's stem (70), not the
-        # hyphen's thickness. The pen grows the two 14 toward each other while the hyphen grows
-        # 14, so even grown only across, @ would keep the regular's 90 against the bold
-        # hyphen's 93; it keeps 76. More needs the a's stem shortened, or the loop's tail
-        # dropped further than tests/test_make_bold.py lets the pen grow it, which the bold,
-        # the regular's strokes grown, does not do. ⇡'s dashes are what the rule's reading at
-        # 12 px compares with.
-        dashed = self.font[0x21E1].foreground
-        x0, _, x1, _ = dashed.boundingBox()
-        spans = measure.spans_at_x(dashed, (x0 + x1) / 2)
-        return min(upper[0] - lower[1] for lower, upper in itertools.pairwise(spans))
+        # Known exception: the bold's loop keeps the regular's white from the a's stem, less
+        # the pen's height, which grows the two toward each other, and both edges' rounding:
+        # 76, not the bold hyphen's thickness, 93. Even grown only across, @ would keep the
+        # regular's 90, under 93. More needs the a's stem shortened, or the loop's tail dropped
+        # further than tests/test_make_bold.py lets the pen grow it, which the bold, the
+        # regular's strokes grown, does not do.
+        regular = fontforge.open(str(SFD))["at"].foreground
+        return min(self.stem_whites(regular)) - make_bold.PEN[1] - 2 * ROUNDING
 
 
 class BoldLetterFollowUpTest(LetterFollowUpTest):

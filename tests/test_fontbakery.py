@@ -107,10 +107,6 @@ def known():
             # FontForge adds nonmarkingreturn to every TTF.
             ("WARN", "unreachable_glyphs", "unreachable-glyphs",
              frozenset({"nonmarkingreturn"})),
-            # In the bold, ☑'s tick, grown into the box, makes a third contour. The four above
-            # hold for the bold as well.
-            ("WARN", "contour_count", "contour-count",
-             frozenset({"uni2204", "uni20B9", "uni20B1", "uni25CC", "uni2611"})),
         },
         "otf": {
             soft_hyphen, no_stat, caret_slope,
