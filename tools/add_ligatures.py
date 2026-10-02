@@ -26,7 +26,11 @@ FEA = ROOT / "src" / "ligatures.fea"
 LINE_EXTENSION = 0x23AF
 
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
-HEAD_SCALE = 1.1  # arrowheads relative to < >, as large as the references' heads
+# Arrowheads: < > with their arm ends as high, and each arm turned this much steeper, to
+# about Fira Code's slope; the turn alone makes them taller than < >. The steeper arms end
+# nearer the point, so → ← ⇒ ⇐, which carry these heads in one cell, keep a shaft.
+HEAD_SCALE = 1
+HEAD_TURN = math.radians(8)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -61,7 +65,7 @@ TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it 
 TIP = {"greater": 462, "less": 88}
 OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
-BARS_INTO_HEAD = 162   # = bars end this far inside the point, within both arms
+BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
 ARM_SPAN = (150, 330)  # along an arm from the point: straight, clear of the join and cap
 
 # != !==: the / at 95 %, centred on the bars.
@@ -72,14 +76,14 @@ EQUAL_PITCH = 326 - 143  # distance between the two = bars
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
 # their height, widening the angle from 374 to 530 like the references' angles.
 ANGLE_WIDTH_GAIN = 156
-ARM_ENDS = {"greater": ((115, 510), (115, 28)),   # centres of the upper and lower end caps
-            "less": ((435, 510), (435, 28))}
+ARM_ENDS = {"greater": ((128, 498), (131, 40)),   # centres of the upper and lower end caps
+            "less": ((419, 498), (422, 40))}
 HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
-# |> <|: the head 115 % the size of > <, its arm ends over the round ends of a bar as tall
+# |> <|: the head 121 % the size of > <, its arm ends over the round ends of a bar as tall
 # as the head, so each corner turns as one round stroke end.
-PIPE_HEAD_SCALE = 1.15
+PIPE_HEAD_SCALE = 1.21
 PIPE_BAR_EDGE = {"greater": 270 - ADVANCE, "less": 830 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
@@ -101,7 +105,7 @@ HEAD_PITCH = 375
 
 # ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
 # upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
-WAVE_END = 335
+WAVE_END = 360
 SPECK = 90  # the stem weight: a hole no wider than a stroke reads as a blot, not a counter
 
 
@@ -192,29 +196,69 @@ def turned(layer, name, angle):
     return geo.transformed(layer, geo.about(psMat.rotate(angle), TIP[name], AXIS))
 
 
-def longer_angle(font, name, scale):
-    """< or > with its arm ends `scale` times as high above and below the axis. Unlike scaling
-    the glyph, lengthening the arms keeps their stroke weight."""
+def longer_angle(font, name, scale, steeper=0.0):
+    """< or > with its arm ends `scale` times as high above and below the axis, each arm turned
+    `steeper` radians toward upright about the point. Unlike scaling the glyph, lengthening and
+    turning the arms keeps their stroke weight."""
     tip = TIP[name]
-    arms = []
+    inner = 0 if name == "greater" else 1  # which end of a span faces into the angle
+    arms, inner_edges = [], []
     for (_, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
         # The arms are drawn by hand, so the point-to-end line misses their axis by up to 5°;
         # stretching along it would skew them. Take the axis through two cross-sections, on
         # the straight part between the point and the end cap.
         rise = end_y - AXIS
-        (x0, y0), (x1, y1) = middle_at(half, AXIS + 0.3 * rise), middle_at(half, AXIS + 0.65 * rise)
+        sections = AXIS + 0.3 * rise, AXIS + 0.65 * rise
+        (x0, y0), (x1, y1) = (middle_at(half, y) for y in sections)
         direction = math.atan2(y1 - y0, x1 - x0)
-        gain = (scale - 1) * rise / math.sin(direction)
-        # Lay the arm along +x from the point, lengthen its straight part, then turn it back.
+        # Upright is up for the upper arm and down for the lower, whichever way the point faces.
+        toward_upright = math.copysign(1, math.cos(direction) * math.sin(direction))
+        new_direction = direction + toward_upright * steeper
+        gain = rise * (scale / math.sin(new_direction) - 1 / math.sin(direction))
+        # Lay the arm along +x from the point, lengthen its straight part, then turn it into place.
         flat = geo.stretch_span(turned(half, name, -direction),
                                 tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
-        arms.append(turned(flat, name, direction))
-    return geo.union(*arms)
+        arms.append(turned(flat, name, new_direction))
+        m = geo.about(psMat.rotate(new_direction - direction), tip, AXIS)
+        inner_edges.append([(m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5])
+                            for x, y in ((span_at(half, y)[inner], y) for y in sections)])
+    angle = geo.union(*arms)
+    return open_crotch(angle, name, *inner_edges) if steeper else angle
+
+
+def open_crotch(angle, name, upper, lower):
+    """`angle` cleared inside its point out to where its arms' inner edges, each given as two
+    points on its straight part, meet.
+
+    Each half reaches past the axis over the old inner corner; once the arms are turned apart,
+    that reach shows inside the angle as a spike.
+    """
+    def x_at(edge, y):
+        (x0, y0), (x1, y1) = edge
+        return x0 + (x1 - x0) * (y - y0) / (y1 - y0)
+
+    # Each edge is x = x_at(edge, AXIS) + slope * (y - AXIS); they meet where those agree.
+    slopes = [x_at(edge, AXIS + 1) - x_at(edge, AXIS) for edge in (upper, lower)]
+    meet_y = AXIS + (x_at(lower, AXIS) - x_at(upper, AXIS)) / (slopes[0] - slopes[1])
+    meet = (x_at(upper, meet_y), meet_y)
+    # Along each edge to twice arm_halves' reach from the axis, then 2 off it into the angle,
+    # so the cut never runs along the edge itself.
+    ux, lx = x_at(upper, AXIS + 60), x_at(lower, AXIS - 60)
+    arm_side, point_side = OUTWARD[name] * geo.FAR, -OUTWARD[name] * geo.FAR
+    opened = geo.clip(angle, geo.polygon([
+        (point_side, -geo.FAR), (point_side, geo.FAR), (arm_side, geo.FAR),
+        (arm_side, AXIS + 58), (ux, AXIS + 58), meet, (lx, AXIS - 58), (arm_side, AXIS - 58),
+        (arm_side, -geo.FAR)]))
+    # The cut can pass within a unit of an outline point. Rounded now, the two merge in the
+    # cleanup that follows instead of leaving a zero-length segment that validate() flags.
+    opened.round()
+    return opened
 
 
 def arrowheads(font):
     def head(name, shaft, x0, x1):
-        return geo.union(longer_angle(font, name, HEAD_SCALE), stroke(font, shaft, x0, x1))
+        return geo.union(longer_angle(font, name, HEAD_SCALE, HEAD_TURN),
+                         stroke(font, shaft, x0, x1))
 
     left, right = TIP["less"], TIP["greater"]
     return {
@@ -359,7 +403,7 @@ def diamond(font):
 def tail(font, name):
     """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
-    angle = longer_angle(font, name, HEAD_SCALE)
+    angle = longer_angle(font, name, HEAD_SCALE, HEAD_TURN)
     parts = []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
@@ -377,7 +421,7 @@ def tail(font, name):
 
 def two_heads(font, name):
     """The end of ->> or <<-: a second head HEAD_PITCH inside the first, where the shaft ends."""
-    head = longer_angle(font, name, HEAD_SCALE)
+    head = longer_angle(font, name, HEAD_SCALE, HEAD_TURN)
     inner = geo.transformed(head, psMat.translate(OUTWARD[name] * HEAD_PITCH, 0))
     end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
     shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
@@ -393,7 +437,7 @@ def wave_arrows(font):
     point, which is filled.
     """
     tildes = tilde_pieces(font)
-    right, left = (longer_angle(font, name, HEAD_SCALE) for name in ("greater", "less"))
+    right, left = (longer_angle(font, name, HEAD_SCALE, HEAD_TURN) for name in ("greater", "less"))
     high = geo.trim(tildes["asciitilde.mid"], x1=WAVE_END)
     low = geo.trim(tildes["asciitilde.mid.low"], x1=WAVE_END)
     return {"greater.warrow": geo.without_specks(geo.union(right, high), SPECK),
@@ -408,7 +452,7 @@ def comment_open(font):
     shaft = stroke(font, "hyphen", TIP["less"] + SHAFT_INTO_HEAD)
     [bar] = RUNS["hyphen"]
     shaft = geo.stretch(shaft, bar.cuts[1], ADVANCE + OVERLAP - shaft.boundingBox()[2], bar.band)
-    arrow = geo.union(longer_angle(font, "less", HEAD_SCALE), shaft)
+    arrow = geo.union(longer_angle(font, "less", HEAD_SCALE, HEAD_TURN), shaft)
     x0, _, x1, _ = font["exclam"].boundingBox()
     start = font["hyphen"].boundingBox()[0] + ADVANCE  # the run's start, from the !'s cell
     return arrow, round(((start - x1) - (x0 - OVERLAP)) / 2)

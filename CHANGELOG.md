@@ -16,6 +16,8 @@
   - ✗ stood 83 units under X's top, near enough to read as a capital at text sizes. It now stands 100 under, as Maple Mono's, the only reference with ✗, does; ✘ moves with it.
   - The bars under ª and º came within 70 units of their letters. They now leave 90, as Intel One Mono's do.
   - “ ” „ left about 60 units between their marks at mid-height, where all three references leave 100 or more. Each mark now stands about 20 units further out, leaving 104.
+- → ← ⇒ ⇐ were nearly all head: the head stood 578 units tall and its arms swept back over all but 85 units of the shaft. Each arm now turns 8° steeper, to about Fira Code's slope, so the head stands 516 tall and the shaft shows more than twice as long, 184. The arrow ligatures `->` `=>` `<-` `->>` `~>` `>=>` and `<!--` take the same head, so → beside `->` still reads as the same arrow.
+- `<` and `>` are 24 units shorter, 506 tall, their arms shortened along their own lines, so the arrowheads stay taller than them; `<=` `>=` `<>` follow them. `|>` `<|` `<|>` keep their size.
 
 ## 1.6.5 (2026-10)
 

@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import math
 import pathlib
 import sys
 import unittest
@@ -114,33 +115,41 @@ class GlyphShapeTest(unittest.TestCase):
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
 
-    def mean_widths(self, name):
-        """Mean stroke widths along the upper arm's height, left to right. Hand-drawn strokes
+    def mean_weights(self, name):
+        """Mean stroke weights along the upper arm's height, left to right. Hand-drawn strokes
         vary in width along their length, so a single height would compare unlike parts."""
         # Above the arrow shafts, below where the arms of |> <| reach their bar.
         heights = range(AXIS + 60, AXIS + 161, 20)
-        rows = [widths_at(self.font[name].foreground, y) for y in heights]
+        rows = [spans_at_y(self.font[name].foreground, y) for y in heights]
         self.assertEqual(len({len(row) for row in rows}), 1, f"{name}: strokes merge")
-        return [sum(column) / len(rows) for column in zip(*rows, strict=True)]
+        weights = []
+        for column in zip(*rows, strict=True):
+            # A line across a slanted stroke cuts it wider than its weight, the steeper the
+            # less, so the arrowheads' steeper arms are measured square to their slant.
+            middles = [(x0 + x1) / 2 for x0, x1 in column]
+            slant = math.atan2(heights[-1] - heights[0], middles[-1] - middles[0])
+            width = sum(x1 - x0 for x0, x1 in column) / len(column)
+            weights.append(width * abs(math.sin(slant)))
+        return weights
 
     def test_enlarged_heads_are_no_heavier_than_the_angles(self):
         # Scaling > up would thicken its arms past the shaft or bar they join.
         for glyph, angle in {"greater.arrow": "greater", "less.arrow": "less",
                              "less_bar_greater.liga": "less", **PIPES}.items():
             with self.subTest(glyph=glyph):
-                [arm] = self.mean_widths(angle)
-                strokes = self.mean_widths(glyph)
+                [arm] = self.mean_weights(angle)
+                strokes = self.mean_weights(glyph)
                 head = strokes[-1] if angle == "greater" else strokes[0]
                 self.assertAlmostEqual(head, arm, delta=0.05 * arm)
                 self.assertGreater(self.font[glyph].boundingBox()[3],
                                    self.font[angle].boundingBox()[3])
 
     def test_pipe_bars_are_as_heavy_as_the_bar(self):
-        [bar] = self.mean_widths("bar")
+        [bar] = self.mean_weights("bar")
         for pipe, index in {**{p: 0 if a == "greater" else -1 for p, a in PIPES.items()},
                             "less_bar_greater.liga": 1}.items():
             with self.subTest(pipe=pipe):
-                strokes = self.mean_widths(pipe)
+                strokes = self.mean_weights(pipe)
                 self.assertEqual(len(strokes), 3 if index == 1 else 2)
                 self.assertAlmostEqual(strokes[index], bar, delta=0.05 * bar)
 
