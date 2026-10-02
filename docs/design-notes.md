@@ -6,7 +6,11 @@ reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from th
 `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`). All three are
 OFL: copy measurements, never outlines. `tools/compare_glyphs.py` puts our glyph positions
 next to theirs, and `tools/proof_sheet.py` renders ours beside them; with `--italic`, both use
-the italic references in `build/cache/reference/italic/`.
+the italic references in `build/cache/reference/italic/` and `--bold`, the bold references in
+`build/cache/reference/bold/`: `FiraCode-Bold.ttf` (Fira Code 6.2), `IntelOneMono-Bold.ttf`
+(Intel One Mono 1.4.0, `ttf.zip`), `MapleMono-NF-Bold.ttf` (Maple Mono 7.9, the Nerd Font
+build) and `MonaspaceNeon-Bold.otf` and `MonaspaceRadon-Bold.otf` (Monaspace 1.400,
+`monaspace-static-v1.400.zip`).
 
 ## Scaled parts
 

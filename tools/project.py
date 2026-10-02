@@ -51,12 +51,12 @@ def takes_no_cell(code):
 
 
 def reference_fonts(style="Regular"):
-    """The reference fonts of `style` ("Regular" or "Italic"), sorted.
+    """The reference fonts of `style` ("Regular", "Italic" or "Bold"), sorted.
 
-    The regulars sit in REFERENCE_DIR and the italics in its italic/ folder; the search is not
-    recursive, so the regular list never picks up the italics.
+    The regulars sit in REFERENCE_DIR, the italics and bolds in its italic/ and bold/ folders;
+    the search is not recursive, so the regular list never picks up the others.
     """
-    folder = REFERENCE_DIR / "italic" if style == "Italic" else REFERENCE_DIR
+    folder = REFERENCE_DIR if style == "Regular" else REFERENCE_DIR / style.lower()
     return sorted(p for p in folder.glob("*") if p.suffix in (".otf", ".ttf"))
 
 

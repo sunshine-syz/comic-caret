@@ -1,14 +1,16 @@
 """Render a review sheet: Comic Caret next to an earlier build of itself and the reference fonts.
 
-Usage: python3 tools/proof_sheet.py OUTDIR [FONT ...] [--italic] [--before REV]
+Usage: python3 tools/proof_sheet.py OUTDIR [FONT ...] [--italic | --bold] [--before REV]
                                     [--text TEXT ...] [--features LIST] [--line-height EM ...]
 
 Writes OUTDIR/index.html and the images it shows; open the page in a browser. With no FONT
 arguments it shows fonts/ComicCaret-Regular.ttf, fonts/ComicCaret-Italic.ttf if it is built,
 and every font in build/cache/reference/. With --italic it shows fonts/ComicCaret-Italic.ttf and
-every font in build/cache/reference/italic/ instead.
+every font in build/cache/reference/italic/ instead. With --bold it shows
+fonts/ComicCaret-Bold.ttf, fonts/ComicCaret-Regular.ttf and every font in
+build/cache/reference/bold/.
 --before REV adds, second, the font built from the SFD at that commit (HEAD: the last one); with
---italic it builds the italic SFD.
+--italic or --bold it builds that style's SFD.
 Images are rendered with hb-view and are not committed.
 """
 import argparse
@@ -21,10 +23,11 @@ import subprocess
 import sys
 import tempfile
 
-from project import ITALIC_SFD, ROOT, SFD, font_file, reference_fonts
+from project import BOLD_SFD, ITALIC_SFD, ROOT, SFD, font_file, reference_fonts
 
 BUILT = font_file("Regular", "ttf")
 BUILT_ITALIC = font_file("Italic", "ttf")
+BUILT_BOLD = font_file("Bold", "ttf")
 SMALL = (12, 13, 14, 16)  # px: common editor and terminal sizes
 MAGNIFY = 3               # the small sizes are also shown this much larger, pixels kept hard
 LARGE = 64                # px: the outlines themselves
@@ -120,9 +123,11 @@ def rendered_at():
     return head + (f", with uncommitted changes to {source_dir}/" if changed else "")
 
 
-def default_fonts(italic):
-    if italic:
+def default_fonts(style):
+    if style == "Italic":
         return [BUILT_ITALIC, *reference_fonts("Italic")]
+    if style == "Bold":
+        return [BUILT_BOLD, BUILT, *reference_fonts("Bold")]
     return [BUILT, *([BUILT_ITALIC] if BUILT_ITALIC.exists() else []), *reference_fonts()]
 
 
@@ -194,8 +199,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("outdir", type=pathlib.Path)
     parser.add_argument("fonts", nargs="*", type=pathlib.Path, help="default: see above")
-    parser.add_argument("--italic", action="store_true",
-                        help="proof the italic against the italic reference fonts")
+    style = parser.add_mutually_exclusive_group()
+    style.add_argument("--italic", action="store_const", const="Italic", dest="style",
+                       help="proof the italic against the italic reference fonts")
+    style.add_argument("--bold", action="store_const", const="Bold", dest="style",
+                       help="proof the bold beside the regular and the bold reference fonts")
     parser.add_argument("--before", metavar="REV",
                         help="also show the font built from the SFD at this commit")
     parser.add_argument("--text", action="append",
@@ -207,11 +215,11 @@ def main():
                         help="set lines this many em apart in every font; repeatable "
                              "(default: each font's own)")
     args = parser.parse_intermixed_args()
-    paths = args.fonts or default_fonts(args.italic)
+    paths = args.fonts or default_fonts(args.style or "Regular")
     missing = [str(path) for path in paths if not path.exists()]
     if missing:
         parser.error(f"no such font: {', '.join(missing)}")
-    sfd = ITALIC_SFD if args.italic else SFD
+    sfd = {"Italic": ITALIC_SFD, "Bold": BOLD_SFD}.get(args.style, SFD)
     before = resolve(parser, args.before, sfd) if args.before else None
     blocks = [(text, text, None) for text in args.text] if args.text else BLOCKS
     if args.features is not None:

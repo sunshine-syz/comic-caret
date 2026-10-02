@@ -89,6 +89,15 @@ class ProofSheetTest(unittest.TestCase):
         self.assertIn("fonts/ComicCaret-Italic.ttf", page)
         self.assertNotIn("fonts/ComicCaret-Regular.ttf", page)
 
+    def test_bold_proofs_the_bold_beside_the_regular(self):
+        _, page = self.sheet("--bold", "--text=a")
+        bold = page.index("fonts/ComicCaret-Bold.ttf")
+        self.assertLess(bold, page.index("fonts/ComicCaret-Regular.ttf"))
+
+    def test_bold_and_italic_exclude_each_other(self):
+        result = run("unused", "--bold", "--italic")
+        self.assertEqual(result.returncode, 2)
+
     def test_names_the_commit_it_was_rendered_at(self):
         _, page = self.sheet(TTF, "--text=a")
         self.assertIn(git("rev-parse", "--short", "HEAD").stdout.strip(), page)
