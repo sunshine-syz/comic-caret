@@ -35,9 +35,9 @@ CX = ADVANCE / 2  # the cell's middle; ○ ● ☐ ■ center on it and on AXIS
 DEG = math.pi / 180
 
 CIRCLE, DISC, BOX, SQUARE, WHITE_BULLET = 0x25CB, 0x25CF, 0x2610, 0x25A0, 0x25E6
-HALVES = {0x25D0: dict(x1=CX), 0x25D1: dict(x0=CX), 0x25D2: dict(y1=AXIS), 0x25D3: dict(y0=AXIS)}
-QUADRANTS = {"upper left": dict(x1=CX, y0=AXIS), "lower left": dict(x1=CX, y1=AXIS),
-             "lower right": dict(x0=CX, y1=AXIS), "upper right": dict(x0=CX, y0=AXIS)}
+HALVES = {0x25D0: {"x1": CX}, 0x25D1: {"x0": CX}, 0x25D2: {"y1": AXIS}, 0x25D3: {"y0": AXIS}}
+QUADRANTS = {"upper left": {"x1": CX, "y0": AXIS}, "lower left": {"x1": CX, "y1": AXIS},
+             "lower right": {"x0": CX, "y1": AXIS}, "upper right": {"x0": CX, "y0": AXIS}}
 CIRCLE_QUADRANTS = dict(zip((0x25F4, 0x25F5, 0x25F6, 0x25F7), QUADRANTS.values()))
 SQUARE_QUADRANTS = dict(zip((0x25F0, 0x25F1, 0x25F2, 0x25F3), QUADRANTS.values()))
 # ◰ ◱ ◲ ◳ are references to ☐ and to a quarter of ■, a component of its own, which overlap
@@ -48,7 +48,7 @@ OVERLAPPING_REFERENCES = 0x4
 QUARTER_INSET = 6  # the quarters' edges under ☐'s stroke, so none coincides with its outline
 ARCS = {0x25DC: QUADRANTS["upper left"], 0x25DD: QUADRANTS["upper right"],
         0x25DE: QUADRANTS["lower right"], 0x25DF: QUADRANTS["lower left"],
-        0x25E0: dict(y0=AXIS), 0x25E1: dict(y1=AXIS)}
+        0x25E0: {"y0": AXIS}, 0x25E1: {"y1": AXIS}}
 LOWER_RIGHT, LOWER_LEFT, UPPER_LEFT, UPPER_RIGHT = 0x25E2, 0x25E3, 0x25E4, 0x25E5
 BLACK_BAR, WHITE_BAR = 0x25AE, 0x25AF
 NARROW = 0.527  # ▮'s width over its height in Fira Code, the only reference with ▮ ▯
@@ -125,7 +125,7 @@ def bar(font, x0, x1, yc):
     hyphen = measure.ink(font, "hyphen")
     hx0, _, hx1, _ = hyphen.boundingBox()
     layer = geo.stretch_span(hyphen, hx0 + 60, hx1 - 60, (x1 - x0) - (hx1 - hx0))
-    bx0, by0, bx1, by1 = layer.boundingBox()
+    bx0, by0, _, by1 = layer.boundingBox()
     return geo.moved(layer, x0 - bx0, yc - (by0 + by1) / 2)
 
 

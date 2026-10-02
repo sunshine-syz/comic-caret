@@ -5,7 +5,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from project import ADVANCE, FORMATS, STYLES, nerd_fonts, stale_build  # noqa: E402
+from project import ADVANCE, FORMATS, STYLES, nerd_fonts, stale_build
 
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30

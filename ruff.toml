@@ -1,2 +1,4 @@
 line-length = 100
-src = ["tools"]  # the tests import these modules by name
+src = ["tools", "tests"]  # the tests import these modules by name
+# Checked against 0.16's default rules; older releases select others.
+required-version = ">=0.16"

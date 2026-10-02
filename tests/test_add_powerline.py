@@ -18,8 +18,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_powerline
 import lig_geometry as geo
 import measure
-from helpers import outline
 from add_box_drawing import LIGHT
+from helpers import outline
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 from sfd_files import differences
 

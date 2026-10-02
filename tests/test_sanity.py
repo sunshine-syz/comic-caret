@@ -19,8 +19,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import lig_geometry as geo
 import make_italic
 from measure import ink
-from project import (ADVANCE, ITALIC_SFD, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, WOBBLE, ZERO_WIDTH,
-                     takes_no_cell, validation_errors)
+from project import (
+    ADVANCE,
+    ITALIC_SFD,
+    LINE_BOTTOM,
+    LINE_TOP,
+    OVERLAP,
+    SFD,
+    WOBBLE,
+    ZERO_WIDTH,
+    takes_no_cell,
+    validation_errors,
+)
 
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
 # by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.

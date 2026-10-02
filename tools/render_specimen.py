@@ -186,7 +186,7 @@ class Layout:
         at; keep a ligature's characters in one style."""
         for font, slanted in ((FONT, False), (ITALIC, True)):
             self._draw(x, baseline, text, size, gap, calt, classes, font,
-                       lambda cluster: italic[cluster] == slanted)
+                       lambda cluster, slanted=slanted: italic[cluster] == slanted)
 
     def _draw(self, x, baseline, text, size, gap, calt, classes, font, keep):
         """Draw the glyphs of `text` shaped with `font` whose cluster `keep` accepts."""

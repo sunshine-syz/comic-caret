@@ -5,6 +5,7 @@ Run: python3 -m unittest discover tests
 Their centring, the math axis, mirrored pairs and turned or filled shapes are checked with
 every other glyph in test_consistency.py and test_symbols.py.
 """
+import itertools
 import math
 import pathlib
 import shutil
@@ -270,7 +271,7 @@ class FrameTest(unittest.TestCase):
             reach = [(math.atan2(p.y - cy, p.x - cx), math.hypot(p.x - cx, p.y - cy))
                      for contour in self.ink(char) for p in contour if p.on_curve]
             far = sorted(angle for angle, r in reach if r > 0.97 * radius)
-            gaps = [b - a for a, b in zip(far, far[1:])] + [far[0] + 2 * math.pi - far[-1]]
+            gaps = [b - a for a, b in itertools.pairwise(far)] + [far[0] + 2 * math.pi - far[-1]]
             tips = sum(1 for gap in gaps if gap > math.pi / points)
             if tips != points or abs(max(r for _, r in reach) - radius) > WOBBLE:
                 wrong[char] = tips
@@ -290,7 +291,7 @@ class FrameTest(unittest.TestCase):
     def test_shogi_piece_points_up_and_tapers_down(self):
         # The apex at the top middle, and the base narrower than the shoulders.
         ink = self.ink("☖")
-        x0, y0, x1, y1 = ink.boundingBox()
+        _, y0, _, y1 = ink.boundingBox()
         top = geo.trim(ink, y0=y1 - 10)
         self.assertAlmostEqual(measure.ink_center(top), ADVANCE / 2, delta=WOBBLE)
         base = measure.spans_at_y(ink, y0 + 20)

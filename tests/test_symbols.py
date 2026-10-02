@@ -700,7 +700,7 @@ class KeyHintTest(unittest.TestCase):
         self.assertEqual(outline(arrow), outline(geo.transformed(up, psMat.translate(0, dy))))
         # The shaft's walls, a quarter of the way up: ⇧'s head takes its upper half.
         _, y0, _, y1 = up.boundingBox()
-        (l0, l1), *_, (r0, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
+        (l0, l1), *_, (_, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
         bx0, by0, bx1, by1 = bar.boundingBox()
         self.assertLess(by1, arrow.boundingBox()[1])
         self.assertAlmostEqual(by1 - by0, l1 - l0, delta=self.weight)
@@ -800,7 +800,7 @@ class CurrencyTest(unittest.TestCase):
     def test_bitcoin_ticks_pass_through_the_letter(self):
         # Two ticks as thick as | rise above B and drop below it, and nothing else does.
         layer = self.font[ord("₿")].foreground
-        x0, y0, x1, y1 = layer.boundingBox()
+        _, y0, _, y1 = layer.boundingBox()
         _, b0, _, b1 = self.font["B"].boundingBox()
         self.assertGreaterEqual(y1 - b1, TICK_REACH)
         self.assertGreaterEqual(b0 - y0, TICK_REACH)

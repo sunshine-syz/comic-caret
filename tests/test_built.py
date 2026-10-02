@@ -19,12 +19,23 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
-from bump_version import sfd_version
-from make_italic import SLANT
 import sfnt
+from bump_version import sfd_version
 from helpers import NerdBuilds, require_current_build
-from project import (ADVANCE, AXIS, FORMATS, ROOT, SFD, STYLES, font_file, nerd_fonts, newest_sfd,
-                     style_of, takes_no_cell)
+from make_italic import SLANT
+from project import (
+    ADVANCE,
+    AXIS,
+    FORMATS,
+    ROOT,
+    SFD,
+    STYLES,
+    font_file,
+    nerd_fonts,
+    newest_sfd,
+    style_of,
+    takes_no_cell,
+)
 
 FONTS = {style: [font_file(style, ext) for ext in FORMATS] for style in STYLES}
 # Converting to TrueType's quadratic curves moves an extreme point by up to 4 units.

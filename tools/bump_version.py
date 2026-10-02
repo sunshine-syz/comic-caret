@@ -18,6 +18,7 @@ import fontforge
 from project import ROOT, STYLES
 
 CHANGELOG = ROOT / "CHANGELOG.md"
+SFDS = tuple(STYLES.values())
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 HEADING = re.compile(r"^## (\S+) \((.+)\)$", re.MULTILINE)
 FIRST_HEADING = re.compile(r"^## .*$", re.MULTILINE)
@@ -67,7 +68,7 @@ def ordered(version):
     return tuple(int(part) for part in version.split("."))
 
 
-def start(version, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+def start(version, sfds=SFDS, changelog=CHANGELOG):
     """Make `version` the SFDs' and the changelog's newest, unreleased.
 
     An unreleased head is renamed, keeping its entries; after a release, a new head goes on top.
@@ -92,7 +93,7 @@ def start(version, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
     changelog.write_text(text, encoding="utf-8")
 
 
-def release(sfds=tuple(STYLES.values()), changelog=CHANGELOG, today=None):
+def release(sfds=SFDS, changelog=CHANGELOG, today=None):
     """Give the changelog's unreleased head this month; returns the tag to make."""
     text = changelog.read_text(encoding="utf-8")
     version, month, head = newest(text, changelog)
@@ -100,13 +101,13 @@ def release(sfds=tuple(STYLES.values()), changelog=CHANGELOG, today=None):
         raise VersionError(f"{version} was released in {month}; start the next version first")
     check_sfds(sfds, version, changelog)
     # The release is named for the maintainer's calendar, not UTC's.
-    today = today or datetime.date.today()
+    today = today or datetime.datetime.now().astimezone().date()
     changelog.write_text(text[:head.start()] + f"## {version} ({today:%Y-%m})"
                          + text[head.end():], encoding="utf-8")
     return f"v{version}"
 
 
-def check_tag(tag, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+def check_tag(tag, sfds=SFDS, changelog=CHANGELOG):
     """Refuse `tag` unless it names the SFDs' version, released at the changelog's head."""
     version, month, _ = newest(changelog.read_text(encoding="utf-8"), changelog)
     check_sfds(sfds, version, changelog)
@@ -118,7 +119,7 @@ def check_tag(tag, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
         raise VersionError(f"{version} is unreleased; run tools/bump_version.py --release first")
 
 
-def main(argv=None, sfds=tuple(STYLES.values()), changelog=CHANGELOG):
+def main(argv=None, sfds=SFDS, changelog=CHANGELOG):
     """Returns the exit code; the files are parameters so tests can use copies."""
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     action = parser.add_mutually_exclusive_group(required=True)

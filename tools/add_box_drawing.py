@@ -19,8 +19,16 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import (ADVANCE, AXIS, LINE_BOTTOM, LINE_TOP, OVERLAP, SFD, save_checked,
-                     validation_errors)
+from project import (
+    ADVANCE,
+    AXIS,
+    LINE_BOTTOM,
+    LINE_TOP,
+    OVERLAP,
+    SFD,
+    save_checked,
+    validation_errors,
+)
 
 # The Nerd Fonts patcher replaces the whole range unless the font has every glyph in it.
 CODES = range(0x2500, 0x25A0)

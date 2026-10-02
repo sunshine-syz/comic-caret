@@ -148,7 +148,7 @@ class BumpVersionTest(unittest.TestCase):
     def test_release_dates_by_the_local_month_by_default(self):
         sfd = self.sfd_at("1.2.0")
         self.write_changelog(UNRELEASED)
-        today = datetime.date.today()
+        today = datetime.datetime.now().astimezone().date()
         bump_version.release([sfd], self.changelog)
         self.assertEqual(self.heads()[0], f"## 1.2.0 ({today:%Y-%m})")
 

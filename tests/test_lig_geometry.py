@@ -162,7 +162,7 @@ class CleanupTest(unittest.TestCase):
 
 
 class ShapeTest(unittest.TestCase):
-    SQUARE = [(0, 0), (0, 100), (100, 100), (100, 0)]
+    SQUARE = ((0, 0), (0, 100), (100, 100), (100, 0))
 
     def test_a_polygon_runs_clockwise_whichever_way_its_points_go(self):
         for points in (self.SQUARE, self.SQUARE[::-1]):
