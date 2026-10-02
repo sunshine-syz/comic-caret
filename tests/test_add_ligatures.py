@@ -13,13 +13,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import add_ligatures
 from add_ligatures import GENERATED
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
-from project import ADVANCE, AXIS, OVERLAP, SFD
+from project import ADVANCE, AXIS, OVERLAP, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
 # it: 289.6 in its 1200-unit cell, scaled to ours.
 FIRA_HEAD_GAP = 289.6 * ADVANCE / 1200
+# <>'s ink width in x-heights: Maple Mono's (920 of 550) and Fira Code's (1850 of 1053).
+DIAMOND_WIDTHS = (1.67, 1.76)
+# The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
+# Mono's (620 of 550).
+OR_EQUAL_ANGLES = (1.098, 1.127)
 
 
 def widths_at(layer, y):
@@ -213,6 +218,26 @@ class GlyphShapeTest(unittest.TestCase):
         x0, y0, x1, y1 = layer.boundingBox()
         self.assertAlmostEqual((x0 + x1) / 2, 0, delta=2)
         self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=5)
+
+    def test_diamond_is_as_wide_as_the_references(self):
+        # In x-heights, between Maple Mono's <> (1.67) and Fira Code's (1.76).
+        x0, _, x1, _ = self.font["less_greater.liga"].boundingBox()
+        self.assertGreaterEqual((x1 - x0) / self.font.os2_xheight, DIAMOND_WIDTHS[0])
+        self.assertLessEqual((x1 - x0) / self.font.os2_xheight, DIAMOND_WIDTHS[1])
+
+    def test_or_equal_angle_is_as_wide_as_the_references(self):
+        # The angle apart from its bar, in x-heights, between Fira Code's and Maple Mono's,
+        # give or take the hand's wobble.
+        wobble = WOBBLE / self.font.os2_xheight
+        for glyph in ("less_equal.liga", "greater_equal.liga"):
+            with self.subTest(glyph=glyph):
+                layer = self.font[glyph].foreground
+                self.assertEqual(len(layer), 2)  # the angle and the bar, apart
+                angle = max(layer, key=lambda contour: contour.boundingBox()[3])
+                x0, _, x1, _ = angle.boundingBox()
+                width = (x1 - x0) / self.font.os2_xheight
+                self.assertGreaterEqual(width, OR_EQUAL_ANGLES[0] - wobble)
+                self.assertLessEqual(width, OR_EQUAL_ANGLES[1] + wobble)
 
     def test_pipes_are_centred_on_their_middle_cell(self):
         x0, _, x1, _ = self.font["less_bar_greater.liga"].boundingBox()

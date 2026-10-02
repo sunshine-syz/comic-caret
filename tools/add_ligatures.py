@@ -27,10 +27,11 @@ LINE_EXTENSION = 0x23AF
 
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 # Arrowheads: < > with their arm ends as high, and each arm turned this much steeper, to
-# about Fira Code's slope; the turn alone makes them taller than < >. The steeper arms end
-# nearer the point, so → ← ⇒ ⇐, which carry these heads in one cell, keep a shaft.
+# about Fira Code's slope, 46-50° from level; the turn alone makes them taller than < >. The
+# steeper arms end nearer the point, so → ← ⇒ ⇐, which carry these heads in one cell, keep a
+# shaft.
 HEAD_SCALE = 1
-HEAD_TURN = math.radians(8)
+HEAD_TURN = math.radians(14)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -63,11 +64,11 @@ CREST_PROFILE, TROUGH_PROFILE = (292, 378), (161, 246)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.
-TIP = {"greater": 487, "less": 113}
+TIP = {"greater": 519, "less": 81}
 OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
-ARM_SPAN = (150, 330)  # along an arm from the point: straight, clear of the join and cap
+ARM_SPAN = (200, 370)  # along an arm from the point: straight, clear of the join and cap
 HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_halves)
 
 # != !==: the / at 95 %, centred on the bars.
@@ -76,11 +77,11 @@ EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
-# their height, widening the angle from 361 to 517 like the references' angles.
-ANGLE_WIDTH_GAIN = 156
-ARM_ENDS = {"greater": ((153, 498), (156, 40)),   # centres of the upper and lower end caps
-            "less": ((444, 498), (447, 40))}
-HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
+# their height, widening the angle from 425 to 517 like the references' angles.
+ANGLE_WIDTH_GAIN = 94
+ARM_ENDS = {"greater": ((126, 498), (116, 40)),   # centres of the upper and lower end caps
+            "less": ((484, 498), (475, 40))}
+HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
 # |> <|: the head 121 % the size of > <, its arm ends over the round ends of a bar as tall
@@ -93,7 +94,7 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
 # <>: each half's angle widened by this, so the diamond is as wide as the references' at the
 # same x-height: 1.70 x-heights, between Maple Mono's 1.67 and Fira Code's 1.76.
-DIAMOND_WIDTH_GAIN = 98
+DIAMOND_WIDTH_GAIN = 35
 
 # The side bearing each glyph keeps toward its partner once moved, so the white between a pair
 # stays when the cell or the glyph's width changes.
@@ -107,7 +108,7 @@ JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap,
 # at least the white of Fira Code, the one reference that draws ->>, between the two. A
 # smaller pitch brings the inner head's crotch up to the cell's edge, where the shaft's cut
 # end then shows in it.
-HEAD_PITCH = 400
+HEAD_PITCH = 432
 
 # ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
 # upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
@@ -133,8 +134,10 @@ def stroke(font, name, x0=None, x1=None):
             layer = geo.stretch(layer, bar.cuts[1], STRETCH, bar.band)
     layer = geo.trim(layer, -geo.FAR if x0 is None else x0, geo.FAR if x1 is None else x1)
     profile = [y for bar in bars for y in bar.profile]
+    # Snapped, pieces cut at the same seam meet at identical heights. A cut inside another
+    # stroke meets nothing, and snapped a unit past an outline point it hooks the curve's end.
     for x in (x0, x1):
-        if x is not None:
+        if x in (-OVERLAP, ADVANCE + OVERLAP):
             geo.snap_edge(layer, x, profile)
     return layer
 
