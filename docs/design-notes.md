@@ -28,7 +28,8 @@ them. The exceptions:
 - ▹ is ▷ at 0.61 thinned to a 41 outline, since at the full stroke its counter fills in at
   16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. Its size keeps the white across its middle, 168, above Maple
   Mono's, the only reference's, whose lighter 37 outline leaves 159 at our cap height.
-- ▫ (☐ at 0.52) and ◦ (○ at 0.48) are scaled so their rings come out about 41 too.
+- ▫ (☐ at 0.52) and ◦ (a ring of ○'s shape, 250 across) are scaled so their rings come out
+  about 41 too.
 - ⧉'s squares are the hyphen's stroke at 0.79, so the one behind keeps clear of the one in
   front; ⏺ ⏵ are ● ▶ scaled to ⏸'s height.
 - The keyboard symbols ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ take the same 0.79 stroke, for their detail, so key

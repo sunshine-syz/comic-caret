@@ -60,13 +60,13 @@ SQUARED_ASTERISK, SQUARED_CIRCLE = 0x29C6, 0x29C7
 SMALL_ASTERISK = "asterisk.small"
 DASHES = 8          # ◌: Maple Mono's, the only reference's, has eight
 DASH_GAP = 60       # along the ring's middle, so the gaps stay open at 12 px
-FILL_BARS = 3       # ◍: three bars of ◦'s stroke leave four gaps of 55 in ○'s counter
+FILL_BARS = 3       # ◍: three bars of ◦'s stroke leave gaps of 47 to 68 in ○'s counter
 THIN = 41           # ◦'s ring, which the bars inside ◍ and between ⊶ ⊷'s ends take
 ASTERISK_SCALE = 0.48  # ⧆'s `*` in ☐'s counter, half a stroke clear of it, thickened like the small figures
 TRIGRAMS = range(0x2630, 0x2638)
 # Bit k of a trigram's offset from ☰ breaks line k from the top: ☱ (1) breaks the top line,
 # ☲ (2) the middle one, ☴ (4) the bottom one, ☷ (7) all three.
-TRIGRAM_PITCH = 176  # the bars span 84% of ○'s height, as Fira Code's span its ○'s
+TRIGRAM_PITCH = 189  # the bars span 84% of ○'s height, as Fira Code's span its ○'s
 TRIGRAM_INSET = 55   # from the cell's sides; Fira Code's bars keep 14% of the cell
 BROKEN_GAP = 90      # between a broken line's halves: 18% of the line, under Fira Code's 23%
 SIX_STAR = 0x2736
