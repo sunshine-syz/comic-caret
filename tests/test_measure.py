@@ -104,6 +104,18 @@ class AreaTest(unittest.TestCase):
         inner, outer = geo.rect(0, 0, 100, 100), geo.rect(50, -10, 200, 110)
         self.assertAlmostEqual(measure.covered(inner, outer), 0.5)
 
+    def test_length_runs_round_every_contour(self):
+        layer = geo.rect(0, 0, 100, 50)
+        layer += geo.rect(200, 0, 210, 10)
+        self.assertAlmostEqual(measure.length(layer), 2 * (100 + 50) + 4 * 10)
+
+
+class DistanceTest(unittest.TestCase):
+    def test_distance_is_to_the_nearest_edge_inside_or_out(self):
+        layer = geo.rect(0, 0, 100, 100)
+        self.assertAlmostEqual(measure.distance((20, 50), layer), 20)
+        self.assertAlmostEqual(measure.distance((130, 140), layer), 50)  # 30 across, 40 up
+
 
 class OutlineTest(unittest.TestCase):
     def test_contour_order_and_starting_points_do_not_count(self):

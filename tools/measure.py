@@ -79,6 +79,15 @@ def area(layer, steps=16):
     return total
 
 
+def length(layer, steps=16):
+    """How long the layer's outline is, every contour round."""
+    total = 0
+    for contour in layer:
+        points = _polyline(contour, steps)
+        total += sum(math.dist(a, b) for a, b in zip(points, points[1:] + points[:1]))
+    return total
+
+
 def covered(inner, outer):
     """The share of `inner`'s ink that `outer` covers. Neither may overlap itself."""
     both = inner.dup()
@@ -151,6 +160,12 @@ def _to_segment(point, a, b):
     length = dx * dx + dy * dy
     t = 0 if not length else max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / length))
     return math.hypot(px - ax - t * dx, py - ay - t * dy)
+
+
+def distance(point, layer, steps=16):
+    """How far the point lies from the layer's outline."""
+    lines = [_polyline(contour, steps) for contour in layer]
+    return min(_to_segment(point, a, b) for line in lines for a, b in zip(line, line[1:] + line[:1]))
 
 
 def gap(first, second, steps=16):
