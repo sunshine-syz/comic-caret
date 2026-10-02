@@ -1,5 +1,7 @@
 # Changelog
 
+## 2.0.0 (unreleased)
+
 ## 1.7.0 (2026-10)
 
 - A bold, Comic Caret Bold, in the same zips as the regular and the italic and in the Nerd Font zip.

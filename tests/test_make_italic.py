@@ -22,7 +22,7 @@ import lig_geometry as geo
 import make_italic
 from make_italic import CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
 from measure import ink, spans_at_y
-from project import AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
+from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "make_italic.py"
@@ -74,9 +74,9 @@ class GeneratorTest(unittest.TestCase):
         # Only the generators' glyphs are known to slant; any other one has to be classed.
         font = fontforge.font()
         # glyphs() skips an unencoded glyph until something is set on it.
-        font.createChar(-1, "colon.eq").width = 550
+        font.createChar(-1, "colon.eq").width = ADVANCE
         self.assertEqual(make_italic.classify(font)["colon.eq"], SLANTED)
-        font.createChar(-1, "mystery").width = 550
+        font.createChar(-1, "mystery").width = ADVANCE
         with self.assertRaisesRegex(SystemExit, "mystery"):
             make_italic.classify(font)
 

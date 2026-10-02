@@ -5,17 +5,10 @@ import sys
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-from measure import bullet_side
 from project import FORMATS, STYLES, nerd_fonts, stale_build
 
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
-
-
-def bullet_seam(font):
-    """The white between two ● side by side: as far apart as a symbol's parts must stay to
-    read apart at 16 px."""
-    return 2 * bullet_side(font)
 
 
 def require_current_build(styles=tuple(STYLES), formats=FORMATS):

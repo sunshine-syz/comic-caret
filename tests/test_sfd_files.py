@@ -11,7 +11,8 @@ import fontforge
 
 # the tests' shared SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from sfd_files import differences
+from sfd_files import differences  # also puts tools/ on the path
+from project import ADVANCE
 
 # A ring like O, as (x, y, on-curve) going round each contour: its handles lean a little, as
 # the hand's do, so moving one moves the stems the autohinter finds.
@@ -63,7 +64,7 @@ class DifferencesTest(unittest.TestCase):
         cls.tmp = tempfile.TemporaryDirectory()
         cls.dir = pathlib.Path(cls.tmp.name)
         font = fontforge.font()
-        font.createChar(ord("O"), "O").width = 550
+        font.createChar(ord("O"), "O").width = ADVANCE
         # A new font is saved with OnlyBitmaps, which only drawing in a reopened copy clears, so
         # the base is drawn in one. Every variant is the base opened, changed and saved, so
         # they share its creation time and differ from it only by their change.
@@ -112,12 +113,12 @@ class DifferencesTest(unittest.TestCase):
 
     def test_another_width_differs(self):
         def widen(font):
-            font["O"].width = 600
+            font["O"].width = ADVANCE + 50
         self.assertTrue(differences(self.base, self.variant("width", widen)))
 
     def test_another_glyph_differs(self):
         def add(font):
-            font.createChar(ord("P"), "P").width = 550
+            font.createChar(ord("P"), "P").width = ADVANCE
         self.assertTrue(differences(self.base, self.variant("glyph", add)))
 
     def test_another_header_field_differs(self):

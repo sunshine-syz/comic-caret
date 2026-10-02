@@ -69,13 +69,6 @@ def ink(font, glyph):
     return layer
 
 
-def bullet_side(font):
-    """●'s side bearing, the room a symbol keeps from the cell's edges at least: two ● side by
-    side leave twice it between them, ●●'s seam, which a symbol's parts keep too."""
-    x0, _, x1, _ = font[ord("●")].boundingBox()
-    return min(x0, ADVANCE - x1)
-
-
 def area(layer, steps=16):
     """The ink's area. Outer contours run clockwise and holes counter-clockwise, so holes
     subtract."""

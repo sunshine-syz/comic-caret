@@ -21,9 +21,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import lig_geometry as geo
 import make_bold
 import measure
-from helpers import bullet_seam
 from measure import outline
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
@@ -159,7 +158,7 @@ class CoverageTest(unittest.TestCase):
         self.assertEqual([c for c in SYMBOLS if ord(c) not in self.font], [])
 
     def test_symbols_stay_clear_of_their_neighbours(self):
-        side = measure.bullet_side(self.font)
+        side = SYMBOL_SIDE
         for char in SYMBOLS:
             if char not in OWN_SIDES:
                 with self.subTest(symbol=char):
@@ -188,8 +187,8 @@ class OperatorTest(unittest.TestCase):
     def test_identical_bars_are_three_equal_bars(self):
         # ≡'s bars weigh as ='s, within the pen's measured weight tolerance, and are spaced as
         # ='s, within the hand's wobble.
-        equal = measure.spans_at_x(self.font["equal"].foreground, 275)
-        bars = measure.spans_at_x(self.font["equivalence"].foreground, 275)
+        equal = measure.spans_at_x(self.font["equal"].foreground, ADVANCE / 2)
+        bars = measure.spans_at_x(self.font["equivalence"].foreground, ADVANCE / 2)
         self.assertEqual(len(bars), 3)
         gap = equal[1][0] - equal[0][1]
         for (b0, b1), (e0, e1) in zip(bars, equal + equal[:1]):
@@ -500,7 +499,7 @@ class ApartTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
-        cls.seam = bullet_seam(cls.font)
+        cls.seam = 2 * SYMBOL_SIDE
 
     def pieces(self, char):
         return measure.pieces(self.font[ord(char)].foreground)
@@ -672,7 +671,7 @@ class LetterlikeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
-        cls.seam = bullet_seam(cls.font)
+        cls.seam = 2 * SYMBOL_SIDE
 
     def pieces(self, char):
         return measure.pieces(self.font[ord(char)].foreground)

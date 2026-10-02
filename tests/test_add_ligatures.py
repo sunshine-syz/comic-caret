@@ -56,6 +56,18 @@ class MeasurementTest(unittest.TestCase):
         self.assertEqual(len(spans), 1, f"expected one stroke {what}, got {spans}")
         return spans[0]
 
+    def test_tight_pairs_keep_their_side(self):
+        # The shift follows the glyph's side bearing, so the white between a pair survives a
+        # wider cell or a redrawn glyph.
+        for name, keep in add_ligatures.TIGHT_KEEP.items():
+            x0, _, x1, _ = self.font[name].boundingBox()
+            shift = round((x0 + ADVANCE - x1) / 2 - keep)
+            for suffix, sign in (("tight_r", 1), ("tight_l", -1)):
+                with self.subTest(glyph=f"{name}.{suffix}"):
+                    [(base, matrix, *_)] = self.font[f"{name}.{suffix}"].references
+                    self.assertEqual(base, name)
+                    self.assertEqual(matrix[4], sign * shift)
+
     def test_run_bars_meet_their_profiles_at_the_cuts(self):
         for name, bars in add_ligatures.RUNS.items():
             for bar in bars:

@@ -71,7 +71,7 @@ HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_hal
 
 # != !==: the / at 95 %, centred on the bars.
 SLASH_SCALE = 0.95
-EQUAL_MIDDLE = 275     # stretch line through the middle of the = bars
+EQUAL_MIDDLE = ADVANCE / 2     # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
@@ -94,9 +94,11 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 # same x-height: 1.70 x-heights, between Maple Mono's 1.67 and Fira Code's 1.76.
 DIAMOND_WIDTH_GAIN = 98
 
-# How far each glyph moves toward its partner in a tightened pair.
-TIGHT = {"colon": 92, "period": 92, "ampersand": 37, "plus": 56, "slash": 65, "asterisk": 45,
-         "less": 40, "greater": 40, "question": 60, "bar": 100, "equal": 40}
+# The side bearing each glyph keeps toward its partner once moved, so the white between a pair
+# stays when the cell or the glyph's width changes.
+TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": -4, "plus": -5.5, "slash": -23.5,
+              "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 21, "bar": 131,
+              "equal": 20.5}
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
@@ -316,7 +318,7 @@ def or_equal(font, name):
     far = (end_x + OUTWARD[name] * ANGLE_WIDTH_GAIN, end_y)
     direction = math.atan2(far[1] - AXIS, far[0] - tip)
     length = math.hypot(far[0] - tip, far[1] - AXIS)
-    bar = geo.stretch(outline(font, "hyphen"), 275, length - HYPHEN_SPAN - 20)
+    bar = geo.stretch(outline(font, "hyphen"), ADVANCE / 2, length - HYPHEN_SPAN - 20)
     x0, y0, x1, y1 = bar.boundingBox()
     drop = BAR_GAP / abs(math.cos(direction))
     bar = geo.transformed(bar, psMat.compose(
@@ -475,7 +477,8 @@ def build(font):
     glyphs["greater_equal.liga"] = or_equal(font, "greater")
     glyphs["bar_greater.liga"] = pipe(font, "greater")
     glyphs["less_bar.liga"] = pipe(font, "less")
-    for name, shift in TIGHT.items():
+    for name in TIGHT_KEEP:
+        shift = tight_shift(font, name)
         glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
         glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
     glyphs["less_greater.liga"] = diamond(font)
@@ -489,6 +492,12 @@ def build(font):
     glyphs["less.comment"], bang = comment_open(font)
     glyphs["exclam.tight_r"] = [("exclam", bang, 0)]
     return glyphs
+
+
+def tight_shift(font, name):
+    """How far `name` moves toward its partner in a tightened pair."""
+    x0, _, x1, _ = font[name].boundingBox()
+    return round((x0 + ADVANCE - x1) / 2 - TIGHT_KEEP[name])
 
 
 def remove_previous(font):

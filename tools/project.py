@@ -14,6 +14,7 @@ STYLES = {"Regular": SFD, "Italic": ITALIC_SFD, "Bold": BOLD_SFD}
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"  # the italic references are in italic/
 NERD_DIR = ROOT / "build" / "nerd"  # the patched fonts of ./build.sh --nerd and --release
 ADVANCE = 550  # every glyph's advance width
+SYMBOL_SIDE = 15  # the least room a symbol keeps from each cell edge: two side by side keep 30 between them, open at 16 px
 LINE_TOP, LINE_BOTTOM = 900, -350  # the line box: hhea and typo ascender and descender
 AXIS = 269  # the math axis, the hyphen's middle: - = + and the arrows' shafts center on it
 OVERLAP = 10  # how far joining strokes (box drawing, the ligatures) reach into the next cell

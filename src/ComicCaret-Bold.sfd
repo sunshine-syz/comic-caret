@@ -4,7 +4,7 @@ FullName: Comic Caret Bold
 FamilyName: Comic Caret
 Weight: Bold
 Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly, 2026 YZ Sun
-Version: 1.7.0
+Version: 2.0.0
 ItalicAngle: 0
 UnderlinePosition: -140
 UnderlineWidth: 80
@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790953226
+ModificationTime: 1790959769
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5

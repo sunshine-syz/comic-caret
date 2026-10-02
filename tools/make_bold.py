@@ -65,7 +65,6 @@ from add_ligatures import GENERATED
 from add_shapes import CODES
 from measure import (
     area,
-    bullet_side,
     covered,
     distance,
     gap,
@@ -366,7 +365,7 @@ def side_bounds(font, classes):
     cell's middle, so it keeps that glyph's bound too: © ®'s ring. A part the bold draws as
     the glyph's own outline (unlinked_parts()), as ∆'s Δ, and a shared glyph's part, which
     doesn't grow, keep their own."""
-    side = bullet_side(font)
+    side = project.SYMBOL_SIDE
     bounds = {}
     for glyph in font.glyphs():
         if (code := glyph.unicode) >= 0:
@@ -939,7 +938,7 @@ def build(font):
     for listed in ("SLASHES", "LIGHT_PIECES"):
         if outside := sorted(set(globals()[listed]) - set(PIECES_APART)):
             sys.exit(f"make_bold.{listed}: {outside} not in PIECES_APART")
-    grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * bullet_side(font)
+    grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * project.SYMBOL_SIDE
     # Read before anything changes: where each glyph's ink must stay (side_bounds()); where
     # the outline of each of OWN_BOX and ACROSS_AS_UP must, its own box; the gap each part
     # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; and where

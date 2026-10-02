@@ -18,8 +18,8 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
-from measure import area, bullet_side, ink, outline, vertical_edges
-from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD, is_alphanumeric
+from measure import area, ink, outline, vertical_edges
+from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "make_bold.py"
@@ -63,9 +63,9 @@ class GeneratorTest(unittest.TestCase):
         # Only the generators' glyphs are known to grow; any other one has to be classed.
         font = fontforge.font()
         # glyphs() skips an unencoded glyph until something is set on it.
-        font.createChar(-1, "colon.eq").width = 550
+        font.createChar(-1, "colon.eq").width = ADVANCE
         self.assertEqual(make_bold.classify(font)["colon.eq"], BOLDER)
-        font.createChar(-1, "mystery").width = 550
+        font.createChar(-1, "mystery").width = ADVANCE
         with self.assertRaisesRegex(SystemExit, "mystery"):
             make_bold.classify(font)
 
@@ -185,7 +185,7 @@ class BoldTest(unittest.TestCase):
         # Ω K Å, which are letters (project.is_alphanumeric()). A letter or figure, as the cell
         # is drawn round its stems, keeps to the cell or its overhang, as tests/test_sanity.py
         # holds it.
-        side = bullet_side(self.regular)
+        side = SYMBOL_SIDE
         wrong = {}
         for glyph in self.regular.glyphs():
             if is_alphanumeric(code := glyph.unicode) or code < 0:

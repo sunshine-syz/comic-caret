@@ -107,7 +107,7 @@ LINES = {"light": "─│", "heavy": "━┃", "double": "═║"}
 FRACTIONS = {"ONE EIGHTH": 1 / 8, "ONE QUARTER": 1 / 4, "THREE EIGHTHS": 3 / 8, "HALF": 1 / 2,
              "FIVE EIGHTHS": 5 / 8, "THREE QUARTERS": 3 / 4, "SEVEN EIGHTHS": 7 / 8}
 SHADES = {"░": 1 / 4, "▒": 1 / 2, "▓": 3 / 4}
-BLOCK_TOLERANCE = 1  # eighths of 550 and 1250 units round to whole units
+BLOCK_TOLERANCE = 1  # eighths of the cell and the line box round to whole units
 RHYTHM_TOLERANCE = 2  # dashes and shade pixels span fractions of the cell, rounded
 SLIVER = 4  # rows and columns thinner than this join pixels that meet at a corner
 COVERAGE_TOLERANCE = 0.01  # those joins add 0.7 % to ▒
