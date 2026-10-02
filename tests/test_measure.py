@@ -105,6 +105,21 @@ class AreaTest(unittest.TestCase):
         self.assertAlmostEqual(measure.covered(inner, outer), 0.5)
 
 
+class PiecesTest(unittest.TestCase):
+    def test_each_outline_keeps_the_counters_inside_it(self):
+        ring = geo.rect(0, 0, 100, 100)
+        hole = geo.rect(25, 25, 75, 75)
+        for contour in hole:
+            contour.reverseDirection()
+        layer = ring.dup()
+        layer += hole
+        layer += geo.rect(150, 0, 200, 100)
+        found = sorted(measure.pieces(layer), key=lambda piece: piece.boundingBox())
+        self.assertEqual([len(piece) for piece in found], [2, 1])
+        self.assertEqual([piece.boundingBox() for piece in found],
+                         [(0, 0, 100, 100), (150, 0, 200, 100)])
+
+
 class EdgeTest(unittest.TestCase):
     def test_a_rectangle_has_two_edges_each_way(self):
         layer = geo.rect(0, 0, 100, 50)

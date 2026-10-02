@@ -5,6 +5,8 @@ Outlines are FontForge layers in font units, cubic as in the SFD.
 import itertools
 import math
 
+import fontforge
+
 import lig_geometry as geo
 
 
@@ -83,6 +85,24 @@ def covered(inner, outer):
     both += outer.dup()
     both.intersect()
     return area(both) / area(inner)
+
+
+def pieces(layer):
+    """Each outline of the layer with the counters inside it, as a layer of its own."""
+    contours = list(layer)
+    found = []
+    for shell in contours:
+        if not shell.isClockwise():
+            continue
+        x0, y0, x1, y1 = shell.boundingBox()
+        piece = fontforge.layer()
+        piece += shell
+        for counter in contours:
+            a0, b0, a1, b1 = counter.boundingBox()
+            if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
+                piece += counter
+        found.append(piece)
+    return found
 
 
 def _segments(contour):

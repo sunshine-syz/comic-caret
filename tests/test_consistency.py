@@ -4,7 +4,9 @@ are built from other glyphs.
 Run: python3 -m unittest discover tests
 
 Each rule covers every glyph of its class, so a glyph added to one is checked without a new
-test. Known exceptions are listed here with their reasons.
+test. Known exceptions are listed here with their reasons. The bold runs the rules on
+placement, composition and marks too (the Bold* classes); its box drawing and block elements
+are the regular's (tests/test_make_bold.py).
 """
 import collections
 import itertools
@@ -24,7 +26,17 @@ import add_box_drawing
 import lig_geometry as geo
 import measure
 from helpers import ROW_TOLERANCE, outline
-from project import ADVANCE, AXIS, MARK_CLEARANCE, ROUNDING, SFD, WOBBLE, is_letter, is_mark
+from project import (
+    ADVANCE,
+    AXIS,
+    BOLD_SFD,
+    MARK_CLEARANCE,
+    ROUNDING,
+    SFD,
+    WOBBLE,
+    is_letter,
+    is_mark,
+)
 
 # The characters whose bottom (1) or top (3) edge lies on each row.
 ROWS = {
@@ -105,8 +117,8 @@ BRAILLE = range(0x2800, 0x2900)
 BRAILLE_DOTS = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (0, 3), (1, 3))  # (column, row)
 
 
-def open_font():
-    return fontforge.open(str(SFD))
+def open_font(path=SFD):
+    return fontforge.open(str(path))
 
 
 def box(font, char):
@@ -114,9 +126,11 @@ def box(font, char):
 
 
 class PlacementTest(unittest.TestCase):
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font()
+        cls.font = open_font(cls.sfd)
 
     def test_letters_and_figures_sit_on_their_rows(self):
         off = {}
@@ -182,9 +196,11 @@ class PlacementTest(unittest.TestCase):
 
 
 class CompositionTest(unittest.TestCase):
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font()
+        cls.font = open_font(cls.sfd)
         cls.accented = [g for g in cls.font.glyphs() if is_letter(g.unicode)
                         and len(unicodedata.normalize("NFD", chr(g.unicode))) > 1]
 
@@ -337,9 +353,11 @@ class MarkTest(unittest.TestCase):
     """Combining marks draw over the cell, where terminals that don't shape text put them, and
     their anchors carry them onto the glyph before them in shaped text."""
 
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font()
+        cls.font = open_font(cls.sfd)
         cls.marks = [g for g in cls.font.glyphs() if is_mark(g.unicode)]
         cls.mark_names = {g.glyphname for g in cls.marks}
         cls.side = {g.glyphname: "top" if anchor(g, "top", "mark") else "bottom"
@@ -436,6 +454,18 @@ def area(layer):
         total += sum(x0 * y1 - x1 * y0
                      for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]))
     return abs(total) / 2
+
+
+class BoldPlacementTest(PlacementTest):
+    sfd = BOLD_SFD
+
+
+class BoldCompositionTest(CompositionTest):
+    sfd = BOLD_SFD
+
+
+class BoldMarkTest(MarkTest):
+    sfd = BOLD_SFD
 
 
 class BoxDrawingTest(unittest.TestCase):

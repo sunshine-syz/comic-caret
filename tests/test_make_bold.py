@@ -154,7 +154,8 @@ class BoldTest(unittest.TestCase):
 
     def test_references_and_lookups_carry_over(self):
         # Every glyph keeps the regular's references but those the bold draws as its outline
-        # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
+        # (make_bold.unlinked_parts()), each turned and scaled as in the regular; a shared
+        # glyph refers to a part's stand-in in its place (make_bold.stand_ins()). A part may
         # move, out of the line box's top, into the cell, or clear of a part or a letter the
         # pen grew it into, by no more than the pen can grow two parts toward each other, its
         # width, and a unit of rounding, across or up and down.
@@ -164,11 +165,14 @@ class BoldTest(unittest.TestCase):
         def moved_too_far(found, expected):
             return any(max(abs(m[4] - e[4]), abs(m[5] - e[5])) > PEN[0] + ROUNDING
                        for (_, m), (_, e) in zip(found, expected, strict=True))
+        standing = make_bold.stand_ins(self.regular, self.classes)
         wrong = {}
         for glyph in self.regular.glyphs():
             name = glyph.glyphname
             unlinked = make_bold.unlinked_parts(glyph, self.classes)
-            expected = [ref for ref in listed(glyph) if ref[0] not in unlinked]
+            expected = sorted((part, tuple(matrix)) for part, matrix
+                              in make_bold.relinked(glyph, self.classes, standing)
+                              if part not in unlinked)
             found = listed(self.bold[name])
             if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in expected]
                     or moved_too_far(found, expected)):

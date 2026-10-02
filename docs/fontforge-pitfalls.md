@@ -44,6 +44,10 @@ around. Read this before writing code that edits the SFD.
   `contour.makeFirst()` until the hints come out without `nan`.
 - References that overlap, as ☐ and the quarter of ■ in ◰–◳ do, make `validate()` flag the
   glyph (0x4), as ∄'s do; `tests/test_sanity.py` lists them.
+- A glyph with its own outline beside a reference fails `validate()` (0x800000, overlapping
+  hints) once saved and reopened, though not in the process that hinted it, when the
+  reference's glyph has hint masks (its stems overlap) and the glyph's own stems overlap too:
+  the bold's Θ, its bar beside O. `tools/make_bold.py` draws that Θ as one outline.
 
 ## Outlines
 

@@ -114,24 +114,6 @@ def weight_tolerance(font):
     return max(widths) - min(widths) + 2 * ROUNDING
 
 
-def pieces_of(layer):
-    """Each outline of the layer with the counters inside it."""
-    contours = list(layer)
-    pieces = []
-    for shell in contours:
-        if not shell.isClockwise():
-            continue
-        x0, y0, x1, y1 = shell.boundingBox()
-        piece = fontforge.layer()
-        piece += shell
-        for counter in contours:
-            a0, b0, a1, b1 = counter.boundingBox()
-            if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
-                piece += counter
-        pieces.append(piece)
-    return pieces
-
-
 class CoverageTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -468,7 +450,7 @@ class ApartTest(unittest.TestCase):
         cls.seam = bullet_seam(cls.font)
 
     def pieces(self, char):
-        return pieces_of(self.font[ord(char)].foreground)
+        return measure.pieces(self.font[ord(char)].foreground)
 
     def test_pieces_keep_apart(self):
         # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
@@ -621,7 +603,7 @@ class LetterlikeTest(unittest.TestCase):
         cls.seam = bullet_seam(cls.font)
 
     def pieces(self, char):
-        return pieces_of(self.font[ord(char)].foreground)
+        return measure.pieces(self.font[ord(char)].foreground)
 
     def test_numero_is_a_full_height_N_beside_a_raised_o(self):
         # N keeps its height, narrowed to make room, and º's o stands to its right as high as
@@ -692,7 +674,7 @@ class KeyHintTest(unittest.TestCase):
         # The references keep ⇪ at ⇧'s height with a smaller arrow; here ⇪A and ⇧A read as
         # one arrow.
         up = self.font[ord("⇧")].foreground
-        pieces = pieces_of(self.font[ord("⇪")].foreground)
+        pieces = measure.pieces(self.font[ord("⇪")].foreground)
         self.assertEqual(len(pieces), 2)
         arrow = max(pieces, key=lambda p: p.boundingBox()[3] - p.boundingBox()[1])
         [bar] = [p for p in pieces if p is not arrow]

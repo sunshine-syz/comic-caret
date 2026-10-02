@@ -42,19 +42,26 @@ A composite keeps its references, so an accented letter follows its base; a glyp
 outline and references has only its outline offset. Two kinds of part are unlinked first, as
 in the italic: a shared glyph's bolder part (∙ on the period) keeps the regular's outline, and
 a bolder glyph's part turned a quarter (⋮ on …) grows as its outline, since the reference
-would turn the pen too. Θ is drawn as one outline, each part grown on its own (MERGED).
+would turn the pen too. Where a shared glyph is such a part alone, □ for ☐, the other shared
+glyphs refer to it instead (stand_ins()). Θ is drawn as one outline, each part grown on its
+own (MERGED). A left glyph the regular draws as its right one mirrored is the bold right one
+mirrored (mirror_pairs()).
+
 Where the pen grows two parts into each other, one moves clear, just far enough to keep the
-regular's gap (APART), or each is condensed to keep its own box (OWN_BOX). An accent the pen
-grows out of the line box moves down into it, and a mark it grows within MARK_CLEARANCE of
-its letter rises clear, as far on every letter where it stands as high (raise_clear()).
-Widths, anchors and the lookups carry over as they are.
+regular's gap (APART); each is condensed to keep its own box (OWN_BOX); or, of an outline's
+pieces, the arrow is condensed away from its bar (PIECES_APART). An accent the pen grows out
+of the line box moves down into it, and a mark it grows within MARK_CLEARANCE of its letter
+rises clear, as far on every letter where it stands as high (raise_clear()). Widths, anchors
+and the lookups carry over as they are.
 """
 import argparse
 import collections
+import itertools
 import math
 import pathlib
 import sys
 import tempfile
+import unicodedata
 
 import fontforge
 import psMat
@@ -63,7 +70,7 @@ import lig_geometry as geo
 import project
 from add_ligatures import GENERATED
 from add_shapes import CODES
-from measure import gap, ink, spans_at_y, vertical_edges
+from measure import gap, ink, pieces, spans_at_y, vertical_edges
 from project import (
     ADVANCE,
     BOLD_SFD,
@@ -124,6 +131,12 @@ OWN_BOX = ("T.small", "M.small", "Theta")
 # to the bold O fails validate() once saved: FontForge reads the hint masks O's overlapping
 # stems need against Θ's own stems, which the bar's wobble makes overlap too.
 MERGED = ("Theta",)
+
+# Outlines whose pieces stand side by side, 30 apart, which the pen would grow into one: the
+# arrows and bars of ⇥ and ↹ (⇤ is ⇥ mirrored). Each piece grows on its own, the bar by the
+# full pen, and the arrow is condensed away from it, its tail kept, until the white between
+# them is the regular's, ●●'s seam (pieces_apart()).
+PIECES_APART = ("uni21E5", "uni21B9")
 
 # A cut exactly on a piece's cut line runs through the points where the pen's round end meets
 # the stroke, and intersect() then fails, leaving the stroke uncut or the cutting box behind;
@@ -203,6 +216,48 @@ def cut_ends(name, layer):
             x1 if x1 > ADVANCE and x1 in flat else geo.FAR)
 
 
+def stand_ins(font, classes):
+    """{bolder glyph: the shared glyph that is it alone, unmoved}: □ for ☐. The stand-in keeps
+    the bolder glyph's regular outline, and the other shared glyphs built on that glyph refer
+    to the stand-in, rather than each copy the outline (◰ ◱ ◲ ◳ ⧆ ⧇)."""
+    found = {}
+    for glyph in font.glyphs():
+        if (classes[glyph.glyphname] == SHARED and not len(glyph.foreground)
+                and len(glyph.references) == 1):
+            [(name, matrix, *_)] = glyph.references
+            if classes[name] == BOLDER and tuple(matrix) == psMat.identity():
+                found.setdefault(name, glyph.glyphname)
+    return found
+
+
+def relinked(glyph, classes, standing):
+    """The glyph's references as (name, matrix), a part with a stand-in (`standing`,
+    stand_ins()) named by its stand-in in each shared glyph but the stand-in itself."""
+    if classes[glyph.glyphname] != SHARED or glyph.glyphname in standing.values():
+        return [(name, matrix) for name, matrix, *_ in glyph.references]
+    return [(standing.get(name, name), matrix) for name, matrix, *_ in glyph.references]
+
+
+def mirror_pairs(font, classes):
+    """{left glyph: right glyph} for each pair of bolder outlines the regular draws as exact
+    mirrors about the cell's middle (⇤ ⇥, ↩ ↪): the left one's Unicode name says LEFT where
+    the right one's says RIGHT. The bold draws the left as the bold right mirrored, so the
+    pen, which grows a mirrored outline a unit differently here and there, keeps them exact
+    mirrors."""
+    def key(layer):
+        return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
+
+    outlines = {unicodedata.name(chr(glyph.unicode), ""): glyph for glyph in font.glyphs()
+                if glyph.unicode >= 0 and len(glyph.foreground) and not glyph.references
+                and classes[glyph.glyphname] == BOLDER}
+    pairs = {}
+    for name, left in outlines.items():
+        right = outlines.get(name.replace("LEFT", "RIGHT")) if "LEFT" in name else None
+        if right and key(right.foreground) == key(geo.mirrored_x(left.foreground, ADVANCE / 2)):
+            pairs[left.glyphname] = right.glyphname
+    return pairs
+
+
 def unlinked_parts(glyph, classes):
     """The glyph's references the bold draws as its own outline: a shared glyph's bolder parts,
     which keep the regular's outline; a bolder glyph's bolder parts turned a quarter (⋮ on …)
@@ -269,13 +324,14 @@ def emboldened(name, outline, scratch, pen):
     sys.exit(f"{name}: no offset of its outline passes validate() and stays within the pen")
 
 
-def fitted(name, outline, bound, scratch, pen):
+def fitted(name, outline, bound, scratch, pen, anchor=None):
     """emboldened(), condensed first just enough that the bold ink stays within `bound`,
-    (x0, x1): the outline scaled horizontally about its ink centre, so every stem still grows
-    by the full pen."""
+    (x0, x1): the outline scaled horizontally about x = `anchor`, or else its ink centre, so
+    every stem still grows by the full pen."""
     layer = emboldened(name, outline, scratch, pen)
     x0, _, x1, _ = outline.boundingBox()
-    centre, half = (x0 + x1) / 2, (x1 - x0) / 2
+    centre = (x0 + x1) / 2 if anchor is None else anchor
+    span = max(x1 - centre, centre - x0)  # how far the further side lies from the centre
     taken = 0
     # Rounding the condensed outline can leave a unit over, which a second pass takes in.
     for _ in range(3):
@@ -283,9 +339,31 @@ def fitted(name, outline, bound, scratch, pen):
         if (excess := max(bound[0] - bx0, bx1 - bound[1])) <= 0:
             return layer
         taken += excess
-        narrow = geo.transformed(outline, geo.about(psMat.scale(1 - taken / half, 1), centre, 0))
+        narrow = geo.transformed(outline, geo.about(psMat.scale(1 - taken / span, 1), centre, 0))
         layer = emboldened(name, narrow, scratch, pen)
     sys.exit(f"{name}: condensed, its ink still passes {bound}")
+
+
+def pieces_apart(name, outline, bound, scratch, pen):
+    """The outline's pieces (PIECES_APART) each fitted() within `bound`, and of two side by
+    side, the wider condensed away from the other, about its far end, until the white between
+    their boxes is the regular's."""
+    parts = pieces(outline)
+    grown = [fitted(name, part, bound, scratch, pen) for part in parts]
+    boxes = [part.boundingBox() for part in parts]
+    for a, b in itertools.permutations(range(len(parts)), 2):
+        (a0, a1, a2, a3), (b0, b1, b2, b3) = boxes[a], boxes[b]
+        white = b0 - a2  # a stands left of b
+        if white <= 0 or a3 < b1 or b3 < a1:
+            continue
+        left, right = grown[a].boundingBox()[2], grown[b].boundingBox()[0]
+        if right - left >= white:
+            continue
+        if a2 - a0 >= b2 - b0:
+            grown[a] = fitted(name, parts[a], (bound[0], right - white), scratch, pen, a0)
+        else:
+            grown[b] = fitted(name, parts[b], (left + white, bound[1]), scratch, pen, b2)
+    return geo.cleanup(geo.union(*grown))
 
 
 def placed(font, glyph):
@@ -486,6 +564,14 @@ def build(font):
                for glyph in font.glyphs() for name, matrix, *_ in glyph.references}
     # A MERGED glyph's own outline and its parts' ink, as the regular draws them.
     merged = {name: (font[name].foreground, placed(font, font[name])) for name in MERGED}
+    mirrors = mirror_pairs(font, classes)
+    # A shared glyph refers to a stand-in for a bolder part before any part is unlinked.
+    standing = stand_ins(font, classes)
+    for glyph in font.glyphs():
+        if (refs := relinked(glyph, classes, standing)) != [
+                (name, matrix) for name, matrix, *_ in glyph.references]:
+            glyph.references = tuple(reversed(refs))  # written in reverse, as in reposition()
+            glyph.autoHint()
     # Every unlink comes before any base grows: unlinkRef() bakes the base's outline as the
     # composite last saw it, not its current foreground, so a shared glyph's bolder part must
     # take the regular's outline now, not by luck later, and a part that grows as an outline
@@ -500,14 +586,21 @@ def build(font):
     scratch = scratch_font.createChar(-1, "scratch")
     for glyph in font.glyphs():
         name = glyph.glyphname
-        if classes[name] == BOLDER and len(glyph.foreground):
-            bound = bounds.get(name, (-geo.FAR, geo.FAR))
+        if classes[name] != BOLDER or not len(glyph.foreground) or name in mirrors:
+            continue
+        bound, pen = bounds.get(name, (-geo.FAR, geo.FAR)), pen_of(name, small)
+        if name in PIECES_APART:
+            glyph.foreground = pieces_apart(name, glyph.foreground, bound, scratch, pen)
+        else:
             outline, parts = merged.get(name, (glyph.foreground, []))
-            grown = [fitted(name, layer, box, scratch, pen_of(name, small))
+            grown = [fitted(name, layer, box, scratch, pen)
                      for layer, box in [(outline, own.get(name, bound)),
                                         *((part, bound) for part in parts)] if len(layer)]
             glyph.foreground = grown[0] if len(grown) == 1 else geo.cleanup(geo.union(*grown))
-            glyph.autoHint()
+        glyph.autoHint()
+    for left, right in mirrors.items():
+        font[left].foreground = geo.mirrored_x(font[right].foreground, ADVANCE / 2)
+        font[left].autoHint()
     # Parts before the glyphs built from them, so each sees its parts as they end up (ΐ's ΅).
     for glyph in sorted(font.glyphs(), key=lambda g: depth(font, g.glyphname)):
         name = glyph.glyphname
