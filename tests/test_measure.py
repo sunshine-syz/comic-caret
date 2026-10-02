@@ -105,6 +105,18 @@ class AreaTest(unittest.TestCase):
         self.assertAlmostEqual(measure.covered(inner, outer), 0.5)
 
 
+class OutlineTest(unittest.TestCase):
+    def test_contour_order_and_starting_points_do_not_count(self):
+        layer = geo.rect(0, 0, 100, 100)
+        layer += geo.rect(150, 0, 200, 100)
+        other = fontforge.layer()
+        for contour in reversed(list(layer)):
+            contour.makeFirst(2)
+            other += contour
+        self.assertEqual(measure.outline(layer), measure.outline(other))
+        self.assertNotEqual(measure.outline(layer), measure.outline(geo.moved(other, 1, 0)))
+
+
 class PiecesTest(unittest.TestCase):
     def test_each_outline_keeps_the_counters_inside_it(self):
         ring = geo.rect(0, 0, 100, 100)

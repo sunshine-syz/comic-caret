@@ -87,6 +87,13 @@ def covered(inner, outer):
     return area(both) / area(inner)
 
 
+def outline(contours):
+    """The points of a layer (or any contours), contour by contour, in an order that ignores
+    where each contour starts and which comes first: two drawings of one outline compare
+    equal."""
+    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in contours)
+
+
 def pieces(layer):
     """Each outline of the layer with the counters inside it, as a layer of its own."""
     contours = list(layer)

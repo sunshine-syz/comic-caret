@@ -12,10 +12,9 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import measure
-from helpers import outline
+from measure import outline
 from project import BOLD_SFD, SFD
 
 # Google Fonts' Greek Core (the glyphsets package), less what Latin Core already covers:
@@ -35,8 +34,10 @@ LOWER_TONOS = "άέήίόύώ"
 # The white between Θ's bar and its ring, at least the narrowest reference's: Maple Mono's
 # 52 (Fira Code's 54) at our cap height and advance.
 THETA_GAP = 52
-# The same for the bold, from the reference bolds with a Θ: Fira Code's 35.5 (Maple Mono's
-# 37.5).
+# The same for the bold, from the bolds of the fonts the regular's floor came from: Fira
+# Code's 35.5 (Maple Mono's 37.5). Monaspace Neon and Radon Bold, in the bold references only
+# to proof the weight, have a Θ too; Radon's handwritten bar leaves 24.3 (Neon's 39.3), which
+# would make the floor looser than the reference fonts CLAUDE.md names.
 BOLD_THETA_GAP = 35
 
 

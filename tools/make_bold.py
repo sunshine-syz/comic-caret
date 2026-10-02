@@ -70,7 +70,7 @@ import lig_geometry as geo
 import project
 from add_ligatures import GENERATED
 from add_shapes import CODES
-from measure import gap, ink, pieces, spans_at_y, vertical_edges
+from measure import gap, ink, outline, pieces, spans_at_y, vertical_edges
 from project import (
     ADVANCE,
     BOLD_SFD,
@@ -113,7 +113,9 @@ TURNED = {"tonos": math.radians(25)}
 # (move_apart()). ŀ's dot and the carons of ď ľ Ľ move right, and the tonos beside a capital
 # moves left; ď's caron and the tonos pass the cell already and go further still, where
 # test_sanity.py holds them, so fit_references() leaves them out. ΅'s dieresis moves down,
-# below its tonos, which lower_into_line() takes down into the line box.
+# below its tonos, which lower_into_line() takes down into the line box and the turned pen
+# grows into the dieresis. With no room above, ΐ ΰ's dieresis then sits 29 below ϊ ϋ's, a row
+# break that letters as rare as these may take (tests/test_make_bold.py names it).
 RIGHT, LEFT, DOWN = (1, 0), (-1, 0), (0, -1)
 APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
          "lcaron": ("caron.alt", RIGHT), "Lcaron": ("caron.alt", RIGHT),
@@ -244,16 +246,14 @@ def mirror_pairs(font, classes):
     the right one's says RIGHT. The bold draws the left as the bold right mirrored, so the
     pen, which grows a mirrored outline a unit differently here and there, keeps them exact
     mirrors."""
-    def key(layer):
-        return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in layer)
-
     outlines = {unicodedata.name(chr(glyph.unicode), ""): glyph for glyph in font.glyphs()
                 if glyph.unicode >= 0 and len(glyph.foreground) and not glyph.references
                 and classes[glyph.glyphname] == BOLDER}
     pairs = {}
     for name, left in outlines.items():
         right = outlines.get(name.replace("LEFT", "RIGHT")) if "LEFT" in name else None
-        if right and key(right.foreground) == key(geo.mirrored_x(left.foreground, ADVANCE / 2)):
+        if right and (outline(right.foreground)
+                      == outline(geo.mirrored_x(left.foreground, ADVANCE / 2))):
             pairs[left.glyphname] = right.glyphname
     return pairs
 
@@ -402,23 +402,11 @@ def fit_references(font, glyph, bound):
         reposition(glyph, lambda _, __, at: (math.trunc(at[0] * scale), at[1]))
 
 
-def least(holds, most):
-    """The least whole n from 0 to `most` for which holds(n) is true, as it is for every n
-    above it; None if holds(most) is false."""
-    low, high = 0, most
-    if not holds(high):
-        return None
-    while low < high:
-        middle = (low + high) // 2
-        low, high = (low, middle) if holds(middle) else (middle + 1, high)
-    return low
-
-
 def clearance(mine, rest, way, wanted):
     """The fewest whole units `mine` moves `way`, (dx, dy), to stand `wanted` from `rest`, or
-    None if that is past twice the pen's width. The pen grows two parts toward each other by
-    no more than its width, which tests/test_make_bold.py holds the moves to; the search goes
-    further, so the test, not the search, reports a move that does."""
+    None if that is past twice the pen's width. tests/test_make_bold.py holds each move to how
+    far the pen grew the two parts toward each other; the search goes further, so the test,
+    not the search, reports a move that passes it."""
     most = 2 * PEN[0]
     (a0, b0, a1, b1), (c0, d0, c1, d1) = mine.boundingBox(), rest.boundingBox()
     if math.hypot(max(c0 - a1, a0 - c1, 0), max(d0 - b1, b0 - d1, 0)) >= wanted:
@@ -428,7 +416,18 @@ def clearance(mine, rest, way, wanted):
     near = wanted + most
     rest = geo.trim(rest, a0 - near, a1 + near, b0 - near, b1 + near)
     dx, dy = way
-    return least(lambda n: gap(geo.moved(mine, dx * n, dy * n), rest) >= wanted, most)
+
+    def clear(n):
+        return gap(geo.moved(mine, dx * n, dy * n), rest) >= wanted
+
+    # The least n that clears, found by halves: every n past it clears too.
+    if not clear(most):
+        return None
+    low, high = 0, most
+    while low < high:
+        middle = (low + high) // 2
+        low, high = (low, middle) if clear(middle) else (middle + 1, high)
+    return low
 
 
 def shifted(moves):
@@ -459,36 +458,37 @@ def move_apart(font, glyph, wanted):
     reposition(glyph, shifted({part: (dx * steps, dy * steps)}))
 
 
-def marks_above(font, glyph):
+def marks_above(font, glyph, small):
     """([(name, ink)] of the composite letter's marks above its letter, the letter's ink): the
     letter is its one reference to a letter. A mark is above when it starts no lower than the
-    letter's top less the pen's height, what the pen grew the two toward each other."""
-    inks = placed(font, glyph)
-    letters = [layer for (name, *_), layer in zip(glyph.references, inks, strict=True)
-               if is_letter(font[name].unicode)]
+    letter's top less how far the pen grew the two toward each other, each by its pen's reach
+    up (pen_of(); `small` is the small_pen())."""
+    parts = list(zip((name for name, *_ in glyph.references), placed(font, glyph)))
+    letters = [(name, layer) for name, layer in parts if is_letter(font[name].unicode)]
     if len(glyph.foreground) or len(letters) != 1:
         return [], None
-    [letter] = letters
-    top = letter.boundingBox()[3]
-    return [(name, layer) for (name, *_), layer in zip(glyph.references, inks, strict=True)
-            if layer is not letter and layer.boundingBox()[1] >= top - PEN[1]], letter
+    [(base, letter)] = letters
+    top, grew = letter.boundingBox()[3], reach(pen_of(base, small))[1]
+    return [(name, layer) for name, layer in parts if layer is not letter
+            and layer.boundingBox()[1] >= top - grew - reach(pen_of(name, small))[1]], letter
 
 
-def raise_clear(font, letters, heights):
+def raise_clear(font, letters, heights, small):
     """Raise each mark that the pen grew within MARK_CLEARANCE of its letter, by the fewest
     whole units that clear it, and the same mark as far on every letter where the regular
     places it as high, so a row of them stays level (the tonos over έ ό, and so over ά ή ί).
-    `heights` holds how high the regular places each (letter, mark)."""
+    `heights` holds how high the regular places each (letter, mark). One row breaks on
+    purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART)."""
     needs = collections.defaultdict(int)
     for glyph in letters:
-        marks, letter = marks_above(font, glyph)
+        marks, letter = marks_above(font, glyph, small)
         for name, mark in marks:
             if (steps := clearance(mark, letter, (0, 1), MARK_CLEARANCE)) is None:
                 sys.exit(f"{glyph.glyphname}: its {name} can't rise clear of the letter")
             row = (name, heights[glyph.glyphname, name])
             needs[row] = max(needs[row], steps)
     for glyph in letters:
-        marks, _ = marks_above(font, glyph)
+        marks, _ = marks_above(font, glyph, small)
         rises = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
         if any(dy for _, dy in rises.values()):
             reposition(glyph, shifted(rises))
@@ -616,7 +616,7 @@ def build(font):
             glyph.autoHint()  # a reference assigned leaves the hints stale
     raise_clear(font, [glyph for glyph in font.glyphs()
                        if is_letter(glyph.unicode) and classes[glyph.glyphname] == BOLDER
-                       and glyph.references], heights)
+                       and glyph.references], heights, small)
     # Where a contour starts can make the autohinter write a nan into a stem's range, which
     # breaks the hints read back (docs/fontforge-pitfalls.md); so such a glyph's contours start
     # later until none does.

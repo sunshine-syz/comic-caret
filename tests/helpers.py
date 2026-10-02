@@ -11,13 +11,6 @@ from project import ADVANCE, FORMATS, STYLES, nerd_fonts, stale_build
 ROW_TOLERANCE = 30
 
 
-def outline(contours):
-    """The points of a layer (or any contours), contour by contour, in an order that ignores
-    where each contour starts and which comes first: two drawings of one outline compare
-    equal."""
-    return sorted(sorted((p.x, p.y, p.on_curve) for p in contour) for contour in contours)
-
-
 def bullet_seam(font):
     """The white between two ● side by side: as far apart as a symbol's parts must stay to
     read apart at 16 px."""

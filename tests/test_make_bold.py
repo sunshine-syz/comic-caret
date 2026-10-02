@@ -25,6 +25,10 @@ from sfd_files import differences
 GENERATOR = ROOT / "tools" / "make_bold.py"
 # The pieces cut flat at both sides of the cell, which a row of them joins at.
 THROUGH_PIECES = ("hyphen.mid", "equal.mid", "greater.shaft", "less.shaft", "uni23AF")
+# Known exception to how far a part may move up or down: ΅'s dieresis moves 29 down, below
+# the tonos that the turned pen grows into it, as there is no room above the line box. ΐ ΰ,
+# built on ΅, are rare enough that their dieresis may sit that far below ϊ ϋ's.
+MOVED_FURTHER = {("dieresistonos", "dieresis")}
 
 
 def points(layer):
@@ -157,14 +161,22 @@ class BoldTest(unittest.TestCase):
         # (make_bold.unlinked_parts()), each turned and scaled as in the regular; a shared
         # glyph refers to a part's stand-in in its place (make_bold.stand_ins()). A part may
         # move, out of the line box's top, into the cell, or clear of a part or a letter the
-        # pen grew it into, by no more than the pen can grow two parts toward each other, its
-        # width, and a unit of rounding, across or up and down.
+        # pen grew it into, by no more than the pen grew the two toward each other, and a unit
+        # of rounding: the pen's width across, and up or down, the part's pen's reach and a
+        # full pen's (make_bold.reach()).
+        small = make_bold.small_pen(self.regular)
+
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
 
-        def moved_too_far(found, expected):
-            return any(max(abs(m[4] - e[4]), abs(m[5] - e[5])) > PEN[0] + ROUNDING
-                       for (_, m), (_, e) in zip(found, expected, strict=True))
+        def moved_too_far(glyph, found, expected):
+            for (part, m), (_, e) in zip(found, expected, strict=True):
+                up = make_bold.reach(make_bold.pen_of(part, small))[1] + PEN[1] / 2
+                if (glyph, part) in MOVED_FURTHER:
+                    up = PEN[0]
+                if abs(m[4] - e[4]) > PEN[0] + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:
+                    return True
+            return False
         standing = make_bold.stand_ins(self.regular, self.classes)
         wrong = {}
         for glyph in self.regular.glyphs():
@@ -175,7 +187,7 @@ class BoldTest(unittest.TestCase):
                               if part not in unlinked)
             found = listed(self.bold[name])
             if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in expected]
-                    or moved_too_far(found, expected)):
+                    or moved_too_far(name, found, expected)):
                 wrong[name] = (found, expected)
         self.assertEqual(wrong, {})
         for kind in ("gsub_lookups", "gpos_lookups"):

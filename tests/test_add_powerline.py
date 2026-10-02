@@ -19,7 +19,7 @@ import add_powerline
 import lig_geometry as geo
 import measure
 from add_box_drawing import LIGHT
-from helpers import outline
+from measure import outline
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 from sfd_files import differences
 

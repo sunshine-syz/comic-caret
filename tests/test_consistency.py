@@ -25,7 +25,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import add_box_drawing
 import lig_geometry as geo
 import measure
-from helpers import ROW_TOLERANCE, outline
+from helpers import ROW_TOLERANCE
+from measure import outline
 from project import (
     ADVANCE,
     AXIS,
