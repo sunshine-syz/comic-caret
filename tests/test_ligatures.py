@@ -1,4 +1,4 @@
-"""Shaping tests for the coding ligatures, run with HarfBuzz against both built fonts.
+"""Shaping tests for the coding ligatures, run with HarfBuzz against every built font.
 
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """

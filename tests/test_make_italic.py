@@ -4,7 +4,7 @@ Run: python3 -m unittest discover tests
 
 The rules on single glyphs and on classes hold for the regular (test_consistency.py,
 test_legibility.py, …) and reach the italic through this derivation; test_sanity.py,
-test_metadata.py, test_built.py and test_ligatures.py check both styles.
+test_metadata.py, test_built.py and test_ligatures.py check every style.
 """
 import bisect
 import pathlib

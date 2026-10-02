@@ -56,7 +56,7 @@ def run_fontbakery(fonts):
 
 def findings(report):
     """{(status, check, message code, glyph names)} for each result that isn't quiet. A
-    problem both styles have counts once, as the glyph names it lists are the same."""
+    problem several styles have counts once, as the glyph names it lists are the same."""
     found = set()
     for section in report["sections"]:
         for check in section["checks"]:
@@ -83,8 +83,8 @@ def known():
     # U+00AD is kept, since terminals give it a cell.
     soft_hyphen = ("WARN", "soft_hyphen", "softhyphen", frozenset())
     # FontForge writes no STAT table, and a static family needs none: the check is written
-    # for variable fonts, whose instances a STAT table names. Apps pair the regular and the
-    # italic by their names and the OS/2 style bits.
+    # for variable fonts, whose instances a STAT table names. Apps pair the regular, the
+    # italic and the bold by their names and the OS/2 style bits.
     no_stat = ("FAIL", "opentype/STAT/ital_axis", "no-stat", frozenset())
     # FontForge derives the italic's caret slope from its angle in hundredths, 100/21, which
     # is 11.86°, where the check wants 1000/213: 0.14° on a text cursor.

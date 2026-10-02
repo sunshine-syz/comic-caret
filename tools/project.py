@@ -88,7 +88,7 @@ FORMATS = ("otf", "ttf")
 
 
 def newest_sfd():
-    """When either SFD last changed: a build older than this predates the glyphs it shows."""
+    """When any SFD last changed: a build older than this predates the glyphs it shows."""
     return max(sfd.stat().st_mtime for sfd in STYLES.values())
 
 
@@ -110,7 +110,7 @@ def style_of(font):
 def nerd_fonts():
     """The Nerd Fonts builds in NERD_DIR as (current, stale), each sorted.
 
-    A font is current when it is newer than both SFDs, so it was built after the last change to
+    A font is current when it is newer than every SFD, so it was built after the last change to
     the glyphs; a stale one predates them and says nothing about the font as it is now.
     """
     newest = newest_sfd()

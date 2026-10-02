@@ -107,11 +107,11 @@ around. Read this before writing code that edits the SFD.
   glyph drawn in; the fixture in `tests/test_sfd_files.py` draws its base in a reopened copy.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
   does not affect this font.
-- `tests/test_fontbakery.py` runs Font Bakery's universal profile on each format's two styles
-  together and expects exactly the problems its `known()` lists, each with its reason; it
-  skips without `uvx`. To read a full report, run its command,
+- `tests/test_fontbakery.py` runs Font Bakery's universal profile on each format's three
+  styles together and expects exactly the problems its `known()` lists, each with its reason;
+  it skips without `uvx`. To read a full report, run its command,
   `uvx --exclude-newer 2026-09-30 fontbakery==1.1.0 check-universal --skip-network` (the date
-  pins the dependencies to the day `known()` was last reviewed), on the two TTFs or the two
+  pins the dependencies to the day `known()` was last reviewed), on the three TTFs or the three
   OTFs, never a style's TTF with its OTF: those read as one style twice and fail the family
   checks. Its network checks fail offline and whenever a newer Font Bakery is out, so the
   test skips them too.

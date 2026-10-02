@@ -5,8 +5,9 @@
     python3 tools/bump_version.py --check-tag vX.Y.Z  # refuse a tag that isn't that release
 
 The SFDs' Version: always heads CHANGELOG.md (tests/test_metadata.py checks the pair); the
-italic is written too, so a bump never leaves it behind the regular it is derived from. A
-version is "unreleased" there until --release gives it its month, as in "## 1.0.0 (2026-09)".
+italic and the bold are written too, so a bump never leaves them behind the regular they are
+derived from. A version is "unreleased" there until --release gives it its month, as in
+"## 1.0.0 (2026-09)".
 """
 import argparse
 import datetime

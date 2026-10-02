@@ -4,7 +4,7 @@ FullName: Comic Caret Italic
 FamilyName: Comic Caret
 Weight: Regular
 Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly, 2026 YZ Sun
-Version: 1.6.6
+Version: 1.7.0
 ItalicAngle: -12
 UnderlinePosition: -140
 UnderlineWidth: 80
@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790921301
+ModificationTime: 1790943395
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
