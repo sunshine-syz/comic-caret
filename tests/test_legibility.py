@@ -161,10 +161,7 @@ class BracketTest(unittest.TestCase):
 FLOORS = {
     "n": [(236, 194)], "h": [(236, 194)], "u": [(236, 194)], "d": [(236, 211)],
     "H": [(167, 211)], "N": [(334, 155)], "U": [(334, 217)], "D": [(334, 238)],
-    "B": [(167, 232), (501, 218)], "eight": [(167, 256), (501, 222)],
-    # Today's, which falls short of the narrowest reference's: Maple Mono's 245 (Fira Code's
-    # 247, Intel One Mono's 275).
-    "R": [(501, 211)],
+    "B": [(167, 232), (501, 218)], "eight": [(167, 256), (501, 222)], "R": [(501, 245)],
 }
 
 

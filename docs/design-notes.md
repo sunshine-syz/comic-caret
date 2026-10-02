@@ -21,9 +21,9 @@ them. The exceptions:
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned
   to match.
-- ▹ is ▷ at 0.59 thinned to a 41 outline, since at the full stroke its counter fills in at
-  16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. Its white across the middle, 157, stays 2 short of Maple
-  Mono's, the only reference's, whose 37 outline leaves 159 at our cap height.
+- ▹ is ▷ at 0.61 thinned to a 41 outline, since at the full stroke its counter fills in at
+  16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. Its size keeps the white across its middle, 168, above Maple
+  Mono's, the only reference's, whose lighter 37 outline leaves 159 at our cap height.
 - ▫ (☐ at 0.52) and ◦ (○ at 0.48) are scaled so their rings come out about 41 too.
 - ⧉'s squares are the hyphen's stroke at 0.79, so the one behind keeps clear of the one in
   front; ⏺ ⏵ are ● ▶ scaled to ⏸'s height.

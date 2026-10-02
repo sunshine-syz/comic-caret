@@ -74,12 +74,9 @@ TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("�
           "⇦": ("⇧", 90), "⇨": ("⇧", -90), "⇩": ("⇧", 180), "◤": ("◢", 180), "◥": ("◣", 180),
           "¡": ("!", 180), "¿": ("?", 180)}
 SMALLER = 0.6  # ▸ ▹ ► ▪ ▫ against ▶ ▷ ■ □: Maple Mono's are 0.48 and 0.5 of theirs
-# The white across ▹'s middle: today's. Maple Mono's, the only reference's, is 159 at our cap
-# height; ours falls short of it, its outline a little heavier (41 against 37) to stay nearer
-# our weight.
-SMALL_COUNTER = 157
-# The white across ▫'s middle and ◦'s, at least the narrowest reference's: Fira Code's ▫ and
-# Maple Mono's ◦, the only reference's, at our cap height.
+# The white across ▹'s middle, ▫'s and ◦'s, at least the narrowest reference's: Maple Mono's
+# ▹ and ◦, the only reference's, and Fira Code's ▫, at our cap height.
+SMALL_COUNTER = 159
 SMALL_SQUARE_COUNTER = 122
 WHITE_BULLET_COUNTER = 144
 # Double mark -> (the single mark, the white between its two copies at their middle): at

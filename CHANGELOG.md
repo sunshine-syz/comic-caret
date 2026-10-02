@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.6 (unreleased)
+
+- R's bowl narrowed toward its top right, so the white inside it, 211 units across at three quarters of the cap height, was narrower than in any of the three reference fonts (Maple Mono's, the narrowest, is 245 at the same letter height). The bowl's shoulder is now filled out, keeping R's own stroke, leg and join, and leaves 255; Ŕ Ř Ŗ follow it.
+- The white inside ▹ was 2 units narrower than in Maple Mono's, the only reference font with ▹. ▹ is now 3% larger, its outline as heavy as before, leaving 9 more than Maple Mono's; ▸ ◃ ◂ ▵ ▴ ▿ ▾ ‣, which are built on it, grow with it.
+
 ## 1.6.5 (2026-10)
 
 - Releases no longer include ComicCaret Nerd Font Mono; the Nerd Font zip holds only the default ComicCaret Nerd Font (Regular and Italic, OTF and TTF). For icons shrunk to one cell, build it from source with `./build.sh --nerd=mono`.
