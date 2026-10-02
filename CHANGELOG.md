@@ -5,7 +5,10 @@
 - Every character is 600 units wide, up from 550, at the same letter height. Most coding fonts are 600 to 620 wide, but their letters are bigger too. The cell is now 1.27 times the x-height, between Source Code Pro's 1.26 and Intel One Mono's 1.32, where 1.7.0's was 1.16. So text reads more open.
 - At the same font size, a line holds 8% fewer characters. Lower the size by about one point to keep a terminal's column count.
 - The waves of a `~~~` run are longer: each half-wave is 200 units, a third of the cell. 1.7.0's were 174, as a single `~`'s still are, with a flat at each seam to fill the cell.
-- The two heads of `->>` and `<<-` stand 25 units further apart, so the shaft still runs into the inner head's point.
+- The two heads of `->>` and `<<-` stand 25 units further apart. So the inner head stays as far from the outer head's cell as in 1.7.0, and no flat shows where the two cells meet.
+- The bold's wide characters, such as @ # ∞ « » Æ œ K ✔ ➜, now keep their full width, where 1.7.0 condensed them to fit its cell.
+- The two copies of ″ “ ” „ stand 6 to 8 units further apart, and ‖'s 2 units. So the white between them stays at least the narrowest reference font's, measured at the wider cell.
+- ∅ is 6 units wider. So it stays at least as much wider than ø as Fira Code's, and "A = ∅" doesn't read as "A = ø".
 
 ## 1.7.0 (2026-10)
 

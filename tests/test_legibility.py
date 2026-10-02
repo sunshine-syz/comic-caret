@@ -38,7 +38,8 @@ def center(glyph, dx=0):
 
 class LookalikeTest(unittest.TestCase):
     sfd = SFD
-    circle_wider, empty_set_wider = 78, 88  # than o and ø: the narrowest references'
+    # Than o and ø: the narrowest references', at our advance.
+    circle_wider, empty_set_wider = 85, 96
 
     @classmethod
     def setUpClass(cls):
@@ -69,13 +70,13 @@ class LookalikeTest(unittest.TestCase):
         self.assertLessEqual(abs((slash[0] - left_ring[1]) - (right_ring[0] - slash[1])), 10)
 
     def test_white_circle_is_wider_than_o(self):
-        # So "○ main" doesn't read as "o main": Fira Code's ○ is 78 wider than its o.
+        # So "○ main" doesn't read as "o main": Fira Code's ○ is 85 wider than its o.
         ring, o = self.font[0x25CB].foreground, self.font["o"].foreground
         self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), self.circle_wider)
 
     def test_empty_set_is_wider_than_o_slash(self):
-        # So "A = ∅" doesn't read as "A = ø": Fira Code's ∅ is 88 wider than its ø at our
-        # advance (Maple Mono's 129).
+        # So "A = ∅" doesn't read as "A = ø": Fira Code's ∅ is 96 wider than its ø at our
+        # advance (Maple Mono's 140).
         empty, slashed = self.font[0x2205].foreground, self.font["oslash"].foreground
         self.assertGreaterEqual(measure.ink_width(empty) - measure.ink_width(slashed),
                                 self.empty_set_wider)
@@ -100,13 +101,13 @@ class LookalikeTest(unittest.TestCase):
         self.assertGreaterEqual(measure.area(bracket) / measure.area(quote), 1.39)
 
     def test_lozenge_is_a_tall_diamond_where_the_white_diamond_is_square(self):
-        # Scaled to our advance and cap height, the references draw ◊ 1.48 (Maple Mono) and
-        # 1.56 (Fira Code) times as tall as wide, against a square ◇.
+        # Scaled to our advance and cap height, the references draw ◊ 1.35 (Maple Mono) and
+        # 1.43 (Fira Code) times as tall as wide, against a square ◇.
         def aspect(char):
             x0, y0, x1, y1 = self.font[ord(char)].boundingBox()
             return (y1 - y0) / (x1 - x0)
 
-        self.assertGreaterEqual(aspect("◊"), 1.48)
+        self.assertGreaterEqual(aspect("◊"), 1.35)
         self.assertLess(aspect("◇"), aspect("◊"))
 
 
@@ -208,12 +209,12 @@ class CounterTest(unittest.TestCase):
 
 
 # Maple Mono 7.9's @, the tightest of the three references, across the middle of its ink box,
-# scaled as compare_glyphs.py scales it (x to our advance, y to our cap height): 79 of white
-# between the loop and the inner a, and a counter of 107.
-AT_GAP, AT_COUNTER = 79, 107
-# The same in Maple Mono Bold's @, the tightest bold too: 29.4 and 80.4 (Fira Code Bold's 74.5
-# and 85.0, Intel One Mono Bold's 75.2 and 178.9).
-BOLD_AT_GAP, BOLD_AT_COUNTER = 29, 80
+# scaled as compare_glyphs.py scales it (x to our advance, y to our cap height): 86 of white
+# between the loop and the inner a, and a counter of 116.
+AT_GAP, AT_COUNTER = 86, 116
+# The same in Maple Mono Bold's @, the tightest bold too: 32.1 and 87.7 (Fira Code Bold's 81.3
+# and 92.7, Intel One Mono Bold's 82.0 and 195.2).
+BOLD_AT_GAP, BOLD_AT_COUNTER = 32, 87
 
 
 class AtSignTest(unittest.TestCase):
@@ -329,9 +330,9 @@ class TurnedCommaTest(unittest.TestCase):
 
 class BoldLookalikeTest(LookalikeTest):
     sfd = BOLD_SFD
-    # Fira Code Bold's ○ is 22.0 wider than its o (Maple Mono Bold's 130), and its ∅ 45.4 wider
-    # than its ø (Maple Mono Bold's 125).
-    circle_wider, empty_set_wider = 22, 45
+    # At our advance, Fira Code Bold's ○ is 24.0 wider than its o (Maple Mono Bold's 141.8), and
+    # its ∅ 49.5 wider than its ø (Maple Mono Bold's 136.4).
+    circle_wider, empty_set_wider = 24, 49
 
 
 class BoldColonTest(ColonTest):

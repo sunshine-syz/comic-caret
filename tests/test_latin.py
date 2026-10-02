@@ -36,24 +36,25 @@ COUNTER_FLOOR = {"o": 115 / 285, "a": 103 / 285, "four": 71 / 360}
 # counters, and a ring at our full weight crowds the letter inside it.
 SIGN_STEM = (56, 4)
 # The closest a fraction's slash comes to its figures: the narrowest reference's, Fira Code's ⅖ ⅘
-# scaled to our cell (Maple Mono's ½ ¼ 22, Intel One Mono's ⅔ ⅖ 28).
-FRACTION_CLEARANCE = 21
+# scaled to our cell (Maple Mono's ½ ¼ 24, Intel One Mono's ⅔ ⅖ 30).
+FRACTION_CLEARANCE = 22
 # The white between ª º's bar and their letter: the narrowest reference's with a bar, Intel One
 # Mono's at our cap height (Fira Code's 225; Maple Mono's ª º have none).
 ORDINAL_CLEARANCE = 89
 # The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
-# cell (Fira Code's 33; Intel One Mono has no ‰).
-PER_MILLE_CLEARANCE = 22
+# cell (Fira Code's 36; Intel One Mono has no ‰).
+PER_MILLE_CLEARANCE = 24
 
 # The bold's floors, measured from the reference bolds as the ones above were from the
 # regulars, scaled as tools/compare_glyphs.py scales: x to our advance, y to the bold's cap
 # height. The narrowest reference bold's, rounded down; the others' in brackets.
-# Hole width over letter height: Maple Mono's º, Fira Code's ª, Maple Mono's ¼'s 4 (Maple
-# Mono's ª 0.310, Intel One Mono's º 0.391 and ¼'s 4 0.252; Fira Code's 4 is open).
-BOLD_COUNTER_FLOOR = {"o": 85 / 260, "a": 117 / 443, "four": 45 / 328}
-BOLD_FRACTION_CLEARANCE = 6  # Fira Code's ⅘ 6.8 (Maple Mono's ½ 9.2, Intel One Mono's ⅓ 22.1)
+# Hole width over letter height, a ratio compared at the same letter height, so in each
+# reference's own units, as COUNTER_FLOOR's: Maple Mono's º, Fira Code's ª, Maple Mono's ¼'s 4
+# (Maple Mono's ª 0.309, Intel One Mono's º 0.450; Fira Code's 4 is open).
+BOLD_COUNTER_FLOOR = {"o": 93 / 285, "a": 255 / 909, "four": 49 / 360}
+BOLD_FRACTION_CLEARANCE = 7  # Fira Code's ⅘ 7.4 (Maple Mono's ½ 10.0, Intel One Mono's ⅓ 24.1)
 BOLD_ORDINAL_CLEARANCE = 86  # Intel One Mono's º 86.6 (Fira Code's 191)
-BOLD_PER_MILLE_CLEARANCE = 19  # Maple Mono's 19.7 (Fira Code's 22.6)
+BOLD_PER_MILLE_CLEARANCE = 21  # Maple Mono's 21.5 (Fira Code's 24.7)
 # “ ” „ are two of their single mark (‘ ’ or the comma), level, not a copied outline.
 COMPOSITES = {"periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},

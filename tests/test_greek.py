@@ -32,13 +32,13 @@ SAME = {"Α": "A", "Β": "B", "Ε": "E", "Ζ": "Z", "Η": "H", "Ι": "I", "Κ": 
 CAPITAL_TONOS = "ΆΈΉΊΌΎΏ"
 LOWER_TONOS = "άέήίόύώ"
 # The white between Θ's bar and its ring, at least the narrowest reference's: Maple Mono's
-# 52 (Fira Code's 54) at our cap height and advance.
-THETA_GAP = 52
+# 56 (Fira Code's 58) at our cap height and advance.
+THETA_GAP = 56
 # The same for the bold, from the bolds of the fonts the regular's floor came from: Fira
-# Code's 35.5 (Maple Mono's 37.5). Monaspace Neon and Radon Bold, in the bold references only
-# to proof the weight, have a Θ too; Radon's handwritten bar leaves 24.3 (Neon's 39.3), which
+# Code's 38.7 (Maple Mono's 40.9). Monaspace Neon and Radon Bold, in the bold references only
+# to proof the weight, have a Θ too; Radon's handwritten bar leaves 26.5 (Neon's 42.9), which
 # would make the floor looser than the reference fonts CLAUDE.md names.
-BOLD_THETA_GAP = 35
+BOLD_THETA_GAP = 38
 
 
 class GreekTest(unittest.TestCase):

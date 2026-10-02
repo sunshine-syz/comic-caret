@@ -68,7 +68,7 @@ TRIGRAMS = range(0x2630, 0x2638)
 # ☲ (2) the middle one, ☴ (4) the bottom one, ☷ (7) all three.
 TRIGRAM_PITCH = 176  # the bars span 84% of ○'s height, as Fira Code's span its ○'s
 TRIGRAM_INSET = 55   # from the cell's sides; Fira Code's bars keep 14% of the cell
-BROKEN_GAP = 90      # between a broken line's halves: a fifth of the width, Fira Code's 23%
+BROKEN_GAP = 90      # between a broken line's halves: 18% of the line, under Fira Code's 23%
 SIX_STAR = 0x2736
 STARS = {0x2737: (8, 0.60), 0x2738: (8, 0.74), 0x2739: (12, 0.72)}  # (points, inner radius over the outer)
 ASTERISK_STAR, SPOKES, SPOKE = 0x273A, 8, 50  # ✺: sixteen points as eight spokes

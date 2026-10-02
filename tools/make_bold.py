@@ -40,11 +40,11 @@ right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES); an outline keeps its own box (OWN_BOX,
-ACROSS_AS_UP) or scales with its parts (SCALED); parts grow on their own (MERGED); pieces give
-way to each other (PIECES_APART, SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED); a bar
-moves up its stems (RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line
-box moves down into it (lower_into_line()), and a mark it grows within MARK_CLEARANCE of its
-letter rises clear (raise_clear()). Widths, anchors and the lookups carry over as they are.
+ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
+SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED); a bar moves up its stems (RAISED) or
+keeps its ends (BLUNT). An accent the pen grows out of the line box moves down into it
+(lower_into_line()), and a mark it grows within MARK_CLEARANCE of its letter rises clear
+(raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import argparse
 import collections
@@ -132,7 +132,7 @@ ROUND = ("bar.ordinal", "uni21EA")
 # The glyphs whose white the full pen closes under the reference bolds', and the share of
 # their pen's width they grow by instead (tests/test_latin.py): ẞ, whose white between the
 # stem and the diagonal would close to 56, under Maple Mono Bold's 65; and the small 4, whose
-# counter would close to 0.128 of its height, under Maple Mono Bold's ¼ (0.137). Their stems
+# counter would close to 0.128 of its height, under Maple Mono Bold's ¼ (0.136). Their stems
 # grow 10.5 and 3.7 less than the others'.
 NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
 
@@ -144,17 +144,8 @@ TURNED = {"tonos": math.radians(25)}
 # The rings that grow outward only, by twice their pen, so they thicken by its whole width as
 # a stem does on its two sides: © ®'s, which the regular draws as heavy as the letter inside
 # it (tests/test_latin.py). Its counter stays the regular's, so the letter keeps its room:
-# grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©. Grown
-# outward, it comes 8 from the cell's edges, as Fira Code Bold's © does.
+# grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©.
 OUTWARD = ("circle.copyright",)
-
-# The parts that keep their glyphs' side room by scaling about their middle before they grow,
-# the other parts of those glyphs scaling with them about the same point, rather than by
-# condensing: © ®'s ring, which grows outward by its pen's whole width (OUTWARD) to 8 from the
-# cell's edges. Condensed alone, the ring would come 5 lighter than C, against the 4 that
-# tests/test_latin.py allows, and its counter would close on the letter; scaled with it, both
-# keep their weight and the letter its room.
-SCALED = ("circle.copyright",)
 
 # The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
 # below it: Ħ, 81 apart against the bold hyphen's 93 (tests/test_latin.py). The bar moves up
@@ -191,7 +182,7 @@ DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016",
 # The outlines condensed to keep their own regular box, so the pen grows them no closer to
 # their neighbours than half its width: ™'s T and M, 23 apart, which the small pen would grow
 # until they all but touch, so ™ stays a composite of the two; and Θ's bar, which would come
-# 21 from the ring, under the reference bolds' 35, and keeps 39.
+# 21 from the ring, under the reference bolds' 38, and keeps 39.
 OWN_BOX = ("T.small", "M.small", "Theta")
 
 # The glyphs the regular draws as another turned a quarter: ⇕, ⇔ turned with its shaft
@@ -202,10 +193,8 @@ ACROSS_AS_UP = ("uni21D5",)
 
 # Composites drawn as one outline, each part grown on its own: Θ, whose bar beside a reference
 # to the bold O fails validate() once saved, as FontForge reads the hint masks O's overlapping
-# stems need against Θ's own stems, which the bar's wobble makes overlap too; and ∀, whose A
-# turned the pen grows past ∀'s side room on both sides, where no move brings it in. Condensed
-# to keep it, A would narrow every A.
-MERGED = ("Theta", "universal")
+# stems need against Θ's own stems, which the bar's wobble makes overlap too.
+MERGED = ("Theta",)
 
 # Outlines whose pieces stand side by side, which the pen would grow into one: the arrows and
 # bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 10 apart, and the letters
@@ -217,21 +206,21 @@ PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
 # piece below its foot: ‰'s, which would come 14 from the zero under it, where the regular
-# keeps 27 (Maple Mono Bold's ‰ keeps 20). The slash shrinks about its top end, by the fewest
+# keeps 27 (Maple Mono Bold's ‰ keeps 21.5). The slash shrinks about its top end, by the fewest
 # units at its foot that keep the regular's white, so it ends higher up its slant.
 SLASHES = ("perthousand",)
 
 # Of those, the ones whose pieces but the tallest the regular draws as light as the small
-# figures, which grow by the small pen: ℃ ℉'s ring and №'s o and bar, º's. The full pen would
-# grow the ring of ℃ ℉ into its letter and close №'s o on its bar.
+# figures, which grow by the small pen, so they stay as light: ℃ ℉'s ring and №'s o and bar,
+# º's. The full pen would close ℃ ℉'s ring to 42 across, where the small pen leaves 54.
 LIGHT_PIECES = ("uni2103", "uni2109", "uni2116")
 
 # Outlines whose pieces the pen grows within twice SYMBOL_SIDE of each other, where condensing
 # them apart can't help: ※'s dots in the notches of its X, ⧉'s front square before its back one,
-# and ⌫ ⌦'s × in its tag (⌫ is ⌦ mirrored). Each piece grows on its own, and of two too close,
+# and ⌦'s × in its tag (⌫ is ⌦ mirrored). Each piece grows on its own, and of two too close,
 # the one that clears with less shrinks about its point farthest from the other, just enough
 # to keep the seam (shrunk()), which the regular keeps and tests/test_symbols.py holds them to.
-SHRUNK = ("uni203B", "uni29C9", "uni232B", "uni2326")
+SHRUNK = ("uni203B", "uni29C9", "uni2326")
 
 # Outlines with a piece through a gap in their ring, which the pen grows shut on it: ⎋'s arrow
 # out through its ring. The ring's ends are cut back about its middle, just enough to keep twice
@@ -245,12 +234,13 @@ OPENED = ("uni238B",)
 # so it stays open at 12 px (tests/test_symbols.py).
 DASHED = ("uni21E1",)
 
-# The signs whose bars run past their letter on both sides: ₩ ₦ ₱. The pen lengthens a round
-# end by half its width, which tapers the bars' run clear of the letter, so they would reach the
-# hyphen's weight only inside it (tests/test_symbols.py). So the sign keeps its regular box,
-# condensed, and also grows by a pen of the full height and next to no width, and the two are
-# united: the bars' ends keep the regular's length, as heavy as the hyphen's stroke.
-BLUNT = ("uni20A9", "uni20A6", "uni20B1")
+# The signs whose bars run past their letter on both sides, 30 to 47 units: ₩ ₦. The pen
+# lengthens a round end by half its width, which tapers the bars' run clear of the letter, so
+# they would reach the hyphen's weight only inside it (tests/test_symbols.py); ₱'s, 70 left of
+# its P, reach it there with the pen alone. So the sign keeps its regular box, condensed, and
+# also grows by a pen of the full height and next to no width, and the two are united: the bars'
+# ends keep the regular's length, as heavy as the hyphen's stroke.
+BLUNT = ("uni20A9", "uni20A6")
 
 # The outlines that are another glyph's outline moved, over a bar: ⇪, ⇧ lifted. The bold draws
 # that piece as the bold ⇧ moved as far, so it stays ⇧ (tests/test_symbols.py), lifted a little
@@ -361,9 +351,10 @@ def side_bounds(font, classes):
     cell, or to the regular's own overhang (ď, the tonos capitals). Any other glyph keeps the
     side room the regular gives it, down to SYMBOL_SIDE, so two side by side keep twice that
     between them (tests/test_symbols.py). A part a bolder glyph holds unmoved can't move in
-    toward the cell's middle, so it keeps that glyph's bound too: © ®'s ring. A part the bold
-    draws as the glyph's own outline (unlinked_parts()), as Θ's O, and a shared glyph's part,
-    which doesn't grow, keep their own."""
+    toward the cell's middle, so it keeps that glyph's bound too: © ®'s ring. A letter held so
+    (Δ in ∆, đ in ₫) is never condensed to it (fitted()). A part the bold draws as the glyph's
+    own outline (unlinked_parts()), as Θ's O, and a shared glyph's part, which doesn't grow,
+    keep their own."""
     side = project.SYMBOL_SIDE
     bounds = {}
     for glyph in font.glyphs():
@@ -413,34 +404,6 @@ def unlinked_parts(glyph, classes):
     return [name for name, matrix, *_ in glyph.references if classes[name] == BOLDER
             and (classes[glyph.glyphname] == SHARED
                  or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1))]
-
-
-def scale_together(font, name, bound, pen):
-    """Scale the outline of `name`, a SCALED part, about its ink's middle just enough that grown
-    by `pen` it keeps within `bound`, and the other parts of each glyph built on it by as much
-    about the same point. Those parts must serve no other glyph, which would shrink too."""
-    x0, y0, x1, y1 = font[name].foreground.boundingBox()
-    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-    across = reach(pen)[0]
-    scale = min(1, (cx - bound[0] - across) / (cx - x0), (bound[1] - across - cx) / (x1 - cx))
-    middles = {name: (cx, cy)}
-    for glyph in font.glyphs():
-        refs = {part: matrix for part, matrix, *_ in glyph.references}
-        if name in refs:
-            for part, matrix in refs.items():
-                if tuple(matrix[:4]) != (1, 0, 0, 1):
-                    sys.exit(f"{glyph.glyphname}: its {part} is turned or scaled")
-                # The point under the middle of `name`, in the part's own place.
-                middle = (cx + refs[name][4] - matrix[4], cy + refs[name][5] - matrix[5])
-                if middles.setdefault(part, middle) != middle:
-                    sys.exit(f"{part} sits differently in the glyphs built on {name}")
-    for glyph in font.glyphs():
-        parts = {part for part, *_ in glyph.references}
-        if name not in parts and parts & middles.keys():
-            sys.exit(f"{glyph.glyphname} is built on a part of the glyphs built on {name}")
-    for part, (px, py) in middles.items():
-        matrix = geo.about(psMat.scale(scale), px, py)
-        font[part].foreground = geo.transformed(font[part].foreground, matrix)
 
 
 def lifted_piece(font, name, base):
@@ -560,10 +523,11 @@ def emboldened(name, outline, scratch, pen):
     sys.exit(f"{name}: no offset of its outline passes validate() and stays within the pen")
 
 
-def fitted(name, outline, bound, scratch, pen, anchor=None):
+def fitted(name, outline, bound, scratch, pen, anchor=None, held=False):
     """emboldened(), condensed first just enough that the bold ink stays within `bound`,
     (x0, x1): the outline scaled horizontally about x = `anchor`, or else its ink centre, so
-    every stem still grows by the full pen."""
+    every stem still grows by the full pen. A `held` letter, one a symbol holds, exits instead:
+    condensed, it would no longer match the letter as typed."""
     layer = emboldened(name, outline, scratch, pen)
     x0, _, x1, _ = outline.boundingBox()
     centre = (x0 + x1) / 2 if anchor is None else anchor
@@ -574,6 +538,8 @@ def fitted(name, outline, bound, scratch, pen, anchor=None):
         bx0, _, bx1, _ = layer.boundingBox()
         if (excess := max(bound[0] - bx0, bx1 - bound[1])) <= 0:
             return layer
+        if held:
+            sys.exit(f"{name}: a letter a symbol holds, its ink passes the symbol's {bound}")
         if passes == 3:
             sys.exit(f"{name}: condensed three times, its ink still passes {bound}")
         taken += excess
@@ -916,7 +882,7 @@ def build(font):
     # Most name lists are read only with `in`, which passes a stale name or a glyph two ways
     # claim unseen: each names bolder glyphs, the ways below grow a glyph only one way, and
     # SLASHES and LIGHT_PIECES are read only inside pieces_apart().
-    for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "SCALED", "RAISED",
+    for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
                    "HEAVY"):
@@ -950,8 +916,6 @@ def build(font):
     merged = {name: (font[name].foreground, placed(font, font[name])) for name in MERGED}
     lifted = {name: lifted_piece(font, name, base) for name, base in LIFTED.items()}
     mirrors = mirror_pairs(font, classes)
-    for name in SCALED:
-        scale_together(font, name, bounds[name], pen_of(name, grows_by))
     # Every unlink comes before any base grows: unlinkRef() bakes the base's outline as the
     # composite last saw it, not its current foreground, so a shared glyph's bolder part must
     # take the regular's outline now, not by luck later, and a part that grows as an outline
@@ -970,6 +934,8 @@ def build(font):
                 or name in LIFTED):
             continue
         bound, pen = bounds.get(name, (-geo.FAR, geo.FAR)), pen_of(name, grows_by)
+        # A letter's own bound takes in the whole cell, so a narrower one is a symbol's.
+        held = is_alphanumeric(glyph.unicode) and (bound[0] > 0 or bound[1] < ADVANCE)
         if name in PIECES_APART:
             glyph.foreground = pieces_apart(name, glyph.foreground, bound, scratch, pen, light)
         elif name in SHRUNK:
@@ -982,7 +948,7 @@ def build(font):
             outline, parts = merged.get(name, (glyph.foreground, []))
             if name in RAISED:
                 outline = raised(outline, PEN[1])
-            grown = [fitted(name, layer, box, scratch, pen)
+            grown = [fitted(name, layer, box, scratch, pen, held=held)
                      for layer, box in [(outline, own.get(name, bound)),
                                         *((part, bound) for part in parts)] if len(layer)]
             if name in BLUNT:  # a unit wide, as the stroke needs a pen with some width

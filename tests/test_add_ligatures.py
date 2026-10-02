@@ -18,8 +18,8 @@ from project import ADVANCE, AXIS, OVERLAP, SFD
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
-# it, with its cell scaled to ours.
-FIRA_HEAD_GAP = 133
+# it: 289.6 in its 1200-unit cell, scaled to ours.
+FIRA_HEAD_GAP = 289.6 * ADVANCE / 1200
 
 
 def widths_at(layer, y):

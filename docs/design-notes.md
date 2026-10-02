@@ -224,15 +224,15 @@ in `build/cache/reference/bold/`:
   condensed: its outline is scaled across about its ink centre before the offset, just
   enough, so every stem still grows by the full pen. A composite whose part would pass its
   bound moves its references in toward the cell's centre instead.
-- **Composites** keep their references, so an accented letter follows its base; a glyph with
-  an outline and references has only its outline grown. Two kinds of part are unlinked
-  first. A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
-  italic. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its
-  own outline, since the reference would turn or scale the pen too. A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold
-  right one mirrored, so the two stay exact mirrors. An accent the pen grows out of the line
-  box moves down into it (ĥ's circumflex). A mark the pen grows within `MARK_CLEARANCE` of its
-  letter rises clear, as far on every letter where it stands as high, so a row of them stays
-  level.
+- **Composites** keep their references, so an accented letter follows its base; a glyph with an
+  outline and references has only its outline grown. Two kinds of part are unlinked first. A
+  shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the italic. A
+  bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its own outline,
+  since the reference would turn or scale the pen too. A left glyph the regular draws as its
+  right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one mirrored, so the two stay exact mirrors.
+  An accent the pen grows out of the line box moves down into it (ĥ's circumflex). A mark the
+  pen grows within `MARK_CLEARANCE` of its letter rises clear, as far on every letter where it
+  stands as high, so a row of them stays level.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:
@@ -243,23 +243,21 @@ what it does to them:
   down as across. The level pen would leave them 21 lighter than the bold stems.
 - `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. The full pen would
   close ẞ's white between stem and diagonal to 56, under Maple Mono Bold's 65, and the small
-  4's counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.137).
-- `OUTWARD` and `SCALED`: © ®'s ring grows outward only, by the small pen's whole width, so it
-  stays as heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
-  under Fira Code Bold's 41 around its ©. It comes 8 from the cell's edges, as Fira Code
-  Bold's © does. The ring and its letter scale together about the ring's middle: condensed
-  alone, the ring would come out lighter than C and close on the letter.
-- `BLUNT`: ₩ ₦ ₱'s bars run past their letter on both sides. The pen lengthens their round
-  ends, which tapers the bars' run clear of the letter, so the bars would reach the hyphen's
-  weight only inside it. So the sign keeps its regular box, condensed, and a second pen, as
-  tall but a unit wide, is united with the first: the bars' ends keep the regular's length
-  and weigh as much as the hyphen.
+  4's counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.136).
+- `OUTWARD`: © ®'s ring grows outward only, by the small pen's whole width, so it stays as
+  heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
+  under Fira Code Bold's 41 around its ©.
+- `BLUNT`: ₩ ₦'s bars run 30 to 47 past their letter on both sides. The pen lengthens their
+  round ends, which tapers the bars' run clear of the letter, so the bars would reach the
+  hyphen's weight only inside it. So the sign keeps its regular box, condensed, and a second
+  pen, as tall but a unit wide, is united with the first: the bars' ends keep the regular's
+  length and weigh as much as the hyphen. ₱'s bars run 70 left of its P and reach that weight
+  there with the pen alone.
 - `ACROSS_AS_UP`: ⇕ is ⇔ turned, and the turned pen would grow it past ↑'s height. So ⇕
   grows by the pen as it stands, condensed until it grows across only by the pen's height,
   and stays as wide as ⇔ is tall.
-- `MERGED`: Θ and ∀ are drawn as one outline, each part grown on its own. Θ's bar beside a
-  reference to O fails `validate()` once saved (`docs/fontforge-pitfalls.md`), and ∀'s turned
-  A would grow past ∀'s side room on both sides.
+- `MERGED`: Θ is drawn as one outline, each part grown on its own: its bar beside a reference
+  to O fails `validate()` once saved (`docs/fontforge-pitfalls.md`).
 - `APART`: where the pen grows two parts of a composite into each other, one moves clear,
   just far enough to keep the regular's gap. i j's dots rise; ŀ's dot and the carons of ď ľ Ľ
   move right; the tonos beside a capital moves left; ΅'s dieresis and ª º's bar move down.
@@ -269,11 +267,12 @@ what it does to them:
   cell's middle and keeps the regular's white between its copies.
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
-  reference bolds' 35; it keeps 39.
-- `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
-  ℃ ℉ № (letter and small pieces) grow on their own, and the wider is condensed away from the
-  other until the white between them is the regular's. The small pieces of ℃ ℉ № grow by the
-  small pen, so ℃'s ring stays clear of its C and №'s o of its bar.
+  reference bolds' 38; it keeps 39.
+- `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and ℃ ℉ №
+  (letter and small pieces) grow on their own, and the wider is condensed away from the other
+  until the white between them is the regular's. The small pieces of ℃ ℉ № grow by the small
+  pen, so they stay as light as the small figures; the full pen would close ℃'s ring to 42
+  across, where the small pen leaves 54.
 - `SLASHES`: grown, ‰'s slash would come 14 from the zero under it, where the regular keeps
   27. It shortens at its foot until it keeps the regular's white.
 - `SHRUNK`: ※'s dots, ⧉'s front square and ⌫ ⌦'s × shrink just enough to keep twice

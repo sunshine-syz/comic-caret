@@ -62,11 +62,6 @@ HEAVIER = {**{heavy: (light, HEAVY_INK) for heavy, light in HEAVY.items()}, "❯
 # •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
 # hand's wobble.
 BULLET_WIDTH = 220 - WOBBLE
-# Every symbol keeps at least SYMBOL_SIDE inside the cell, so two side by side keep twice that
-# between them: a seam at 16 px, as in Fira Code. These come no closer to the edges than a
-# reference's: ∞ and � (11 inside) as Fira Code's ∞ and Maple Mono's �, which run past the
-# cell, and ™ (13) as Fira Code's, 11 inside on the left.
-OWN_SIDES = "∞�™"
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫", "▮": "▯",
          "☗": "☖", "▰": "▱"}
@@ -95,10 +90,10 @@ SMALL_SQUARE_COUNTER = 122
 WHITE_BULLET_COUNTER = 144
 # Double mark -> (the single mark, the white between its two copies at their middle): at
 # least the narrowest reference's, scaled to our cell: Maple Mono's ″ and ‼, the only
-# reference's, Fira Code's ‖ (Maple Mono's 156), and Fira Code's “ ” „ (Maple Mono's 103-125,
-# Intel One Mono's 119-120).
-DOUBLES = {"″": ("′", 108), "‖": ("|", 90), "‼": ("!", 110),
-           "“": ("‘", 101), "”": ("’", 102), "„": (",", 100)}
+# reference's, Fira Code's ‖ (Maple Mono's 170), and Fira Code's “ ” „ (Maple Mono's 112-136,
+# Intel One Mono's 129-130).
+DOUBLES = {"″": ("′", 117), "‖": ("|", 98), "‼": ("!", 120),
+           "“": ("‘", 110), "”": ("’", 111), "„": (",", 109)}
 # How far ✗'s top stays under X's: at least Maple Mono's, the one reference with ✗, at our cap
 # height.
 BALLOT_UNDER_X = 100
@@ -112,23 +107,24 @@ EXCLAMATION_DOTS = 93
 BOLD_NOT_EQUAL_REACH = 131
 BOLD_APPROX_GAP = 34  # Fira Code's 34.8 (Intel One Mono's 55.1, Maple Mono's 67.4)
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
-# Fira Code's holes are 123 wide (Maple Mono's 137). The regular's 169 tall doesn't come back by
+# Fira Code's holes are 134 wide (Maple Mono's 149). The regular's 169 tall doesn't come back by
 # this measure, which finds the regulars' holes 203 (Maple Mono) and 249 (Fira Code) tall; the
 # bold keeps its share of Maple Mono's, which its bold closes to 172: 169 × 172 / 203.
-BOLD_INFINITY_HOLE = (123, 143)
+BOLD_INFINITY_HOLE = (134, 143)
 # The mark's ink height less ×'s, as for the regular's. ✓: Intel One Mono's 24.73 (Maple Mono's
 # 121.3, Fira Code's 280.5); its bold keeps the regular's ✓, 543 tall, while its × grows from 446
 # to 519, so the 98.9 its regular gives drops to a quarter. ✗ and ✕: Maple Mono's 135.0 and 73.9,
 # the one reference with them.
 BOLD_MARK_OVER_TIMES = {"✓": 24, "✗": 135, "✕": 73}
 BOLD_BALLOT_UNDER_X = 89  # Maple Mono's 89.4
-BOLD_BULLET_WIDTH = 240 - WOBBLE  # Maple Mono's 240.2 (Fira Code's 261, Intel One Mono's 292)
-# ″: Maple Mono's 89.2, the only reference's. ‖: Fira Code's 94.4 (Maple Mono's 130). “: Maple
-# Mono's 90.7 (Intel One Mono's 93.9, Fira Code's 94.3). ” „: Intel One Mono's 93.9 (Fira Code's
-# 94.4 and 94.3, Maple Mono's 94.5 and 109). ‼: the regular's 110 doesn't come back by this
-# measure, which finds Maple Mono's 127.7; the bold keeps its share of Maple Mono Bold's 106.9.
-BOLD_DOUBLES = {"″": ("′", 89), "‖": ("|", 94), "‼": ("!", 92),
-                "“": ("‘", 90), "”": ("’", 93), "„": (",", 93)}
+BOLD_BULLET_WIDTH = 262 - WOBBLE  # Maple Mono's 262.0 (Fira Code's 284, Intel One Mono's 318)
+# ″: Maple Mono's 97.3, the only reference's. ‖: Fira Code's 103.0 (Maple Mono's 141.8). “:
+# Maple Mono's 98.9 (Intel One Mono's 102.4, Fira Code's 102.9). ” „: Intel One Mono's 102.4
+# (Fira Code's 103.0 and 102.9, Maple Mono's 103.1 and 118.9). ‼: the regular's 120 doesn't
+# come back by this measure, which finds Maple Mono's 139.3; the bold keeps its share of Maple
+# Mono Bold's 116.6.
+BOLD_DOUBLES = {"″": ("′", 97), "‖": ("|", 102), "‼": ("!", 100),
+                "“": ("‘", 98), "”": ("’", 102), "„": (",", 102)}
 BOLD_EXCLAMATION_DOTS = 86  # Maple Mono's 86.8, at our em
 
 
@@ -158,12 +154,12 @@ class CoverageTest(unittest.TestCase):
         self.assertEqual([c for c in SYMBOLS if ord(c) not in self.font], [])
 
     def test_symbols_stay_clear_of_their_neighbours(self):
-        side = SYMBOL_SIDE
+        # SYMBOL_SIDE inside the cell, so two side by side keep twice that between them: a seam
+        # at 16 px, as in Fira Code.
         for char in SYMBOLS:
-            if char not in OWN_SIDES:
-                with self.subTest(symbol=char):
-                    x0, _, x1, _ = self.font[ord(char)].boundingBox()
-                    self.assertGreaterEqual(min(x0, ADVANCE - x1), side)
+            with self.subTest(symbol=char):
+                x0, _, x1, _ = self.font[ord(char)].boundingBox()
+                self.assertGreaterEqual(min(x0, ADVANCE - x1), SYMBOL_SIDE)
 
 
 class OperatorTest(unittest.TestCase):
