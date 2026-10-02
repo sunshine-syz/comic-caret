@@ -21,6 +21,7 @@ import make_italic
 from measure import ink
 from project import (
     ADVANCE,
+    BOLD_SFD,
     ITALIC_SFD,
     LINE_BOTTOM,
     LINE_TOP,
@@ -192,6 +193,12 @@ class ItalicSanityTest(SanityTest):
         unsheared = geo.transformed(ink(self.font, glyph.glyphname),
                                     psMat.inverse(make_italic.SHEAR))
         return unsheared.boundingBox()
+
+
+class BoldSanityTest(SanityTest):
+    """The same rules for the bold, whose strokes grow within the regular's cell and line box."""
+
+    sfd = BOLD_SFD
 
 
 if __name__ == "__main__":

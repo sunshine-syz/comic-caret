@@ -14,6 +14,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 # the tests' shared SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
@@ -22,6 +23,8 @@ from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "make_bold.py"
+# The pieces cut flat at both sides of the cell, which a row of them joins at.
+THROUGH_PIECES = ("hyphen.mid", "equal.mid", "greater.shaft", "less.shaft", "uni23AF")
 
 
 def points(layer):
@@ -90,25 +93,48 @@ class BoldTest(unittest.TestCase):
                 thinner[name] = (round(found), round(regular))
         self.assertEqual(thinner, {})
 
-    def test_bolder_glyphs_grow_no_taller_than_the_pen(self):
-        # The pen grows a horizontal edge by half its height, and rounding moves it a unit
-        # more, so a bold letter keeps the regular's rows.
-        limit = PEN[1] / 2 + ROUNDING
-        taller = {}
+    def outlines(self, name):
+        """The bold glyph's own outline, and the regular's it grew from: the glyph's own, with
+        the parts the bold drew into it where the regular places them. A part the bold keeps
+        as a reference grows as its own glyph, wherever the bold moves it."""
+        kept = {part for part, *_ in self.bold[name].references}
+        regular = self.regular[name].foreground.dup()
+        for part, matrix, *_ in self.regular[name].references:
+            if part not in kept:
+                regular += geo.transformed(ink(self.regular, part), matrix)
+        return self.bold[name].foreground, regular
+
+    def outgrown(self, axis):
+        """{name: (bold box, regular box)} for each bolder glyph whose outline reaches past
+        the regular's it grew from, along `axis` (0 across, 1 up and down), by more than half
+        its pen (make_bold.pen_of(): the small parts' is lighter) and a unit of rounding: a
+        stem grows half the pen's width on each side, a level stroke half its height. Covers
+        a trim or an overlap removal that failed and left its box, and a condensed outline,
+        which takes in each side by at most the pen it then grows by."""
+        small = make_bold.small_pen(self.regular)
+        found = {}
         for name in self.of_class(BOLDER):
-            found, regular = ink(self.bold, name), ink(self.regular, name)
+            bold, regular = self.outlines(name)
             if not len(regular):
                 continue
-            (_, y0, _, y1), (_, ry0, _, ry1) = found.boundingBox(), regular.boundingBox()
-            if abs(y0 - ry0) > limit or abs(y1 - ry1) > limit:
-                taller[name] = ((y0, y1), (ry0, ry1))
-        self.assertEqual(taller, {})
+            limit = make_bold.pen_of(name, small)[axis] / 2 + ROUNDING
+            box, regular_box = bold.boundingBox(), regular.boundingBox()
+            if any(abs(box[side] - regular_box[side]) > limit for side in (axis, axis + 2)):
+                found[name] = (box, regular_box)
+        return found
+
+    def test_bolder_glyphs_grow_no_taller_than_the_pen(self):
+        # So a bold letter keeps the regular's rows.
+        self.assertEqual(self.outgrown(1), {})
+
+    def test_bolder_glyphs_grow_no_wider_than_the_pen(self):
+        self.assertEqual(self.outgrown(0), {})
 
     def test_pieces_keep_their_overlap(self):
         # A ligature piece cut flat past the cell, where it overlaps the next piece, ends at the
         # same line as the regular's, so the seams keep their overlap and no rounded corner
         # shows. Its round ends, as <='s tips, grow like any stroke.
-        wrong, cut = {}, []
+        wrong, cut = {}, set()
         for name in self.of_class(BOLDER):
             if not (GENERATED.fullmatch(name) or name == "uni23AF"):
                 continue
@@ -120,24 +146,34 @@ class BoldTest(unittest.TestCase):
             ends = [(0, x0)] if x0 < 0 and x0 in flat else []
             ends += [(2, x1)] if x1 > ADVANCE and x1 in flat else []
             for side, x in ends:
-                cut.append(name)
+                cut.add((name, side))
                 if found.boundingBox()[side] != x:
-                    wrong[name] = (found.boundingBox()[side], x)
-        self.assertIn("hyphen.mid", cut)
+                    wrong[name, side] = (found.boundingBox()[side], x)
+        self.assertLessEqual({(name, side) for name in THROUGH_PIECES for side in (0, 2)}, cut)
         self.assertEqual(wrong, {})
 
     def test_references_and_lookups_carry_over(self):
         # Every glyph keeps the regular's references but those the bold draws as its outline
-        # (make_bold.unlinked_parts()).
+        # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
+        # move, out of the line box's top, into the cell or clear of a part the pen grew it
+        # into, by no more than the pen grew the two: its width across, half its height up or
+        # down, and a unit of rounding.
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
+
+        def moved_too_far(found, expected):
+            return any(abs(m[4] - e[4]) > PEN[0] + ROUNDING
+                       or abs(m[5] - e[5]) > PEN[1] / 2 + ROUNDING
+                       for (_, m), (_, e) in zip(found, expected, strict=True))
         wrong = {}
         for glyph in self.regular.glyphs():
             name = glyph.glyphname
             unlinked = make_bold.unlinked_parts(glyph, self.classes)
             expected = [ref for ref in listed(glyph) if ref[0] not in unlinked]
-            if listed(self.bold[name]) != expected:
-                wrong[name] = (listed(self.bold[name]), expected)
+            found = listed(self.bold[name])
+            if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in expected]
+                    or moved_too_far(found, expected)):
+                wrong[name] = (found, expected)
         self.assertEqual(wrong, {})
         for kind in ("gsub_lookups", "gpos_lookups"):
             self.assertEqual(getattr(self.bold, kind), getattr(self.regular, kind))

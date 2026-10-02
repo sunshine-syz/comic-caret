@@ -63,6 +63,9 @@ around. Read this before writing code that edits the SFD.
   rounds onto one spot, a zero-length segment `validate()` flags (0x4). Round the cut
   outline first; the cleanup's `removeOverlap()` then merges the two (`open_crotch` in
   `tools/add_ligatures.py`).
+- `layer.intersect()` can fail when the box's edge runs exactly through outline points, as
+  where a stroked end's round cap meets the stroke: it leaves the outline uncut, empty, or the
+  box itself behind. Cut a hair inside the line and round (`HAIR` in `tools/make_bold.py`).
 - A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
   `removeOverlap()` then takes them for holes; turn them clockwise (`lig_geometry.clockwise`;
   `lig_geometry.polygon` and `stroked` already do) before a union.
