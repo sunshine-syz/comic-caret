@@ -25,6 +25,9 @@ DIAMOND_WIDTHS = (1.67, 1.76)
 # The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
 # Mono's (620 of 550).
 OR_EQUAL_ANGLES = (1.098, 1.127)
+# |> <|'s ink in x-heights, tall then wide: Fira Code's is 1603 by 1306 of 1053 (1.52, 1.24),
+# JetBrains Mono's 835 by 685 of 550 (1.52, 1.25).
+PIPE_HEIGHT, PIPE_WIDTH = 1.52, 1.24
 
 
 def widths_at(layer, y):
@@ -238,6 +241,16 @@ class GlyphShapeTest(unittest.TestCase):
                 width = (x1 - x0) / self.font.os2_xheight
                 self.assertGreaterEqual(width, OR_EQUAL_ANGLES[0] - wobble)
                 self.assertLessEqual(width, OR_EQUAL_ANGLES[1] + wobble)
+
+    def test_pipe_heads_are_as_large_as_the_references(self):
+        # In x-heights, at least as tall and as wide as Fira Code's and JetBrains Mono's
+        # |> <|, give or take the hand's wobble.
+        wobble = WOBBLE / self.font.os2_xheight
+        for glyph in PIPES:
+            with self.subTest(glyph=glyph):
+                x0, y0, x1, y1 = self.font[glyph].boundingBox()
+                self.assertGreaterEqual((y1 - y0) / self.font.os2_xheight, PIPE_HEIGHT - wobble)
+                self.assertGreaterEqual((x1 - x0) / self.font.os2_xheight, PIPE_WIDTH - wobble)
 
     def test_pipes_are_centred_on_their_middle_cell(self):
         x0, _, x1, _ = self.font["less_bar_greater.liga"].boundingBox()

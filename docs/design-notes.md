@@ -136,6 +136,22 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
   550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
   keeps its own 174-unit half-waves.
+- **The ligatures.** `tools/add_ligatures.py` measures its constants on the widened `-` `<`
+  `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`). The gains that widen `<` `>` into other ligatures
+  shrank as `<` `>` grew 64 wider, so the shapes keep their reference sizes:
+  `ANGLE_WIDTH_GAIN` (94) still widens the angle of `<=` `>=` to 517, 1.09 x-heights, within
+  `WOBBLE` of Fira Code's 1.10 (Maple Mono's is 1.13), and `DIAMOND_WIDTH_GAIN` (35) keeps
+  `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76.
+- **`|>` `<|`.** `PIPE_HEAD_SCALE` (1.46) lengthens the head's arms until the triangle is
+  1.52 x-heights tall, as Fira Code's and JetBrains Mono's are; it then comes out 1.24 wide,
+  as theirs do. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its
+  own cell, between JetBrains Mono's 275 and Fira Code's 293 at a 600 cell.
+- **`->>`.** `HEAD_PITCH` (375) keeps the white between the two heads at 174, as in the 550
+  cell, since the heads kept their size; Fira Code, the one reference that draws `->>`, leaves
+  145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the shaft's cut
+  end at the seam lies on the open shaft, as in `->`. A pitch from 388 to 429 puts the crotch
+  onto that cut end, which then shows as a flat, and 432, which kept the inner head where the
+  550 cell had it, left 218 between the heads.
 
 ## Italic
 

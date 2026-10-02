@@ -88,9 +88,10 @@ ARM_ENDS = {"greater": ((119, 515), (122, 47)),
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
-# |> <|: the head 121 % the size of > <, its arm ends over the round ends of a bar as tall
-# as the head, so each corner turns as one round stroke end.
-PIPE_HEAD_SCALE = 1.21
+# |> <|: the head with its arm ends 146 % as high as those of > <, over the round ends of a
+# bar as tall as the head, so each corner turns as one round stroke end. That makes the
+# triangle 1.52 x-heights tall and 1.24 wide, as Fira Code's and JetBrains Mono's are.
+PIPE_HEAD_SCALE = 1.46
 PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
@@ -108,11 +109,12 @@ TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": -4, "plus": -5.5, "slash
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
-# ->> <<-: the inner head sits this much closer to the shaft than the outer one, which leaves
-# at least the white of Fira Code, the one reference that draws ->>, between the two. A
-# smaller pitch brings the inner head's crotch up to the cell's edge, where the shaft's cut
-# end then shows in it.
-HEAD_PITCH = 432
+# ->> <<-: the inner head sits this much closer to the shaft than the outer one. The white
+# between the two, 174, goes with the heads' size, not the cell's: more than Fira Code's (145
+# at our cell), the one reference that draws ->>. The inner head's crotch then lies inside its
+# cell, clear of the shaft's cut end at the cell's edge; a pitch from about 388 to 429 brings
+# the crotch onto that end, which then shows in it.
+HEAD_PITCH = 375
 
 # ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
 # upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
