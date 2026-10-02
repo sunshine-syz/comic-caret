@@ -3,6 +3,7 @@
 Run: python3 -m unittest discover tests
 
 Rows, centering and accented letters are checked for every glyph in test_consistency.py.
+The bold runs these rules too (the Bold* classes), its floors measured from the reference bolds.
 """
 import math
 import pathlib
@@ -15,10 +16,11 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
+import make_bold
 import measure
 import sfnt
 from helpers import require_current_build
-from project import ADVANCE, ROUNDING, SFD, WOBBLE, font_file
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE, font_file
 
 TTF = font_file("Regular", "ttf")
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
@@ -39,6 +41,16 @@ ORDINAL_CLEARANCE = 89
 # The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
 # cell (Fira Code's 33; Intel One Mono has no ‰).
 PER_MILLE_CLEARANCE = 22
+
+# The bold's floors, measured from the reference bolds as the ones above were from the
+# regulars, scaled as tools/compare_glyphs.py scales: x to our advance, y to the bold's cap
+# height. The narrowest reference bold's, rounded down; the others' in brackets.
+# Hole width over letter height: Maple Mono's º, Fira Code's ª, Maple Mono's ¼'s 4 (Maple
+# Mono's ª 0.310, Intel One Mono's º 0.391 and ¼'s 4 0.252; Fira Code's 4 is open).
+BOLD_COUNTER_FLOOR = {"o": 85 / 260, "a": 117 / 443, "four": 45 / 328}
+BOLD_FRACTION_CLEARANCE = 6  # Fira Code's ⅘ 6.8 (Maple Mono's ½ 9.2, Intel One Mono's ⅓ 22.1)
+BOLD_ORDINAL_CLEARANCE = 86  # Intel One Mono's º 86.6 (Fira Code's 191)
+BOLD_PER_MILLE_CLEARANCE = 19  # Maple Mono's 19.7 (Fira Code's 22.6)
 # “ ” „ are two of their single mark (‘ ’ or the comma), level, not a copied outline.
 COMPOSITES = {"periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
@@ -132,20 +144,28 @@ class CoverageTest(unittest.TestCase):
 
 class LookalikeTest(unittest.TestCase):
     """Letters set apart from the ones they would otherwise read as."""
+    sfd = SFD
+    per_mille_clearance = PER_MILLE_CLEARANCE
+    # The floors the tests below take from the references, which they name.
+    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 70, 81
+    slash_short = 0  # how much less than half a stroke Ø's slash may run past O
+    eth_stroke_y = 400  # where ð's rising stroke stands alone, below the bar
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
         cls.stroke = hyphen_stroke(cls.font)
 
     def test_slash_runs_past_the_letter(self):
         # Past O, Ø reads apart from our slashed zero, whose slash stays inside it: by at least
         # half a stroke, so the slash's round end clears the bowl.
+        floor = self.stroke / 2 - self.slash_short
         for slashed, letter in (("Oslash", "O"), ("oslash", "o")):
             with self.subTest(glyph=slashed):
                 _, bottom, _, top = self.font[slashed].boundingBox()
                 _, letter_bottom, _, letter_top = self.font[letter].boundingBox()
-                self.assertGreaterEqual(top - letter_top, self.stroke / 2)
-                self.assertGreaterEqual(letter_bottom - bottom, self.stroke / 2)
+                self.assertGreaterEqual(top - letter_top, floor)
+                self.assertGreaterEqual(letter_bottom - bottom, floor)
 
     def test_zero_slash_stays_inside(self):
         ring = max(self.font["zero"].foreground, key=lambda c: c.boundingBox()[3])
@@ -165,7 +185,7 @@ class LookalikeTest(unittest.TestCase):
         for y in (20, 40, 60):
             with self.subTest(y=y):
                 (_, stem), (end, _) = measure.spans_at_y(layer, y)
-                self.assertGreaterEqual(end - stem, 69)
+                self.assertGreaterEqual(end - stem, self.sharp_s_foot)
 
     def test_sharp_s_waist_is_open(self):
         # The white between the stem and the 3's middle, where B's bowls meet its stem: at
@@ -177,7 +197,7 @@ class LookalikeTest(unittest.TestCase):
             spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
             if len(spans) >= 2:
                 gaps.append(spans[1][0] - spans[0][1])
-        self.assertGreaterEqual(min(gaps), 75)
+        self.assertGreaterEqual(min(gaps), self.sharp_s_waist)
 
     def test_capital_sharp_s_stays_open_at_the_bottom(self):
         # The bowl ends short of the stem, or ẞ reads as B: at least as far as the narrowest
@@ -187,7 +207,7 @@ class LookalikeTest(unittest.TestCase):
         for share in (0.03, 0.06, 0.09):
             with self.subTest(share=share):
                 (_, stem), (end, _) = measure.spans_at_y(layer, y0 + share * (y1 - y0))
-                self.assertGreaterEqual(end - stem, 70)
+                self.assertGreaterEqual(end - stem, self.capital_sharp_s_foot)
 
     def test_capital_sharp_s_middle_is_open(self):
         # The white between the stem and the diagonal, down to where it meets the bowl: at
@@ -199,7 +219,7 @@ class LookalikeTest(unittest.TestCase):
             spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
             if len(spans) >= 2:
                 gaps.append(spans[1][0] - spans[0][1])
-        self.assertGreaterEqual(min(gaps), 81)
+        self.assertGreaterEqual(min(gaps), self.capital_sharp_s_middle)
 
     def test_eth_bar_crosses_its_stroke(self):
         # The bar tells ð from ∂: bar and rising stroke make one outline, the bar reaching past
@@ -207,7 +227,7 @@ class LookalikeTest(unittest.TestCase):
         layer = self.font["eth"].foreground
         crossing = measure.spans_at_y(layer, 540)
         self.assertEqual(len(crossing), 1)
-        rising = measure.spans_at_y(layer, 400)[-1]
+        rising = measure.spans_at_y(layer, self.eth_stroke_y)[-1]
         self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
 
     def test_per_mille_rings_and_slash_stay_apart(self):
@@ -222,14 +242,16 @@ class LookalikeTest(unittest.TestCase):
         for contour in rings:
             ring = fontforge.layer()
             ring += contour
-            self.assertGreaterEqual(measure.gap(slash, ring), PER_MILLE_CLEARANCE)
+            self.assertGreaterEqual(measure.gap(slash, ring), self.per_mille_clearance)
 
 
 class CapitalTest(unittest.TestCase):
     """Capitals drawn the way the references agree on."""
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
         cls.stroke = hyphen_stroke(cls.font)
 
     def test_J_bar_stays_left_of_the_stem(self):
@@ -285,9 +307,13 @@ class SmallFigureTest(unittest.TestCase):
     """The small figures, letters and signs that superscripts, subscripts, fractions, ª º ™ © ®
     are built from: the regular glyph scaled down, its strokes thickened back towards a regular
     stem."""
+    sfd = SFD
+    small_stem, sign_stem, counter_floor = SMALL_STEM, SIGN_STEM, COUNTER_FLOOR
+    trademark_counter = 53  # three quarters up ™'s M: Maple Mono's, the narrowest reference's
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_stems(self):
         for base, (height, index) in SMALL_PROBES.items():
@@ -295,11 +321,11 @@ class SmallFigureTest(unittest.TestCase):
                 layer = self.font[f"{base}.small"].foreground
                 _, y0, _, y1 = layer.boundingBox()
                 a, b = measure.spans_at_y(layer, y0 + height * (y1 - y0))[index]
-                weight, delta = SIGN_STEM if base in "TMCR" else SMALL_STEM
+                weight, delta = self.sign_stem if base in "TMCR" else self.small_stem
                 self.assertAlmostEqual(b - a, weight, delta=delta)
 
     def test_counters_are_as_open_as_the_references(self):
-        for base, floor in COUNTER_FLOOR.items():
+        for base, floor in self.counter_floor.items():
             with self.subTest(glyph=f"{base}.small"):
                 layer = self.font[f"{base}.small"].foreground
                 _, y0, _, y1 = layer.boundingBox()
@@ -312,7 +338,8 @@ class SmallFigureTest(unittest.TestCase):
         layer = self.font["M.small"].foreground
         _, y0, _, y1 = layer.boundingBox()
         self.assertEqual(len(measure.spans_at_y(layer, y0 + 0.25 * (y1 - y0))), 2)
-        self.assertGreaterEqual(measure.counter(layer, y0 + 0.75 * (y1 - y0)), 53)
+        self.assertGreaterEqual(measure.counter(layer, y0 + 0.75 * (y1 - y0)),
+                                self.trademark_counter)
 
     def test_one_scale_for_each_set(self):
         # Letters shrink alike within a set: the figures, ª º, and ™ © ®.
@@ -340,9 +367,14 @@ class SmallFigureTest(unittest.TestCase):
 
 class FigureTest(unittest.TestCase):
     """Superscripts, fractions, ordinals and the signs built from the small components."""
+    sfd = SFD
+    small_stem = SMALL_STEM
+    fraction_clearance, ordinal_clearance = FRACTION_CLEARANCE, ORDINAL_CLEARANCE
+    circle_room = 48  # around ©, the narrowest reference's
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def part(self, glyph, component):
         """The component's ink where the glyph places it."""
@@ -369,7 +401,7 @@ class FigureTest(unittest.TestCase):
             for figure in figures:
                 with self.subTest(glyph=name, figure=figure):
                     self.assertGreaterEqual(measure.gap(bar, self.part(name, figure)),
-                                            FRACTION_CLEARANCE)
+                                            self.fraction_clearance)
 
     def test_fractions_place_their_figures_where_one_half_does(self):
         # Every numerator's ink stands centred where ½'s 1 is, its top at the 1's, and every
@@ -395,7 +427,7 @@ class FigureTest(unittest.TestCase):
         _, y0, _, y1 = bar.boundingBox()
         [(a, b)] = measure.spans_at_y(bar, (y0 + y1) / 2)
         across = (b - a) * math.sin(math.radians(60))  # the bar leans at our slash's 60°
-        self.assertAlmostEqual(across, SMALL_STEM[0], delta=SMALL_STEM[1])
+        self.assertAlmostEqual(across, self.small_stem[0], delta=self.small_stem[1])
 
     def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
@@ -403,9 +435,9 @@ class FigureTest(unittest.TestCase):
                 bar = self.part(name, "bar.ordinal")
                 x0, _, x1, _ = bar.boundingBox()
                 [(t0, t1)] = measure.spans_at_x(bar, (x0 + x1) / 2)
-                self.assertAlmostEqual(t1 - t0, SMALL_STEM[0], delta=SMALL_STEM[1])
+                self.assertAlmostEqual(t1 - t0, self.small_stem[0], delta=self.small_stem[1])
                 self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)),
-                                        ORDINAL_CLEARANCE)
+                                        self.ordinal_clearance)
 
     def test_trademark_letters_stay_apart(self):
         self.assertGreaterEqual(measure.gap(self.part("trademark", "T.small"),
@@ -428,7 +460,58 @@ class FigureTest(unittest.TestCase):
                 # to whole units can move the centre.
                 self.assertAlmostEqual((x0 + x1) / 2, (rx0 + rx1) / 2, delta=ROUNDING)
                 self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=ROUNDING)
-                self.assertGreaterEqual(measure.gap(ring, inside), 48)
+                self.assertGreaterEqual(measure.gap(ring, inside), self.circle_room)
+
+
+def bold_stems():
+    """SMALL_STEM and SIGN_STEM for the bold: the regular's weights grown by the pen the bold
+    grows the small parts by (make_bold.small_pen())."""
+    grown = make_bold.small_pen(fontforge.open(str(SFD)))[0]
+    return (SMALL_STEM[0] + grown, SMALL_STEM[1]), (SIGN_STEM[0] + grown, SIGN_STEM[1])
+
+
+class BoldLookalikeTest(LookalikeTest):
+    sfd = BOLD_SFD
+    per_mille_clearance = BOLD_PER_MILLE_CLEARANCE
+    # The reference bolds' narrowest: Fira Code's 30.8 at ß's foot (Maple Mono's 60.1, Intel
+    # One Mono's 85.1), 43.1 at its waist (59.6, 76.1) and 44.9 at ẞ's foot (62.6, 93.8);
+    # Maple Mono's 65.1 at ẞ's middle (Fira Code's 71.5, Intel One Mono's 103).
+    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 30, 43, 44, 65
+    # Known exception: Ø ø's slash need run past the bowl by only half the regular's stroke
+    # (39.6), not half the bold's (46.6); it runs 45 past, as the regular's does. The pen
+    # grows the slash's end and the bowl's top alike, by its half height, while half the
+    # stroke grows as much. Running further would grow the slash past the pen, which
+    # tests/test_make_bold.py holds every glyph to, so the bold keeps the regular's rows.
+    slash_short = make_bold.PEN[1] / 2
+    # The pen joins the bowl's shoulder to the stroke up to 440, where the regular leaves 14
+    # of white; above it, below the bar, the stroke stands alone.
+    eth_stroke_y = 460
+
+
+class BoldCapitalTest(CapitalTest):
+    sfd = BOLD_SFD
+
+
+class BoldSmallFigureTest(SmallFigureTest):
+    sfd = BOLD_SFD
+    counter_floor = BOLD_COUNTER_FLOOR
+    trademark_counter = 24  # Maple Mono Bold's 24.7 (Intel One Mono's 45.0)
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.small_stem, cls.sign_stem = bold_stems()
+
+
+class BoldFigureTest(FigureTest):
+    sfd = BOLD_SFD
+    fraction_clearance, ordinal_clearance = BOLD_FRACTION_CLEARANCE, BOLD_ORDINAL_CLEARANCE
+    circle_room = 41  # Fira Code Bold's 41.5 around its © (Intel One Mono's 47.2)
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.small_stem, _ = bold_stems()
 
 
 if __name__ == "__main__":

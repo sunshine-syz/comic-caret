@@ -18,7 +18,10 @@ Every glyph of the regular falls in one of two sets, decided by classify():
   bold letter keeps the regular's rows. The small parts (superscripts, fraction figures,
   ™'s letters) are drawn lighter than full letters, and grow by a pen as much smaller
   (small_pen()). A stroke the regular draws as another turned, the tonos as the acute, grows
-  by the pen turned with it (TURNED).
+  by the pen turned with it (TURNED). ª º's bar, drawn as heavy as the stems above it, grows
+  as much up and down (ROUND), and ẞ and the small 4, whose white the full pen would close
+  under the reference bolds', grow by a narrower pen (NARROW). © ®'s ring grows outward only,
+  keeping its counter clear of the letter inside (OUTWARD).
 - SHARED: what is drawn as a picture, or drawn heavy already, which the reference bolds keep
   as their regulars draw them: Box Drawing, Block Elements and the geometric shapes, which
   meet their neighbours' across the cell; Braille; the Powerline symbols, which fill the line
@@ -48,11 +51,13 @@ own (MERGED). A left glyph the regular draws as its right one mirrored is the bo
 mirrored (mirror_pairs()).
 
 Where the pen grows two parts into each other, one moves clear, just far enough to keep the
-regular's gap (APART); each is condensed to keep its own box (OWN_BOX); or, of an outline's
-pieces, the arrow is condensed away from its bar (PIECES_APART). An accent the pen grows out
-of the line box moves down into it, and a mark it grows within MARK_CLEARANCE of its letter
-rises clear, as far on every letter where it stands as high (raise_clear()). Widths, anchors
-and the lookups carry over as they are.
+regular's gap (APART: ª º's bar, the tonos beside a capital); each is condensed
+to keep its own box (OWN_BOX); of an outline's pieces, the wider is condensed away from the
+other (PIECES_APART: ⇥'s arrow from its bar, ‰'s zeros from each other), and ‰'s slash
+shortened at its foot (SLASHES); or, in one outline, Ħ's upper bar moves up its stems
+(RAISED). An accent the pen grows out of the line box moves down into it, and a mark it
+grows within MARK_CLEARANCE of its letter rises clear, as far on every letter where it
+stands as high (raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import argparse
 import collections
@@ -70,7 +75,7 @@ import lig_geometry as geo
 import project
 from add_ligatures import GENERATED
 from add_shapes import CODES
-from measure import gap, ink, outline, pieces, spans_at_y, vertical_edges
+from measure import gap, ink, outline, pieces, spans_at_x, spans_at_y, vertical_edges
 from project import (
     ADVANCE,
     BOLD_SFD,
@@ -103,10 +108,32 @@ SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✶✔✘❯�
 # of © ®. They take the small pen too, so they stay as heavy as their figures and letters.
 LIGHT_PARTS = ("slash.fraction", "bar.ordinal", "circle.copyright")
 
+# The level bars the regular draws as heavy as the stems of the letters above them, not as a
+# level stroke of a letter: ª º's bar. It grows by its pen's width up and down too, so it stays
+# as heavy as the bold stems; the level pen leaves it 14 lighter.
+ROUND = ("bar.ordinal",)
+
+# The glyphs whose white the full pen closes under the reference bolds', and the share of
+# their pen's width they grow by instead (tests/test_latin.py): ẞ, whose white between the
+# stem and the diagonal would close to 56, under Maple Mono Bold's 65; and the small 4, whose
+# counter would close to 0.128 of its height, under Maple Mono Bold's ¼ (0.137). Their stems
+# grow 10.5 and 3.7 less than the others'.
+NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
+
 # The strokes the regular draws as another stroke turned, and the turn, anticlockwise: the
 # tonos is the acute turned 25° steeper (docs/design-notes.md). The pen turns with it, so the
 # bold tonos is the bold acute turned. The level pen would grow the steeper stroke heavier.
 TURNED = {"tonos": math.radians(25)}
+
+# The rings that grow outward only, keeping their regular counter: © ®'s, which the regular
+# draws lighter than the letter inside it so it doesn't crowd it (tests/test_latin.py). Grown
+# inward too, it would come 35 from ®'s R, under Fira Code Bold's 41 around its ©.
+OUTWARD = ("circle.copyright",)
+
+# The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
+# below it: Ħ, 81 apart against the bold hyphen's 93 (tests/test_latin.py). The bar moves up
+# its stems by the pen's height, so the white between the bars stays the regular's (raised()).
+RAISED = ("Hbar",)
 
 # The composites whose parts the pen grows into each other, the part of each that moves clear,
 # and which way: just far enough to keep the regular's gap between it and the other parts
@@ -116,12 +143,14 @@ TURNED = {"tonos": math.radians(25)}
 # below its tonos, which lower_into_line() takes down into the line box and the turned pen
 # grows into the dieresis. With no room above, ΐ ΰ's dieresis then sits 29 below ϊ ϋ's, a row
 # break that letters as rare as these may take (tests/test_make_bold.py names it).
+# The bar of ª º moves down, clear of the letter its round pen grows it into.
 RIGHT, LEFT, DOWN = (1, 0), (-1, 0), (0, -1)
 APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
          "lcaron": ("caron.alt", RIGHT), "Lcaron": ("caron.alt", RIGHT),
          **dict.fromkeys(("Alphatonos", "Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                           "Upsilontonos", "Omegatonos"), ("tonos", LEFT)),
-         "dieresistonos": ("dieresis", DOWN)}
+         "dieresistonos": ("dieresis", DOWN),
+         **dict.fromkeys(("ordfeminine", "ordmasculine"), ("bar.ordinal", DOWN))}
 
 # The outlines condensed to keep their own regular box, so the pen grows them no closer to
 # their neighbours than half its width: ™'s T and M, 23 apart, which the small pen would grow
@@ -134,11 +163,18 @@ OWN_BOX = ("T.small", "M.small", "Theta")
 # stems need against Θ's own stems, which the bar's wobble makes overlap too.
 MERGED = ("Theta",)
 
-# Outlines whose pieces stand side by side, 30 apart, which the pen would grow into one: the
-# arrows and bars of ⇥ and ↹ (⇤ is ⇥ mirrored). Each piece grows on its own, the bar by the
-# full pen, and the arrow is condensed away from it, its tail kept, until the white between
-# them is the regular's, ●●'s seam (pieces_apart()).
-PIECES_APART = ("uni21E5", "uni21B9")
+# Outlines whose pieces stand side by side, which the pen would grow into one: the arrows and
+# bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, and ‰'s two lower zeros, 10 apart. Each piece
+# grows on its own, and the wider is condensed away from the other, its far end kept, or both
+# alike when they are as wide, until the white between them is the regular's: ⇥ ↹'s bar keeps
+# the full pen, and the white ●●'s seam (pieces_apart()).
+PIECES_APART = ("uni21E5", "uni21B9", "perthousand")
+
+# Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
+# piece below its foot: ‰'s, which would come 14 from the zero under it, where the regular
+# keeps 27 (Maple Mono Bold's ‰ keeps 20). The slash shrinks about its top end, by the fewest
+# units at its foot that keep the regular's white, so it ends higher up its slant.
+SLASHES = ("perthousand",)
 
 # A cut exactly on a piece's cut line runs through the points where the pen's round end meets
 # the stroke, and intersect() then fails, leaving the stroke uncut or the cutting box behind;
@@ -192,9 +228,11 @@ def small_pen(font):
 
 def pen_of(name, small):
     """The pen glyph `name` grows by, (width, height, turn): `small`, the small_pen(), for a
-    small part, and turned for a TURNED stroke."""
+    small part, narrower for a NARROW glyph, as tall as wide for a ROUND bar, and turned for a
+    TURNED stroke."""
     width, height = small if name.endswith(".small") or name in LIGHT_PARTS else PEN
-    return width, height, TURNED.get(name, 0)
+    width *= NARROW.get(name, 1)
+    return width, width if name in ROUND else height, TURNED.get(name, 0)
 
 
 def reach(pen):
@@ -282,6 +320,36 @@ def offset(outline, overlap, pen):
     return layer
 
 
+def with_counters(layer, outline):
+    """The grown `layer`'s outer contours with the counters of `outline`, the regular's, in
+    place of its own (OUTWARD)."""
+    out = fontforge.layer()
+    for contour in (*(c for c in layer if c.isClockwise()),
+                    *(c for c in outline if not c.isClockwise())):
+        out += contour
+    return out
+
+
+def raised(outline, rise):
+    """The outline with the bar above its counter moved up by `rise` along its stems (RAISED):
+    the stems' straight part beside the counter lengthened by `rise`, and above the bar
+    shortened as much, so their ends stay where they are."""
+    upright = (0, 1, 1, 0, 0, 0)  # swaps x and y, so stretch_span() stretches up and down
+
+    def stretched(layer, y0, y1, dy):
+        return geo.transformed(geo.stretch_span(geo.transformed(layer, upright), y0, y1, dy),
+                               upright)
+    [hole] = [c for c in outline if not c.isClockwise()]
+    x0, y0, x1, y1 = hole.boundingBox()
+    third = (y1 - y0) / 3
+    [bar_top] = [top for bottom, top in spans_at_x(outline, (x0 + x1) / 2)
+                 if bottom > (y0 + y1) / 2]
+    top = outline.boundingBox()[3]
+    out = stretched(outline, y0 + third, y1 - third, rise)
+    # Halfway up from the bar, short of the stems' round ends.
+    return stretched(out, bar_top + rise, (bar_top + top) / 2 + rise, -rise)
+
+
 def grew_within_pen(outline, layer, pen, cuts):
     """Whether `layer`, the outline grown by `pen`, reaches past the outline's box by no more
     than the pen's reach() and a unit of rounding on each side, and exactly to each cut end in
@@ -309,6 +377,8 @@ def emboldened(name, outline, scratch, pen):
     cuts = cut_ends(name, outline)
     for overlap in ("layer", "none"):
         layer = offset(outline, overlap, pen)
+        if name in OUTWARD:
+            layer = with_counters(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
             layer = geo.trim(layer, x0=cuts[0] + HAIR, x1=cuts[1] - HAIR)
         # The pen can pinch a counter's narrow corner off into a speck of white (p's).
@@ -346,8 +416,9 @@ def fitted(name, outline, bound, scratch, pen, anchor=None):
 
 def pieces_apart(name, outline, bound, scratch, pen):
     """The outline's pieces (PIECES_APART) each fitted() within `bound`, and of two side by
-    side, the wider condensed away from the other, about its far end, until the white between
-    their boxes is the regular's."""
+    side, the wider condensed away from the other, about its far end, or both by half when
+    they are as wide, until the white between their boxes is the regular's. A SLASHES slash
+    then shrinks about its top end until it keeps the regular's white to the pieces below."""
     parts = pieces(outline)
     grown = [fitted(name, part, bound, scratch, pen) for part in parts]
     boxes = [part.boundingBox() for part in parts]
@@ -357,12 +428,35 @@ def pieces_apart(name, outline, bound, scratch, pen):
         if white <= 0 or a3 < b1 or b3 < a1:
             continue
         left, right = grown[a].boundingBox()[2], grown[b].boundingBox()[0]
-        if right - left >= white:
+        if (lack := white - (right - left)) <= 0:
             continue
-        if a2 - a0 >= b2 - b0:
-            grown[a] = fitted(name, parts[a], (bound[0], right - white), scratch, pen, a0)
-        else:
-            grown[b] = fitted(name, parts[b], (left + white, bound[1]), scratch, pen, b2)
+        wider = (a2 - a0) - (b2 - b0)
+        share = 0.5 if abs(wider) <= ROUNDING else float(wider > 0)  # how much a gives way
+        if share:
+            grown[a] = fitted(name, parts[a], (bound[0], left - share * lack), scratch, pen, a0)
+        if share < 1:
+            grown[b] = fitted(name, parts[b], (right + (1 - share) * lack, bound[1]), scratch,
+                              pen, b2)
+    if name in SLASHES:
+        i = max(range(len(parts)), key=lambda k: boxes[k][3] - boxes[k][1])
+        x0, y0, x1, y1 = boxes[i]
+        below = [k for k in range(len(parts)) if boxes[k][3] <= y0]
+        wanted = gap(parts[i], geo.union(*(parts[k] for k in below)))
+        rest = geo.union(*(grown[k] for k in below))
+        length = math.hypot(x1 - x0, y1 - y0)
+
+        def shortened(units):
+            scale = geo.about(psMat.scale(1 - units / length), x1, y1)
+            return fitted(name, geo.transformed(parts[i], scale), bound, scratch, pen)
+        # The least shortening that clears, found by halves: every longer one clears too.
+        low, high = 0, 2 * PEN[0]
+        if gap(shortened(high), rest) < wanted:
+            sys.exit(f"{name}: its slash can't shorten clear of the pieces below it")
+        while low < high:
+            middle = (low + high) // 2
+            low, high = (low, middle) if gap(shortened(middle), rest) >= wanted else (
+                middle + 1, high)
+        grown[i] = shortened(low)
     return geo.cleanup(geo.union(*grown))
 
 
@@ -593,6 +687,8 @@ def build(font):
             glyph.foreground = pieces_apart(name, glyph.foreground, bound, scratch, pen)
         else:
             outline, parts = merged.get(name, (glyph.foreground, []))
+            if name in RAISED:
+                outline = raised(outline, PEN[1])
             grown = [fitted(name, layer, box, scratch, pen)
                      for layer, box in [(outline, own.get(name, bound)),
                                         *((part, bound) for part in parts)] if len(layer)]
