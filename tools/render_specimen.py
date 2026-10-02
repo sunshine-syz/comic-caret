@@ -18,6 +18,7 @@ from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, font_file, stale_build
 
 FORMAT = "ttf"  # the images are drawn from the TTFs
 FONT, ITALIC = font_file("Regular", FORMAT), font_file("Italic", FORMAT)
+BOLD = font_file("Bold", FORMAT)
 OUT = ROOT / "docs" / "images"
 WIDTH = 800               # px; within a README column at 1:1
 MARGIN, PADDING = 24, 20  # around each image, and inside its panel
@@ -62,6 +63,10 @@ ITALIC_SAMPLES = (
     "0123456789 fly Il1| O0o ij:;",
     "→⇒ ≠≤≥ ✓✗⚠ ●○■□ ─┼│ ☐☑",
 )
+# The bold: the italic's rows in the bold, above code with its keywords in the bold and its
+# comments in the italic, as editors set them; the shapes, box drawing and boxes in the last
+# row keep the regular's weight.
+BOLD_SAMPLES = ITALIC_SAMPLES
 TERMINAL = (
     "{blue:~/comic-caret} {muted:on} {purple:main} {muted:⇡1 ⇣2}",
     "{green:❯} cargo test",
@@ -180,13 +185,13 @@ class Layout:
         colors every glyph, as a class name, or each by its character, as a list."""
         self._draw(x, baseline, text, size, gap, calt, classes, font, lambda cluster: True)
 
-    def styled(self, x, baseline, text, size, italic, gap=0, calt=False, classes=None):
-        """As line(), with the characters `italic` marks (one bool each) drawn in the italic.
-        Both styles shape alike, so a glyph comes from the style of the character it starts
-        at; keep a ligature's characters in one style."""
-        for font, slanted in ((FONT, False), (ITALIC, True)):
+    def styled(self, x, baseline, text, size, fonts, gap=0, calt=False, classes=None):
+        """As line(), with each character drawn in its font in `fonts` (one font each). The
+        styles shape alike, so a glyph comes from the font of the character it starts at;
+        keep a ligature's characters in one font."""
+        for font in dict.fromkeys(fonts):  # in order, so a rerun writes the same SVG
             self._draw(x, baseline, text, size, gap, calt, classes, font,
-                       lambda cluster, slanted=slanted: italic[cluster] == slanted)
+                       lambda cluster, font=font: fonts[cluster] == font)
 
     def _draw(self, x, baseline, text, size, gap, calt, classes, font, keep):
         """Draw the glyphs of `text` shaped with `font` whose cluster `keep` accepts."""
@@ -249,6 +254,12 @@ def highlighted(line):
 def italicized(line):
     """Whether each character of `line` is in a comment or a keyword: what editors italicize."""
     return [name in ("comment", "keyword") for name in highlighted(line)]
+
+
+def emphasized(line):
+    """The font of each character of `line` as editors set code in a family with a bold:
+    keywords in the bold, comments in the italic, the rest in the regular."""
+    return [{"keyword": BOLD, "comment": ITALIC}.get(name, FONT) for name in highlighted(line)]
 
 
 def lookalikes():
@@ -326,17 +337,18 @@ def ligatures():
     return layout.svg(top + height + MARGIN)
 
 
-def italic():
-    """The italic image, as SVG: rows like the specimen's, then code set as editors set it."""
+def style_image(samples, font, fonts):
+    """An image of one style, as SVG: rows like the specimen's in `font`, then code set as
+    editors set it, each line's characters in the fonts fonts(line) gives."""
     layout = Layout()
     right = WIDTH - MARGIN - PADDING
     size, lead = 21, 34
     first = MARGIN + 10 + CAP_HEIGHT * size
     x = MARGIN + 4
-    gap = (right - x) / max(map(len, ITALIC_SAMPLES)) - ADVANCE * size / 1000
-    for i, row in enumerate(ITALIC_SAMPLES):
-        layout.line(x, first + i * lead, row, size, gap, font=ITALIC)
-    last = first + (len(ITALIC_SAMPLES) - 1) * lead
+    gap = (right - x) / max(map(len, samples)) - ADVANCE * size / 1000
+    for i, row in enumerate(samples):
+        layout.line(x, first + i * lead, row, size, gap, font=font)
+    last = first + (len(samples) - 1) * lead
 
     top = last + 2 * PADDING
     size, lead = 17, 25
@@ -345,12 +357,23 @@ def italic():
     for i, line in enumerate(CODE):
         if line:
             layout.styled(MARGIN + PADDING, top + PADDING + ASCENT * lead + i * lead, line, size,
-                          italicized(line), calt=True, classes=highlighted(line))
+                          fonts(line), calt=True, classes=highlighted(line))
     return layout.svg(top + height + MARGIN)
 
 
+def italic():
+    """The italic image, as SVG."""
+    return style_image(ITALIC_SAMPLES, ITALIC,
+                       lambda line: [ITALIC if slanted else FONT for slanted in italicized(line)])
+
+
+def bold():
+    """The bold image, as SVG."""
+    return style_image(BOLD_SAMPLES, BOLD, emphasized)
+
+
 IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures,
-          "italic": italic}
+          "italic": italic, "bold": bold}
 
 
 def main():

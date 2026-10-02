@@ -12,13 +12,16 @@ import render_specimen
 from add_ligatures import GENERATED
 from project import ADVANCE, ROOT, stale_build
 from render_specimen import (
+    BOLD,
     CODE,
+    FONT,
     IMAGES,
     ITALIC,
     LIGATURES,
     OUT,
     WIDTH,
     Layout,
+    emphasized,
     glyphs,
     highlighted,
     italicized,
@@ -93,17 +96,17 @@ class LayoutTest(unittest.TestCase):
         self.assertNotIn(".red", style(svg))
 
     def test_styled_draws_each_character_in_its_style(self):
-        # The italic's H is the regular's slanted: another path, at the same cell.
+        # The italic's H is the regular's slanted, and the bold's the regular's grown: other
+        # paths, at the same cells.
         layout = Layout()
-        layout.styled(0, 20, "HH", 20, [False, True])
+        layout.styled(0, 20, "HHH", 20, [FONT, ITALIC, BOLD])
         svg = layout.svg(40)
-        self.assertEqual(svg.count("<path "), 2)
-        self.assertEqual([x for x, *_ in placed(svg)], [0, 11])
-        [regular] = [path for path, *_ in glyphs("H", False)]
-        [slanted] = [path for path, *_ in glyphs("H", False, ITALIC)]
-        self.assertNotEqual(regular, slanted)
-        self.assertIn(regular, svg)
-        self.assertIn(slanted, svg)
+        self.assertEqual(svg.count("<path "), 3)
+        self.assertEqual([x for x, *_ in placed(svg)], [0, 11, 22])
+        paths = [path for font in (FONT, ITALIC, BOLD) for path, *_ in glyphs("H", False, font)]
+        self.assertEqual(len(set(paths)), 3)
+        for path in paths:
+            self.assertIn(path, svg)
 
     def test_colors_follow_the_viewers_scheme(self):
         css = style(Layout().svg(10))
@@ -138,6 +141,11 @@ class HighlightTest(unittest.TestCase):
         line = 'export const f = g(7); // done'
         self.assertEqual(italicized(line),
                          [True] * 6 + [False] + [True] * 5 + [False] * 11 + [True] * 7)
+
+    def test_keywords_are_bold_and_comments_italic(self):
+        line = 'export const f = g(7); // done'
+        self.assertEqual(emphasized(line),
+                         [BOLD] * 6 + [FONT] + [BOLD] * 5 + [FONT] * 11 + [ITALIC] * 7)
 
 
 class ImageTest(unittest.TestCase):
