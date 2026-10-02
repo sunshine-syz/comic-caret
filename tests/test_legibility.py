@@ -4,7 +4,11 @@ counters stay open, and : ; and the brackets keep their construction.
 Run: python3 -m unittest discover tests
 
 Sizes and positions are judged on the proof sheet (tools/proof_sheet.py), not here. The bold
-runs these rules too (the Bold* classes), its floors measured from the reference bolds.
+runs these rules too (the Bold* classes), its floors measured from the reference bolds. Three
+keep the regular's. G's terminal (11) and l's tail (0.6 of 1's foot): measured again from the
+reference regulars, these did not give back the regular's floors, so the bolds cannot be
+measured the same way. The i and j dots' 90: a value inside the references' range (63-142), not
+its floor, and inside the reference bolds' (56-104) too.
 """
 import itertools
 import pathlib
@@ -166,20 +170,20 @@ class BracketTest(unittest.TestCase):
                 self.assertAlmostEqual(b1, y1, delta=1)
 
 
-# The narrowest counter each glyph may have along the line at y: the narrowest reference's at
-# the same letter height.
+# The narrowest counter each glyph may have along the line a share of the way up its letter
+# height (the x-height, or H's top for capitals and figures): the narrowest reference's at the
+# same letter height.
 FLOORS = {
-    "n": [(236, 194)], "h": [(236, 194)], "u": [(236, 194)], "d": [(236, 211)],
-    "H": [(167, 211)], "N": [(334, 155)], "U": [(334, 217)], "D": [(334, 238)],
-    "B": [(167, 232), (501, 218)], "eight": [(167, 256), (501, 222)], "R": [(501, 245)],
+    "n": [(0.5, 194)], "h": [(0.5, 194)], "u": [(0.5, 194)], "d": [(0.5, 211)],
+    "H": [(0.25, 211)], "N": [(0.5, 155)], "U": [(0.5, 217)], "D": [(0.5, 238)],
+    "B": [(0.25, 232), (0.75, 218)], "eight": [(0.25, 256), (0.75, 222)], "R": [(0.75, 245)],
 }
-# The same for the bold, at the same shares of its x-height (480) and cap height (675): the
-# narrowest reference bold's at the same letter height, rounded down, Fira Code's but N's,
-# Intel One Mono's.
+# The same for the bold: the narrowest reference bold's at the same letter height, rounded
+# down, Fira Code's but N's, Intel One Mono's.
 BOLD_FLOORS = {
-    "n": [(240, 122)], "h": [(240, 122)], "u": [(240, 122)], "d": [(240, 143)],
-    "H": [(169, 154)], "N": [(338, 66)], "U": [(338, 171)], "D": [(338, 172)],
-    "B": [(169, 161), (506, 141)], "eight": [(169, 179), (506, 146)], "R": [(506, 151)],
+    "n": [(0.5, 122)], "h": [(0.5, 122)], "u": [(0.5, 122)], "d": [(0.5, 143)],
+    "H": [(0.25, 154)], "N": [(0.5, 66)], "U": [(0.5, 171)], "D": [(0.5, 172)],
+    "B": [(0.25, 161), (0.75, 141)], "eight": [(0.25, 179), (0.75, 146)], "R": [(0.75, 151)],
 }
 
 
@@ -192,8 +196,12 @@ class CounterTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
 
     def test_counters_keep_their_floors(self):
+        cap_height = self.font["H"].boundingBox()[3]
         for name, floors in self.floors.items():
-            for y, floor in floors:
+            lower = chr(self.font[name].unicode).islower()
+            height = self.font.os2_xheight if lower else cap_height
+            for share, floor in floors:
+                y = round(share * height)  # the whole unit the floors were measured at
                 with self.subTest(glyph=name, y=y):
                     self.assertGreaterEqual(
                         round(measure.counter(self.font[name].foreground, y)), floor)

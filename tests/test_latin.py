@@ -4,6 +4,9 @@ Run: python3 -m unittest discover tests
 
 Rows, centering and accented letters are checked for every glyph in test_consistency.py.
 The bold runs these rules too (the Bold* classes), its floors measured from the reference bolds.
+The floors the font gives (the hyphen's stroke, the pen) hold for it as they stand. Two keep the
+regular's: ð's bar reaching 100 past its stroke, as the pen grows the bar's length and the
+stroke's width alike, and ™'s 15 between T and M, a margin of our own (Fira Code's ™ joins them).
 """
 import math
 import pathlib
@@ -149,7 +152,6 @@ class LookalikeTest(unittest.TestCase):
     # The floors the tests below take from the references, which they name.
     sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 70, 81
     slash_short = 0  # how much less than half a stroke Ø's slash may run past O
-    eth_stroke_y = 400  # where ð's rising stroke stands alone, below the bar
 
     @classmethod
     def setUpClass(cls):
@@ -227,7 +229,11 @@ class LookalikeTest(unittest.TestCase):
         layer = self.font["eth"].foreground
         crossing = measure.spans_at_y(layer, 540)
         self.assertEqual(len(crossing), 1)
-        rising = measure.spans_at_y(layer, self.eth_stroke_y)[-1]
+        # The rising stroke alone, just under the bar: below the bar's bottom, half a stroke in
+        # from its left end.
+        [bar_bottom] = [y0 for y0, y1 in measure.spans_at_x(layer, crossing[0][0] + self.stroke / 2)
+                        if y0 < 540 < y1]
+        rising = measure.spans_at_y(layer, bar_bottom - 1)[-1]
         self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
 
     def test_per_mille_rings_and_slash_stay_apart(self):
@@ -303,6 +309,15 @@ class CompositeTest(unittest.TestCase):
                          (0, 0, ADVANCE))
 
 
+def stem_of(font, base):
+    """The weight of `base`.small's upright stroke, where its SMALL_PROBES line crosses it."""
+    layer = font[f"{base}.small"].foreground
+    _, y0, _, y1 = layer.boundingBox()
+    height, index = SMALL_PROBES[base]
+    a, b = measure.spans_at_y(layer, y0 + height * (y1 - y0))[index]
+    return b - a
+
+
 class SmallFigureTest(unittest.TestCase):
     """The small figures, letters and signs that superscripts, subscripts, fractions, ª º ™ © ®
     are built from: the regular glyph scaled down, its strokes thickened back towards a regular
@@ -316,13 +331,10 @@ class SmallFigureTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
 
     def test_stems(self):
-        for base, (height, index) in SMALL_PROBES.items():
+        for base in SMALL_PROBES:
             with self.subTest(glyph=f"{base}.small"):
-                layer = self.font[f"{base}.small"].foreground
-                _, y0, _, y1 = layer.boundingBox()
-                a, b = measure.spans_at_y(layer, y0 + height * (y1 - y0))[index]
                 weight, delta = self.sign_stem if base in "TMCR" else self.small_stem
-                self.assertAlmostEqual(b - a, weight, delta=delta)
+                self.assertAlmostEqual(stem_of(self.font, base), weight, delta=delta)
 
     def test_counters_are_as_open_as_the_references(self):
         for base, floor in self.counter_floor.items():
@@ -369,6 +381,7 @@ class FigureTest(unittest.TestCase):
     """Superscripts, fractions, ordinals and the signs built from the small components."""
     sfd = SFD
     small_stem = SMALL_STEM
+    fraction_bar = SMALL_STEM  # the bar's weight normal to its lean
     fraction_clearance, ordinal_clearance = FRACTION_CLEARANCE, ORDINAL_CLEARANCE
     circle_room = 48  # around ©, the narrowest reference's
 
@@ -427,7 +440,7 @@ class FigureTest(unittest.TestCase):
         _, y0, _, y1 = bar.boundingBox()
         [(a, b)] = measure.spans_at_y(bar, (y0 + y1) / 2)
         across = (b - a) * math.sin(math.radians(60))  # the bar leans at our slash's 60°
-        self.assertAlmostEqual(across, self.small_stem[0], delta=self.small_stem[1])
+        self.assertAlmostEqual(across, self.fraction_bar[0], delta=self.fraction_bar[1])
 
     def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
@@ -462,12 +475,28 @@ class FigureTest(unittest.TestCase):
                 self.assertAlmostEqual((y0 + y1) / 2, (ry0 + ry1) / 2, delta=ROUNDING)
                 self.assertGreaterEqual(measure.gap(ring, inside), self.circle_room)
 
+    def test_circled_letters_ring_is_as_heavy_as_the_letter(self):
+        # The regular draws the ring at its letters' weight, so neither reads as the bolder.
+        ring = self.font["circle.copyright"].foreground
+        _, y0, _, y1 = ring.boundingBox()
+        sides = measure.spans_at_y(ring, (y0 + y1) / 2)
+        self.assertEqual(len(sides), 2)
+        for base in "CR":
+            for side, (x0, x1) in zip(("left", "right"), sides, strict=True):
+                with self.subTest(letter=f"{base}.small", side=side):
+                    self.assertAlmostEqual(x1 - x0, stem_of(self.font, base),
+                                           delta=SIGN_STEM[1])
+
 
 def bold_stems():
-    """SMALL_STEM and SIGN_STEM for the bold: the regular's weights grown by the pen the bold
-    grows the small parts by (make_bold.small_pen())."""
-    grown = make_bold.small_pen(fontforge.open(str(SFD)))[0]
-    return (SMALL_STEM[0] + grown, SMALL_STEM[1]), (SIGN_STEM[0] + grown, SIGN_STEM[1])
+    """SMALL_STEM, SIGN_STEM and the fraction bar's weight for the bold: the regular's weights
+    grown by the pen the bold grows the small parts by (make_bold.small_pen()). The pen grows an
+    upright stem by its width, and the leaning bar by its reach normal to the bar: turned by
+    the bar's lean, so the bar lies level, its reach up and down."""
+    width, height = make_bold.small_pen(fontforge.open(str(SFD)))
+    bar = 2 * make_bold.reach((width, height, math.radians(60)))[1]
+    return ((SMALL_STEM[0] + width, SMALL_STEM[1]), (SIGN_STEM[0] + width, SIGN_STEM[1]),
+            (SMALL_STEM[0] + bar, SMALL_STEM[1]))
 
 
 class BoldLookalikeTest(LookalikeTest):
@@ -483,9 +512,6 @@ class BoldLookalikeTest(LookalikeTest):
     # stroke grows as much. Running further would grow the slash past the pen, which
     # tests/test_make_bold.py holds every glyph to, so the bold keeps the regular's rows.
     slash_short = make_bold.PEN[1] / 2
-    # The pen joins the bowl's shoulder to the stroke up to 440, where the regular leaves 14
-    # of white; above it, below the bar, the stroke stands alone.
-    eth_stroke_y = 460
 
 
 class BoldCapitalTest(CapitalTest):
@@ -500,7 +526,7 @@ class BoldSmallFigureTest(SmallFigureTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_stem, cls.sign_stem = bold_stems()
+        cls.small_stem, cls.sign_stem, _ = bold_stems()
 
 
 class BoldFigureTest(FigureTest):
@@ -511,7 +537,7 @@ class BoldFigureTest(FigureTest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_stem, _ = bold_stems()
+        cls.small_stem, _, cls.fraction_bar = bold_stems()
 
 
 if __name__ == "__main__":

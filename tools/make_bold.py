@@ -21,7 +21,7 @@ Every glyph of the regular falls in one of two sets, decided by classify():
   by the pen turned with it (TURNED). ª º's bar, drawn as heavy as the stems above it, grows
   as much up and down (ROUND), and ẞ and the small 4, whose white the full pen would close
   under the reference bolds', grow by a narrower pen (NARROW). © ®'s ring grows outward only,
-  keeping its counter clear of the letter inside (OUTWARD).
+  by the whole pen, so it stays as heavy as its letter and keeps its room (OUTWARD).
 - SHARED: what is drawn as a picture, or drawn heavy already, which the reference bolds keep
   as their regulars draw them: Box Drawing, Block Elements and the geometric shapes, which
   meet their neighbours' across the cell; Braille; the Powerline symbols, which fill the line
@@ -105,7 +105,8 @@ SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✶✔✘❯�
 
 # Besides the .small glyphs, the parts the regular draws as light as the small figures and
 # letters beside them (tests/test_latin.py): the fraction bar, the ordinals' bar and the ring
-# of © ®. They take the small pen too, so they stay as heavy as their figures and letters.
+# of © ®. They take the small pen too, so they stay as heavy as their figures and letters;
+# the ring takes it outward only (OUTWARD).
 LIGHT_PARTS = ("slash.fraction", "bar.ordinal", "circle.copyright")
 
 # The level bars the regular draws as heavy as the stems of the letters above them, not as a
@@ -125,9 +126,11 @@ NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
 # bold tonos is the bold acute turned. The level pen would grow the steeper stroke heavier.
 TURNED = {"tonos": math.radians(25)}
 
-# The rings that grow outward only, keeping their regular counter: © ®'s, which the regular
-# draws lighter than the letter inside it so it doesn't crowd it (tests/test_latin.py). Grown
-# inward too, it would come 35 from ®'s R, under Fira Code Bold's 41 around its ©.
+# The rings that grow outward only, by twice their pen, so they thicken by its whole width as
+# a stem does on its two sides: © ®'s, which the regular draws as heavy as the letter inside
+# it (tests/test_latin.py). Its counter stays the regular's, so the letter keeps its room:
+# grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©. Grown
+# outward, it comes 8 from the cell's edges, as Fira Code Bold's © does.
 OUTWARD = ("circle.copyright",)
 
 # The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
@@ -144,7 +147,9 @@ RAISED = ("Hbar",)
 # grows into the dieresis. With no room above, ΐ ΰ's dieresis then sits 29 below ϊ ϋ's, a row
 # break that letters as rare as these may take (tests/test_make_bold.py names it).
 # The dots of i j rise, so they stay as far above the stem as the regular's, and the bar of
-# ª º moves down, clear of the letter its round pen grows it into.
+# ª º moves down, clear of the letter its round pen grows it into. ĳ, one outline, keeps its
+# dots 14 lower than i j's: raising them would grow it past the pen, which
+# tests/test_make_bold.py holds every outline to.
 RIGHT, LEFT, UP, DOWN = (1, 0), (-1, 0), (0, 1), (0, -1)
 APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
          "lcaron": ("caron.alt", RIGHT), "Lcaron": ("caron.alt", RIGHT),
@@ -230,11 +235,13 @@ def small_pen(font):
 
 def pen_of(name, small):
     """The pen glyph `name` grows by, (width, height, turn): `small`, the small_pen(), for a
-    small part, narrower for a NARROW glyph, as tall as wide for a ROUND bar, and turned for a
-    TURNED stroke."""
+    small part, narrower for a NARROW glyph, as tall as wide for a ROUND bar, twice as large for
+    an OUTWARD ring, and turned for a TURNED stroke."""
     width, height = small if name.endswith(".small") or name in LIGHT_PARTS else PEN
     width *= NARROW.get(name, 1)
-    return width, width if name in ROUND else height, TURNED.get(name, 0)
+    height = width if name in ROUND else height
+    grow = 2 if name in OUTWARD else 1
+    return grow * width, grow * height, TURNED.get(name, 0)
 
 
 def reach(pen):
