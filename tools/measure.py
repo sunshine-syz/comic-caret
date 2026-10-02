@@ -8,6 +8,7 @@ import math
 import fontforge
 
 import lig_geometry as geo
+from project import ADVANCE
 
 
 def spans_at_y(layer, y):
@@ -66,6 +67,13 @@ def ink(font, glyph):
     for name, matrix, *_ in font[glyph].references:
         layer += geo.transformed(ink(font, name), matrix)
     return layer
+
+
+def bullet_side(font):
+    """●'s side bearing, the room a symbol keeps from the cell's edges at least: two ● side by
+    side leave twice it between them, ●●'s seam, which a symbol's parts keep too."""
+    x0, _, x1, _ = font[ord("●")].boundingBox()
+    return min(x0, ADVANCE - x1)
 
 
 def area(layer, steps=16):

@@ -109,15 +109,18 @@ EXCLAMATION_DOTS = 93
 # The bold's floors, measured from the reference bolds as the ones above were from the
 # regulars, scaled as tools/compare_glyphs.py scales: x to our advance, y to the bold's cap
 # height. The narrowest reference bold's, rounded down; the others' in brackets.
-BOLD_NOT_EQUAL_REACH = 131  # Fira Code's above its bars (Intel One Mono's 160, Maple Mono's 180)
+# ≠: Fira Code's 131.0 above its bars (Intel One Mono's 159.7, Maple Mono's 179.7).
+BOLD_NOT_EQUAL_REACH = 131
 BOLD_APPROX_GAP = 34  # Fira Code's 34.8 (Intel One Mono's 55.1, Maple Mono's 67.4)
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
 # Fira Code's holes are 123 wide (Maple Mono's 137). The regular's 169 tall doesn't come back by
 # this measure, which finds the regulars' holes 203 (Maple Mono) and 249 (Fira Code) tall; the
 # bold keeps its share of Maple Mono's, which its bold closes to 172: 169 × 172 / 203.
 BOLD_INFINITY_HOLE = (123, 143)
-# ✓: Intel One Mono's 24.7 (Maple Mono's 121, Fira Code's 281); ✗ and ✕: Maple Mono's 135.0 and
-# 73.9, the one reference with them.
+# The mark's ink height less ×'s, as for the regular's. ✓: Intel One Mono's 24.73 (Maple Mono's
+# 121.3, Fira Code's 280.5); its bold keeps the regular's ✓, 543 tall, while its × grows from 446
+# to 519, so the 98.9 its regular gives drops to a quarter. ✗ and ✕: Maple Mono's 135.0 and 73.9,
+# the one reference with them.
 BOLD_MARK_OVER_TIMES = {"✓": 24, "✗": 135, "✕": 73}
 BOLD_BALLOT_UNDER_X = 89  # Maple Mono's 89.4
 BOLD_BULLET_WIDTH = 240 - WOBBLE  # Maple Mono's 240.2 (Fira Code's 261, Intel One Mono's 292)
@@ -156,8 +159,7 @@ class CoverageTest(unittest.TestCase):
         self.assertEqual([c for c in SYMBOLS if ord(c) not in self.font], [])
 
     def test_symbols_stay_clear_of_their_neighbours(self):
-        x0, _, x1, _ = self.font[ord("●")].boundingBox()
-        side = min(x0, ADVANCE - x1)
+        side = measure.bullet_side(self.font)
         for char in SYMBOLS:
             if char not in OWN_SIDES:
                 with self.subTest(symbol=char):
@@ -933,7 +935,7 @@ class BoldOperatorTest(OperatorTest):
 
 class BoldArrowTest(ArrowTest):
     sfd = BOLD_SFD
-    grown = make_bold.PEN[:2]  # the pen's width and height
+    grown = make_bold.PEN
 
 
 class BoldMarkTest(MarkTest):

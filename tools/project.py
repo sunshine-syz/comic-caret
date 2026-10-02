@@ -28,6 +28,8 @@ MARK_CLEARANCE = 20
 ZERO_WIDTH = frozenset({0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF})
 # Not Lm: ˆ ˇ are modifier letters, which the font draws and places as accents.
 LETTERS = frozenset({"Lu", "Ll", "Lt", "Lo"})
+# The Letterlike Symbols: symbols, though Unicode classes ℓ ℹ among them as letters.
+LETTERLIKE = range(0x2100, 0x2150)
 
 _VALIDATED = 0x1  # validate() sets this bit on every glyph it has checked
 
@@ -47,6 +49,19 @@ def is_figure(code):
     """Whether the code point is a figure: a digit, a fraction, a superscript or subscript, or a
     Roman numeral; False for -1, an unencoded glyph."""
     return code >= 0 and unicodedata.category(chr(code)).startswith("N")
+
+
+def is_alphanumeric(code):
+    """Whether the code point is a letter or a figure rather than a symbol. A Letterlike Symbol
+    is a symbol, but for one that decomposes canonically to a letter, Ω K Å: it is that
+    letter, drawn as one."""
+    if code < 0:
+        return False
+    if code in LETTERLIKE:
+        decomposition = unicodedata.decomposition(chr(code))  # "<compat> 00B0 0043" for ℃
+        return (bool(decomposition) and not decomposition.startswith("<")
+                and is_letter(int(decomposition.split()[0], 16)))
+    return is_letter(code) or is_figure(code)
 
 
 def is_mark(code):

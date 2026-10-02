@@ -91,6 +91,7 @@ from add_ligatures import GENERATED
 from add_shapes import CODES
 from measure import (
     area,
+    bullet_side,
     distance,
     gap,
     ink,
@@ -108,7 +109,7 @@ from project import (
     MARK_CLEARANCE,
     ROUNDING,
     SFD,
-    is_figure,
+    is_alphanumeric,
     is_letter,
     save_checked,
     validation_errors,
@@ -289,9 +290,6 @@ LIFTED = {"uni21EA": "uni21E7"}
 # so the cut runs this far inside it, and rounding puts the end back on the line.
 HAIR = 0.01
 
-# The Letterlike Symbols, symbols though Unicode classes ℓ ℹ among them as letters.
-LETTERLIKE = range(0x2100, 0x2150)
-
 RESTARTS = 10  # a start the autohinter writes a nan for is rare: 1 of the first 40 of m's
 
 FONTNAME, FULLNAME = "ComicCaret-Bold", "Comic Caret Bold"
@@ -352,11 +350,11 @@ def pens(font):
     return found
 
 
-def pen_of(name, pens):
-    """The pen glyph `name` grows by, (width, height, turn): its own in `pens` (pens()), else
+def pen_of(name, grows_by):
+    """The pen glyph `name` grows by, (width, height, turn): its own in `grows_by` (pens()), else
     PEN; narrower for a NARROW glyph, as tall as wide for a ROUND bar, twice as large for an
     OUTWARD ring, and turned for a TURNED stroke."""
-    width, height = pens.get(name, PEN)
+    width, height = grows_by.get(name, PEN)
     width *= NARROW.get(name, 1)
     height = width if name in ROUND else height
     grow = 2 if name in OUTWARD else 1
@@ -384,31 +382,25 @@ def cut_ends(name, layer):
             x1 if x1 > ADVANCE and x1 in flat else geo.FAR)
 
 
-def bullet_side(font):
-    """●'s side bearing, the room a symbol keeps from the cell's edge at least: two ● side by
-    side leave twice it between them, ●●'s seam, which a symbol's parts keep too."""
-    x0, _, x1, _ = font[ord("●")].boundingBox()
-    return min(x0, ADVANCE - x1)
-
-
-def side_bounds(font):
+def side_bounds(font, classes):
     """{glyph name: (x0, x1)}: where the bold ink of each glyph must stay, read from the regular,
-    opened as `font`. A letter or figure keeps to the cell, or to the regular's own overhang
-    (ď, the tonos capitals). Any other glyph, the letterlike symbols too (LETTERLIKE), keeps
-    the side room the regular gives it, down to ●'s, so two side by side stay as far apart as
-    ●● (tests/test_symbols.py). A part a glyph holds unmoved can't move in toward the cell's
-    middle, so it keeps that glyph's bound too: ∆'s Δ, ₫'s đ, © ®'s ring."""
+    opened as `font`. A letter or figure (project.is_alphanumeric(), Ω among them) keeps to the
+    cell, or to the regular's own overhang (ď, the tonos capitals). Any other glyph keeps the
+    side room the regular gives it, down to ●'s, so two side by side stay as far apart as ●●
+    (tests/test_symbols.py). A part a bolder glyph holds unmoved can't move in toward the
+    cell's middle, so it keeps that glyph's bound too: ∆'s Δ, ₫'s đ, © ®'s ring. A shared
+    glyph doesn't grow, so it binds no part."""
     side = bullet_side(font)
     bounds = {}
     for glyph in font.glyphs():
         if (code := glyph.unicode) >= 0:
             x0, _, x1, _ = glyph.boundingBox()
-            letter = (is_letter(code) or is_figure(code)) and code not in LETTERLIKE
-            room = 0 if letter else side
+            room = 0 if is_alphanumeric(code) else side
             bounds[glyph.glyphname] = (min(x0, room), max(x1, ADVANCE - room))
     # Users first, so a part takes the bound its users took from theirs.
     for glyph in sorted(font.glyphs(), key=lambda g: depth(font, g.glyphname), reverse=True):
-        if (bound := bounds.get(glyph.glyphname)) is None:
+        bound = bounds.get(glyph.glyphname)
+        if bound is None or classes[glyph.glyphname] == SHARED:
             continue
         for name, matrix, *_ in glyph.references:
             if tuple(matrix) == psMat.identity():
@@ -618,8 +610,8 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
     parts = pieces(outline)
     boxes = [part.boundingBox() for part in parts]
     tallest = max(range(len(parts)), key=lambda k: boxes[k][3] - boxes[k][1])
-    pens = [light if name in LIGHT_PIECES and k != tallest else pen for k in range(len(parts))]
-    grown = [fitted(name, part, bound, scratch, pens[k]) for k, part in enumerate(parts)]
+    own = [light if name in LIGHT_PIECES and k != tallest else pen for k in range(len(parts))]
+    grown = [fitted(name, part, bound, scratch, own[k]) for k, part in enumerate(parts)]
     for a, b in itertools.permutations(range(len(parts)), 2):
         (a0, a1, a2, a3), (b0, b1, b2, b3) = boxes[a], boxes[b]
         white = b0 - a2  # a stands left of b
@@ -632,13 +624,13 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
         share = 0.5 if abs(wider) <= ROUNDING else float(wider > 0)  # how much a gives way
         # About the far end, or the middle where the far end must come in too (№'s N).
         if share:
-            far = a0 if a0 - reach(pens[a])[0] >= bound[0] else None
+            far = a0 if a0 - reach(own[a])[0] >= bound[0] else None
             grown[a] = fitted(name, parts[a], (bound[0], left - share * lack), scratch,
-                              pens[a], far)
+                              own[a], far)
         if share < 1:
-            far = b2 if b2 + reach(pens[b])[0] <= bound[1] else None
+            far = b2 if b2 + reach(own[b])[0] <= bound[1] else None
             grown[b] = fitted(name, parts[b], (right + (1 - share) * lack, bound[1]), scratch,
-                              pens[b], far)
+                              own[b], far)
     if name in SLASHES:
         i = tallest
         x0, y0, x1, y1 = boxes[i]
@@ -840,22 +832,22 @@ def spread(font, glyph, wanted):
     reposition(glyph, lambda i, _, at: (at[0] + (-steps if i == left else steps), at[1]))
 
 
-def marks_above(font, glyph, pens):
+def marks_above(font, glyph, grows_by):
     """([(name, ink)] of the composite letter's marks above its letter, the letter's ink): the
     letter is its one reference to a letter. A mark is above when it starts no lower than the
     letter's top less how far the pen grew the two toward each other, each by its pen's reach
-    up (pen_of(); `pens` is the pens())."""
+    up (pen_of(); `grows_by` is the pens())."""
     parts = list(zip((name for name, *_ in glyph.references), placed(font, glyph)))
     letters = [(name, layer) for name, layer in parts if is_letter(font[name].unicode)]
     if len(glyph.foreground) or len(letters) != 1:
         return [], None
     [(base, letter)] = letters
-    top, grew = letter.boundingBox()[3], reach(pen_of(base, pens))[1]
+    top, grew = letter.boundingBox()[3], reach(pen_of(base, grows_by))[1]
     return [(name, layer) for name, layer in parts if layer is not letter
-            and layer.boundingBox()[1] >= top - grew - reach(pen_of(name, pens))[1]], letter
+            and layer.boundingBox()[1] >= top - grew - reach(pen_of(name, grows_by))[1]], letter
 
 
-def raise_clear(font, letters, heights, pens):
+def raise_clear(font, letters, heights, grows_by):
     """Raise each mark that the pen grew within MARK_CLEARANCE of its letter, by the fewest
     whole units that clear it, and the same mark as far on every letter where the regular
     places it as high, so a row of them stays level (the tonos over έ ό, and so over ά ή ί).
@@ -863,14 +855,14 @@ def raise_clear(font, letters, heights, pens):
     purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART)."""
     needs = collections.defaultdict(int)
     for glyph in letters:
-        marks, letter = marks_above(font, glyph, pens)
+        marks, letter = marks_above(font, glyph, grows_by)
         for name, mark in marks:
             if (steps := clearance(mark, letter, (0, 1), MARK_CLEARANCE)) is None:
                 sys.exit(f"{glyph.glyphname}: its {name} can't rise clear of the letter")
             row = (name, heights[glyph.glyphname, name])
             needs[row] = max(needs[row], steps)
     for glyph in letters:
-        marks, _ = marks_above(font, glyph, pens)
+        marks, _ = marks_above(font, glyph, grows_by)
         rises = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
         if any(dy for _, dy in rises.values()):
             reposition(glyph, shifted(rises))
@@ -934,13 +926,11 @@ def build(font):
     # the outline of each of OWN_BOX and ACROSS_AS_UP must, its own box; the gap each part
     # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; and where
     # each LIFTED glyph's lifted piece stands and its other pieces.
-    bounds, own = side_bounds(font), {}
+    bounds, own = side_bounds(font, classes), {}
     for name in OWN_BOX + ACROSS_AS_UP:
         x0, _, x1, _ = font[name].foreground.boundingBox()
         grow = PEN[1] / 2 if name in ACROSS_AS_UP else 0
         own[name] = (x0 - grow, x1 + grow)
-    for name in SCALED:
-        scale_together(font, name, bounds[name], pen_of(name, grows_by))
     gaps = {name: gap(*parted(font, font[name], part)) for name, (part, _) in APART.items()}
     gaps.update((name, gap(*placed(font, font[name]))) for name in DOUBLES)
     heights = {(glyph.glyphname, name): matrix[5]
@@ -949,6 +939,8 @@ def build(font):
     merged = {name: (font[name].foreground, placed(font, font[name])) for name in MERGED}
     lifted = {name: lifted_piece(font, name, base) for name, base in LIFTED.items()}
     mirrors = mirror_pairs(font, classes)
+    for name in SCALED:
+        scale_together(font, name, bounds[name], pen_of(name, grows_by))
     # Every unlink comes before any base grows: unlinkRef() bakes the base's outline as the
     # composite last saw it, not its current foreground, so a shared glyph's bolder part must
     # take the regular's outline now, not by luck later, and a part that grows as an outline
