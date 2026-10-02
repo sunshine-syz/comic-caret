@@ -1,6 +1,6 @@
 """The legibility pass's rules, checked on the SFD with FontForge: look-alikes stay apart,
 counters stay open, : ; and the brackets keep their construction, and the glyphs widened for
-the 600 cell stay as wide as the references.
+the 600 cell stay within the references' range of widths.
 
 Run: python3 -m unittest discover tests
 
@@ -211,14 +211,21 @@ class CounterTest(unittest.TestCase):
 
 # (floor, ceiling) of each glyph widened for the 600 cell: the narrowest and widest ink width of
 # Fira Code, Maple Mono and Intel One Mono, x scaled to our cell, rounded.
-WIDTHS = {"w": (515, 565), "W": (510, 591)}
+WIDTHS = {"w": (515, 565), "W": (510, 591),
+          "o": (450, 475), "O": (474, 507), "0": (451, 474), "e": (442, 454),
+          "g": (430, 489), "a": (452, 496), "p": (426, 452), "3": (450, 450),
+          "c": (425, 464), "Q": (474, 547), "5": (432, 450)}
 # The same from the five reference bolds: Fira Code, Maple Mono, Intel One Mono, Monaspace Neon
 # and Monaspace Radon.
-BOLD_WIDTHS = {"w": (530, 593), "W": (530, 606)}
+BOLD_WIDTHS = {"w": (530, 593), "W": (530, 606),
+               "o": (454, 516), "O": (500, 555), "0": (475, 520), "e": (463, 508),
+               "g": (473, 548), "a": (480, 537), "p": (476, 538), "3": (467, 512),
+               "c": (440, 506), "Q": (500, 602), "5": (465, 504)}
 
 
 class WidthTest(unittest.TestCase):
-    """The glyphs the 550 cell squeezed are as wide as the references in the 600 cell."""
+    """The glyphs the 550 cell squeezed stay within the references' range of widths in the
+    600 cell."""
     sfd = SFD
     widths = WIDTHS
 

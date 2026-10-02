@@ -8,8 +8,10 @@
 - The two heads of `->>` and `<<-` stand 25 units further apart. So the inner head stays as far from the outer head's cell as in 1.7.0, and no flat shows where the two cells meet.
 - The bold's wide characters, such as @ # ∞ « » Æ œ K ✔ ➜, now keep their full width, where 1.7.0 condensed them to fit its cell.
 - The two copies of ″ “ ” „ stand 6 to 8 units further apart, and ‖'s 2 units. So the white between them stays at least the narrowest reference font's, measured at the wider cell.
-- ∅ is 6 units wider. So it stays at least as much wider than ø as Fira Code's, and "A = ∅" doesn't read as "A = ø".
 - `w` is 16 units wider, 515, and `W` 17 units wider, 510. Each outer arm turns out about the point where it meets the next arm, so every stroke keeps its weight. At the wider cell, both are now as wide as Intel One Mono's, the narrowest of Fira Code, Maple Mono and Intel One Mono. ŵ ẃ ẁ ẅ and Ŵ Ẃ Ẁ Ẅ follow them.
+- The round letters and figures are wider: `o` is 450, 20 units more; `O` 474, 16 more; `0` 451, 11 more; `e` 442, 17 more; `g` 438, 29 more; `a` 452, 15 more; `p` 441, 27 more; and `3` 450, 24 more. At the wider cell, each is now at least as wide as the narrowest of Fira Code, Maple Mono and Intel One Mono. Each bowl lengthens at its top and bottom, where its strokes run level, and a stem moves with its side, so every stroke keeps its weight. The slash of `0` and the bar of `e` turn a little. ø Ø þ ą ę and the accented letters follow them.
+- `c` is 7 units wider, 425, and `5` 5 units wider, 432: Fira Code's widths at the wider cell. So `c` keeps in step with `e` and `o`, and `5` with `3`, as in the three reference fonts. `Q` widens with `O`, by 16 units, to 482. ç ¢ and the accented letters follow them.
+- ○ ● and ∅ are 28 units wider, 548. So "○ main" doesn't read as "o main", nor "A = ∅" as "A = ø": ○ stays at least as much wider than `o`, and ∅ than ø, as Fira Code's. ∅ is still ○ struck through. ◯ ◉ ⏺ and the spinner frames built on ○ ● follow them.
 
 ## 1.7.0 (2026-10)
 
