@@ -427,6 +427,9 @@ def build(font):
     # The strikeout covers the hyphen, which grew.
     _, bottom, _, top = font["hyphen"].boundingBox()
     font.os2_strikeypos, font.os2_strikeysize = round(top), round(top - bottom)
+    # The pen raises the tops by half its height; the reference bolds declare their own heights.
+    font.os2_xheight = round(font["x"].boundingBox()[3])
+    font.os2_capheight = round(font["H"].boundingBox()[3])
 
 
 def check(path):

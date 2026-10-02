@@ -145,21 +145,13 @@ class BoldMetadataTest(MetadataTest):
 
     def test_everything_but_the_weight_is_the_regulars(self):
         regular = fontforge.open(str(SFD))
-        weight = {"weight", "os2_weight", "os2_strikeypos", "os2_strikeysize"}
+        # The bold's own: its heavier strokes move the hyphen and the tops of x and H.
+        weight = {"weight", "os2_weight", "os2_strikeypos", "os2_strikeysize", "os2_xheight",
+                  "os2_capheight"}
         for field in set(SHARED) - weight:
             with self.subTest(field=field):
                 self.assertEqual(getattr(self.font, field), getattr(regular, field))
         self.assertEqual(lang_name_fields(BOLD_SFD), lang_name_fields(SFD))
-
-    def test_declared_heights_are_the_tops_of_x_and_H(self):
-        # The heights stay the regular's, shared by the family; the bold's pen grows a level
-        # stroke up by half its height, so the tops may stand that far above them.
-        reach = make_bold.PEN[1] / 2
-        for glyph, declared in (("x", self.font.os2_xheight), ("H", self.font.os2_capheight)):
-            with self.subTest(glyph=glyph):
-                top = self.font[glyph].boundingBox()[3]
-                self.assertGreaterEqual(top, declared)
-                self.assertLessEqual(top - declared, reach)
 
     def test_panose_is_the_regulars_with_a_bold_weight(self):
         regular = fontforge.open(str(SFD)).os2_panose

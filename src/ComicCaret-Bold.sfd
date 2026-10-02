@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790927782
+ModificationTime: 1790928654
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -51,8 +51,8 @@ OS2SupXOff: 0
 OS2SupYOff: 350
 OS2StrikeYSize: 98
 OS2StrikeYPos: 318
-OS2CapHeight: 668
-OS2XHeight: 473
+OS2CapHeight: 675
+OS2XHeight: 480
 OS2Vendor: 'NONE'
 Lookup: 4 0 0 "marks_compose" { "marks_compose"  } ['ccmp' ('DFLT' <'dflt' > 'latn' <'dflt' > ) ]
 Lookup: 1 0 0 "marks_dotless_single" { "marks_dotless_single"  } []
