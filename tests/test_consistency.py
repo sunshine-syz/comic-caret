@@ -71,7 +71,8 @@ CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕�
             "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪"
             "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼⣿"
-            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ")
+            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ"
+            "\uE0A0\uE0A1\uE0A2")  # the Powerline branch, line number and padlock
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
            "✕✖➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"

@@ -27,17 +27,16 @@ only, which takes - off the axis. The pen opens no white: a notch whose mouth it
 filled (notches_filled()).
 
 The pen must not push ink out of the cell, or past the regular's own overhang; nor any glyph
-but a letter or figure nearer the cell's sides than ●'s side bearing (side_bounds()), so two
-symbols side by side stay as far apart as ●●. A glyph that would pass its bound is condensed
-before the offset, just enough, so every stem still grows by the full pen (fitted()). A
-composite whose part would pass it moves its references in toward the cell's centre instead.
+but a letter or figure nearer the cell's sides than SYMBOL_SIDE (side_bounds()), so two
+symbols side by side keep twice that between them. A glyph that would pass its bound is
+condensed before the offset, just enough, so every stem still grows by the full pen (fitted()).
+A composite whose part would pass it moves its references in toward the cell's centre instead.
 
 A composite keeps its references, so an accented letter follows its base; a glyph with an
 outline and references has only its outline offset. Some parts become the glyph's own outline
 first (unlinked_parts()): a shared glyph's bolder part keeps the regular's outline, and a part
-turned a quarter (⋮ on …) or a letter a symbol holds unmoved (∆'s Δ) grows as the glyph's
-outline. A left glyph the regular draws as its right one mirrored is the bold right one
-mirrored (mirror_pairs()).
+turned a quarter (⋮ on …) grows as the glyph's outline. A left glyph the regular draws as its
+right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES); an outline keeps its own box (OWN_BOX,
@@ -213,7 +212,7 @@ MERGED = ("Theta", "universal")
 # of ℃ ℉ № beside their ring and o, 1 to 36 apart. Each piece grows on its own, and the wider
 # is condensed away from the other, its far end kept, or both alike when they are as wide,
 # until the white between them is the regular's: ⇥ ↹'s bar keeps the full pen, and the white
-# ●●'s seam (pieces_apart()); ℃'s ring stays before its C (tests/test_symbols.py).
+# twice SYMBOL_SIDE (pieces_apart()); ℃'s ring stays before its C (tests/test_symbols.py).
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
@@ -227,16 +226,16 @@ SLASHES = ("perthousand",)
 # grow the ring of ℃ ℉ into its letter and close №'s o on its bar.
 LIGHT_PIECES = ("uni2103", "uni2109", "uni2116")
 
-# Outlines whose pieces the pen grows within ●●'s seam of each other, where condensing them
-# apart can't help: ※'s dots in the notches of its X, ⧉'s front square before its back one,
+# Outlines whose pieces the pen grows within twice SYMBOL_SIDE of each other, where condensing
+# them apart can't help: ※'s dots in the notches of its X, ⧉'s front square before its back one,
 # and ⌫ ⌦'s × in its tag (⌫ is ⌦ mirrored). Each piece grows on its own, and of two too close,
 # the one that clears with less shrinks about its point farthest from the other, just enough
 # to keep the seam (shrunk()), which the regular keeps and tests/test_symbols.py holds them to.
 SHRUNK = ("uni203B", "uni29C9", "uni232B", "uni2326")
 
 # Outlines with a piece through a gap in their ring, which the pen grows shut on it: ⎋'s arrow
-# out through its ring. The ring's ends are cut back about its middle, just enough to keep ●●'s
-# seam from the grown arrow (opened()). The arrow would have to shrink by a third to clear.
+# out through its ring. The ring's ends are cut back about its middle, just enough to keep twice
+# SYMBOL_SIDE from the grown arrow (opened()). The arrow would have to shrink by a third to clear.
 OPENED = ("uni238B",)
 
 # The dashed arrows, a head over dashes: ⇡ (⇣ is ⇡ turned). The pen grows each dash into the
@@ -246,17 +245,17 @@ OPENED = ("uni238B",)
 # so it stays open at 12 px (tests/test_symbols.py).
 DASHED = ("uni21E1",)
 
-# The signs whose bars run past their letter on both sides, out to the side room: ₩ ₦ ₱. The
-# pen lengthens a round end by half its width, which the side room takes back from the bars'
-# run clear of the letter, so they would reach the hyphen's weight only inside it
-# (tests/test_symbols.py). The sign also grows by a pen of the full height and next to no
-# width, and the two are united: the bars' ends keep the regular's length, as heavy as the
-# hyphen's stroke.
+# The signs whose bars run past their letter on both sides: ₩ ₦ ₱. The pen lengthens a round
+# end by half its width, which tapers the bars' run clear of the letter, so they would reach the
+# hyphen's weight only inside it (tests/test_symbols.py). So the sign keeps its regular box,
+# condensed, and also grows by a pen of the full height and next to no width, and the two are
+# united: the bars' ends keep the regular's length, as heavy as the hyphen's stroke.
 BLUNT = ("uni20A9", "uni20A6", "uni20B1")
 
 # The outlines that are another glyph's outline moved, over a bar: ⇪, ⇧ lifted. The bold draws
 # that piece as the bold ⇧ moved as far, so it stays ⇧ (tests/test_symbols.py), lifted a little
-# further when its bar, grown as heavy as ⇧'s shaft walls (ROUND), comes within ●●'s seam.
+# further when its bar, grown as heavy as ⇧'s shaft walls (ROUND), comes within twice
+# SYMBOL_SIDE of it.
 LIFTED = {"uni21EA": "uni21E7"}
 
 # A cut exactly on a piece's cut line runs through the points where the pen's round end meets
@@ -360,11 +359,11 @@ def side_bounds(font, classes):
     """{glyph name: (x0, x1)}: where the bold ink of each glyph must stay, read from the regular,
     opened as `font`. A letter or figure (project.is_alphanumeric(), Ω among them) keeps to the
     cell, or to the regular's own overhang (ď, the tonos capitals). Any other glyph keeps the
-    side room the regular gives it, down to ●'s, so two side by side stay as far apart as ●●
-    (tests/test_symbols.py). A part a bolder glyph holds unmoved can't move in toward the
-    cell's middle, so it keeps that glyph's bound too: © ®'s ring. A part the bold draws as
-    the glyph's own outline (unlinked_parts()), as ∆'s Δ, and a shared glyph's part, which
-    doesn't grow, keep their own."""
+    side room the regular gives it, down to SYMBOL_SIDE, so two side by side keep twice that
+    between them (tests/test_symbols.py). A part a bolder glyph holds unmoved can't move in
+    toward the cell's middle, so it keeps that glyph's bound too: © ®'s ring. A part the bold
+    draws as the glyph's own outline (unlinked_parts()), as Θ's O, and a shared glyph's part,
+    which doesn't grow, keep their own."""
     side = project.SYMBOL_SIDE
     bounds = {}
     for glyph in font.glyphs():
@@ -407,18 +406,13 @@ def unlinked_parts(glyph, classes):
     """The glyph's references the bold draws as its own outline: a shared glyph's bolder parts,
     which keep the regular's outline; a bolder glyph's bolder parts turned a quarter (⋮ on …)
     or scaled, which grow as its outline, since the reference would turn or scale the pen too;
-    a symbol's letter or figure that it holds unmoved (∆'s Δ, ₫'s đ), which grows condensed to
-    the symbol's side room, so the letter itself keeps the cell; and every part of a MERGED
-    glyph."""
+    and every part of a MERGED glyph."""
     if glyph.glyphname in MERGED:
         return [name for name, *_ in glyph.references]
-    symbol = glyph.unicode >= 0 and not is_alphanumeric(glyph.unicode)
     # A translation, a 180° turn or a mirror keeps the pen as it is.
     return [name for name, matrix, *_ in glyph.references if classes[name] == BOLDER
             and (classes[glyph.glyphname] == SHARED
-                 or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1)
-                 or (symbol and tuple(matrix) == psMat.identity()
-                     and is_alphanumeric(glyph.font[name].unicode)))]
+                 or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1))]
 
 
 def scale_together(font, name, bound, pen):
@@ -940,11 +934,11 @@ def build(font):
             sys.exit(f"make_bold.{listed}: {outside} not in PIECES_APART")
     grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * project.SYMBOL_SIDE
     # Read before anything changes: where each glyph's ink must stay (side_bounds()); where
-    # the outline of each of OWN_BOX and ACROSS_AS_UP must, its own box; the gap each part
+    # the outline of each of OWN_BOX, ACROSS_AS_UP and BLUNT must, its own box; the gap each part
     # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; and where
     # each LIFTED glyph's lifted piece stands and its other pieces.
     bounds, own = side_bounds(font, classes), {}
-    for name in OWN_BOX + ACROSS_AS_UP:
+    for name in OWN_BOX + ACROSS_AS_UP + BLUNT:
         x0, _, x1, _ = font[name].foreground.boundingBox()
         grow = PEN[1] / 2 if name in ACROSS_AS_UP else 0
         own[name] = (x0 - grow, x1 + grow)

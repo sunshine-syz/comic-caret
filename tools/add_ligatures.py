@@ -45,24 +45,25 @@ class Bar(NamedTuple):
 
 # Straight run strokes, one Bar per horizontal stroke.
 RUNS = {
-    "hyphen": (Bar((200, 350), (215, 325), (231, 310)),),
-    "equal": (Bar((200, 350), (135, 228), (143, 219)), Bar((200, 350), (318, 410), (326, 403))),
-    "underscore": (Bar((200, 350), (-115, -20), (-107, -29)),),
+    "hyphen": (Bar((225, 375), (215, 325), (231, 310)),),
+    "equal": (Bar((225, 375), (135, 228), (143, 219)), Bar((225, 375), (318, 410), (326, 403))),
+    "underscore": (Bar((225, 375), (-115, -20), (-107, -29)),),
     # The crossbars stick out past the slanted verticals, each by a different amount.
-    "numbersign": (Bar((100, 440), (170, 262), (178, 255)),
-                   Bar((150, 465), (408, 502), (415, 494))),
+    "numbersign": (Bar((125, 465), (170, 262), (178, 255)),
+                   Bar((175, 490), (408, 502), (415, 494))),
 }
 
-# ~ is a wave: a fall from crest to trough and its mirror image, each 174 wide, repeat. Three
-# fill a cell, so a cell ends at the other extreme from where it began and the pieces
-# alternate between starting low (.sta, .mid.low, .end.low) and high (.mid, .end).
-TILDE_CREST, TILDE_TROUGH = 182, 356
-TILDE_HALF = TILDE_TROUGH - TILDE_CREST
+# ~ is a wave: a fall from crest to trough and its mirror image repeat. In a run each is a
+# third of the cell wide, so a cell ends at the other extreme from where it began and the
+# pieces alternate between starting low (.sta, .mid.low, .end.low) and high (.mid, .end).
+# The single ~ keeps its own fall, 174 wide.
+TILDE_CREST, TILDE_TROUGH = 207, 381
+TILDE_HALF = ADVANCE / 3
 CREST_PROFILE, TROUGH_PROFILE = (292, 378), (161, 246)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.
-TIP = {"greater": 462, "less": 88}
+TIP = {"greater": 487, "less": 113}
 OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
@@ -77,15 +78,15 @@ EQUAL_PITCH = 326 - 143  # distance between the two = bars
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
 # their height, widening the angle from 361 to 517 like the references' angles.
 ANGLE_WIDTH_GAIN = 156
-ARM_ENDS = {"greater": ((128, 498), (131, 40)),   # centres of the upper and lower end caps
-            "less": ((419, 498), (422, 40))}
+ARM_ENDS = {"greater": ((153, 498), (156, 40)),   # centres of the upper and lower end caps
+            "less": ((444, 498), (447, 40))}
 HYPHEN_SPAN = 210      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
 # |> <|: the head 121 % the size of > <, its arm ends over the round ends of a bar as tall
 # as the head, so each corner turns as one round stroke end.
 PIPE_HEAD_SCALE = 1.21
-PIPE_BAR_EDGE = {"greater": 270 - ADVANCE, "less": 830 - ADVANCE}  # references' outer edge
+PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
 COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
@@ -103,12 +104,14 @@ TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": -4, "plus": -5.5, "slash
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one, which leaves
-# at least the white of Fira Code, the one reference that draws ->>, between the two.
-HEAD_PITCH = 375
+# at least the white of Fira Code, the one reference that draws ->>, between the two. A
+# smaller pitch brings the inner head's crotch up to the cell's edge, where the shaft's cut
+# end then shows in it.
+HEAD_PITCH = 400
 
 # ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
 # upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
-WAVE_END = 360
+WAVE_END = 411
 SPECK = 90  # the stem weight: a hole no wider than a stroke reads as a blot, not a counter
 
 
@@ -149,11 +152,17 @@ def tilde_pieces(font):
     tilde = outline(font, "asciitilde")
     fall = geo.snap_edge(geo.snap_edge(geo.trim(tilde, TILDE_CREST, TILDE_TROUGH),
                                        TILDE_CREST, CREST_PROFILE), TILDE_TROUGH, TROUGH_PROFILE)
-    rise = geo.mirrored_x(fall, TILDE_TROUGH)
+    # Spread across to TILDE_HALF about the crest: the flat edges keep their heights.
+    fall = geo.transformed(fall, geo.about(
+        psMat.scale(TILDE_HALF / (TILDE_TROUGH - TILDE_CREST), 1), TILDE_CREST, 0))
+    trough = TILDE_CREST + TILDE_HALF  # where the run's fall ends
+    rise = geo.mirrored_x(fall, trough)
     rise_before = geo.transformed(rise, psMat.translate(-2 * TILDE_HALF, 0))
     start = geo.snap_edge(geo.trim(tilde, x1=TILDE_CREST), TILDE_CREST, CREST_PROFILE)
-    finish = geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE)
-    first, last = TILDE_CREST - TILDE_HALF, TILDE_TROUGH + TILDE_HALF  # the outer extremes
+    finish = geo.transformed(
+        geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE),
+        psMat.translate(trough - TILDE_TROUGH, 0))
+    first, last = TILDE_CREST - TILDE_HALF, trough + TILDE_HALF  # the outer extremes
 
     def to_edge(layer, x, edge, profile):
         # The wave is level at an extreme, so moving the flat end out keeps it level.
@@ -161,7 +170,7 @@ def tilde_pieces(font):
         return geo.snap_edge(moved, edge, profile)
 
     def waves(head, tail):
-        return geo.weld(geo.weld(head, fall, TILDE_CREST), tail, TILDE_TROUGH)
+        return geo.weld(geo.weld(head, fall, TILDE_CREST), tail, trough)
 
     sta = to_edge(waves(start, rise), last, ADVANCE + OVERLAP, CREST_PROFILE)
     mid_low = to_edge(to_edge(waves(rise_before, rise), first, -OVERLAP, TROUGH_PROFILE),

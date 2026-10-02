@@ -50,7 +50,8 @@ them. The exceptions:
   and 1.46 times its ink, so Rich's traceback marker stays apart from the prompt, as in the
   fonts that draw them apart (DejaVu Sans Mono's ❱ 1.39 times its ❯'s ink, JetBrains Mono's
   and Maple Mono's 1.50).
-- No symbol comes closer to the cell's edges than ● (15), so two side by side don't touch;
+- No symbol comes closer to the cell's edges than `project.SYMBOL_SIDE` (15), so two side by
+  side don't touch;
   `tests/test_symbols.py` lists the exceptions.
 - Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white shapes are
   rings of the hyphen's stroke, or of `o`'s for ○.
@@ -78,8 +79,62 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
   semicolon, brackets and letter widths; read it before changing them.
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
-  1.5 em line height), horizontals −10…560. Block elements fill the cell and the line box
+  1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
   exactly, and the Powerline separators do the same.
+
+## Wider cell
+
+2.0 moved every glyph from a 550 cell into a 600 cell, at the same letter height: x-height
+473, cap height 668, stems about 90. Against its own letters, the 550 cell was average. The
+references look wider at one size because their letters are bigger too. Measured from 24 coding
+fonts, in units of a 1000 em:
+
+| Font | Cell | x-height | Cell ÷ x-height |
+|---|---|---|---|
+| Comic Caret 1.7.0 | 550 | 473 | 1.16 |
+| Comic Shanns Mono | 550 | 473 | 1.16 |
+| Fira Code | 615 | 540 | 1.14 |
+| Maple Mono | 600 | 560 | 1.07 |
+| Intel One Mono | 614 | 465 | 1.32 |
+| JetBrains Mono | 600 | 550 | 1.09 |
+| Monaspace Neon | 620 | 514 | 1.21 |
+| Source Code Pro | 600 | 478 | 1.26 |
+| Median of the 24 | 600 | 530 | 1.13 |
+| Comic Caret 2.0 | 600 | 473 | 1.27 |
+
+The 600 cell with the same letters sits between Source Code Pro and Intel One Mono, so text
+reads more open. Half-block pixels ▀ ▄ become almost square, 600 × 625. Our letters fill more
+of the cell than the references' do: `n` filled 75% of the 550 cell, theirs fill 67–70%. So
+the `n` family fits the 600 cell as it is, moved to the middle.
+
+Monaspace's Regular, SemiWide and Wide cuts (620, 699 and 778 wide) show how one designer
+shares out a wider cell. The table gives the ink gained per unit of cell gained, the median
+over Argon, Krypton, Neon, Radon and Xenon:
+
+| Glyphs | Share |
+|---|---|
+| Letters and figures | 0.72–1.03 (`n` 0.91, `o` 0.90, `m` 0.88, `w` 0.72, `i` 0.82) |
+| `< > #` | 0.66–0.70 |
+| `- + = / \ ( ) [ ] { } @ ~` | 0.37–0.49 |
+| `"` `*` | 0.16–0.31 |
+| `. , : ; ! ? ' \|` | 0 |
+| Arrows | 0.17 |
+| Superscripts and subscripts | 0 |
+| Box drawing and blocks | 0.5–1 (they fill the cell) |
+
+Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller in the cell.
+
+- **The width rule.** A glyph that widens keeps its ink width within the narrowest and the
+  widest of Fira Code, Maple Mono and Intel One Mono, with x scaled to a 600 cell, give or take
+  `WOBBLE`; the bold takes its range from the five reference bolds. The drawing aims at the
+  larger of the regular's floor and the bold's floor less 35, the bold pen's width: the least
+  widening that keeps both styles in range. No glyph is scaled to widen it: its strokes move,
+  turn or lengthen.
+- **The `~~~` run.** Each half-wave of the run, a fall from crest to trough or the rise back,
+  is a third of the cell: 200 units. The pieces spread `~`'s own fall across 200 about its
+  crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
+  550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
+  keeps its own 174-unit half-waves.
 
 ## Italic
 
@@ -164,19 +219,16 @@ in `build/cache/reference/bold/`:
   marks. Ours read heavier in every weight.
 - **The cell.** The pen pushes no ink out of the cell, or past the regular's own overhang
   where it has one (ď, the tonos capitals). No glyph but a letter or figure comes nearer the
-  cell's sides than ●'s side bearing, or the regular's ink where that is nearer, so two
-  symbols side by side stay as far apart as ●●. A glyph that would pass its bound is
+  cell's sides than `SYMBOL_SIDE`, or the regular's ink where that is nearer, so two symbols
+  side by side keep twice that between them. A glyph that would pass its bound is
   condensed: its outline is scaled across about its ink centre before the offset, just
   enough, so every stem still grows by the full pen. A composite whose part would pass its
   bound moves its references in toward the cell's centre instead.
 - **Composites** keep their references, so an accented letter follows its base; a glyph with
-  an outline and references has only its outline grown. Three kinds of part are unlinked
+  an outline and references has only its outline grown. Two kinds of part are unlinked
   first. A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
   italic. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its
-  own outline, since the reference would turn or scale the pen too. A letter that a symbol
-  holds unmoved (∆'s Δ, ₫'s đ) grows as the symbol's own outline, condensed to the symbol's
-  side room, so the letter itself keeps its full width: a letter outranks a rare symbol's
-  reference. A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold
+  own outline, since the reference would turn or scale the pen too. A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold
   right one mirrored, so the two stay exact mirrors. An accent the pen grows out of the line
   box moves down into it (ĥ's circumflex). A mark the pen grows within `MARK_CLEARANCE` of its
   letter rises clear, as far on every letter where it stands as high, so a row of them stays
@@ -197,10 +249,11 @@ what it does to them:
   under Fira Code Bold's 41 around its ©. It comes 8 from the cell's edges, as Fira Code
   Bold's © does. The ring and its letter scale together about the ring's middle: condensed
   alone, the ring would come out lighter than C and close on the letter.
-- `BLUNT`: ₩ ₦ ₱'s bars run past their letter out to the side room. The pen lengthens their
-  round ends, and the side room takes that length back, so the bars would reach the hyphen's
-  weight only inside the letter. A second pen, as tall but a unit wide, is united with the
-  first, so the bars' ends keep the regular's length and weigh as much as the hyphen.
+- `BLUNT`: ₩ ₦ ₱'s bars run past their letter on both sides. The pen lengthens their round
+  ends, which tapers the bars' run clear of the letter, so the bars would reach the hyphen's
+  weight only inside it. So the sign keeps its regular box, condensed, and a second pen, as
+  tall but a unit wide, is united with the first: the bars' ends keep the regular's length
+  and weigh as much as the hyphen.
 - `ACROSS_AS_UP`: ⇕ is ⇔ turned, and the turned pen would grow it past ↑'s height. So ⇕
   grows by the pen as it stands, condensed until it grows across only by the pen's height,
   and stays as wide as ⇔ is tall.
@@ -223,13 +276,13 @@ what it does to them:
   small pen, so ℃'s ring stays clear of its C and №'s o of its bar.
 - `SLASHES`: grown, ‰'s slash would come 14 from the zero under it, where the regular keeps
   27. It shortens at its foot until it keeps the regular's white.
-- `SHRUNK`: ※'s dots, ⧉'s front square and ⌫ ⌦'s × shrink just enough to keep ●●'s seam
-  from the piece beside them, where condensing can't part the two.
+- `SHRUNK`: ※'s dots, ⧉'s front square and ⌫ ⌦'s × shrink just enough to keep twice
+  `SYMBOL_SIDE` from the piece beside them, where condensing can't part the two.
 - `OPENED`: ⎋'s ring opens wider around its arrow; the arrow would have to shrink by a third
   to clear.
 - `DASHED`: ⇡ ⇣'s dashes shorten at their top by twice the pen's height, so each gap stays as
   much wider than the stroke as the regular's and stays open at 12 px.
 - `LIFTED`: ⇪'s ⇧ is the bold ⇧, lifted as far as the regular lifts it, and a little further
-  where the bar comes within ●●'s seam.
+  where the bar comes within twice `SYMBOL_SIDE` of it.
 - `RAISED`: Ħ's upper bar moves up its stems by the pen's height, so the white between its
   bars stays the regular's; it would come 81 from the lower bar, under the bold hyphen's 93.

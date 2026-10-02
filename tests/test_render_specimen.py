@@ -78,12 +78,14 @@ class LayoutTest(unittest.TestCase):
         layout.line(10, 50, "HH H", 20)
         svg = layout.svg(100)
         self.assertEqual(svg.count("<path "), 1)
-        self.assertEqual([(x, y) for x, y, *_ in placed(svg)], [(10, 50), (21, 50), (43, 50)])
+        cell = ADVANCE * 20 / 1000
+        self.assertEqual([(x, y) for x, y, *_ in placed(svg)],
+                         [(10, 50), (10 + cell, 50), (10 + 3 * cell, 50)])
 
     def test_gap_spaces_out_the_cells(self):
         layout = Layout()
         layout.line(0, 20, "HH", 20, gap=5)
-        self.assertEqual([x for x, *_ in placed(layout.svg(40))], [0, 16])
+        self.assertEqual([x for x, *_ in placed(layout.svg(40))], [0, ADVANCE * 20 / 1000 + 5])
 
     def test_classes_color_glyphs_by_character(self):
         layout = Layout()
@@ -102,7 +104,8 @@ class LayoutTest(unittest.TestCase):
         layout.styled(0, 20, "HHH", 20, [FONT, ITALIC, BOLD])
         svg = layout.svg(40)
         self.assertEqual(svg.count("<path "), 3)
-        self.assertEqual([x for x, *_ in placed(svg)], [0, 11, 22])
+        cell = ADVANCE * 20 / 1000
+        self.assertEqual([x for x, *_ in placed(svg)], [0, cell, 2 * cell])
         paths = [path for font in (FONT, ITALIC, BOLD) for path, *_ in glyphs("H", False, font)]
         self.assertEqual(len(set(paths)), 3)
         for path in paths:

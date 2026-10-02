@@ -2,6 +2,11 @@
 
 ## 2.0.0 (unreleased)
 
+- Every character is 600 units wide, up from 550, at the same letter height. Most coding fonts are 600 to 620 wide, but their letters are bigger too. The cell is now 1.27 times the x-height, between Source Code Pro's 1.26 and Intel One Mono's 1.32, where 1.7.0's was 1.16. So text reads more open.
+- At the same font size, a line holds 8% fewer characters. Lower the size by about one point to keep a terminal's column count.
+- The waves of a `~~~` run are longer: each half-wave is 200 units, a third of the cell. 1.7.0's were 174, as a single `~`'s still are, with a flat at each seam to fill the cell.
+- The two heads of `->>` and `<<-` stand 25 units further apart, so the shaft still runs into the inner head's point.
+
 ## 1.7.0 (2026-10)
 
 - A bold, Comic Caret Bold, in the same zips as the regular and the italic and in the Nerd Font zip.

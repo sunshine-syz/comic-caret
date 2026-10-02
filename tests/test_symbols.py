@@ -4,7 +4,7 @@ Run: python3 -m unittest discover tests
 
 Centering, the math axis and mirrored pairs are checked in test_consistency.py.
 The bold runs these rules too (the Bold* classes), its floors measured from the reference bolds.
-The floors the font gives (●'s side, the hyphen's stroke, the pen) hold for it as they stand,
+The floors the font gives (SYMBOL_SIDE, the hyphen's stroke, the pen) hold for it as they stand,
 and so do the white shapes' counters: the bold shares those shapes with the regular.
 """
 import itertools
@@ -62,10 +62,10 @@ HEAVIER = {**{heavy: (light, HEAVY_INK) for heavy, light in HEAVY.items()}, "❯
 # •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
 # hand's wobble.
 BULLET_WIDTH = 220 - WOBBLE
-# Every symbol keeps at least as far inside the cell as ●, the widest full-size shape, so two
-# side by side stay as far apart as ●●: a seam at 16 px, as in Fira Code. These come no closer
-# to the edges than a reference's: ∞ and � (11 inside) as Fira Code's ∞ and Maple Mono's �,
-# which run past the cell, and ™ (13) as Fira Code's, 11 inside on the left.
+# Every symbol keeps at least SYMBOL_SIDE inside the cell, so two side by side keep twice that
+# between them: a seam at 16 px, as in Fira Code. These come no closer to the edges than a
+# reference's: ∞ and � (11 inside) as Fira Code's ∞ and Maple Mono's �, which run past the
+# cell, and ™ (13) as Fira Code's, 11 inside on the left.
 OWN_SIDES = "∞�™"
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫", "▮": "▯",
@@ -493,7 +493,8 @@ class HeavyMarkTest(unittest.TestCase):
 
 
 class ApartTest(unittest.TestCase):
-    """Parts of a symbol keep at least ●●'s seam between them, so they stay apart at 16 px."""
+    """Parts of a symbol keep at least twice SYMBOL_SIDE between them, so they stay apart at
+    16 px."""
     sfd = SFD
 
     @classmethod
@@ -521,7 +522,6 @@ class BuiltFromTest(unittest.TestCase):
     sfd = SFD
     doubles, exclamation_dots, fisheye_gap = DOUBLES, EXCLAMATION_DOTS, FISHEYE_GAP
     turned_outlines = ""  # the glyphs of TURNED drawn as an outline instead: none
-    same_outlines = ""  # the glyphs drawn as the shape they share, as an outline instead: none
 
     @classmethod
     def setUpClass(cls):
@@ -603,11 +603,6 @@ class BuiltFromTest(unittest.TestCase):
         for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ"), ("ʼ", "’"),
                            ("ʻ", "‘"), ("ʺ", "″")):
             with self.subTest(glyph=char):
-                if char in self.same_outlines:
-                    glyph = self.font[ord(char)]
-                    self.assertEqual((len(glyph.references), bool(len(glyph.foreground))),
-                                     (0, True))
-                    continue
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(matrix, psMat.identity())
@@ -786,12 +781,12 @@ class KeyHintTest(unittest.TestCase):
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
 LETTER_SIGNS = {"₽": "P", "₩": "W", "₺": "t", "₦": "N", "₱": "P"}
-# Where a sign's bars cross a vertical line: (x, how many bars, whether they are the topmost
-# spans there rather than the lowest). ₽'s bowl lies over its bar, W's arm over ₩'s bars, and
-# ₹'s leg under its bars; ₦'s and ₱'s bars run out left of their letters, alone there (past
-# the bars' rounded ends, which taper like the hyphen's).
-BARS = {"₽": (300, 1, False), "₩": (40, 2, False), "₹": (120, 2, True), "₦": (40, 2, False),
-        "₱": (40, 2, False)}
+# Where a sign's bars cross a vertical line: (x from the cell's middle, how many bars, whether
+# they are the topmost spans there rather than the lowest). ₽'s bowl lies over its bar, W's arm
+# over ₩'s bars, and ₹'s leg under its bars; ₦'s and ₱'s bars run out left of their letters,
+# alone there (past the bars' rounded ends, which taper like the hyphen's).
+BARS = {"₽": (25, 1, False), "₩": (-235, 2, False), "₹": (-155, 2, True), "₦": (-235, 2, False),
+        "₱": (-235, 2, False)}
 TICK_REACH = 100  # ₿'s ticks past B: Maple Mono's, the only reference's, reach 130
 # How far ¢'s stroke runs past its c, above and below: at least the narrowest reference's,
 # Maple Mono's at our cap height (Fira Code's 138 below and Intel One Mono's 130).
@@ -831,10 +826,10 @@ class CurrencyTest(unittest.TestCase):
                 self.assertAlmostEqual(y1, ly1, delta=ROUNDING)
 
     def bars(self, sign, x):
-        """The bars' (bottom, top) at x, lowest first."""
+        """The bars' (bottom, top) at x from the cell's middle, lowest first."""
         _, count, topmost = BARS[sign]
         ink = measure.ink(self.font, self.font[ord(sign)].glyphname)
-        spans = sorted(measure.spans_at_x(ink, x))
+        spans = sorted(measure.spans_at_x(ink, ADVANCE / 2 + x))
         bars = spans[-count:] if topmost else spans[:count]
         self.assertEqual(len(bars), count)
         return bars
@@ -850,7 +845,7 @@ class CurrencyTest(unittest.TestCase):
     def test_rupee_bars_are_level(self):
         # Both bars run at one height across the left half, before the bowl and the leg join.
         x, *_ = BARS["₹"]
-        for (a0, a1), (b0, b1) in zip(self.bars("₹", x), self.bars("₹", 2 * x), strict=True):
+        for (a0, a1), (b0, b1) in zip(self.bars("₹", x), self.bars("₹", x + 120), strict=True):
             self.assertAlmostEqual(a0, b0, delta=WOBBLE)
             self.assertAlmostEqual(a1, b1, delta=WOBBLE)
 
@@ -973,10 +968,6 @@ class BoldBuiltFromTest(BuiltFromTest):
     # grow ⋮'s dots and ⇦ ⇨'s strokes tall rather than wide, past what tests/test_make_bold.py
     # lets the pen grow a glyph; the bold draws them as outlines (make_bold.unlinked_parts()).
     turned_outlines = "⋮⇦⇨"
-    # Known exception: ∆ keeps ●'s side room, where the bold Δ, a letter, grows to the cell. A
-    # letter's width outranks a rare symbol's reference, so the bold draws ∆ as Δ's outline
-    # condensed (make_bold.unlinked_parts()).
-    same_outlines = "∆"
 
     def fisheye_parts(self):
         # Known exception: the bold shares ◉ with the regular, a picture, while • grows with
@@ -999,15 +990,6 @@ class BoldKeyHintTest(KeyHintTest):
 class BoldCurrencyTest(CurrencyTest):
     sfd = BOLD_SFD
     cent_reach = BOLD_CENT_REACH
-
-    def dong_parts(self):
-        # Known exception: ₫ keeps ●'s side room, where the bold đ, a letter, grows to the cell.
-        # A letter's width outranks a rare symbol's reference, so the bold draws ₫'s đ as its
-        # own outline, condensed (make_bold.unlinked_parts()), over the em dash.
-        glyph = self.font[ord("₫")]
-        [(name, matrix, *_)] = glyph.references
-        self.assertEqual(name, self.font[ord("—")].glyphname)
-        return glyph.foreground, matrix
 
 
 if __name__ == "__main__":

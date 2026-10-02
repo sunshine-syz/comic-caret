@@ -29,7 +29,7 @@ MIDDLE = (LINE_BOTTOM + LINE_TOP) // 2  # the separators' tip: the middle of the
 INSET = 50  # how far the symbols keep inside the line box, top and bottom
 
 # The branch: a trunk with a dot at each end, and a branch curving off it up to a third dot.
-TRUNK_X, BRANCH_X = 140, 410
+TRUNK_X, BRANCH_X = ADVANCE // 2 - 135, ADVANCE // 2 + 135
 DOT = 80  # the dots' radius
 TRUNK_BOTTOM, TRUNK_TOP = LINE_BOTTOM + INSET + DOT, LINE_TOP - INSET - DOT  # dot centres
 BRANCH_DOT_Y = 600
@@ -40,7 +40,7 @@ LETTER_SCALE = 0.75
 LETTER_GAP = 100
 
 # The padlock: a rounded body with a keyhole, under a shackle of the light stroke.
-BODY = (95, -80, 455, 320)  # x0, y0, x1, y1
+BODY = (ADVANCE // 2 - 180, -80, ADVANCE // 2 + 180, 320)  # x0, y0, x1, y1
 CORNER = 40
 SHACKLE_RADIUS = 160  # of its outer edge; the shackle's legs run into the body
 SHACKLE_LEGS = 70

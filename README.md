@@ -60,6 +60,9 @@
 installed side by side; choose Comic Caret in your settings. The
 [1.0.0 notes](CHANGELOG.md#100-2026-09) list everything that changed.
 
+**Coming from 1.x?** Comic Caret 2.0 is 600 units wide per em, 9% wider than 1.x, so lowering
+the font size by about one point keeps a terminal's column count.
+
 ## Italic
 
 Comic Caret Italic is the regular slanted 12°, with `f` given a descender. Every character

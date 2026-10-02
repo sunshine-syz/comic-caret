@@ -180,11 +180,11 @@ class BoldTest(unittest.TestCase):
 
     def test_symbols_keep_their_side_room(self):
         # Each glyph but the letters and figures keeps the room from the cell's sides the
-        # regular gives it, down to ●'s side, so two side by side stay as far apart as ●●
-        # (tests/test_symbols.py). The letterlike symbols, ℓ ℹ among them, count as symbols, but
-        # Ω K Å, which are letters (project.is_alphanumeric()). A letter or figure, as the cell
-        # is drawn round its stems, keeps to the cell or its overhang, as tests/test_sanity.py
-        # holds it.
+        # regular gives it, down to SYMBOL_SIDE, so two side by side keep twice that between
+        # them (tests/test_symbols.py). The letterlike symbols, ℓ ℹ among them, count as
+        # symbols, but Ω K Å, which are letters (project.is_alphanumeric()). A letter or figure,
+        # as the cell is drawn round its stems, keeps to the cell or its overhang, as
+        # tests/test_sanity.py holds it.
         side = SYMBOL_SIDE
         wrong = {}
         for glyph in self.regular.glyphs():

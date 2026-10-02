@@ -58,7 +58,7 @@ starts the next one, setting every SFD's `Version:` and the heading together.
 - Edit only through FontForge (GUI or `import fontforge`). `Refer:` lines address glyphs by
   index, so hand edits silently break composites. Before writing FontForge Python, read
   `docs/fontforge-pitfalls.md`: the module's quirks the tools work around.
-- Every glyph, `.notdef` included, is 550 wide, except the combining marks (U+0300…), which
+- Every glyph, `.notdef` included, is 600 wide, except the combining marks (U+0300…), which
   are 0 wide with their ink over the cell, where terminals that don't shape text draw them,
   and the blank zero-width format characters (`project.ZERO_WIDTH`).
 - Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`; the bold's are
@@ -114,8 +114,8 @@ a shape or a status mark, goes in the upright set. Then `./build.sh` and
 - Draw new strokes in the font's own hand: round ends, the stem weight (about 90), the wobble.
   Reuse an existing stroke where one fits; move and shorten strokes rather than scaling them.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
-  height, and bring no symbol closer to the cell's edges than ● (15), so two side by side
-  don't touch.
+  height, and bring no symbol closer to the cell's edges than `project.SYMBOL_SIDE` (15), so
+  two side by side don't touch.
 - Center symmetric ink in the cell; turned glyphs such as ¡ ¿ are references rotated 180°
   about the cell center.
 - `docs/design-notes.md` records how the scaled parts, heavy marks, shapes and Greek were

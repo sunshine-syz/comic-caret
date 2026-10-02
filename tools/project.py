@@ -13,7 +13,7 @@ BOLD_SFD = ROOT / "src" / "ComicCaret-Bold.sfd"  # derived from it by tools/make
 STYLES = {"Regular": SFD, "Italic": ITALIC_SFD, "Bold": BOLD_SFD}
 REFERENCE_DIR = ROOT / "build" / "cache" / "reference"  # the italic references are in italic/
 NERD_DIR = ROOT / "build" / "nerd"  # the patched fonts of ./build.sh --nerd and --release
-ADVANCE = 550  # every glyph's advance width
+ADVANCE = 600  # every glyph's advance width
 # The least room a symbol keeps from each cell edge: two side by side keep 30 between them,
 # open at 16 px.
 SYMBOL_SIDE = 15

@@ -25,7 +25,7 @@ Builds $OUT_DIR/ComicCaret-{Regular,Italic,Bold}.{otf,ttf} from $SOURCES.
   --nerd[=VARIANTS]  Also patch every built font with Nerd Fonts $NERD_FONTS_VERSION into $NERD_OUT/.
                      VARIANTS is a comma-separated list of:
                        default  icons overhang into the next cell (default)
-                       mono     icons fit one cell; every glyph stays 550 wide
+                       mono     icons fit one cell; every glyph stays one cell wide
                        propo    icons keep their own advance widths (not monospaced)
   --release          From a clean checkout, build the fonts and the default Nerd Font
                      edition, and zip them into $DIST/ for a GitHub release.
