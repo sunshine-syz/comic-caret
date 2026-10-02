@@ -31,7 +31,7 @@ STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 # steeper arms end nearer the point, so → ← ⇒ ⇐, which carry these heads in one cell, keep a
 # shaft.
 HEAD_SCALE = 1
-HEAD_TURN = math.radians(14)
+HEAD_TURN = math.radians(14.4)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -79,8 +79,12 @@ EQUAL_PITCH = 326 - 143  # distance between the two = bars
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
 # their height, widening the angle from 425 to 517 like the references' angles.
 ANGLE_WIDTH_GAIN = 94
-ARM_ENDS = {"greater": ((126, 498), (116, 40)),   # centres of the upper and lower end caps
-            "less": ((484, 498), (475, 40))}
+# Where the arms of > and < end, upper then lower, as the generator reckons them: across,
+# about the end caps' centres; up and down, at the heights from which longer_angle(), turned
+# HEAD_TURN, draws arrowheads as tall as → and ←. The hand-drawn arms differ, so each has its
+# own height.
+ARM_ENDS = {"greater": ((119, 515), (122, 47)),
+            "less": ((478, 491), (481, 23))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
@@ -123,7 +127,11 @@ def outline(font, name):
 def stroke(font, name, x0=None, x1=None):
     """A run character cut flat at x0 and x1, where None keeps that end's cap.
 
-    Each bar is first stretched past both cuts, so any x0 < x1 works.
+    Each bar is first stretched past both cuts, so any x0 < x1 works. A cut past the cell's
+    edge is a seam, where the piece runs on into the next cell: its corners snap to the bar's
+    profile, so the pieces meet at identical heights. A cut inside the cell lies inside another
+    stroke and meets nothing, so it keeps the outline's height: snapped a unit past an outline
+    point, its corner would hook the curve's end back along the cut.
     """
     layer = outline(font, name)
     bars = RUNS[name]
@@ -134,10 +142,8 @@ def stroke(font, name, x0=None, x1=None):
             layer = geo.stretch(layer, bar.cuts[1], STRETCH, bar.band)
     layer = geo.trim(layer, -geo.FAR if x0 is None else x0, geo.FAR if x1 is None else x1)
     profile = [y for bar in bars for y in bar.profile]
-    # Snapped, pieces cut at the same seam meet at identical heights. A cut inside another
-    # stroke meets nothing, and snapped a unit past an outline point it hooks the curve's end.
     for x in (x0, x1):
-        if x in (-OVERLAP, ADVANCE + OVERLAP):
+        if x is not None and not 0 <= x <= ADVANCE:
             geo.snap_edge(layer, x, profile)
     return layer
 
@@ -391,8 +397,8 @@ def pipes(font):
 
 def end_centre(angle, above):
     """(x, y): the centre of the round end of the arm of `angle` above or below the axis, half
-    a stroke back from the arm's far end along its middle line. ARM_ENDS, measured by hand,
-    misses these centres by up to 30."""
+    a stroke back from the arm's far end along its middle line. ARM_ENDS misses these centres
+    by up to 31."""
     _, y0, _, y1 = angle.boundingBox()
     rise = (y1 if above else y0) - AXIS
     (ax, ay), (bx, by) = (middle_at(angle, AXIS + k * rise) for k in (0.3, 0.65))
