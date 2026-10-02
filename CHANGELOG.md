@@ -18,6 +18,7 @@
   - “ ” „ left about 60 units between their marks at mid-height, where all three references leave 100 or more. Each mark now stands about 20 units further out, leaving 104.
 - → ← ⇒ ⇐ were nearly all head: the head stood 578 units tall and its arms swept back over all but 85 units of the shaft. Each arm now turns 8° steeper, to about Fira Code's slope, so the head stands 516 tall and the shaft shows more than twice as long, 184. The arrow ligatures `->` `=>` `<-` `->>` `~>` `>=>` and `<!--` take the same head, so → beside `->` still reads as the same arrow.
 - `<` and `>` are 24 units shorter, 506 tall, their arms shortened along their own lines, so the arrowheads stay taller than them; `<=` `>=` `<>` follow them. `|>` `<|` `<|>` keep their size.
+- ď's caron ran 94 units into the next cell, crowding the letter after it. `d` now sits 25 units left inside ď, as in Fira Code and Maple Mono, and the caron is a shorter tick, 154 units tall instead of 230, its top where it was, so it runs 40 past the cell, within the references' 9 to 93. ľ Ľ ť share the caron and take the shorter tick too.
 
 ## 1.6.5 (2026-10)
 
