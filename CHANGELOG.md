@@ -12,6 +12,10 @@
   - ∂'s hook rose to 703, above `6` and the capitals; it now tops out at 676, as Fira Code's does, below `6`.
   - The spacing ogonek ˛ sat 28 units right of the cell's middle and is now centered, as in the references; the combining ogonek (U+0328) and ą ę į ų are unchanged.
   - The Braille patterns sat 14 units right of the cell's middle; the grid is now centered, as Maple Mono's is.
+- Three gaps were narrower than the reference fonts leave them, and are now as open as theirs:
+  - ✗ stood 83 units under X's top, near enough to read as a capital at text sizes. It now stands 100 under, as Maple Mono's, the only reference with ✗, does; ✘ moves with it.
+  - The bars under ª and º came within 70 units of their letters. They now leave 90, as Intel One Mono's do.
+  - “ ” „ left about 60 units between their marks at mid-height, where all three references leave 100 or more. Each mark now stands about 20 units further out, leaving 104.
 
 ## 1.6.5 (2026-10)
 

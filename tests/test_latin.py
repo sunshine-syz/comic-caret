@@ -17,7 +17,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import measure
 import sfnt
-from helpers import bullet_seam, require_current_build
+from helpers import require_current_build
 from project import ADVANCE, ROUNDING, SFD, WOBBLE, font_file
 
 TTF = font_file("Regular", "ttf")
@@ -33,6 +33,9 @@ SIGN_STEM = (56, 4)
 # The closest a fraction's slash comes to its figures: the narrowest reference's, Fira Code's ⅖ ⅘
 # scaled to our cell (Maple Mono's ½ ¼ 22, Intel One Mono's ⅔ ⅖ 28).
 FRACTION_CLEARANCE = 21
+# The white between ª º's bar and their letter: the narrowest reference's with a bar, Intel One
+# Mono's at our cap height (Fira Code's 225; Maple Mono's ª º have none).
+ORDINAL_CLEARANCE = 89
 # The closest ‰'s slash comes to its rings: the narrowest reference's, Maple Mono's scaled to our
 # cell (Fira Code's 33; Intel One Mono has no ‰).
 PER_MILLE_CLEARANCE = 22
@@ -395,16 +398,14 @@ class FigureTest(unittest.TestCase):
         self.assertAlmostEqual(across, SMALL_STEM[0], delta=SMALL_STEM[1])
 
     def test_ordinal_bars_are_as_heavy_as_the_letters_and_clear_them(self):
-        # The bar keeps at least ●●'s seam from its letter, as a symbol's parts do
-        # (test_symbols), so they stay apart at 16 px.
-        seam = bullet_seam(self.font)
         for name, letter in (("ordfeminine", "a.small"), ("ordmasculine", "o.small")):
             with self.subTest(glyph=name):
                 bar = self.part(name, "bar.ordinal")
                 x0, _, x1, _ = bar.boundingBox()
                 [(t0, t1)] = measure.spans_at_x(bar, (x0 + x1) / 2)
                 self.assertAlmostEqual(t1 - t0, SMALL_STEM[0], delta=SMALL_STEM[1])
-                self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)), seam)
+                self.assertGreaterEqual(measure.gap(bar, self.part(name, letter)),
+                                        ORDINAL_CLEARANCE)
 
     def test_trademark_letters_stay_apart(self):
         self.assertGreaterEqual(measure.gap(self.part("trademark", "T.small"),

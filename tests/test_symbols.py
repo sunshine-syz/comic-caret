@@ -17,7 +17,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import measure
-from helpers import ROW_TOLERANCE, bullet_seam, outline
+from helpers import bullet_seam, outline
 from project import ADVANCE, ROUNDING, SFD, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
@@ -84,8 +84,13 @@ SMALL_SQUARE_COUNTER = 122
 WHITE_BULLET_COUNTER = 144
 # Double mark -> (the single mark, the white between its two copies at their middle): at
 # least the narrowest reference's, scaled to our cell: Maple Mono's ″ and ‼, the only
-# reference's, and Fira Code's ‖ (Maple Mono's 156).
-DOUBLES = {"″": ("′", 108), "‖": ("|", 90), "‼": ("!", 110)}
+# reference's, Fira Code's ‖ (Maple Mono's 156), and Fira Code's “ ” „ (Maple Mono's 103-125,
+# Intel One Mono's 119-120).
+DOUBLES = {"″": ("′", 108), "‖": ("|", 90), "‼": ("!", 110),
+           "“": ("‘", 101), "”": ("’", 102), "„": (",", 100)}
+# How far ✗'s top stays under X's: at least Maple Mono's, the one reference with ✗, at our cap
+# height.
+BALLOT_UNDER_X = 100
 
 
 def linear(matrix):
@@ -302,11 +307,11 @@ class MarkTest(unittest.TestCase):
                 self.assertGreaterEqual(over[mark], floor, SHORT_MARKS.get(mark))
 
     def test_ballot_x_is_not_the_letter_x(self):
-        # About as wide as it is tall and off the cap-height row, as Maple Mono's (494 × 486); at
+        # About as wide as it is tall and well under X's top, as Maple Mono's (494 × 486); at
         # X's tall, narrow proportions [✗] and [X] look the same.
         x0, y0, x1, y1 = self.font[0x2717].boundingBox()
         self.assertAlmostEqual((x1 - x0) / (y1 - y0), 1, delta=0.1)
-        self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - ROW_TOLERANCE)
+        self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - BALLOT_UNDER_X)
 
     def test_replacement_character_is_a_diamond_with_a_question_mark(self):
         contours = list(self.font[0xFFFD].foreground)
