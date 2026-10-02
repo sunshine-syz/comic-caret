@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1790934990
+ModificationTime: 1790935044
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -5325,13 +5325,13 @@ StartChar: i
 Encoding: 105 105 74
 Width: 550
 Flags: W
-HStem: -16 81<74.238 251 342 487.761> 378 81<109.283 254> 570 145<227.255 330.555>
-VStem: 203 152<596.658 690.664> 251 91<65 379.901>
+HStem: -23 95<55.2886 234 359 504.045> 371 90<88.1605 135 135.033 236> 577 159<215.75 340.285>
+VStem: 185 188<608.615 705.924> 234 125<72 373>
 AnchorPoint: "bottom" 281 0 basechar 0
 AnchorPoint: "top" 281 765 basechar 0
 LayerCount: 2
 Fore
-Refer: 15 46 N 1 0 0 1 3 584 2
+Refer: 15 46 N 1 0 0 1 3 598 2
 Refer: 213 305 N 1 0 0 1 0 0 2
 Substitution2: "marks_dotless_single" dotlessi
 EndChar
@@ -5340,13 +5340,13 @@ StartChar: j
 Encoding: 106 106 75
 Width: 550
 Flags: W
-HStem: -268 84<84.4226 232.737> 370 84<101.378 328> 570 145<308.255 411.555>
-VStem: 284 152<596.658 690.664> 324 93<117.411 327.292> 333 87<-96.0669 218.22 222.113 262.733 265.262 370.993>
+HStem: -275 98<69.4731 223.663> 363 101<85.8517 136 136.023 310> 577 159<296.75 421.285>
+VStem: 266 188<608.615 705.924> 306 126<-10.1354 362.997> 316 122<-93.2949 269.929>
 AnchorPoint: "bottom" 254 0 basechar 0
 AnchorPoint: "top" 254 765 basechar 0
 LayerCount: 2
 Fore
-Refer: 15 46 N 1 0 0 1 84 584 2
+Refer: 15 46 N 1 0 0 1 84 598 2
 Refer: 277 567 N 1 0 0 1 0 0 2
 Substitution2: "marks_dotless_single" dotlessj
 EndChar
@@ -8961,8 +8961,8 @@ Encoding: 303 303 211
 Width: 550
 GlyphClass: 2
 Flags: W
-HStem: -271 97<309 376.722> -23 95<55.2886 234 367.396 504.045> 371 90<88.1605 135 135.033 236> 563 159<215.75 340.285>
-VStem: 185 188<594.615 691.924> 234 125<72 373>
+HStem: -271 97<309 376.722> -23 95<55.2886 234 367.396 504.045> 371 90<88.1605 135 135.033 236> 577 159<215.75 340.285>
+VStem: 185 188<608.615 705.924> 234 125<72 373>
 AnchorPoint: "bottom" 281 0 basechar 0
 AnchorPoint: "top" 281 765 basechar 0
 LayerCount: 2
@@ -9017,7 +9017,7 @@ SplineSet
  192 -103 210 -80 231 -59 c 0
  239 -50 241 -47 270 -21 c 1xf4
 EndSplineSet
-Refer: 15 46 N 1 0 0 1 3 584 2
+Refer: 15 46 N 1 0 0 1 3 598 2
 Ligature2: "marks_compose" i uni0328
 EndChar
 

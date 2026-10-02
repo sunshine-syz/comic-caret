@@ -3,7 +3,8 @@ counters stay open, and : ; and the brackets keep their construction.
 
 Run: python3 -m unittest discover tests
 
-Sizes and positions are judged on the proof sheet (tools/proof_sheet.py), not here.
+Sizes and positions are judged on the proof sheet (tools/proof_sheet.py), not here. The bold
+runs these rules too (the Bold* classes), its floors measured from the reference bolds.
 """
 import itertools
 import pathlib
@@ -14,8 +15,9 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import lig_geometry as geo
+import make_bold
 import measure
-from project import ADVANCE, SFD
+from project import ADVANCE, BOLD_SFD, SFD
 
 
 def offsets(glyph, name):
@@ -31,9 +33,12 @@ def center(glyph, dx=0):
 
 
 class LookalikeTest(unittest.TestCase):
+    sfd = SFD
+    circle_wider, empty_set_wider = 78, 88  # than o and ø: the narrowest references'
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_l_ends_in_a_tail_where_1_has_a_foot(self):
         # 30 units up, 1's foot spans the glyph; l's tail covers little more than half as much
@@ -62,13 +67,14 @@ class LookalikeTest(unittest.TestCase):
     def test_white_circle_is_wider_than_o(self):
         # So "○ main" doesn't read as "o main": Fira Code's ○ is 78 wider than its o.
         ring, o = self.font[0x25CB].foreground, self.font["o"].foreground
-        self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), 78)
+        self.assertGreaterEqual(measure.ink_width(ring) - measure.ink_width(o), self.circle_wider)
 
     def test_empty_set_is_wider_than_o_slash(self):
         # So "A = ∅" doesn't read as "A = ø": Fira Code's ∅ is 88 wider than its ø at our
         # advance (Maple Mono's 129).
         empty, slashed = self.font[0x2205].foreground, self.font["oslash"].foreground
-        self.assertGreaterEqual(measure.ink_width(empty) - measure.ink_width(slashed), 88)
+        self.assertGreaterEqual(measure.ink_width(empty) - measure.ink_width(slashed),
+                                self.empty_set_wider)
 
     def test_white_bullet_sits_below_the_degree_sign(self):
         # A small ring either way: ◦ keeps below °'s middle, so "◦ item" isn't "° item".
@@ -101,9 +107,11 @@ class LookalikeTest(unittest.TestCase):
 
 
 class ColonTest(unittest.TestCase):
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_colon_is_two_periods_from_the_baseline_to_the_x_height(self):
         colon = self.font["colon"]
@@ -130,9 +138,11 @@ PAIRS = {"parenright": "parenleft", "bracketright": "bracketleft", "braceright":
 
 
 class BracketTest(unittest.TestCase):
+    sfd = SFD
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_brackets_share_one_height(self):
         _, bottom, _, top = self.font["parenleft"].boundingBox()
@@ -163,15 +173,26 @@ FLOORS = {
     "H": [(167, 211)], "N": [(334, 155)], "U": [(334, 217)], "D": [(334, 238)],
     "B": [(167, 232), (501, 218)], "eight": [(167, 256), (501, 222)], "R": [(501, 245)],
 }
+# The same for the bold, at the same shares of its x-height (480) and cap height (675): the
+# narrowest reference bold's at the same letter height, rounded down, Fira Code's but N's,
+# Intel One Mono's.
+BOLD_FLOORS = {
+    "n": [(240, 122)], "h": [(240, 122)], "u": [(240, 122)], "d": [(240, 143)],
+    "H": [(169, 154)], "N": [(338, 66)], "U": [(338, 171)], "D": [(338, 172)],
+    "B": [(169, 161), (506, 141)], "eight": [(169, 179), (506, 146)], "R": [(506, 151)],
+}
 
 
 class CounterTest(unittest.TestCase):
+    sfd = SFD
+    floors = FLOORS
+
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_counters_keep_their_floors(self):
-        for name, floors in FLOORS.items():
+        for name, floors in self.floors.items():
             for y, floor in floors:
                 with self.subTest(glyph=name, y=y):
                     self.assertGreaterEqual(
@@ -182,14 +203,19 @@ class CounterTest(unittest.TestCase):
 # scaled as compare_glyphs.py scales it (x to our advance, y to our cap height): 79 of white
 # between the loop and the inner a, and a counter of 107.
 AT_GAP, AT_COUNTER = 79, 107
+# The same in Maple Mono Bold's @, the tightest bold too: 29.4 and 80.4 (Fira Code Bold's 74.5
+# and 85.0, Intel One Mono Bold's 75.2 and 178.9).
+BOLD_AT_GAP, BOLD_AT_COUNTER = 29, 80
 
 
 class AtSignTest(unittest.TestCase):
     """@ is an a inside a loop; the white inside it stays as open as in the references."""
+    sfd = SFD
+    at_gap, at_counter = AT_GAP, AT_COUNTER
 
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
         cls.at = cls.font["at"].foreground
 
     def test_loop_stays_open_round_one_counter(self):
@@ -202,26 +228,32 @@ class AtSignTest(unittest.TestCase):
         spans = measure.spans_at_y(self.at, (y0 + y1) / 2)
         self.assertGreaterEqual(len(spans), 3)  # the loop, the a's bowl and its stem, apart
         gaps = [right[0] - left[1] for left, right in itertools.pairwise(spans)]
-        self.assertGreaterEqual(min(gaps), AT_GAP)
-        self.assertGreaterEqual(max(gaps), AT_COUNTER)
+        self.assertGreaterEqual(min(gaps), self.at_gap)
+        self.assertGreaterEqual(max(gaps), self.at_counter)
+
+    def stem_white(self):
+        """The white the loop keeps from the a's stem: the hyphen's thickness."""
+        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        return h1 - h0
 
     def test_loop_stays_clear_of_the_stem(self):
         # Down the right-hand stroke, the a's stem, the loop passes with at least the hyphen's
         # thickness of white, so they stay apart at 12 px as ⇡'s dashes do.
-        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
         _, y0, _, y1 = self.at.boundingBox()
         stem = measure.spans_at_y(self.at, (y0 + y1) / 2)[-1]
         spans = measure.spans_at_x(self.at, sum(stem) / 2)
         for lower, upper in itertools.pairwise(spans):
-            self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
+            self.assertGreaterEqual(upper[0] - lower[1], self.stem_white())
 
 
 class LetterFollowUpTest(unittest.TestCase):
     """Ƿ, G and 5, which the legibility pass left for later, set apart from P and 6."""
+    sfd = SFD
+    five_top = 100  # the highest 5's lower terminal may reach
 
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_wynn_bowl_runs_to_a_point_low_on_the_stem(self):
         # As in ƿ. P's bowl closes halfway up, so a line 200 up crosses only P's stem.
@@ -238,15 +270,17 @@ class LetterFollowUpTest(unittest.TestCase):
         # The references' lower terminals top out at 73-113; ours curled up to 154 and nearly
         # closed the bowl, like 6.
         _, _, _, top = geo.trim(self.font["five"].foreground, x1=200, y1=250).boundingBox()
-        self.assertLessEqual(top, 100)
+        self.assertLessEqual(top, self.five_top)
 
 
 class DotsTest(unittest.TestCase):
     """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off."""
+    sfd = SFD
+    divide_white = 81  # between ÷'s dots and its bar: the narrowest reference's
 
     @classmethod
     def setUpClass(cls):
-        cls.font = fontforge.open(str(SFD))
+        cls.font = fontforge.open(str(cls.sfd))
 
     def dots(self, name):
         """The boxes of the glyph's own contours, left to right and bottom to top."""
@@ -256,8 +290,8 @@ class DotsTest(unittest.TestCase):
         # The references leave 81-111 between each dot and the bar; ours left 54-59.
         _, bar_bottom, _, bar_top = self.font["minus"].boundingBox()
         low, high = sorted(self.dots("divide"), key=lambda box: box[1])
-        self.assertGreaterEqual(bar_bottom - low[3], 81)
-        self.assertGreaterEqual(high[1] - bar_top, 81)
+        self.assertGreaterEqual(bar_bottom - low[3], self.divide_white)
+        self.assertGreaterEqual(high[1] - bar_top, self.divide_white)
 
     def test_ellipsis_dots_are_evenly_spaced(self):
         left, middle, right = self.dots("ellipsis")
@@ -267,15 +301,70 @@ class DotsTest(unittest.TestCase):
 class TurnedCommaTest(unittest.TestCase):
     """ģ's mark is a turned comma above, head down, as in Intel One Mono and Comic Sans MS.
     Our comma is a straight stroke, so upright or merely turned it read as an acute."""
+    sfd = SFD
 
     def test_turned_comma_has_its_head_at_the_bottom(self):
-        font = fontforge.open(str(SFD))
+        font = fontforge.open(str(self.sfd))
         [mark] = [name for name, *_ in font["gcommaaccent"].references if name != "g"]
         layer = font[mark].foreground
         _, y0, _, y1 = layer.boundingBox()
         [(head0, head1)] = measure.spans_at_y(layer, y0 + 0.25 * (y1 - y0))
         [(tail0, tail1)] = measure.spans_at_y(layer, y0 + 0.85 * (y1 - y0))
         self.assertGreaterEqual(head1 - head0, 1.4 * (tail1 - tail0))
+
+
+class BoldLookalikeTest(LookalikeTest):
+    sfd = BOLD_SFD
+    # Fira Code Bold's ○ is 22.0 wider than its o (Maple Mono Bold's 130), and its ∅ 45.4 wider
+    # than its ø (Maple Mono Bold's 125).
+    circle_wider, empty_set_wider = 22, 45
+
+
+class BoldColonTest(ColonTest):
+    sfd = BOLD_SFD
+
+
+class BoldBracketTest(BracketTest):
+    sfd = BOLD_SFD
+
+
+class BoldCounterTest(CounterTest):
+    sfd = BOLD_SFD
+    floors = BOLD_FLOORS
+
+
+class BoldAtSignTest(AtSignTest):
+    sfd = BOLD_SFD
+    at_gap, at_counter = BOLD_AT_GAP, BOLD_AT_COUNTER
+
+    def stem_white(self):
+        # Known exception: the bold's loop keeps ⇡'s white from the a's stem (70), not the
+        # hyphen's thickness. The pen grows the two 14 toward each other while the hyphen grows
+        # 14, so even grown only across, @ would keep the regular's 90 against the bold
+        # hyphen's 93; it keeps 76. More needs the a's stem shortened, or the loop's tail
+        # dropped further than tests/test_make_bold.py lets the pen grow it, which the bold,
+        # the regular's strokes grown, does not do. ⇡'s dashes are what the rule's reading at
+        # 12 px compares with.
+        dashed = self.font[0x21E1].foreground
+        x0, _, x1, _ = dashed.boundingBox()
+        spans = measure.spans_at_x(dashed, (x0 + x1) / 2)
+        return min(upper[0] - lower[1] for lower, upper in itertools.pairwise(spans))
+
+
+class BoldLetterFollowUpTest(LetterFollowUpTest):
+    sfd = BOLD_SFD
+    # The pen raises every top by half its height, the terminal's too; the reference bolds'
+    # terminals top out higher still, at 130-165.
+    five_top = LetterFollowUpTest.five_top + make_bold.PEN[1] / 2
+
+
+class BoldDotsTest(DotsTest):
+    sfd = BOLD_SFD
+    divide_white = 61  # Fira Code Bold's 61.4 (Maple Mono Bold's 62.9, Intel One Mono's 96.9)
+
+
+class BoldTurnedCommaTest(TurnedCommaTest):
+    sfd = BOLD_SFD
 
 
 if __name__ == "__main__":

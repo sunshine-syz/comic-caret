@@ -51,7 +51,7 @@ own (MERGED). A left glyph the regular draws as its right one mirrored is the bo
 mirrored (mirror_pairs()).
 
 Where the pen grows two parts into each other, one moves clear, just far enough to keep the
-regular's gap (APART: ª º's bar, the tonos beside a capital); each is condensed
+regular's gap (APART: i j's dot, ª º's bar, the tonos beside a capital); each is condensed
 to keep its own box (OWN_BOX); of an outline's pieces, the wider is condensed away from the
 other (PIECES_APART: ⇥'s arrow from its bar, ‰'s zeros from each other), and ‰'s slash
 shortened at its foot (SLASHES); or, in one outline, Ħ's upper bar moves up its stems
@@ -143,13 +143,15 @@ RAISED = ("Hbar",)
 # below its tonos, which lower_into_line() takes down into the line box and the turned pen
 # grows into the dieresis. With no room above, ΐ ΰ's dieresis then sits 29 below ϊ ϋ's, a row
 # break that letters as rare as these may take (tests/test_make_bold.py names it).
-# The bar of ª º moves down, clear of the letter its round pen grows it into.
-RIGHT, LEFT, DOWN = (1, 0), (-1, 0), (0, -1)
+# The dots of i j rise, so they stay as far above the stem as the regular's, and the bar of
+# ª º moves down, clear of the letter its round pen grows it into.
+RIGHT, LEFT, UP, DOWN = (1, 0), (-1, 0), (0, 1), (0, -1)
 APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
          "lcaron": ("caron.alt", RIGHT), "Lcaron": ("caron.alt", RIGHT),
          **dict.fromkeys(("Alphatonos", "Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos",
                           "Upsilontonos", "Omegatonos"), ("tonos", LEFT)),
          "dieresistonos": ("dieresis", DOWN),
+         **dict.fromkeys(("i", "iogonek", "j"), ("period", UP)),
          **dict.fromkeys(("ordfeminine", "ordmasculine"), ("bar.ordinal", DOWN))}
 
 # The outlines condensed to keep their own regular box, so the pen grows them no closer to
@@ -533,8 +535,9 @@ def shifted(moves):
 
 
 def parted(font, glyph, part):
-    """(the part's ink, the other parts' ink), each where the glyph places it."""
-    mine, rest = fontforge.layer(), fontforge.layer()
+    """(the part's ink, the ink of the glyph's own outline and its other parts), each where the
+    glyph places it."""
+    mine, rest = fontforge.layer(), glyph.foreground.dup()
     for (name, *_), layer in zip(glyph.references, placed(font, glyph), strict=True):
         if name == part:
             mine += layer
