@@ -30,10 +30,10 @@ from project import ADVANCE, AXIS, ROUNDING, SFD, WOBBLE, is_letter, is_mark
 ROWS = {
     "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞØĐĲĿꝚabcdefhiklmnorstuvwxzıĸß0123456789"
                   "¼½¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞æœðøđħŀłŧſꝛ"
-                  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ"), 1),
+                  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ❯❮❰❱"), 1),
     "x-height": ("acemnoqrsuvwxzıĸµŋæœøȷꝛαγεηικνοπρσςτυφχψω", 3),
     "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁĦŦŊǷẞØĐĲĿꝚ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
-                    "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱"), 3),
+                    "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱❯❮❰❱"), 3),
     "ascender": ("bdfhklßþðđħŀłſβδζθλξℓ", 3),
     "descender": ("gjpqyþµŋŊƒĳȷƿ¶βγζηξρςφχψϗ", 1),
     "superscript": ("¹²³⁰⁴⁵⁶⁷⁸⁹", 3),
@@ -55,14 +55,14 @@ OFF_ROW = {
 # which the reference fonts center by their ink box.
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%…/\\()[]{}╳•°₩₦№"
             "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
-            "✕✖✘⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
+            "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪"
             "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼⣿"
             "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ")
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
-           "✕✖❯❮➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
-           "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫❰❱⌘⌥⇧⌫⌦⎋⏎↹⇥⇤⇦⇨⇩"
+           "✕✖➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
+           "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫⌘⌥⇧⌫⌦⎋⏎↹⇥⇤⇦⇨⇩"
            "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙–—∞")
 # The <= >= ligatures, by glyph name: centred on the axis like ≤ ≥, as the references' are.
 ON_AXIS_GLYPHS = ("less_equal.liga", "greater_equal.liga")

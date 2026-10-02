@@ -46,9 +46,14 @@ SHORT_MARKS = {}
 # Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
 # head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
 # another arrow than its → too; it stands where → does (BuiltFromTest).
-HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕", "❯": ">"}
+HEAVY = {"✔": "✓", "✘": "✗", "✖": "✕"}
 # The lightest of Maple Mono's ✔ ✘ ❯ against ✓ ✗ > (1.72, 1.70, 1.46).
 HEAVY_INK = 1.45
+# Mark -> (the lighter glyph, how many times its ink the mark carries at least). ❯ is no heavy
+# >, but the tall ornament JetBrains Mono, Cascadia Code and Maple Mono draw (its rows are in
+# test_consistency); like theirs, it still carries more ink than >: at least the lightest's,
+# Cascadia Code's 1.39 times (Maple Mono's 1.46, JetBrains Mono's 1.70).
+HEAVIER = {**{heavy: (light, HEAVY_INK) for heavy, light in HEAVY.items()}, "❯": (">", 1.39)}
 # •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
 # hand's wobble.
 BULLET_WIDTH = 220 - WOBBLE
@@ -430,7 +435,7 @@ class ShapeTest(unittest.TestCase):
 
 
 class HeavyMarkTest(unittest.TestCase):
-    """✔ ✘ ✖ ❯ ➜ are ✓ ✗ ✕ > → drawn heavier, so each pair differs only in weight."""
+    """✔ ✘ ✖ are ✓ ✗ ✕ drawn heavier, so each pair differs only in weight."""
 
     @classmethod
     def setUpClass(cls):
@@ -448,10 +453,10 @@ class HeavyMarkTest(unittest.TestCase):
                 self.assertAlmostEqual((i0 + i1) / 2, (m0 + m1) / 2, delta=WOBBLE)
 
     def test_heavy_marks_carry_more_ink(self):
-        for heavy, light in HEAVY.items():
+        for heavy, (light, floor) in HEAVIER.items():
             with self.subTest(mark=heavy):
                 ratio = measure.area(self.ink(heavy)) / measure.area(self.ink(light))
-                self.assertGreaterEqual(ratio, HEAVY_INK)
+                self.assertGreaterEqual(ratio, floor)
 
 
 class ApartTest(unittest.TestCase):

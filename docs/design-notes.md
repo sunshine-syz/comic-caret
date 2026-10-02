@@ -32,9 +32,20 @@ them. The exceptions:
 
 ## Heavy marks and shapes
 
-- Heavy marks (✔ ✘ ✖ ❯ ➜) are their light glyph (✓ ✗ ✕ > →) pushed out 23 on every side,
-  then squeezed at the ends to stay 20 inside the cell; ❰ ❱ are two hyphen strokes pushed out
-  the same, and ⏸'s bars are `|` pushed out 40, to weigh as much as ⏵ ⏺.
+- Heavy marks (✔ ✘ ✖) are their light glyph (✓ ✗ ✕) pushed out 23 on every side,
+  then squeezed at the ends to stay 20 inside the cell; ⏸'s bars are `|` pushed out 40, to
+  weigh as much as ⏵ ⏺.
+- ❯ ❮ are no heavy `>` but the tall angle ornament that every coding font drawing them
+  (JetBrains Mono, Cascadia Code, Maple Mono, DejaVu Sans Mono, Menlo, Iosevka) draws: `>`
+  with its arms lengthened and each turned 25° steeper, pushed out 23, standing on the
+  baseline as tall as the capitals. The arms turn about the centre of the point's round end,
+  since turned about the tip it splits into two bumps, and each arm takes its own length, as
+  the hand-drawn arms differ, so the point stays at mid-height. ❯ is 0.78 as wide as `>` and
+  carries 1.43 times its ink, between Cascadia Code's 1.39 and Maple Mono's 1.46.
+- ❰ ❱ are built the same way, turned 15° and pushed out 50: as tall as ❯, 1.36 times as wide
+  and 1.46 times its ink, so Rich's traceback marker stays apart from the prompt, as in the
+  fonts that draw them apart (DejaVu Sans Mono's ❱ 1.39 times its ❯'s ink, JetBrains Mono's
+  and Maple Mono's 1.50).
 - No symbol comes closer to the cell's edges than ● (15), so two side by side don't touch;
   `tests/test_symbols.py` lists the exceptions.
 - Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white shapes are

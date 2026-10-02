@@ -81,13 +81,13 @@ class LookalikeTest(unittest.TestCase):
         self.assertGreaterEqual(self.font[ord("⎿")].boundingBox()[3],
                                 self.font["bar"].boundingBox()[3])
 
-    def test_bracket_ornament_is_taller_and_narrower_than_the_quote_ornament(self):
-        # ❱ against the prompt's ❯: at least as far apart in height as ✗ and × (MarkTest in
-        # test_symbols.py), and narrower, so its arms stand steeper.
-        b0, c0, b1, c1 = self.font[ord("❱")].boundingBox()
-        q0, r0, q1, r1 = self.font[ord("❯")].boundingBox()
-        self.assertGreaterEqual((c1 - c0) - (r1 - r0), 100)
-        self.assertLess(b1 - b0, q1 - q0)
+    def test_bracket_ornament_is_wider_and_heavier_than_the_quote_ornament(self):
+        # ❱ against the prompt's ❯, both tall angles: as in every surveyed font that draws them
+        # apart (all but Cascadia Code), ❱ is wider and carries more ink, at least DejaVu Sans
+        # Mono's 1.39 times ❯'s (JetBrains Mono's and Maple Mono's 1.50).
+        bracket, quote = (measure.ink(self.font, self.font[ord(c)].glyphname) for c in "❱❯")
+        self.assertGreater(measure.ink_width(bracket), measure.ink_width(quote))
+        self.assertGreaterEqual(measure.area(bracket) / measure.area(quote), 1.39)
 
     def test_lozenge_is_a_tall_diamond_where_the_white_diamond_is_square(self):
         # Scaled to our advance and cap height, the references draw ◊ 1.48 (Maple Mono) and
