@@ -170,14 +170,17 @@ in `build/cache/reference/bold/`:
   enough, so every stem still grows by the full pen. A composite whose part would pass its
   bound moves its references in toward the cell's centre instead.
 - **Composites** keep their references, so an accented letter follows its base; a glyph with
-  an outline and references has only its outline grown. Two kinds of part are unlinked first,
-  as in the italic: a shared glyph's bolder part (∙ on the period) keeps the regular's
-  outline, and a bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as
-  its own outline, since the reference would turn or scale the pen too. A left glyph the
-  regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one mirrored, so the
-  two stay exact mirrors. An accent the pen grows out of the line box moves down into it (ĥ's
-  circumflex). A mark the pen grows within `MARK_CLEARANCE` of its letter rises clear, as far
-  on every letter where it stands as high, so a row of them stays level.
+  an outline and references has only its outline grown. Three kinds of part are unlinked
+  first. A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
+  italic. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its
+  own outline, since the reference would turn or scale the pen too. A letter that a symbol
+  holds unmoved (∆'s Δ, ₫'s đ) grows as the symbol's own outline, condensed to the symbol's
+  side room, so the letter itself keeps its full width: a letter outranks a rare symbol's
+  reference. A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold
+  right one mirrored, so the two stay exact mirrors. An accent the pen grows out of the line
+  box moves down into it (ĥ's circumflex). A mark the pen grows within `MARK_CLEARANCE` of its
+  letter rises clear, as far on every letter where it stands as high, so a row of them stays
+  level.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:

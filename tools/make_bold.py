@@ -52,10 +52,12 @@ cell's centre instead. © ®'s ring, condensed, would grow lighter than its lett
 ring and the letter scale together about the ring's middle (SCALED).
 
 A composite keeps its references, so an accented letter follows its base; a glyph with an
-outline and references has only its outline offset. Two kinds of part are unlinked first, as
-in the italic: a shared glyph's bolder part (∙ on the period) keeps the regular's outline, and
+outline and references has only its outline offset. Three kinds of part are unlinked first:
+a shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the italic;
 a bolder glyph's part turned a quarter (⋮ on …) grows as its outline, since the reference
-would turn the pen too. Θ and ∀ are drawn as one outline, each part grown on its own
+would turn the pen too; and a letter a symbol holds unmoved (∆'s Δ, ₫'s đ) grows condensed to
+the symbol's side room, so the letter itself keeps the cell. Θ and ∀ are drawn as one
+outline, each part grown on its own
 (MERGED). ⇕, ⇔ turned, grows as it stands, across only by the pen's height (ACROSS_AS_UP).
 A left glyph the regular draws as its right one mirrored is the bold right one mirrored
 (mirror_pairs()).
@@ -389,8 +391,9 @@ def side_bounds(font, classes):
     cell, or to the regular's own overhang (ď, the tonos capitals). Any other glyph keeps the
     side room the regular gives it, down to ●'s, so two side by side stay as far apart as ●●
     (tests/test_symbols.py). A part a bolder glyph holds unmoved can't move in toward the
-    cell's middle, so it keeps that glyph's bound too: ∆'s Δ, ₫'s đ, © ®'s ring. A shared
-    glyph doesn't grow, so it binds no part."""
+    cell's middle, so it keeps that glyph's bound too: © ®'s ring. A part the bold draws as
+    the glyph's own outline (unlinked_parts()), as ∆'s Δ, and a shared glyph's part, which
+    doesn't grow, keep their own."""
     side = bullet_side(font)
     bounds = {}
     for glyph in font.glyphs():
@@ -403,8 +406,9 @@ def side_bounds(font, classes):
         bound = bounds.get(glyph.glyphname)
         if bound is None or classes[glyph.glyphname] == SHARED:
             continue
+        unlinked = unlinked_parts(glyph, classes)
         for name, matrix, *_ in glyph.references:
-            if tuple(matrix) == psMat.identity():
+            if tuple(matrix) == psMat.identity() and name not in unlinked:
                 x0, x1 = bounds.get(name, (-geo.FAR, geo.FAR))
                 bounds[name] = (max(x0, bound[0]), min(x1, bound[1]))
     return bounds
@@ -432,13 +436,18 @@ def unlinked_parts(glyph, classes):
     """The glyph's references the bold draws as its own outline: a shared glyph's bolder parts,
     which keep the regular's outline; a bolder glyph's bolder parts turned a quarter (⋮ on …)
     or scaled, which grow as its outline, since the reference would turn or scale the pen too;
-    and every part of a MERGED glyph."""
+    a symbol's letter or figure that it holds unmoved (∆'s Δ, ₫'s đ), which grows condensed to
+    the symbol's side room, so the letter itself keeps the cell; and every part of a MERGED
+    glyph."""
     if glyph.glyphname in MERGED:
         return [name for name, *_ in glyph.references]
+    symbol = glyph.unicode >= 0 and not is_alphanumeric(glyph.unicode)
     # A translation, a 180° turn or a mirror keeps the pen as it is.
     return [name for name, matrix, *_ in glyph.references if classes[name] == BOLDER
             and (classes[glyph.glyphname] == SHARED
-                 or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1))]
+                 or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1)
+                 or (symbol and tuple(matrix) == psMat.identity()
+                     and is_alphanumeric(glyph.font[name].unicode)))]
 
 
 def scale_together(font, name, bound, pen):

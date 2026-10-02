@@ -29,9 +29,6 @@ THROUGH_PIECES = ("hyphen.mid", "equal.mid", "greater.shaft", "less.shaft", "uni
 # the tonos that the turned pen grows into it, as there is no room above the line box. ΐ ΰ,
 # built on ΅, are rare enough that their dieresis may sit that far below ϊ ϋ's.
 MOVED_FURTHER = {("dieresistonos", "dieresis")}
-# Known exceptions to a letter's bound being the cell: ∆ and ₫, symbols, hold Δ and đ where
-# they stand, so the two keep the symbols' side room (make_bold.side_bounds()).
-HELD_BY_SYMBOLS = {"uni0394": "∆", "dcroat": "₫"}
 # Known exceptions to an outline keeping the regular's counters: the pen is wider than the
 # narrow wedges of ₦ (39 and 47 wide in the regular) and of ₩'s V's (24 to 29), and shuts them;
 # ₩'s white between its bars narrows from 53-57 to 13-17. Maple Mono Bold's close as far: ₩'s to
@@ -199,7 +196,7 @@ class BoldTest(unittest.TestCase):
         for name in self.of_class(BOLDER):
             glyph = self.regular[name]
             if (not is_alphanumeric(glyph.unicode) or glyph.references
-                    or not len(glyph.foreground) or name in HELD_BY_SYMBOLS):
+                    or not len(glyph.foreground)):
                 continue
             x0, _, x1, _ = glyph.foreground.boundingBox()
             b0, _, b1, _ = self.bold[name].foreground.boundingBox()

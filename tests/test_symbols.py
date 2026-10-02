@@ -522,6 +522,7 @@ class BuiltFromTest(unittest.TestCase):
     sfd = SFD
     doubles, exclamation_dots, fisheye_gap = DOUBLES, EXCLAMATION_DOTS, FISHEYE_GAP
     turned_outlines = ""  # the glyphs of TURNED drawn as an outline instead: none
+    same_outlines = ""  # the glyphs drawn as the shape they share, as an outline instead: none
 
     @classmethod
     def setUpClass(cls):
@@ -603,6 +604,11 @@ class BuiltFromTest(unittest.TestCase):
         for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ"), ("ʼ", "’"),
                            ("ʻ", "‘"), ("ʺ", "″")):
             with self.subTest(glyph=char):
+                if char in self.same_outlines:
+                    glyph = self.font[ord(char)]
+                    self.assertEqual((len(glyph.references), bool(len(glyph.foreground))),
+                                     (0, True))
+                    continue
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(matrix, psMat.identity())
@@ -876,18 +882,23 @@ class CurrencyTest(unittest.TestCase):
         self.assertGreaterEqual(y1 - c1, self.cent_reach)
         self.assertGreaterEqual(c0 - y0, self.cent_reach)
 
-    def test_dong_is_the_letter_over_the_em_dash(self):
-        # The em dash only moved, to lie under the letter, clear of it.
+    def dong_parts(self):
+        """(₫'s đ where ₫ places it, the matrix of its reference to the em dash): ₫ is the two
+        references, đ unmoved."""
         glyph = self.font[ord("₫")]
         self.assertEqual(len(glyph.foreground), 0)
         refs = {name: matrix for name, matrix, *_ in glyph.references}
-        letter, dash = self.font[ord("đ")], self.font[ord("—")]
-        self.assertEqual(set(refs), {letter.glyphname, dash.glyphname})
-        self.assertEqual(refs[letter.glyphname], psMat.identity())
-        self.assertEqual(linear(refs[dash.glyphname]), linear(psMat.identity()))
-        _, letter_bottom, _, _ = letter.boundingBox()
-        _, _, _, dash_top = geo.transformed(dash.foreground, refs[dash.glyphname]).boundingBox()
-        self.assertLess(dash_top, letter_bottom)
+        letter, dash = self.font[ord("đ")].glyphname, self.font[ord("—")].glyphname
+        self.assertEqual(set(refs), {letter, dash})
+        self.assertEqual(refs[letter], psMat.identity())
+        return measure.ink(self.font, letter), refs[dash]
+
+    def test_dong_is_the_letter_over_the_em_dash(self):
+        # The em dash only moved, to lie under the letter, clear of it.
+        letter, matrix = self.dong_parts()
+        self.assertEqual(linear(matrix), linear(psMat.identity()))
+        dash = geo.transformed(measure.ink(self.font, self.font[ord("—")].glyphname), matrix)
+        self.assertLess(dash.boundingBox()[3], letter.boundingBox()[1])
 
     def test_lira_bars_cross_the_stem(self):
         # Two bars left of t's stem, where nothing else of t is, and no sliver of its crossbar
@@ -963,6 +974,10 @@ class BoldBuiltFromTest(BuiltFromTest):
     # grow ⋮'s dots and ⇦ ⇨'s strokes tall rather than wide, past what tests/test_make_bold.py
     # lets the pen grow a glyph; the bold draws them as outlines (make_bold.unlinked_parts()).
     turned_outlines = "⋮⇦⇨"
+    # Known exception: ∆ keeps ●'s side room, where the bold Δ, a letter, grows to the cell. A
+    # letter's width outranks a rare symbol's reference, so the bold draws ∆ as Δ's outline
+    # condensed (make_bold.unlinked_parts()).
+    same_outlines = "∆"
 
     def fisheye_parts(self):
         # Known exception: the bold shares ◉ with the regular, a picture, while • grows with
@@ -985,6 +1000,15 @@ class BoldKeyHintTest(KeyHintTest):
 class BoldCurrencyTest(CurrencyTest):
     sfd = BOLD_SFD
     cent_reach = BOLD_CENT_REACH
+
+    def dong_parts(self):
+        # Known exception: ₫ keeps ●'s side room, where the bold đ, a letter, grows to the cell.
+        # A letter's width outranks a rare symbol's reference, so the bold draws ₫'s đ as its
+        # own outline, condensed (make_bold.unlinked_parts()), over the em dash.
+        glyph = self.font[ord("₫")]
+        [(name, matrix, *_)] = glyph.references
+        self.assertEqual(name, self.font[ord("—")].glyphname)
+        return glyph.foreground, matrix
 
 
 if __name__ == "__main__":
