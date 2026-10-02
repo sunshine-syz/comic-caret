@@ -1,5 +1,6 @@
 """The legibility pass's rules, checked on the SFD with FontForge: look-alikes stay apart,
-counters stay open, and : ; and the brackets keep their construction.
+counters stay open, : ; and the brackets keep their construction, and the glyphs widened for
+the 600 cell stay as wide as the references.
 
 Run: python3 -m unittest discover tests
 
@@ -21,7 +22,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import lig_geometry as geo
 import make_bold
 import measure
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE
 
 
 def offsets(glyph, name):
@@ -208,6 +209,32 @@ class CounterTest(unittest.TestCase):
                         round(measure.counter(self.font[name].foreground, y)), floor)
 
 
+# (floor, ceiling) of each glyph widened for the 600 cell: the narrowest and widest ink width of
+# Fira Code, Maple Mono and Intel One Mono, x scaled to our cell, rounded.
+WIDTHS = {"w": (515, 565), "W": (510, 591)}
+# The same from the five reference bolds: Fira Code, Maple Mono, Intel One Mono, Monaspace Neon
+# and Monaspace Radon.
+BOLD_WIDTHS = {"w": (530, 593), "W": (530, 606)}
+
+
+class WidthTest(unittest.TestCase):
+    """The glyphs the 550 cell squeezed are as wide as the references in the 600 cell."""
+    sfd = SFD
+    widths = WIDTHS
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_widened_glyphs_stay_within_the_references(self):
+        # Give or take the hand's wobble.
+        for char, (floor, ceiling) in self.widths.items():
+            x0, _, x1, _ = self.font[ord(char)].boundingBox()
+            with self.subTest(glyph=char):
+                self.assertGreaterEqual(x1 - x0, floor - WOBBLE)
+                self.assertLessEqual(x1 - x0, ceiling + WOBBLE)
+
+
 # Maple Mono 7.9's @, the tightest of the three references, across the middle of its ink box,
 # scaled as compare_glyphs.py scales it (x to our advance, y to our cap height): 86 of white
 # between the loop and the inner a, and a counter of 116.
@@ -346,6 +373,11 @@ class BoldBracketTest(BracketTest):
 class BoldCounterTest(CounterTest):
     sfd = BOLD_SFD
     floors = BOLD_FLOORS
+
+
+class BoldWidthTest(WidthTest):
+    sfd = BOLD_SFD
+    widths = BOLD_WIDTHS
 
 
 class BoldAtSignTest(AtSignTest):

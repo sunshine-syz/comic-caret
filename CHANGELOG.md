@@ -9,6 +9,7 @@
 - The bold's wide characters, such as @ # ∞ « » Æ œ K ✔ ➜, now keep their full width, where 1.7.0 condensed them to fit its cell.
 - The two copies of ″ “ ” „ stand 6 to 8 units further apart, and ‖'s 2 units. So the white between them stays at least the narrowest reference font's, measured at the wider cell.
 - ∅ is 6 units wider. So it stays at least as much wider than ø as Fira Code's, and "A = ∅" doesn't read as "A = ø".
+- `w` is 16 units wider, 515, and `W` 17 units wider, 510. Each outer arm turns out about the point where it meets the next arm, so every stroke keeps its weight. At the wider cell, both are now as wide as Intel One Mono's, the narrowest of Fira Code, Maple Mono and Intel One Mono. ŵ ẃ ẁ ẅ and Ŵ Ẃ Ẁ Ẅ follow them.
 
 ## 1.7.0 (2026-10)
 
