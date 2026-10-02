@@ -56,6 +56,8 @@ around. Read this before writing code that edits the SFD.
 - `removeOverlap()` mishandles edges that coincide exactly, and `layer.exclude()` returns the
   wrong region; cut with `layer.intersect()` against a box, and join two outlines along a flat
   edge they share with `geo.weld()` or `geo.weld_y()`, which splice the contours instead.
+- `glyph.round()` rounds each control point's offset from its point, and `layer.round()` the
+  control point itself, so the two can put it a unit apart.
 - `layer.addExtrema()` skips short segments that `validate()` still flags; pass `"all"`. It
   splits the curve at each extremum, so the segment's control points change; compare
   outlines by their on-curve points.

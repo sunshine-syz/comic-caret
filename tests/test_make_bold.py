@@ -18,7 +18,7 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
-from measure import area, bullet_side, ink, vertical_edges
+from measure import area, bullet_side, ink, outline, vertical_edges
 from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD, is_alphanumeric
 from sfd_files import differences
 
@@ -39,13 +39,6 @@ SHUT_COUNTERS = ("uni20A6", "uni20A9")
 # the pens grew the two toward each other, the round bar's reach up and ⇧'s down, past what
 # the pen grows ⇧ itself.
 LIFTED_FURTHER = ("uni21EA",)
-
-
-def points(layer):
-    """The outline's on-curve points on whole units, sorted, so two outlines compare whatever
-    their contours' order and starting points. A part scaled off the grid is rounded where the
-    bold unlinks it, as the build rounds it anyway."""
-    return sorted((round(p.x), round(p.y)) for contour in layer for p in contour if p.on_curve)
 
 
 class GeneratorTest(unittest.TestCase):
@@ -93,9 +86,26 @@ class BoldTest(unittest.TestCase):
         self.assertEqual(listed(self.bold), listed(self.regular))
 
     def test_shared_glyphs_keep_the_regulars_ink(self):
+        scratch_font = fontforge.font()
+        scratch = scratch_font.createChar(-1, "scratch")
+
+        def drawn(font, name):
+            # Rounded as the bold rounds a part it unlinks, scaled off the grid (◉'s dot): with
+            # a glyph's round(), which rounds a control point's offset from its point, not the
+            # control point itself (docs/fontforge-pitfalls.md).
+            scratch.foreground = ink(font, name)
+            scratch.round()
+            return outline(scratch.foreground)
         changed = [name for name in self.of_class(SHARED)
-                   if points(ink(self.bold, name)) != points(ink(self.regular, name))]
+                   if drawn(self.bold, name) != drawn(self.regular, name)]
         self.assertEqual(changed, [])
+
+    def test_anchors_carry_over(self):
+        # The marks' anchors place them in shaped text as the regular does; the bold moves none.
+        moved = {g.glyphname: (self.bold[g.glyphname].anchorPoints, g.anchorPoints)
+                 for g in self.regular.glyphs()
+                 if sorted(self.bold[g.glyphname].anchorPoints) != sorted(g.anchorPoints)}
+        self.assertEqual(moved, {})
 
     def test_bolder_glyphs_have_more_ink(self):
         thinner = {}

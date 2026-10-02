@@ -604,15 +604,16 @@ def fitted(name, outline, bound, scratch, pen, anchor=None):
     centre = (x0 + x1) / 2 if anchor is None else anchor
     span = max(x1 - centre, centre - x0)  # how far the further side lies from the centre
     taken = 0
-    # Rounding the condensed outline can leave a unit over, which a second pass takes in.
-    for _ in range(3):
+    # Rounding the condensed outline can leave a unit over, which another pass takes in.
+    for passes in itertools.count():
         bx0, _, bx1, _ = layer.boundingBox()
         if (excess := max(bound[0] - bx0, bx1 - bound[1])) <= 0:
             return layer
+        if passes == 3:
+            sys.exit(f"{name}: condensed three times, its ink still passes {bound}")
         taken += excess
         narrow = geo.transformed(outline, geo.about(psMat.scale(1 - taken / span, 1), centre, 0))
         layer = emboldened(name, narrow, scratch, pen)
-    sys.exit(f"{name}: condensed, its ink still passes {bound}")
 
 
 def least(clears, most):
@@ -947,6 +948,25 @@ def restart(glyph):
 def build(font):
     """Turn the regular, opened as `font`, into the bold."""
     classes = classify(font)
+    # Most name lists are read only with `in`, which passes a stale name or a glyph two ways
+    # claim unseen: each names bolder glyphs, the ways below grow a glyph only one way, and
+    # SLASHES and LIGHT_PIECES are read only inside pieces_apart().
+    for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "SCALED", "RAISED",
+                   "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
+                   "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
+                   "HEAVY"):
+        for name in globals()[listed]:
+            if classes.get(name) != BOLDER:
+                sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")
+    ways = {"PIECES_APART": PIECES_APART, "SHRUNK": SHRUNK, "OPENED": OPENED, "DASHED": DASHED,
+            "LIFTED": LIFTED, "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT":
+            RAISED + MERGED + OWN_BOX + ACROSS_AS_UP + BLUNT}
+    for (a, first), (b, second) in itertools.combinations(ways.items(), 2):
+        if both := sorted(set(first) & set(second)):
+            sys.exit(f"make_bold: {a} and {b} both name {both}")
+    for listed in ("SLASHES", "LIGHT_PIECES"):
+        if outside := sorted(set(globals()[listed]) - set(PIECES_APART)):
+            sys.exit(f"make_bold.{listed}: {outside} not in PIECES_APART")
     grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * bullet_side(font)
     # Read before anything changes: where each glyph's ink must stay (side_bounds()); where
     # the outline of each of OWN_BOX and ACROSS_AS_UP must, its own box; the gap each part
