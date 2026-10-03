@@ -34,6 +34,7 @@
   - Wide characters such as @ # ∞ « » Æ œ K ✔ ➜ keep their full width, where 1.7.0 condensed them to fit its cell.
   - ‰ is at least as wide as `%`.
   - The two heads of `->>` and `<<-` stand at least as far apart as Fira Code Bold's.
+  - A `~~~` run meets at every seam without a step. In 1.7.0, the crest's inner edge stepped 3 units where two pieces met.
 
 ## 1.7.0 (2026-10)
 
