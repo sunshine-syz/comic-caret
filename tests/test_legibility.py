@@ -210,26 +210,74 @@ class CounterTest(unittest.TestCase):
 
 
 # (floor, ceiling) of each glyph widened for the 600 cell: the narrowest and widest ink width of
-# Fira Code, Maple Mono and Intel One Mono, x scaled to our cell, rounded.
-WIDTHS = {"w": (515, 565), "W": (510, 591),
-          "o": (450, 475), "O": (474, 507), "0": (451, 474), "e": (442, 454),
-          "g": (430, 489), "a": (452, 496), "p": (426, 452), "3": (450, 450),
-          "c": (425, 464), "Q": (474, 547), "5": (432, 450),
-          "b": (430, 452), "d": (430, 452), "q": (426, 452),
-          "f": (460, 495), "t": (439, 485), "r": (420, 499), "T": (490, 520), "m": (490, 499),
-          "l": (444, 481), "-": (365, 450), "<": (425, 459), ">": (425, 459), "%": (543, 564),
-          "&": (517, 521), "?": (404, 461), '"': (273, 366), "+": (463, 470)}
+# Fira Code, Maple Mono and Intel One Mono, x scaled to our cell, rounded. The comment names the
+# font that sets each, floor first.
+WIDTHS = {
+    "w": (515, 565),  # Intel One Mono, Fira Code
+    "W": (510, 591),  # Intel One Mono, Fira Code
+    "o": (450, 475),  # Maple Mono, Intel One Mono
+    "O": (474, 507),  # Maple Mono, Fira Code
+    "0": (451, 474),  # Fira Code, Maple Mono
+    "e": (442, 454),  # Maple Mono, Intel One Mono
+    "g": (430, 489),  # Maple Mono, Fira Code
+    "a": (452, 496),  # Maple Mono, Intel One Mono
+    "p": (426, 452),  # Fira Code, Intel One Mono
+    "3": (450, 450),  # Intel One Mono, Fira Code
+    "c": (425, 464),  # Fira Code, Intel One Mono
+    "Q": (474, 547),  # Maple Mono, Fira Code
+    "5": (432, 450),  # Fira Code, Maple Mono
+    "b": (430, 452),  # Maple Mono, Intel One Mono
+    "d": (430, 452),  # Maple Mono, Intel One Mono
+    "q": (426, 452),  # Fira Code, Intel One Mono
+    "f": (460, 495),  # Fira Code, Maple Mono
+    "t": (439, 485),  # Fira Code, Maple Mono
+    "r": (420, 499),  # Maple Mono, Intel One Mono
+    "T": (490, 520),  # Maple Mono, Fira Code
+    "m": (490, 499),  # Maple Mono, Fira Code
+    "l": (444, 481),  # Fira Code, Maple Mono
+    "-": (365, 450),  # Intel One Mono, Maple Mono
+    "<": (425, 459),  # Fira Code, Intel One Mono
+    ">": (425, 459),  # Fira Code, Intel One Mono
+    "%": (543, 564),  # Maple Mono, Fira Code
+    "&": (517, 521),  # Maple Mono, Intel One Mono
+    "?": (404, 461),  # Maple Mono, Intel One Mono
+    '"': (273, 366),  # Fira Code, Intel One Mono
+    "+": (463, 470),  # Intel One Mono, Maple Mono
+}
 # The same from the five reference bolds: Fira Code, Maple Mono, Intel One Mono, Monaspace Neon
-# and Monaspace Radon.
-BOLD_WIDTHS = {"w": (530, 593), "W": (530, 606),
-               "o": (454, 516), "O": (500, 555), "0": (475, 520), "e": (463, 508),
-               "g": (473, 548), "a": (480, 537), "p": (476, 538), "3": (467, 512),
-               "c": (440, 506), "Q": (500, 602), "5": (465, 504),
-               "b": (476, 511), "d": (476, 531), "q": (476, 507),
-               "f": (488, 538), "t": (476, 509), "r": (462, 526), "T": (490, 561),
-               "m": (497, 547), "l": (460, 514), "-": (310, 478), "<": (435, 475),
-               ">": (435, 475), "%": (530, 592), "&": (527, 565), "?": (439, 482),
-               '"': (342, 429), "+": (406, 534)}
+# and Monaspace Radon, each comment naming the bolds that set the row.
+BOLD_WIDTHS = {
+    "w": (530, 593),  # Monaspace Radon, Fira Code
+    "W": (530, 606),  # Intel One Mono, Fira Code
+    "o": (454, 516),  # Monaspace Radon, Fira Code
+    "O": (500, 555),  # Maple Mono, Fira Code
+    "0": (475, 520),  # Intel One Mono, Monaspace Neon
+    "e": (463, 508),  # Maple Mono, Fira Code
+    "g": (473, 548),  # Maple Mono, Fira Code
+    "a": (480, 537),  # Maple Mono, Intel One Mono
+    "p": (476, 538),  # Maple Mono, Monaspace Radon
+    "3": (467, 512),  # Maple Mono, Fira Code
+    "c": (440, 506),  # Monaspace Radon, Monaspace Neon
+    "Q": (500, 602),  # Maple Mono, Fira Code
+    "5": (465, 504),  # Intel One Mono, Monaspace Neon
+    "b": (476, 511),  # Maple Mono, Monaspace Radon
+    "d": (476, 531),  # Maple Mono, Monaspace Radon
+    "q": (476, 507),  # Maple Mono, Monaspace Radon
+    "f": (488, 538),  # Intel One Mono, Monaspace Radon
+    "t": (476, 509),  # Monaspace Neon, Maple Mono
+    "r": (462, 526),  # Maple Mono, Monaspace Radon
+    "T": (490, 561),  # Monaspace Neon, Fira Code
+    "m": (497, 547),  # Monaspace Neon, Fira Code
+    "l": (460, 514),  # Monaspace Radon, Maple Mono
+    "-": (310, 478),  # Monaspace Neon, Maple Mono
+    "<": (435, 475),  # Monaspace Neon, Intel One Mono
+    ">": (435, 475),  # Monaspace Neon, Intel One Mono
+    "%": (530, 592),  # Monaspace Neon, Fira Code
+    "&": (527, 565),  # Intel One Mono, Monaspace Neon
+    "?": (439, 482),  # Maple Mono, Intel One Mono
+    '"': (342, 429),  # Fira Code, Intel One Mono
+    "+": (406, 534),  # Monaspace Radon, Fira Code
+}
 
 
 class WidthTest(unittest.TestCase):

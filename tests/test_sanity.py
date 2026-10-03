@@ -53,8 +53,8 @@ TONOS_CAPITALS = ("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos", "Upsi
 INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": OVERLAP,
                     **dict.fromkeys(TONOS_CAPITALS, TONOS_OVERHANG)}
 # The bold's tonos moves left, clear of the heavier capital, as far as the furthest reference
-# bold's goes: Fira Code's Ύ, 212 at our advance (Maple Mono's 153).
-BOLD_TONOS_OVERHANG = 212
+# bold's goes: Fira Code Bold's Ύ, 425 of its 1200 cell, at our advance (Maple Mono Bold's 153).
+BOLD_TONOS_OVERHANG = round(425 * ADVANCE / 1200)
 BOLD_INK_OUTSIDE_CELL = {**INK_OUTSIDE_CELL, **dict.fromkeys(TONOS_CAPITALS, BOLD_TONOS_OVERHANG)}
 # ∄'s rotated E and slash overlap, and so do the references to ☐ and a quarter of ■ in ◰ ◱ ◲ ◳.
 VALIDATE_FLAGS = {"uni2204": 0x4, "uni25F0": 0x4, "uni25F1": 0x4, "uni25F2": 0x4, "uni25F3": 0x4}

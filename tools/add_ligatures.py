@@ -62,7 +62,7 @@ CREST_PROFILE, TROUGH_PROFILE = (292, 378), (161, 246)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.
-TIP = {"greater": 519, "less": 81}
+TIP = {"greater": 519, "less": ADVANCE - 519}
 OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
@@ -95,7 +95,9 @@ BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our â
 # past both.
 PIPE_HEIGHT = 1603 / 1053  # in x-heights
 PIPE_ASPECT = (1306 / 1603 + 685 / 835) / 2  # width over height
-PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
+# The bar's outer edge, in the head's cell: 295 into the bar's own cell from its outer side,
+# 2 past Fira Code's 293.
+PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": ADVANCE - 295}
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
 COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)

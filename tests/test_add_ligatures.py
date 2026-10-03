@@ -12,15 +12,16 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
 from add_ligatures import GENERATED
+from make_bold import HEAD_WHITE
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
 from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
-# it: 289.6 in its 1200-unit cell, scaled to ours; Fira Code Bold's, 309.7.
+# it: 289.6 in its 1200-unit cell, scaled to ours. The bold's is make_bold's HEAD_WHITE, Fira
+# Code Bold's.
 FIRA_HEAD_GAP = 289.6 * ADVANCE / 1200
-FIRA_BOLD_HEAD_GAP = 309.7 * ADVANCE / 1200
 # <>'s ink width in x-heights: Maple Mono's (920 of 550) and Fira Code's (1850 of 1053).
 DIAMOND_WIDTHS = (1.67, 1.76)
 # The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
@@ -163,7 +164,7 @@ class TwoHeadsTest(unittest.TestCase):
 
 
 class BoldTwoHeadsTest(TwoHeadsTest):
-    sfd, head_gap = BOLD_SFD, FIRA_BOLD_HEAD_GAP
+    sfd, head_gap = BOLD_SFD, HEAD_WHITE
 
 
 class GlyphShapeTest(unittest.TestCase):
