@@ -80,6 +80,7 @@ from project import (
     BOLD_SFD,
     LINE_TOP,
     MARK_CLEARANCE,
+    OVERLAP,
     ROUNDING,
     SFD,
     is_alphanumeric,
@@ -201,9 +202,9 @@ MERGED = ("Theta",)
 # of ℃ ℉ № beside their ring and o, 1 to 36 apart. Each piece grows on its own, and the wider
 # is condensed away from the other, or both alike when they are as wide, until the white
 # between them is the regular's. Each keeps its far end where the pen grows it, or at the side
-# room where the pen would grow it past (‰'s zeros), so ‰ stays as wide as % and centred:
-# ⇥ ↹'s bar keeps the full pen, and the white twice SYMBOL_SIDE (pieces_apart()); ℃'s ring
-# stays before its C (tests/test_symbols.py).
+# room where the pen would grow it past (‰'s zeros), so ‰ stays at least as wide as % and
+# centred: ⇥ ↹'s bar keeps the full pen, and the white twice SYMBOL_SIDE (pieces_apart());
+# ℃'s ring stays before its C (tests/test_symbols.py).
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
@@ -347,13 +348,14 @@ def reach(pen):
 def cut_ends(name, layer):
     """(x0, x1): where the regular's outline of `name` is cut flat past the cell, a ligature
     piece's end that overlaps the next piece's, else beyond any outline. A round end past the
-    cell, as <='s tips, grows like any other."""
+    cell, as <='s tips, grows like any other, even where it runs straight for a few units at
+    its turn, as the points of <| <|> do: only an edge on the overlap line is a cut."""
     if not GENERATED.fullmatch(name):
         return -geo.FAR, geo.FAR
     x0, _, x1, _ = layer.boundingBox()
     flat = {x for x, *_ in vertical_edges(layer)}
-    return (x0 if x0 < 0 and x0 in flat else -geo.FAR,
-            x1 if x1 > ADVANCE and x1 in flat else geo.FAR)
+    return (x0 if x0 == -OVERLAP and x0 in flat else -geo.FAR,
+            x1 if x1 == ADVANCE + OVERLAP and x1 in flat else geo.FAR)
 
 
 def side_bounds(font, classes):

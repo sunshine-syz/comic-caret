@@ -36,6 +36,19 @@ def widths_at(layer, y):
     return [x1 - x0 for x0, x1 in spans_at_y(layer, y)]
 
 
+def peaks(profile, tolerance):
+    """How many peaks `profile` rises to, a dip between two counting only where it falls more
+    than `tolerance` below both."""
+    count, high, low, falling = 1, profile[0], profile[0], False
+    for value in profile:
+        if falling and value - low > tolerance:
+            count, high, falling = count + 1, value, False
+        elif not falling and high - value > tolerance:
+            low, falling = value, True
+        high, low = max(high, value), min(low, value)
+    return count
+
+
 def one_layer(contour):
     layer = fontforge.layer()
     layer += contour
@@ -207,13 +220,33 @@ class GlyphShapeTest(unittest.TestCase):
                 self.assertEqual(flat, [])
 
     def test_corners_are_one_round_end(self):
-        # Two stroke ends side by side would leave two caps with a notch between them.
+        # Where stroke ends meet at a corner they turn as one round end, so the ink's top edge
+        # rises to one peak and its bottom edge falls to one. Two ends side by side would leave
+        # two caps with a dip between them, however shallow.
         for glyph in [*TRIANGLES, "less_greater.liga"]:
             layer = self.font[glyph].foreground
-            _, bottom, _, top = layer.boundingBox()
-            for y in (top - 4, top - 10, bottom + 4, bottom + 10):
-                with self.subTest(glyph=glyph, y=y):
-                    self.assertEqual(len(widths_at(layer, y)), 1)
+            x0, _, x1, _ = layer.boundingBox()
+            columns = [spans_at_x(layer, x) for x in range(math.ceil(x0) + 1, math.floor(x1))]
+            for side, edge in (("top", [spans[-1][1] for spans in columns]),
+                               ("bottom", [-spans[0][0] for spans in columns])):
+                with self.subTest(glyph=glyph, side=side):
+                    self.assertEqual(peaks(edge, ROUNDING / 2), 1)
+
+    def test_heads_close_to_one_point(self):
+        # Inside each head the white narrows to one point, where the arms' inner edges meet. A
+        # bit of one arm left standing inside the point splits it into two, a notch between.
+        heads = {"bar_greater.liga": ("right",), "less_bar.liga": ("left",),
+                 "less_bar_greater.liga": ("left", "right")}
+        for glyph, sides in heads.items():
+            layer = self.font[glyph].foreground
+            _, y0, _, y1 = layer.boundingBox()
+            # The rows that cross the bar and each head's white, clear of the corners.
+            rows = [spans for spans in (spans_at_y(layer, y) for y in range(round(y0), round(y1)))
+                    if len(spans) == 1 + len(sides)]
+            for side in sides:
+                edge = [spans[-1][0] if side == "right" else -spans[0][1] for spans in rows]
+                with self.subTest(glyph=glyph, side=side):
+                    self.assertEqual(peaks(edge, ROUNDING / 2), 1)
 
     def test_strokes_are_cut_flat_only_where_they_run_on(self):
         # Every stroke in the font ends round. A straight edge is a stroke cut flat, which a
@@ -292,7 +325,8 @@ class GlyphShapeTest(unittest.TestCase):
 
     def test_or_equal_angles_share_one_span(self):
         # <= and >= mirror each other, as in Fira Code and Maple Mono, so their angles stand
-        # at one height; built each from its own < or >, they stood 9 apart.
+        # at one height. < is > turned, not mirrored: an angle built from each would hang its
+        # bar under a different hand-drawn arm.
         spans = []
         for glyph in ("less_equal.liga", "greater_equal.liga"):
             angle = max(self.font[glyph].foreground, key=lambda contour: contour.boundingBox()[3])

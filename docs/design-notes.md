@@ -148,9 +148,15 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   is `>=` mirrored, as in Fira Code and Maple Mono: `<` is `>` turned, so each built from its
   own angle, the bar would hang under a different hand-drawn arm and stand the two 9 apart.
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
-  x-heights tall, as Fira Code's and JetBrains Mono's are; it then comes out 1.26 wide, theirs
-  1.24, as `>`'s flatter lower arm lengthens the further. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its
-  own cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
+  x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
+  arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under
+  the axis, so both ends meet the bar's round ends, each corner turns as one round end and the
+  point closes as `>`'s does. The triangle then comes out 1.29 wide, theirs 1.24 and 1.25;
+  built on the steeper arm it would be 1.18, under both. Mirrored about the axis instead, the
+  head would keep 1.26, but the foot of `>`'s upper arm would stand inside the point as a
+  notch, and the point's round end would come 15 short and blunt. In the 550 cell it was 1.27
+  by 0.88. The bar's outer edge stays 295 into its own cell, 2 past Fira Code's 293 and 20
+  past JetBrains Mono's 275 at a 600 cell.
 - **`->>`.** `HEAD_PITCH` (375) keeps the white between the two heads at 174, as in the 550
   cell, since the heads kept their size; Fira Code, the one reference that draws `->>`, leaves
   145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the shaft's cut
@@ -293,13 +299,13 @@ what it does to them:
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
   reference bolds' 38; it keeps 39.
-- `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and ℃ ℉ №
-  (letter and small pieces) grow on their own, and the wider is condensed away from the other
-  until the white between them is the regular's. Each keeps its far end where the pen grows
-  it, or at the side room, so the bold ‰ stays as wide as the bold % and centred. The small
-  pieces of ℃ ℉ № grow by the small
-  pen, so they stay as light as the small figures; the full pen would close ℃'s ring to 42
-  across, where the small pen leaves 54.
+- `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
+  ℃ ℉ № (letter and small pieces) grow on their own, and the wider is condensed away from the
+  other until the white between them is the regular's. Each keeps its far end where the pen
+  grows it, or at the side room, so the bold ‰ stays at least as wide as the bold % (562): it
+  is 570, and centred. The small pieces of ℃ ℉ № grow by the small pen, so they stay as light
+  as the small figures; the full pen would close ℃'s ring to 42 across, where the small pen
+  leaves 54.
 - `SLASHES`: grown, ‰'s slash would come 14 from the zero under it, where the regular keeps
   27. It shortens at its foot until it keeps the regular's white.
 - `SHRUNK`: ※'s dots, ⧉'s front square and ⌫ ⌦'s × shrink just enough to keep twice

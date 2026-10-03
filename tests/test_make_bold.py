@@ -19,7 +19,7 @@ import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
 from measure import area, ink, outline, vertical_edges
-from project import ADVANCE, BOLD_SFD, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
+from project import ADVANCE, BOLD_SFD, OVERLAP, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "make_bold.py"
@@ -226,7 +226,7 @@ class BoldTest(unittest.TestCase):
     def test_pieces_keep_their_overlap(self):
         # A ligature piece cut flat past the cell, where it overlaps the next piece, ends at the
         # same line as the regular's, so the seams keep their overlap and no rounded corner
-        # shows. Its round ends, as <='s tips, grow like any stroke.
+        # shows. Its round ends past the cell, as <='s tips and <|'s point, grow like any stroke.
         wrong, cut = {}, set()
         for name in self.of_class(BOLDER):
             if not (GENERATED.fullmatch(name) or name == "uni23AF"):
@@ -236,12 +236,15 @@ class BoldTest(unittest.TestCase):
                 continue
             x0, _, x1, _ = regular.boundingBox()
             flat = {x for x, *_ in vertical_edges(regular)}
-            ends = [(0, x0)] if x0 < 0 and x0 in flat else []
-            ends += [(2, x1)] if x1 > ADVANCE and x1 in flat else []
-            for side, x in ends:
-                cut.add((name, side))
-                if found.boundingBox()[side] != x:
-                    wrong[name, side] = (found.boundingBox()[side], x)
+            ends = ((0, x0, x0 < 0, -OVERLAP, -1), (2, x1, x1 > ADVANCE, ADVANCE + OVERLAP, 1))
+            for side, x, past, seam, outward in ends:
+                grown = found.boundingBox()[side]
+                if x == seam and x in flat:
+                    cut.add((name, side))
+                    if grown != x:
+                        wrong[name, side] = (grown, x)
+                elif past and outward * (grown - x) < ROUNDING:
+                    wrong[name, side] = (grown, x)
         self.assertLessEqual({(name, side) for name in THROUGH_PIECES for side in (0, 2)}, cut)
         self.assertEqual(wrong, {})
 

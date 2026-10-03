@@ -88,8 +88,10 @@ BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our â
 
 # |> <|: the head with its arms lengthened until it is as tall as Fira Code's triangle, 1603
 # of its 1053 x-height (JetBrains Mono's is 835 of 550), over the round ends of a bar as tall
-# as the head, so each corner turns as one round stroke end. It then comes out 1.26 x-heights
-# wide, theirs 1.24: the hand-drawn > has its flatter arm below, which lengthens the further.
+# as the head. Both arms are >'s flatter one, mirrored about >'s point (pipe_head()), so both
+# ends meet the bar's round ends and each corner turns as one round stroke end. The triangle
+# comes out 1.29 x-heights wide, theirs 1.24 and 1.25; built on the steeper arm it would be
+# 1.18, under both.
 PIPE_HEIGHT = 1603 / 1053  # in x-heights
 PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
@@ -380,10 +382,20 @@ def squeezed_bar(font, height):
 
 
 def pipe_head(font, name):
-    """The head of > or < enlarged for |> <| <|>: PIPE_HEIGHT x-heights tall, centred on the
-    axis."""
+    """The head of > or < enlarged for |> <| <|>, PIPE_HEIGHT x-heights tall and centred on the
+    axis: >'s lower arm, its flatter, and that arm mirrored about the height where >'s arms meet
+    inside the point, so both arm ends reach as far and the point closes in one corner. <'s is
+    that head turned, as < is > turned."""
     half = PIPE_HEIGHT * font.os2_xheight / 2
-    return longer_angle(font, name, (AXIS - half, AXIS + half))
+    # >'s inner edges meet a little under the axis, where the white inside its point reaches
+    # furthest. Mirrored about the axis instead, the foot of the upper arm under it would stand
+    # inside the point as a notch.
+    below = geo.trim(outline(font, "greater"), y1=AXIS)
+    meet = max(range(AXIS - HALF_REACH, AXIS), key=lambda y: span_at(below, y)[0])
+    lower = geo.trim(longer_angle(font, "greater", (meet - half, meet + half)), y1=meet)
+    head = geo.transformed(geo.weld_y(lower, geo.mirrored_y(lower, meet), meet),
+                           psMat.translate(0, AXIS - meet))
+    return head if name == "greater" else geo.transformed(head, geo.turned(ADVANCE / 2, AXIS))
 
 
 def pipe_bar(font, head):
@@ -394,8 +406,9 @@ def pipe_bar(font, head):
 
 
 def against(head, name, x):
-    """The head of > or < moved so its arm ends' outer edge lies at x. Arm and bar are about
-    equally heavy, so with a bar's edge at x their round ends coincide."""
+    """The pipe head of > or < moved so its arm ends' outer edge, the same for both arms
+    (pipe_head()), lies at x. Arm and bar are about equally heavy, so with a bar's edge at x
+    their round ends overlap and turn as one."""
     x0, _, x1, _ = head.boundingBox()
     return geo.transformed(head, psMat.translate(x - (x0 if name == "greater" else x1), 0))
 
