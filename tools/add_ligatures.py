@@ -89,10 +89,12 @@ BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our �
 # |> <|: the head with its arms lengthened until it is as tall as Fira Code's triangle, 1603
 # of its 1053 x-height (JetBrains Mono's is 835 of 550), over the round ends of a bar as tall
 # as the head. Both arms are >'s flatter one, mirrored about >'s point (pipe_head()), so both
-# ends meet the bar's round ends and each corner turns as one round stroke end. The triangle
-# comes out 1.29 x-heights wide, theirs 1.24 and 1.25; built on the steeper arm it would be
-# 1.18, under both.
+# ends meet the bar's round ends and each corner turns as one round stroke end. That arm is
+# turned steeper until the triangle's width over its height is the mean of Fira Code's, 1306
+# over 1603, and JetBrains Mono's, 685 over 835. Unturned, it would be 1.29 x-heights wide,
+# past both.
 PIPE_HEIGHT = 1603 / 1053  # in x-heights
+PIPE_ASPECT = (1306 / 1603 + 685 / 835) / 2  # width over height
 PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
@@ -232,6 +234,18 @@ def reaching(flat, name, direction, goal):
     return geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
 
 
+def arm_axis(half, end_y):
+    """(direction, heights): the direction of the arm `half` of < or >, whose end is at height
+    end_y, and the two heights it is measured at. The arms are drawn by hand, so the
+    point-to-end line misses their axis by up to 5°; stretching along it would skew them. The
+    axis runs through two cross-sections, on the straight part between the point and the end
+    cap."""
+    rise = end_y - AXIS
+    sections = AXIS + 0.3 * rise, AXIS + 0.65 * rise
+    (x0, y0), (x1, y1) = (middle_at(half, y) for y in sections)
+    return math.atan2(y1 - y0, x1 - x0), sections
+
+
 def longer_angle(font, name, reach, steeper=0.0):
     """< or > with each arm turned `steeper` radians toward upright about the point and
     lengthened along its own line until its ink reaches `reach`, the (bottom, top) heights.
@@ -241,13 +255,7 @@ def longer_angle(font, name, reach, steeper=0.0):
     arms, inner_edges = [], []
     for (_, end_y), half, goal in zip(ARM_ENDS[name], arm_halves(font, name), reversed(reach),
                                       strict=True):
-        # The arms are drawn by hand, so the point-to-end line misses their axis by up to 5°;
-        # stretching along it would skew them. Take the axis through two cross-sections, on
-        # the straight part between the point and the end cap.
-        rise = end_y - AXIS
-        sections = AXIS + 0.3 * rise, AXIS + 0.65 * rise
-        (x0, y0), (x1, y1) = (middle_at(half, y) for y in sections)
-        direction = math.atan2(y1 - y0, x1 - x0)
+        direction, sections = arm_axis(half, end_y)
         # Upright is up for the upper arm and down for the lower, whichever way the point faces.
         toward_upright = math.copysign(1, math.cos(direction) * math.sin(direction))
         new_direction = direction + toward_upright * steeper
@@ -383,19 +391,34 @@ def squeezed_bar(font, height):
 
 def pipe_head(font, name):
     """The head of > or < enlarged for |> <| <|>, PIPE_HEIGHT x-heights tall and centred on the
-    axis: >'s lower arm, its flatter, and that arm mirrored about the height where >'s arms meet
-    inside the point, so both arm ends reach as far and the point closes in one corner. <'s is
-    that head turned, as < is > turned."""
+    axis: >'s lower arm, its flatter, turned steeper, and that arm mirrored about the height
+    where >'s arms meet inside the point, so both arm ends reach as far and the point closes in
+    one corner. <'s is that head turned, as < is > turned."""
     half = PIPE_HEIGHT * font.os2_xheight / 2
-    # >'s inner edges meet a little under the axis, where the white inside its point reaches
-    # furthest. Mirrored about the axis instead, the foot of the upper arm under it would stand
-    # inside the point as a notch.
-    below = geo.trim(outline(font, "greater"), y1=AXIS)
-    meet = max(range(AXIS - HALF_REACH, AXIS), key=lambda y: span_at(below, y)[0])
-    lower = geo.trim(longer_angle(font, "greater", (meet - half, meet + half)), y1=meet)
-    head = geo.transformed(geo.weld_y(lower, geo.mirrored_y(lower, meet), meet),
-                           psMat.translate(0, AXIS - meet))
-    return head if name == "greater" else geo.transformed(head, geo.turned(ADVANCE / 2, AXIS))
+
+    def head(turn):
+        angle = longer_angle(font, "greater", (AXIS - half, AXIS + half), turn)
+        # >'s inner edges meet a little under the axis, where the white inside its point
+        # reaches furthest. Mirrored about the axis instead, the foot of the upper arm under it
+        # would stand inside the point as a notch.
+        meet = max(range(AXIS - HALF_REACH, AXIS + HALF_REACH),
+                   key=lambda y: span_at(angle, y)[0])
+        lower = geo.trim(longer_angle(font, "greater", (meet - half, meet + half), turn), y1=meet)
+        return geo.transformed(geo.weld_y(lower, geo.mirrored_y(lower, meet), meet),
+                               psMat.translate(0, AXIS - meet))
+
+    # Its end's height fixed, the arm reaches across by the run of its middle line, from the
+    # end cap's centre up to the point, over the tangent of its slope. Turn it to the slope
+    # whose reach takes the head from its unturned width to PIPE_ASPECT times its height.
+    direction, _ = arm_axis(arm_halves(font, "greater")[1], GREATER_ENDS[1][1])
+    slope = direction + math.pi  # >'s lower arm runs left and down from the point
+    x0, _, x1, _ = head(0).boundingBox()
+    run = half - SPECK / 2
+    goal = math.atan(run / (run / math.tan(slope) - (x1 - x0 - PIPE_ASPECT * 2 * half)))
+    turned_head = head(goal - slope)
+    if name == "greater":
+        return turned_head
+    return geo.transformed(turned_head, geo.turned(ADVANCE / 2, AXIS))
 
 
 def pipe_bar(font, head):

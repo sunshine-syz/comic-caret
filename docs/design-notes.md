@@ -151,12 +151,16 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under
   the axis, so both ends meet the bar's round ends, each corner turns as one round end and the
-  point closes as `>`'s does. The triangle then comes out 1.29 wide, theirs 1.24 and 1.25;
-  built on the steeper arm it would be 1.18, under both. Mirrored about the axis instead, the
-  head would keep 1.26, but the foot of `>`'s upper arm would stand inside the point as a
-  notch, and the point's round end would come 15 short and blunt. In the 550 cell it was 1.27
-  by 0.88. The bar's outer edge stays 295 into its own cell, 2 past Fira Code's 293 and 20
-  past JetBrains Mono's 275 at a 600 cell.
+  point closes as `>`'s does. Unturned, that arm makes the triangle 1.29 x-heights wide, past
+  Fira Code's 1.240 and JetBrains Mono's 1.245; the steeper arm would make it 1.18, under
+  both. So `pipe_head()` turns the arm 1.1° steeper, from 31.3° to 32.4°, until the
+  triangle's width over its height is `PIPE_ASPECT`, the mean of theirs (1306 over 1603 and
+  685 over 835, 0.818). The arm's end keeps its height, so its reach across changes by the
+  run of its middle line, 315, times the change in the slope's cotangent; the triangle comes
+  out 589 wide, 1.245 x-heights. Mirrored about the axis instead, the foot of `>`'s upper arm
+  would stand inside the point as a notch, and the point's round end would come 15 short and
+  blunt. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its own
+  cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
 - **`->>`.** `HEAD_PITCH` (375) keeps the white between the two heads at 174, as in the 550
   cell, since the heads kept their size; Fira Code, the one reference that draws `->>`, leaves
   145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the shaft's cut
