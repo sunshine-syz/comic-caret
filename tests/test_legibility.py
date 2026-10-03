@@ -273,6 +273,8 @@ WIDTHS = {
     "☐": (502, 566),  # Intel One Mono, Maple Mono
     "☑": (502, 566),  # Intel One Mono, Maple Mono
     "☒": (502, 566),  # Intel One Mono, Maple Mono
+    "‰": (562, 620),  # Fira Code, Maple Mono; Intel One Mono has none
+    "₩": (573, 600),  # Intel One Mono, Maple Mono; Fira Code has none
 }
 # The same from the five reference bolds: Fira Code, Maple Mono, Intel One Mono, Monaspace Neon
 # and Monaspace Radon, each comment naming the bolds that set the row.
@@ -337,6 +339,8 @@ BOLD_WIDTHS = {
     "☐": (502, 579),  # Intel One Mono, Fira Code
     "☑": (502, 579),  # Intel One Mono, Fira Code
     "☒": (502, 579),  # Intel One Mono, Fira Code
+    "‰": (530, 648),  # Monaspace Neon, Maple Mono; Intel One Mono has none
+    "₩": (567, 614),  # Monaspace Neon, Maple Mono; Fira Code has none
 }
 
 

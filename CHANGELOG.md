@@ -11,7 +11,8 @@
   - The accented letters and the letters drawn on these follow them, such as ø þ ç µ μ η ρ σ τ.
   - `M` `W` `w` are redrawn after Intel One Mono. The middle of `M` no longer reaches the baseline, nor the middle of `W` and `w` the top. So `M` reads apart from `N` and `H`, and `W` and `w` apart from a row of upright strokes. ₩ and the accented `W` and `w` follow them.
 - Symbols, dashes and arrows grow with the cell.
-  - `-` `<` `>` `%` `&` `?` `"` `+` − ± ÷ ≤ ≥ – — … € ₺ ¥ ₽ ⁄ are at least as wide as the narrowest of the three reference fonts. ‰ widens with `%`.
+  - `-` `<` `>` `%` `&` `?` `"` `+` − ± ÷ ≤ ≥ – — … € ₺ ¥ ₽ ⁄ are at least as wide as the narrowest of the three reference fonts.
+  - ‰ is as wide as Fira Code's, its rings further apart. ₩'s bars run as far out as the cell leaves room for, so ₩ is about as wide as Intel One Mono's.
   - `<` and `>` keep their height, their round point and their point on the math axis.
   - Every arrow along the axis, → ← ↔ ⇒ ⇐ ⇔ ↦ ⇤ ⇥, is one length. The shafts are longer, and the heads stay as they are.
   - ❯ ❮ ❱ ❰ widen with `>`, so a prompt's ❯ still reads apart from `>`, and ❱ apart from ❯.
