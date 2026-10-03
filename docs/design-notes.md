@@ -131,11 +131,71 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   larger of the regular's floor and the bold's floor less 35, the bold pen's width: the least
   widening that keeps both styles in range. No glyph is scaled to widen it: its strokes move,
   turn or lengthen.
+- **Round letters and figures.** Each bowl lengthens at its top and bottom, where its strokes
+  run level, and a stem moves with its side. `o` is 450, `O` 474, `0` 451, `e` 442, `g` 438,
+  `a` 452 and `3` 450. `b` `d` `p` `q` are one width, 441, as each reference draws them at one
+  width. `c` (425) and `5` (432) take Fira Code's widths, so `c` keeps in step with `e` and `o`,
+  and `5` with `3`, as in the three references. `Q` widens with `O`, to 482. `0`'s slash and
+  `e`'s bar turn a little. ø Ø þ ƿ đ ą ę, ρ δ σ ∂ on `o`'s bowl, ç ¢ ς and the accented letters
+  follow through references or outline copies.
+- **Open letters.** Bars, arms and tails lengthen along their straight part: `f` 460, `t` 441,
+  `r` 427, `T` 490, `l` 444. `m`'s arches open at the crown, as do `n`'s and `h`'s; `u`'s bowl
+  opens at its foot. `n` `h` `u` are one width, 417: Intel One Mono Bold's 452 less the pen's
+  35, so their bolds reach the narrowest reference bold. η ŋ ħ µ ų follow as outline copies.
+  `4`'s crossbar lengthens right of the stem, to 474: the references' right arm is 0.19–0.24 of
+  the width, ours was 0.15. `J`'s bowl opens at the foot, under the top bar, to 425. `Æ`'s three
+  bars lengthen right, to Maple Mono's 535.
+- **`w` `W` `M`.** Each outer arm of `w` (515) and `W` (510) turns out about the point where it
+  meets the next arm, so both are at least as wide as Intel One Mono's. All three references
+  stop `M`'s middle above the baseline and the middle peak of `W` and `w` below the top; ours
+  follow Intel One Mono's. `M`'s middle V rises 180, to about a quarter of the cap height, and
+  ends round; its legs lean 45% less. `W`'s middle peak stops at 0.81 of the cap height, and
+  `w`'s at 0.87 of its height. ₩'s upper bar rises 46, so it still crosses the lowered middle
+  peak, its top 84 under the peak's top, as in Maple Mono's ₩ at the same cap height; both bars
+  run from 31 to 570.
+- **Beyond ASCII.** € and Œ open the C and the O at their middle, on the line through their top
+  and bottom extremes. ð's bowl opens at its middle, and its rising stroke moves with its right
+  side. ß's arch opens at its crown, and ẞ's top bar lengthens. Ħ ħ Ð Đ đ ₽ lengthen their bars
+  past the stem, and Ł its bar along its slant. ₺'s tail lengthens along its level bottom, as
+  `t`'s does. ¥'s arms turn out about the crotch.
+- **Symbols.** `-` lengthens at its middle, to 365. Each arm of `<` `>` turns flatter about the
+  centre of the point's round end and lengthens until its end is back at its height, so `<` `>`
+  (425) keep their height within a unit. ≤ ≥'s angle widens by 62 the same way, to 446, and the
+  bar lengthens with it. `%`'s rings, `"`'s ticks and the parts of `?` `&` move apart, and the
+  slash of `%` and ‰ lengthens: `%` and ‰ are 543, `&` 517, `?` 404, `"` 307. `+` − ± ÷ are 463.
+  ❯ ❮ (332) and ❱ ❰ (452) are built on the wider `>` (see Heavy marks and shapes).
+- **Dashes and arrows.** – (445) and — (504) are Intel One Mono's lengths at the wider cell. …
+  is 483, at least Maple Mono's 480; its dots keep their size and stay evenly spaced. The axis
+  arrows → ← ↔ ⇒ ⇐ ⇔ ↦ ⇤ ⇥ are one length, 555: their shafts lengthen, and the heads and bars
+  stay. Fira Code draws → ⇤ ⇥ within 4 of each other, and Maple Mono → ↦ within 10
+  (`ONE_LENGTH` in `tests/test_consistency.py`).
+- **Doubled marks.** The copies of ″ “ ” „ stand 6 to 8 further apart and ‖'s 2, so the white
+  between them stays at least the narrowest reference's at the wider cell.
+- **⁄ and the fractions.** ⁄ turns 5.9° flatter about its middle and lengthens, its ends at
+  their heights, to Fira Code's 565. The fractions' own slash turns 3.8° flatter, each numerator
+  moves 25 left and each denominator 25 right: ¼ ½ ¾ are 576, Maple Mono's ¼ ½.
+- **Round marks.** ○ ● grow 28 each way, to 548, and stay circles: ○ stays at least as much
+  wider than `o`, and ∅ than ø, as Fira Code's. ◯ ◉ ∅ and the spinner frames on ○ ● follow. ⏺
+  stays at ⏸'s height. The bars of ☰ … ☷ stand 13 further apart, so they still span 84% of ○'s
+  height, as Fira Code's do. ¨'s dots move 20 apart each, to 334: Intel One Mono Bold's 369 less
+  the pen. U+0308 and every letter that carries ¨ follow, so the spacing mark and its combining
+  twin stay one design. ° (300) and • (240) grow at their middle both ways, so they stay round.
+  ◉'s dot keeps its size: the grown • at 0.8488, at the whole-unit offset nearest the centre
+  that keeps the white between ring and dot (70).
+- **Boxes.** ☐ ☑ ■ □ are 502 each way, Intel One Mono's ☐. The left and bottom walls move out
+  and the box moves back by half, so ☑'s check keeps its place against the top and right walls.
+  ☒'s quarters move out and its cross's arms lengthen along their diagonals, to 505.
+  `add_shapes.py` rebuilds the frames on ☐ ■ (◰ ◱ ◲ ◳ ⧆ ⧇ ▮ ▯ ◢ ◣ ◤ ◥ ☖ ☗ ▰ ▱).
+- **ŀ.** The dot moves 34 right and ends 18 past the l's foot, where the bold puts it.
 - **The `~~~` run.** Each half-wave of the run, a fall from crest to trough or the rise back,
   is a third of the cell: 200 units. The pieces spread `~`'s own fall across 200 about its
   crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
   550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
-  keeps its own 174-unit half-waves.
+  keeps its own 174-unit half-waves. `asciitilde.mid` and `.end` are the low pieces mirrored
+  about the wave's middle. The crest's profile is a unit thicker than the trough's, so the
+  mirror leaves each cut corner a unit off its profile. `snap_edge(level=True)` moves the level
+  run that ends at the corner with it. Moving the corner alone leaves a short slant, which the
+  bold pen grows into a step of 4 at the crest.
 - **The ligatures.** `tools/add_ligatures.py` measures its constants on the widened `-` `<`
   `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`); `ARM_ENDS` holds the centres of `>`'s round ends,
   and `<`'s are those turned. `longer_angle()` lengthens each arm until its ink reaches the
@@ -170,6 +230,49 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   under Fira Code Bold's 155, so there the inner head moves along its shaft until the white is
   Fira Code Bold's (`make_bold.HEADS_APART`); a pitch that wide would take the regular's white
   to 183, past 1.7.0's 173.
+- **Tight pairs.** `TIGHT_KEEP` states, for each glyph of a tightened pair (`::` `&&` `++`
+  `//` `<<` …), the side bearing it keeps toward its partner, not how far it moves. The white
+  between the pair is the sum of the two kept side bearings, so it stays when the cell grows or
+  the glyph widens; a shift stated as a number would let the white grow 50 with the cell and
+  shrink as `&` `+` `<` `>` `?` widen.
+- **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
+  have 25 more room on each side. So the pen no longer pushes @ # ∞ « » Æ œ K ✔ ➜ past their
+  side room, and `fitted()` keeps them at full width, where 1.7.0 condensed them.
+
+Where a glyph stays under the width rule's floor, the reason and the measurement:
+
+- **`2` and `P`.** The regular `2` (436) and `P` (441) are at their floors. The bold `2` is 472,
+  8 under Monaspace Neon Bold's 480, and the bold `P` 476, 6 under its 482: within `WOBBLE`.
+- **The fractions ⅓ ⅔ ⅕ … ⅞.** They are 571–580. Intel One Mono's fill the cell (600), Fira
+  Code's pass it (611–682), and Maple Mono has none. The bold grows a fraction by about 22, so
+  a regular wider than about 578 puts the bold past the cell. The bolds are 593–598.
+- **¾.** It is 576, 3 under Maple Mono's 579. At 579, the bold ¾ passes the cell.
+- **đ and ₫.** đ is 503, 7 under Fira Code's 510, and the bold đ 539, 1 under Monaspace Neon
+  Bold's 540. ₫ is 505, 10 under Maple Mono's 515. ₫ holds đ, and in the bold a letter that a
+  symbol holds stays within the symbol's `SYMBOL_SIDE`: the bold đ's bar ends at 585.
+- **The bold ẞ.** It is 473, 10 under Maple Mono Bold's 483. `NARROW` grows it by 0.7 of the
+  pen to keep the white between its stem and diagonal. The regular is 449, over the floor.
+- **ŀ.** It is 462 against Fira Code's 562. The references end the dot 104 (Maple Mono), 118
+  (Fira Code) and 148 (Intel One Mono) past their `l`, into the next cell, and their bolds
+  65–135. Ours ends 18 past and stays in the cell. `tests/test_latin.py` holds the dot past the
+  `l` instead.
+- **Ą.** It is 499, `A`'s width, against Maple Mono's 527. Maple Mono's and Intel One Mono's
+  ogoneks reach 31 and 29 past their `A`, and Fira Code's 0. Only the mark's place sets their
+  width.
+- **ĵ Ĵ.** ĵ is 395 against Fira Code's 436: the references' circumflex reaches 83 to 122 past
+  their `j`, ours 30. Ĵ is 425 against Fira Code's 440: the references' circumflex reaches 16
+  (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
+  Fira Code's floor.
+- **˚.** It is 161 against Fira Code's 222. In Å, the ring stands 20 above the apex (678) and
+  ends at 849, 51 under the line box's top (900). A round ring 222 wide is 61 taller. It fits
+  only with 10 left above the apex and its top at 900, and the bold pen then takes the bold Å
+  past the line box.
+- **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306.
+  Monaspace gives them no share of a wider cell (the table above).
+- **■ □.** They are 502 against Fira Code's 540. They follow ☐, Intel One Mono's 502, so the
+  boxes stay one size.
+- **The italic ↦ ⁄.** They slant past the cell, ↦ to −5..579 and ⁄ to −47..664, as Maple Mono
+  Italic's do (−53..565 and −73..642).
 
 ## Italic
 
