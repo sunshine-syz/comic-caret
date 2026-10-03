@@ -6,6 +6,7 @@
 - At the same font size, a line holds 8% fewer characters. Lower the size by about one point to keep a terminal's column count. In ComicCaret Nerd Font, the Powerline separators fill the wider cell, and the widest icons, such as the weather icons, grow with it by up to 9%. The other icons, 97% of them, keep their size.
 - Letters and figures that the wider cell left narrow are wider. Their strokes lengthen or move apart, and none is scaled, so every stroke keeps its weight.
   - `o` `O` `Q` `0` `e` `g` `a` `b` `d` `p` `q` `c` `3` `5`, `f` `t` `r` `T` `m` `l` `w` `W` `n` `h` `u` `4` `J` `Æ`, and ß ẞ ð Œ Ħ ħ Ł Ð Đ are at least as wide as the narrowest of Fira Code, Maple Mono and Intel One Mono.
+  - π γ ε ζ ι κ α β Ξ ϗ ĸ Ĳ are at least as wide as the narrower of Fira Code and Maple Mono. Intel One Mono has none of them.
   - `n` `h` `u` are one width.
   - đ widens as far as ₫ leaves room in the bold.
   - The accented letters and the letters drawn on these follow them, such as ø þ ç µ μ η ρ σ τ.
