@@ -151,7 +151,7 @@ class LookalikeTest(unittest.TestCase):
     sfd = SFD
     per_mille_clearance = PER_MILLE_CLEARANCE
     # The floors the tests below take from the references, which they name.
-    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 70, 81
+    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 76, 88
     slash_short = 0  # how much less than half a stroke Ø's slash may run past O
 
     @classmethod
@@ -204,7 +204,8 @@ class LookalikeTest(unittest.TestCase):
 
     def test_capital_sharp_s_stays_open_at_the_bottom(self):
         # The bowl ends short of the stem, or ẞ reads as B: at least as far as the narrowest
-        # reference's (Maple Mono 70 at 3-9 % of the height; Fira Code 84, Intel One Mono 129).
+        # reference's at our advance (Maple Mono 76 at 3-9 % of the height; Fira Code 91, Intel
+        # One Mono 140).
         layer = self.font["uni1E9E"].foreground
         _, y0, _, y1 = layer.boundingBox()
         for share in (0.03, 0.06, 0.09):
@@ -214,7 +215,8 @@ class LookalikeTest(unittest.TestCase):
 
     def test_capital_sharp_s_middle_is_open(self):
         # The white between the stem and the diagonal, down to where it meets the bowl: at
-        # least the narrowest reference's (Maple Mono 81; Fira Code 111, Intel One Mono 136).
+        # least the narrowest reference's at our advance (Maple Mono 88; Fira Code 121, Intel
+        # One Mono 148).
         layer = self.font["uni1E9E"].foreground
         _, y0, _, y1 = layer.boundingBox()
         gaps = []
@@ -325,7 +327,9 @@ class SmallFigureTest(unittest.TestCase):
     stem."""
     sfd = SFD
     small_stem, sign_stem, counter_floor = SMALL_STEM, SIGN_STEM, COUNTER_FLOOR
-    trademark_counter = 53  # three quarters up ™'s M: Maple Mono's, the narrowest reference's
+    # Three quarters up ™'s M: Maple Mono's 57.5, the narrowest reference's, 51.9 at our cap
+    # height. A counter, so compared at the same letter height.
+    trademark_counter = 51
 
     @classmethod
     def setUpClass(cls):
@@ -347,7 +351,7 @@ class SmallFigureTest(unittest.TestCase):
 
     def test_trademark_M_keeps_its_counters(self):
         # Its V stops short, as the references' do, leaving the bottom open; three quarters up,
-        # their Ms keep 53-73 units of white.
+        # their Ms keep 52-78 units of white at our cap height.
         layer = self.font["M.small"].foreground
         _, y0, _, y1 = layer.boundingBox()
         self.assertEqual(len(measure.spans_at_y(layer, y0 + 0.25 * (y1 - y0))), 2)
@@ -522,7 +526,8 @@ class BoldCapitalTest(CapitalTest):
 class BoldSmallFigureTest(SmallFigureTest):
     sfd = BOLD_SFD
     counter_floor = BOLD_COUNTER_FLOOR
-    trademark_counter = 24  # Maple Mono Bold's 24.7 (Intel One Mono's 45.0)
+    # Maple Mono Bold's 27.0, 24.6 at the bold's cap height (Intel One Mono Bold's 51.8).
+    trademark_counter = 24
 
     @classmethod
     def setUpClass(cls):

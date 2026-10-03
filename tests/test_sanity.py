@@ -45,7 +45,9 @@ BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + OVERLAP
 # Fira Code and Maple Mono: a word starts there, so that cell holds a space.
 # Intel One Mono's ď runs 104 past its 614 cell, 93 of ours (Fira Code's 12, Maple Mono's 9).
 DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
-TONOS_OVERHANG = 112  # the furthest either reference's goes: Fira Code's Ύ (Maple Mono's 106)
+# The furthest either reference's goes: Fira Code's Ύ, 245 of its 1200 cell, at our advance
+# (Maple Mono's 116).
+TONOS_OVERHANG = round(245 * ADVANCE / 1200)
 TONOS_CAPITALS = ("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos", "Upsilontonos",
                   "Omegatonos")
 INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": OVERLAP,

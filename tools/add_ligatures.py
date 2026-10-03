@@ -79,10 +79,10 @@ EQUAL_PITCH = 326 - 143  # distance between the two = bars
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
 # their height, widening the angle from 425 to 517 like the references' angles.
 ANGLE_WIDTH_GAIN = 94
-# Where the arms of > and < end, upper then lower, as the generator reckons them: across,
-# about the end caps' centres; up and down, at the heights from which longer_angle(), turned
-# HEAD_TURN, draws arrowheads as tall as → and ←. The hand-drawn arms differ, so each has its
-# own height.
+# Where the arms of > and < end, upper then lower: across, about the end caps' centres; up and
+# down, heights fitted so that longer_angle(), turned HEAD_TURN, draws arrowheads that match →
+# and ←, each arm its own, as the hand-drawn arms differ. longer_angle() draws the heads of
+# |> <| <|> from the same heights, and pipe_head() centres those on the axis.
 ARM_ENDS = {"greater": ((119, 515), (122, 47)),
             "less": ((478, 491), (481, 23))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
@@ -359,6 +359,14 @@ def squeezed_bar(font, height):
     return geo.transformed(lying, psMat.rotate(math.pi / 2))
 
 
+def pipe_head(font, name):
+    """The head of > or < enlarged for |> <| <|>, centred on the axis. Its arms' ARM_ENDS
+    heights differ, and longer_angle() scales both about the axis, so uncentred it sits off."""
+    head = longer_angle(font, name, PIPE_HEAD_SCALE)
+    _, y0, _, y1 = head.boundingBox()
+    return geo.moved(head, 0, AXIS - (y0 + y1) / 2)
+
+
 def pipe_bar(font, head):
     """| squeezed to the height of `head` and level with it."""
     _, hy0, _, hy1 = head.boundingBox()
@@ -375,7 +383,7 @@ def against(head, name, x):
 
 def pipe(font, name):
     """|> or <| as a triangle: the enlarged head closed by a bar as tall as it."""
-    arrow = longer_angle(font, name, PIPE_HEAD_SCALE)
+    arrow = pipe_head(font, name)
     bar = pipe_bar(font, arrow)
     bx0, _, bx1, _ = bar.boundingBox()
     # The bar's outer edge goes where the references put it, and the arm ends' outer edge onto it.
@@ -388,10 +396,10 @@ def pipe(font, name):
 def pipes(font):
     """<|> as ◁|▷: the heads of <| and |> on either side of one bar, centred on the middle of
     its three cells."""
-    right = longer_angle(font, "greater", PIPE_HEAD_SCALE)
+    right = pipe_head(font, "greater")
     bar = pipe_bar(font, right)
     bx0, _, bx1, _ = bar.boundingBox()
-    left = against(longer_angle(font, "less", PIPE_HEAD_SCALE), "less", bx1)
+    left = against(pipe_head(font, "less"), "less", bx1)
     symbol = geo.union(left, bar, against(right, "greater", bx0))
     x0, _, x1, _ = symbol.boundingBox()
     return geo.transformed(symbol, psMat.translate(-ADVANCE / 2 - (x0 + x1) / 2, 0))

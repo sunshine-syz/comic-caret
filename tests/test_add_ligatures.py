@@ -13,7 +13,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import add_ligatures
 from add_ligatures import GENERATED
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
-from project import ADVANCE, AXIS, OVERLAP, SFD, WOBBLE
+from project import ADVANCE, AXIS, OVERLAP, ROUNDING, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
@@ -255,6 +255,18 @@ class GlyphShapeTest(unittest.TestCase):
     def test_pipes_are_centred_on_their_middle_cell(self):
         x0, _, x1, _ = self.font["less_bar_greater.liga"].boundingBox()
         self.assertAlmostEqual((x0 + x1) / 2, -ADVANCE / 2, delta=2)
+
+    def test_triangles_are_centred_on_the_axis_and_equally_tall(self):
+        # Like < > and the arrows, each triangle centres on the axis, and <|> is as tall as
+        # |> <|, its heads meeting its bar's round ends. The generator places them by
+        # computation, so only rounding may move them; WOBBLE would hide a head hung low.
+        heights = {}
+        for glyph in TRIANGLES:
+            with self.subTest(glyph=glyph):
+                _, y0, _, y1 = self.font[glyph].boundingBox()
+                heights[glyph] = y1 - y0
+                self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=ROUNDING)
+        self.assertLessEqual(max(heights.values()) - min(heights.values()), ROUNDING, heights)
 
     def test_tails_leave_the_point_open(self):
         # >=> <=<: each arm runs into its = bar, and nothing joins the bars at the axis.

@@ -88,10 +88,10 @@ from project import (
     validation_errors,
 )
 
-# Chosen by proof against the reference bolds on 2026-10-01. Its ink in a-z is 57.5% of the
-# x-height band (the reference bolds' 51-59%), a step of 13.5 points from the regular's 44.0%
-# (Maple Mono's, the smallest reference step, is 14). The counters at our x-height, n 172,
-# o 199 and e 109, are each at or above the narrowest reference bold's.
+# Chosen by proof against the reference bolds on 2026-10-01. In the 550 cell, its ink in a-z
+# is 57.5% of the x-height band (the reference bolds' 51-59%), a step of 13.5 points from the
+# regular's 44.0% (Maple Mono's, the smallest reference step, is 14), and the counters at our
+# x-height, n 172, o 199 and e 109, are each at or above the narrowest reference bold's.
 PEN = (35, 14)  # (width, height) of the elliptical pen
 
 SHARED, BOLDER = "shared", "bolder"
@@ -527,7 +527,7 @@ def fitted(name, outline, bound, scratch, pen, anchor=None, held=False):
     """emboldened(), condensed first just enough that the bold ink stays within `bound`,
     (x0, x1): the outline scaled horizontally about x = `anchor`, or else its ink centre, so
     every stem still grows by the full pen. A `held` letter, one a symbol holds, exits instead:
-    condensed, it would no longer match the letter as typed."""
+    condensed to the symbol's side room, the letter itself would narrow wherever it is typed."""
     layer = emboldened(name, outline, scratch, pen)
     x0, _, x1, _ = outline.boundingBox()
     centre = (x0 + x1) / 2 if anchor is None else anchor

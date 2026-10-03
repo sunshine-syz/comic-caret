@@ -38,7 +38,7 @@ them. The exceptions:
 ## Heavy marks and shapes
 
 - Heavy marks (✔ ✘ ✖) are their light glyph (✓ ✗ ✕) pushed out 23 on every side,
-  then squeezed at the ends to stay 20 inside the cell; ⏸'s bars are `|` pushed out 40, to
+  then squeezed at the ends to at most 510 wide; ⏸'s bars are `|` pushed out 40, to
   weigh as much as ⏵ ⏺.
 - ❯ ❮ are no heavy `>` but the tall angle ornament that every coding font drawing them
   (JetBrains Mono, Cascadia Code, Maple Mono, DejaVu Sans Mono, Menlo, Iosevka) draws: `>`
@@ -52,8 +52,7 @@ them. The exceptions:
   fonts that draw them apart (DejaVu Sans Mono's ❱ 1.39 times its ❯'s ink, JetBrains Mono's
   and Maple Mono's 1.50).
 - No symbol comes closer to the cell's edges than `project.SYMBOL_SIDE` (15), so two side by
-  side don't touch;
-  `tests/test_symbols.py` lists the exceptions.
+  side don't touch.
 - Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white shapes are
   rings of the hyphen's stroke, or of `o`'s for ○.
 - The spinner frames are cut, stacked and turned from ○ ● ☐ ■ ◦ ✶ `*` and `!`, so the frames
@@ -71,7 +70,7 @@ them. The exceptions:
 Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
 are references to it; the tonos is the acute turned 25° steeper, and beside a capital it
 stands to the left, reaching into the cell before (all but Ά) no further than the references'
-112 (`tests/test_sanity.py` lists them).
+122 (`tests/test_sanity.py` lists them).
 
 ## Placement
 
@@ -136,16 +135,18 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
   550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
   keeps its own 174-unit half-waves.
-- **The ligatures.** `tools/add_ligatures.py` measures its constants on the widened `-` `<`
-  `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`). The gains that widen `<` `>` into other ligatures
-  shrank as `<` `>` grew 64 wider, so the shapes keep their reference sizes:
+- **The ligatures.** `tools/add_ligatures.py` measures `TIP`, `HYPHEN_SPAN` and `ARM_ENDS`'s
+  x on the widened `-` `<` `>`. `ARM_ENDS`'s heights are fitted instead, so that the
+  arrowheads `longer_angle()` draws match → ←; the same function draws the heads of `|>` `<|`
+  `<|>`, which `pipe_head()` then centres on the axis. The gains that widen `<` `>` into
+  other ligatures shrank as `<` `>` grew 64 wider, so the shapes keep their reference sizes:
   `ANGLE_WIDTH_GAIN` (94) still widens the angle of `<=` `>=` to 517, 1.09 x-heights, within
   `WOBBLE` of Fira Code's 1.10 (Maple Mono's is 1.13), and `DIAMOND_WIDTH_GAIN` (35) keeps
   `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76.
 - **`|>` `<|`.** `PIPE_HEAD_SCALE` (1.46) lengthens the head's arms until the triangle is
   1.52 x-heights tall, as Fira Code's and JetBrains Mono's are; it then comes out 1.24 wide,
   as theirs do. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its
-  own cell, between JetBrains Mono's 275 and Fira Code's 293 at a 600 cell.
+  own cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
 - **`->>`.** `HEAD_PITCH` (375) keeps the white between the two heads at 174, as in the 550
   cell, since the heads kept their size; Fira Code, the one reference that draws `->>`, leaves
   145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the shaft's cut
@@ -161,7 +162,7 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
 `build/cache/reference/italic/`:
 
 - **12°**, between Maple Mono's 10° and Intel One Mono's 16°, next to Monaspace's 11°. It
-  reads as italic at 14 px, and the worst text glyphs leave the cell by about 65 units, as
+  reads as italic at 14 px, and the worst text glyphs leave the cell by about 45 units, as
   the references' do; 10° stayed close to the regular in a comment, and 14° and 16° pushed
   the capitals' tops and the tails further out.
 - **One shear for every slanted glyph**, x += (y − 269) × tan 12°, pivoting on the hyphen's
@@ -206,10 +207,10 @@ in `build/cache/reference/bold/`:
   inner edge dropped, and the rest united with the outline. A stem grows by the pen's width
   and a level stroke by its height, half on each side, so a bold letter keeps the regular's
   rows. Its tops rise by half the pen's height, so the bold declares its own x-height and cap
-  height, 480 and 675. Ink in a–z fills 57.5% of the x-height band, within the reference
-  bolds' 51–59%. That is a step of 13.5 points from the regular's 44.0%; Maple Mono's, the
-  smallest reference step, is 14. The counters at our x-height, `n` 172, `o` 199 and `e` 109,
-  are each at or above the narrowest reference bold's.
+  height, 480 and 675. In the 550 cell, ink in a–z fills 57.5% of the x-height band, within
+  the reference bolds' 51–59%: a step of 13.5 points from the regular's 44.0%, where Maple
+  Mono's, the smallest reference step, is 14. There the counters at our x-height, `n` 172,
+  `o` 199 and `e` 109, are each at or above the narrowest reference bold's.
 - **An offset, not `changeWeight()`.** The offset grows every edge alike, so `-` stays centred
   on the math axis. The ligature pieces grow by the same pen as the `-` `=` `<` `>` `~` `|`
   they continue, so they still match at their seams. A piece's flat cut end past the cell is

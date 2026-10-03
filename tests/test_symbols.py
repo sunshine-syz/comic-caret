@@ -41,7 +41,10 @@ APPROX_GAP = 69
 # The white between ¦'s pieces: at least the narrowest reference's, Maple Mono's at our cap
 # height (Fira Code's 192).
 BROKEN_BAR_GAP = 162
-INFINITY_HOLE = (155, 169)  # how wide and tall ∞'s holes are at least: the references' narrowest
+# How wide and tall ∞'s holes are at least. Wide: Maple Mono's 169, the narrowest reference's,
+# at our advance (Fira Code's 184). Tall: 169, under both references' at our cap height (Maple
+# Mono's 203, Fira Code's 249).
+INFINITY_HOLE = (169, 169)
 # How much taller each mark stands than ×: at least the least of the references that have it,
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
