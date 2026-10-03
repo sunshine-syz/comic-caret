@@ -192,10 +192,14 @@ def tilde_pieces(font):
     mid_low = to_edge(to_edge(waves(rise_before, rise), first, -OVERLAP, TROUGH_PROFILE),
                       last, ADVANCE + OVERLAP, CREST_PROFILE)
     end_low = to_edge(waves(rise_before, finish), first, -OVERLAP, TROUGH_PROFILE)
+    # Mirrored, a trough is a crest a unit thicker, as the profiles differ by one; each cut
+    # edge moves back onto its profile with the level run leading to it, so the stroke meets
+    # the seam level, as the piece across it does.
     mid = geo.mirrored_y(mid_low, TILDE_MIDDLE)
-    mid = geo.snap_edge(geo.snap_edge(mid, -OVERLAP, CREST_PROFILE),
-                        ADVANCE + OVERLAP, TROUGH_PROFILE)
-    end = geo.snap_edge(geo.mirrored_y(end_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE)
+    mid = geo.snap_edge(geo.snap_edge(mid, -OVERLAP, CREST_PROFILE, level=True),
+                        ADVANCE + OVERLAP, TROUGH_PROFILE, level=True)
+    end = geo.snap_edge(geo.mirrored_y(end_low, TILDE_MIDDLE), -OVERLAP, CREST_PROFILE,
+                        level=True)
     return {"asciitilde.sta": sta, "asciitilde.mid": mid, "asciitilde.end": end,
             "asciitilde.mid.low": mid_low, "asciitilde.end.low": end_low}
 

@@ -228,16 +228,29 @@ def stretch_span(layer, x0, x1, dx):
     return out
 
 
-def snap_edge(layer, x, profile):
+def snap_edge(layer, x, profile, level=False):
     """Move the corners of the flat edge at x onto the nearest height in `profile`.
 
-    Pieces cut at the same seam then meet at identical heights. Edits `layer` in place and
-    returns it.
+    Pieces cut at the same seam then meet at identical heights. With `level`, the level run
+    each corner ends moves with it, points and handles, so the stroke still leaves the edge
+    level: a corner moved alone turns the run's last units into a slant, which the bold's pen
+    grows into a step at the seam where the piece across it leaves level. Edits `layer` in
+    place and returns it.
     """
     for contour in layer:
-        for point in contour:
-            if point.on_curve and abs(point.x - x) < 0.5:
-                point.y = min(profile, key=lambda y: abs(y - point.y))
+        n = len(contour)
+        for i in range(n):
+            point = contour[i]
+            if not point.on_curve or abs(point.x - x) >= 0.5:
+                continue
+            was = point.y
+            dy = min(profile, key=lambda y: abs(y - was)) - was
+            point.y += dy
+            for step in (-1, 1) if level else ():
+                j = (i + step) % n
+                while abs(contour[j].x - x) >= 0.5 and abs(contour[j].y - was) < 0.5:
+                    contour[j].y += dy
+                    j = (j + step) % n
     return layer
 
 

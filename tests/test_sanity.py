@@ -170,6 +170,13 @@ class SanityTest(unittest.TestCase):
         self.assertEqual({n: hex(x) for n, x in flags.items() if x},
                          {n: hex(x) for n, x in VALIDATE_FLAGS.items()})
 
+    def test_reference_offsets_are_whole_units(self):
+        # validate() holds the points to whole units; a reference's offset places every point
+        # of the glyph it shows, so it is a whole unit too (project.ROUNDING).
+        off = {(g.glyphname, name): tuple(m[4:]) for g in self.glyphs
+               for name, m, *_ in g.references if any(v != round(v) for v in m[4:])}
+        self.assertEqual(off, {})
+
     def test_hints_are_current(self):
         # FontForge marks a glyph edited since it was last hinted with H in its Flags line.
         stale, name = [], None

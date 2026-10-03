@@ -16,7 +16,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 from add_ligatures import GENERATED
 from helpers import NerdBuilds, require_current_build
 from measure import ink, spans_at_x, vertical_edges
-from project import ADVANCE, FORMATS, OVERLAP, SFD, STYLES, font_file, style_of
+from project import ADVANCE, BOLD_SFD, FORMATS, OVERLAP, SFD, STYLES, font_file, style_of
 
 # Each built font.
 FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
@@ -330,31 +330,45 @@ class LigatureShapingTest(unittest.TestCase):
                     generated = [n for n in names(font, text, calt=False) if GENERATED.fullmatch(n)]
                     self.assertEqual(generated, [])
 
-    def test_joined_pieces_meet_without_a_step(self):
-        # A piece that runs on is cut flat at its cell's edge, and the next begins with the
-        # same edge or covers it; any step between them shows as a notch in the stroke. On
-        # the regular: the italic's pieces are the same pieces sheared about one pivot
-        # (tests/test_make_italic.py), so they meet as these do.
-        font = fontforge.open(str(SFD))
-        # A stroke hides an edge when it reaches a quarter of a stroke past both its ends, as
-        # the inner head of ->> does the shaft's end.
-        _, y0, _, y1 = font["hyphen"].boundingBox()
-        cover = (y1 - y0) / 4
-        for text in LIGATED:
-            for left, right in itertools.pairwise(names(REGULAR, text)):
-                with self.subTest(text=text, left=left, right=right):
-                    first, second = ink(font, left), ink(font, right)
-                    self.assertEqual(unmet(seam(first, ADVANCE + OVERLAP), second,
-                                           -OVERLAP, 1, cover), [])
-                    self.assertEqual(unmet(seam(second, -OVERLAP), first,
-                                           ADVANCE + OVERLAP, -1, cover), [])
-
     def test_every_generated_glyph_is_reachable(self):
         with open(SFD, encoding="utf-8") as sfd:
             made = {line.split()[1] for line in sfd
                     if line.startswith("StartChar: ") and GENERATED.fullmatch(line.split()[1])}
         reached = {name for font in FONTS for text in LIGATED for name in names(font, text)}
         self.assertEqual(sorted(made - reached), [])
+
+
+class SeamTest(unittest.TestCase):
+    """The pieces of a run meet across each seam. On the regular and the bold: the italic's
+    pieces are the regular's sheared about one pivot (tests/test_make_italic.py), so they meet
+    as those do; the bold's are the regular's grown by the pen, which can grow two pieces'
+    ends apart where they leave the seam at different slants."""
+    sfd = SFD
+
+    @classmethod
+    def setUpClass(cls):
+        require_current_build()
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_joined_pieces_meet_without_a_step(self):
+        # A piece that runs on is cut flat at its cell's edge, and the next begins with the
+        # same edge or covers it; any step between them shows as a notch in the stroke.
+        # A stroke hides an edge when it reaches a quarter of a stroke past both its ends, as
+        # the inner head of ->> does the shaft's end.
+        _, y0, _, y1 = self.font["hyphen"].boundingBox()
+        cover = (y1 - y0) / 4
+        for text in LIGATED:
+            for left, right in itertools.pairwise(names(REGULAR, text)):
+                with self.subTest(text=text, left=left, right=right):
+                    first, second = ink(self.font, left), ink(self.font, right)
+                    self.assertEqual(unmet(seam(first, ADVANCE + OVERLAP), second,
+                                           -OVERLAP, 1, cover), [])
+                    self.assertEqual(unmet(seam(second, -OVERLAP), first,
+                                           ADVANCE + OVERLAP, -1, cover), [])
+
+
+class BoldSeamTest(SeamTest):
+    sfd = BOLD_SFD
 
 
 class NerdFontTest(NerdBuilds, unittest.TestCase):
