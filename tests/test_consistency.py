@@ -69,7 +69,7 @@ OFF_ROW = {
 CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%‰…/\\()[]{}╳•°₩₦№"
             "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
-            "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪"
+            "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪↦"
             "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼⣿"
             "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ"
             "\uE0A0\uE0A1\uE0A2")  # the Powerline branch, line number and padlock
@@ -89,6 +89,10 @@ MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
 MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣"
+# The arrows along the axis with a head at one end or both: one length, so a row of them reads
+# as one set, as in the references (Fira Code's → ⇤ ⇥ within 4 of each other, Maple Mono's
+# → ↦ within 10).
+ONE_LENGTH = "←→↔⇐⇒⇔↦⇤⇥"
 
 # Case pairs whose marks differ by design: ď ť take an apostrophe-like caron, and ģ a turned
 # comma above where Ģ has one below.
@@ -179,6 +183,12 @@ class PlacementTest(unittest.TestCase):
                 _, b0, _, b1 = box(self.font, char)
                 if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
                     off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
+        self.assertEqual(off, {})
+
+    def test_axis_arrows_share_one_length(self):
+        widths = {char: box(self.font, char)[2] - box(self.font, char)[0] for char in ONE_LENGTH}
+        length = statistics.median(widths.values())
+        off = {char: round(w - length) for char, w in widths.items() if abs(w - length) > WOBBLE}
         self.assertEqual(off, {})
 
     def test_mirror_pairs_mirror_each_other(self):
