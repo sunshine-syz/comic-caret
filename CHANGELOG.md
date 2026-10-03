@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (unreleased)
+## 2.0.0 (2026-10)
 
 - Every character is 600 units wide, up from 550, at the same letter height. Most coding fonts are 600 to 620 wide, but their letters are bigger too. The cell is now 1.27 times the x-height, between Source Code Pro's 1.26 and Intel One Mono's 1.32, where 1.7.0's was 1.16. So text reads more open.
 - At the same font size, a line holds 8% fewer characters. Lower the size by about one point to keep a terminal's column count. In ComicCaret Nerd Font, the Powerline separators fill the wider cell, and the widest icons, such as the weather icons, grow with it by up to 9%. The other icons, 97% of them, keep their size.
