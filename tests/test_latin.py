@@ -170,6 +170,17 @@ class LookalikeTest(unittest.TestCase):
                 self.assertGreaterEqual(top - letter_top, floor)
                 self.assertGreaterEqual(letter_bottom - bottom, floor)
 
+    def test_middle_dot_l_ends_its_dot_past_the_l(self):
+        # Over the l's foot, ŀ's dot reads as a mark on l. Fira Code, Maple Mono and Intel One
+        # Mono end it 118, 104 and 148 past the l at our cell, into the next cell, and the five
+        # reference bolds 65 to 135; ours keeps to its cell, so it ends past the l by less.
+        ends = {}
+        for name, matrix, *_ in self.font["ldot"].references:
+            layer = measure.ink(self.font, name)
+            layer.transform(matrix)
+            ends[name] = layer.boundingBox()[2]
+        self.assertGreater(ends["periodcentered"], ends["l"])
+
     def test_zero_slash_stays_inside(self):
         ring = max(self.font["zero"].foreground, key=lambda c: c.boundingBox()[3])
         self.assertEqual(ring.boundingBox(), self.font["zero"].boundingBox())

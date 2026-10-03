@@ -250,6 +250,29 @@ WIDTHS = {
     "J": (424, 455),  # Fira Code, Intel One Mono
     "Æ": (535, 620),  # Maple Mono, Fira Code
     "µ": (414, 423),  # Maple Mono, Fira Code
+    "⁄": (565, 600),  # Fira Code, Intel One Mono
+    "₺": (496, 536),  # Fira Code, Intel One Mono
+    "€": (506, 536),  # Fira Code, Maple Mono
+    "ß": (444, 462),  # Maple Mono, Intel One Mono
+    "ẞ": (448, 506),  # Maple Mono, Fira Code
+    "ð": (460, 475),  # Maple Mono, Intel One Mono
+    "Œ": (548, 619),  # Intel One Mono, Fira Code
+    "Ħ": (541, 596),  # Intel One Mono, Fira Code
+    "ħ": (481, 495),  # Fira Code, Maple Mono
+    "Ł": (490, 530),  # Intel One Mono, Maple Mono
+    "Ð": (520, 542),  # Intel One Mono, Fira Code
+    "đ": (510, 518),  # Fira Code, Intel One Mono
+    "¥": (489, 521),  # Maple Mono, Fira Code
+    "₽": (499, 541),  # Fira Code, Intel One Mono
+    "¼": (576, 602),  # Maple Mono, Fira Code
+    "½": (576, 608),  # Maple Mono, Fira Code
+    "¾": (579, 605),  # Maple Mono, Fira Code
+    "¨": (316, 350),  # Fira Code, Maple Mono
+    "°": (300, 403),  # Maple Mono, Intel One Mono
+    "•": (240, 263),  # Maple Mono, Intel One Mono
+    "☐": (502, 566),  # Intel One Mono, Maple Mono
+    "☑": (502, 566),  # Intel One Mono, Maple Mono
+    "☒": (502, 566),  # Intel One Mono, Maple Mono
 }
 # The same from the five reference bolds: Fira Code, Maple Mono, Intel One Mono, Monaspace Neon
 # and Monaspace Radon, each comment naming the bolds that set the row.
@@ -291,6 +314,29 @@ BOLD_WIDTHS = {
     "J": (460, 517),  # Monaspace Neon, Monaspace Radon
     "Æ": (553, 615),  # Monaspace Neon, Fira Code
     "µ": (452, 470),  # Intel One Mono, Fira Code
+    "⁄": (429, 600),  # Monaspace Neon, Intel One Mono
+    "₺": (528, 537),  # Maple Mono, Monaspace Neon
+    "€": (505, 547),  # Monaspace Neon, Fira Code
+    "ß": (476, 518),  # Intel One Mono, Fira Code
+    "ẞ": (483, 578),  # Maple Mono, Fira Code
+    "ð": (468, 517),  # Monaspace Radon, Fira Code
+    "Œ": (535, 621),  # Intel One Mono, Maple Mono
+    "Ħ": (559, 596),  # Intel One Mono, Fira Code
+    "ħ": (499, 525),  # Monaspace Radon, Maple Mono
+    "Ł": (510, 563),  # Intel One Mono, Fira Code
+    "Ð": (535, 596),  # Intel One Mono, Monaspace Radon
+    "đ": (540, 570),  # Monaspace Neon, Fira Code
+    "¥": (503, 584),  # Maple Mono, Fira Code
+    "₽": (532, 555),  # Monaspace Neon, Intel One Mono
+    "¼": (516, 635),  # Monaspace Neon, Fira Code
+    "½": (540, 640),  # Monaspace Neon, Fira Code
+    "¾": (524, 628),  # Monaspace Neon, Fira Code
+    "¨": (369, 439),  # Intel One Mono, Monaspace Radon
+    "°": (324, 418),  # Monaspace Neon, Intel One Mono
+    "•": (262, 319),  # Maple Mono, Intel One Mono
+    "☐": (502, 579),  # Intel One Mono, Fira Code
+    "☑": (502, 579),  # Intel One Mono, Fira Code
+    "☒": (502, 579),  # Intel One Mono, Fira Code
 }
 
 
