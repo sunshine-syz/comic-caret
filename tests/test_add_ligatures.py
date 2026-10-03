@@ -13,13 +13,14 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import add_ligatures
 from add_ligatures import GENERATED
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
-from project import ADVANCE, AXIS, OVERLAP, ROUNDING, SFD, WOBBLE
+from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
-# it: 289.6 in its 1200-unit cell, scaled to ours.
+# it: 289.6 in its 1200-unit cell, scaled to ours; Fira Code Bold's, 309.7.
 FIRA_HEAD_GAP = 289.6 * ADVANCE / 1200
+FIRA_BOLD_HEAD_GAP = 309.7 * ADVANCE / 1200
 # <>'s ink width in x-heights: Maple Mono's (920 of 550) and Fira Code's (1850 of 1053).
 DIAMOND_WIDTHS = (1.67, 1.76)
 # The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
@@ -107,9 +108,10 @@ class MeasurementTest(unittest.TestCase):
                 angle = self.font[name].foreground
                 x0, x1 = self.only(spans_at_y(angle, AXIS), "at the point")
                 self.assertAlmostEqual(x1 if name == "greater" else x0, tip, delta=2)
-                for end_x, end_y in al.ARM_ENDS[name]:
-                    self.assertTrue(any(a < end_x < b for a, b in spans_at_y(angle, end_y)),
-                                    f"{name} has no arm end at ({end_x}, {end_y})")
+                # The arm ends are their round ends' centres, rounded to whole units.
+                for end, above in zip(al.ARM_ENDS[name], (True, False), strict=True):
+                    for constant, found in zip(end, al.end_centre(angle, above), strict=True):
+                        self.assertAlmostEqual(constant, found, delta=ROUNDING)
 
     def test_colon_lift_centres_the_colon_on_the_equal_sign(self):
         _, c0, _, c1 = self.font["colon"].boundingBox()
@@ -129,6 +131,26 @@ class MeasurementTest(unittest.TestCase):
             with self.subTest(y=y):
                 self.assertAlmostEqual(self.only(widths_at(bar, y), f"at y {y}"), middle,
                                        delta=0.05 * middle)
+
+
+class TwoHeadsTest(unittest.TestCase):
+    """->> <<-: the white between the two heads, at least Fira Code's."""
+    sfd, head_gap = SFD, FIRA_HEAD_GAP
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_two_heads_stay_apart(self):
+        for glyph in ("greater.twohead", "less.twohead"):
+            with self.subTest(glyph=glyph):
+                layer = self.font[glyph].foreground
+                self.assertEqual(len(layer), 2)  # the outer head, and the inner one with the shaft
+                self.assertGreaterEqual(gap(*(one_layer(c) for c in layer)), self.head_gap)
+
+
+class BoldTwoHeadsTest(TwoHeadsTest):
+    sfd, head_gap = BOLD_SFD, FIRA_BOLD_HEAD_GAP
 
 
 class GlyphShapeTest(unittest.TestCase):
@@ -268,6 +290,16 @@ class GlyphShapeTest(unittest.TestCase):
                 self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=ROUNDING)
         self.assertLessEqual(max(heights.values()) - min(heights.values()), ROUNDING, heights)
 
+    def test_or_equal_angles_share_one_span(self):
+        # <= and >= mirror each other, as in Fira Code and Maple Mono, so their angles stand
+        # at one height; built each from its own < or >, they stood 9 apart.
+        spans = []
+        for glyph in ("less_equal.liga", "greater_equal.liga"):
+            angle = max(self.font[glyph].foreground, key=lambda contour: contour.boundingBox()[3])
+            spans.append(angle.boundingBox()[1::2])
+        for less, greater in zip(*spans, strict=True):
+            self.assertAlmostEqual(less, greater, delta=ROUNDING)
+
     def test_tails_leave_the_point_open(self):
         # >=> <=<: each arm runs into its = bar, and nothing joins the bars at the axis.
         for tail in ("greater.dtail", "less.dtail"):
@@ -275,13 +307,6 @@ class GlyphShapeTest(unittest.TestCase):
                 layer = self.font[tail].foreground
                 self.assertEqual(len(layer), 2)
                 self.assertEqual(spans_at_y(layer, AXIS), [])
-
-    def test_two_heads_stay_apart(self):
-        for glyph in ("greater.twohead", "less.twohead"):
-            with self.subTest(glyph=glyph):
-                layer = self.font[glyph].foreground
-                self.assertEqual(len(layer), 2)  # the outer head, and the inner one with the shaft
-                self.assertGreaterEqual(gap(*(one_layer(c) for c in layer)), FIRA_HEAD_GAP)
 
     def test_wave_arrows_are_one_stroke(self):
         # The wave runs into the head, leaving no counter or speck of white between them.

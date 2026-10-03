@@ -151,7 +151,7 @@ class LookalikeTest(unittest.TestCase):
     sfd = SFD
     per_mille_clearance = PER_MILLE_CLEARANCE
     # The floors the tests below take from the references, which they name.
-    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 76, 88
+    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 68, 79
     slash_short = 0  # how much less than half a stroke Ø's slash may run past O
 
     @classmethod
@@ -204,8 +204,8 @@ class LookalikeTest(unittest.TestCase):
 
     def test_capital_sharp_s_stays_open_at_the_bottom(self):
         # The bowl ends short of the stem, or ẞ reads as B: at least as far as the narrowest
-        # reference's at our advance (Maple Mono 76 at 3-9 % of the height; Fira Code 91, Intel
-        # One Mono 140).
+        # reference's, at our cap height as a counter is compared (Maple Mono 68.6 at 3-9 % of
+        # the height; Fira Code 89.2, Intel One Mono 147.1).
         layer = self.font["uni1E9E"].foreground
         _, y0, _, y1 = layer.boundingBox()
         for share in (0.03, 0.06, 0.09):
@@ -215,8 +215,8 @@ class LookalikeTest(unittest.TestCase):
 
     def test_capital_sharp_s_middle_is_open(self):
         # The white between the stem and the diagonal, down to where it meets the bowl: at
-        # least the narrowest reference's at our advance (Maple Mono 88; Fira Code 121, Intel
-        # One Mono 148).
+        # least the narrowest reference's, at our cap height (Maple Mono 79.5; Fira Code 117.9,
+        # Intel One Mono 155.0).
         layer = self.font["uni1E9E"].foreground
         _, y0, _, y1 = layer.boundingBox()
         gaps = []
@@ -507,10 +507,12 @@ def bold_stems():
 class BoldLookalikeTest(LookalikeTest):
     sfd = BOLD_SFD
     per_mille_clearance = BOLD_PER_MILLE_CLEARANCE
-    # The reference bolds' narrowest: Fira Code's 30.8 at ß's foot (Maple Mono's 60.1, Intel
-    # One Mono's 85.1), 43.1 at its waist (59.6, 76.1) and 44.9 at ẞ's foot (62.6, 93.8);
-    # Maple Mono's 65.1 at ẞ's middle (Fira Code's 71.5, Intel One Mono's 103).
-    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 30, 43, 44, 65
+    # The reference bolds' narrowest. ß's per 1000 em, as the regular's: Fira Code's 34.2 at
+    # its foot (Maple Mono's 65.6, Intel One Mono's 94.9) and 48.2 at its waist (65.0, 85.0).
+    # ẞ's at the bold's cap height, as the regular's: Fira Code's 47.9 at its foot (Maple
+    # Mono's 62.3, Intel One Mono's 107.9) and Maple Mono's 64.8 at its middle (Fira Code's
+    # 76.0, Intel One Mono's 118.5).
+    sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 34, 48, 47, 64
     # Known exception: Ø ø's slash need run past the bowl by only half the regular's stroke
     # (39.6), not half the bold's (46.6); it runs 45 past, as the regular's does. The pen
     # grows the slash's end and the bowl's top alike, by its half height, while half the

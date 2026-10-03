@@ -39,6 +39,10 @@ SHUT_COUNTERS = ("uni20A6", "uni20A9")
 # the pens grew the two toward each other, the round bar's reach up and ⇧'s down, past what
 # the pen grows ⇧ itself.
 LIFTED_FURTHER = ("uni21EA",)
+# Known exception to how far an outline may grow across: ->> <<-'s inner head, which moves
+# along its shaft, away from the outer head, until the white between them is Fira Code Bold's
+# (make_bold.HEADS_APART). It moves no further than the pen's width past what the pen grows it.
+HEADS_FURTHER = ("greater.twohead", "less.twohead")
 
 
 class GeneratorTest(unittest.TestCase):
@@ -133,9 +137,10 @@ class BoldTest(unittest.TestCase):
         the regular's it grew from, along `axis` (0 across, 1 up and down), by more than its
         pen's reach (make_bold.pen_of(): the small parts' is lighter, the heavy marks' heavier,
         the tonos's turned) and a unit of rounding: a stem grows half the pen's width on each
-        side, a level stroke half its height; ⇪'s top further (LIFTED_FURTHER). Covers a trim
-        or an overlap removal that failed and left its box, and a condensed outline, which
-        takes in each side by at most the pen it then grows by."""
+        side, a level stroke half its height; ⇪'s top further (LIFTED_FURTHER), and ->> <<-'s
+        inner head along its shaft (HEADS_FURTHER). Covers a trim or an overlap removal that
+        failed and left its box, and a condensed outline, which takes in each side by at most
+        the pen it then grows by."""
         pens = make_bold.pens(self.regular)
         found = {}
         for name in self.of_class(BOLDER):
@@ -147,6 +152,9 @@ class BoldTest(unittest.TestCase):
             if axis == 1 and name in LIFTED_FURTHER:
                 level = make_bold.reach((*PEN, 0))[1]
                 limits[1] = 2 * level + make_bold.reach(pen)[1] + ROUNDING
+            if axis == 0 and name in HEADS_FURTHER:
+                shaft = 0 if regular.boundingBox()[0] < 0 else 1  # the side it runs on into
+                limits[shaft] += PEN[0]
             box, regular_box = bold.boundingBox(), regular.boundingBox()
             if any(abs(box[side] - regular_box[side]) > limit
                    for side, limit in zip((axis, axis + 2), limits, strict=True)):

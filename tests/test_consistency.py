@@ -66,7 +66,7 @@ OFF_ROW = {
 # small ones of the superscripts and subscripts, which stand in the middle of the cell like
 # them; the spacing accents and low quotes, which Fira Code centers too; and the symbols,
 # which the reference fonts center by their ink box.
-CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%…/\\()[]{}╳•°₩₦№"
+CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕↖↗↘↙⇔✗#%‰…/\\()[]{}╳•°₩₦№"
             "ΑΔΗΘΙΛΜΝΞΟΠΤΥΦΧΨΩοθυφχψω⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼₀₁₂₃₄₅₆₇₈₉₊₋₌∆∇∏∫◊∅″‖⟨⟩"
             "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪"

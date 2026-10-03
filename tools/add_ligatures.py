@@ -26,11 +26,9 @@ FEA = ROOT / "src" / "ligatures.fea"
 LINE_EXTENSION = 0x23AF
 
 STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
-# Arrowheads: < > with their arm ends as high, and each arm turned this much steeper, to
-# about Fira Code's slope, 46-50° from level; the turn alone makes them taller than < >. The
-# steeper arms end nearer the point, so → ← ⇒ ⇐, which carry these heads in one cell, keep a
-# shaft.
-HEAD_SCALE = 1
+# Arrowheads: < > with each arm turned this much steeper, to about Fira Code's slope, 46-50°
+# from level, and reaching as high and low as → ←. The steeper arms end nearer the point, so
+# → ← ⇒ ⇐, which carry these heads in one cell, keep a shaft.
 HEAD_TURN = math.radians(14.4)
 
 # The names of everything this script makes, and of nothing else in the font.
@@ -77,21 +75,22 @@ EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
-# their height, widening the angle from 425 to 517 like the references' angles.
+# their height, widening the angle from 425 to 519, Fira Code's 1.10 x-heights.
 ANGLE_WIDTH_GAIN = 94
-# Where the arms of > and < end, upper then lower: across, about the end caps' centres; up and
-# down, heights fitted so that longer_angle(), turned HEAD_TURN, draws arrowheads that match →
-# and ←, each arm its own, as the hand-drawn arms differ. longer_angle() draws the heads of
-# |> <| <|> from the same heights, and pipe_head() centres those on the axis.
-ARM_ENDS = {"greater": ((119, 515), (122, 47)),
-            "less": ((478, 491), (481, 23))}
+# The centres of the round ends of >'s arms, upper then lower, as end_centre() measures them.
+# The hand-drawn arms differ, so each has its own. < is > turned 180° about the middle of the
+# cell on the axis, so its ends are these turned.
+GREATER_ENDS = ((150, 490), (153, 63))
+ARM_ENDS = {"greater": GREATER_ENDS,
+            "less": tuple((ADVANCE - x, 2 * AXIS - y) for x, y in reversed(GREATER_ENDS))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
 BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
 
-# |> <|: the head with its arm ends 146 % as high as those of > <, over the round ends of a
-# bar as tall as the head, so each corner turns as one round stroke end. That makes the
-# triangle 1.52 x-heights tall and 1.24 wide, as Fira Code's and JetBrains Mono's are.
-PIPE_HEAD_SCALE = 1.46
+# |> <|: the head with its arms lengthened until it is as tall as Fira Code's triangle, 1603
+# of its 1053 x-height (JetBrains Mono's is 835 of 550), over the round ends of a bar as tall
+# as the head, so each corner turns as one round stroke end. It then comes out 1.26 x-heights
+# wide, theirs 1.24: the hand-drawn > has its flatter arm below, which lengthens the further.
+PIPE_HEIGHT = 1603 / 1053  # in x-heights
 PIPE_BAR_EDGE = {"greater": 295 - ADVANCE, "less": 905 - ADVANCE}  # references' outer edge
 BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
@@ -219,14 +218,27 @@ def turned(layer, name, angle):
     return geo.transformed(layer, geo.about(psMat.rotate(angle), TIP[name], AXIS))
 
 
-def longer_angle(font, name, scale, steeper=0.0):
-    """< or > with its arm ends `scale` times as high above and below the axis, each arm turned
-    `steeper` radians toward upright about the point. Unlike scaling the glyph, lengthening and
-    turning the arms keeps their stroke weight."""
+def reaching(flat, name, direction, goal):
+    """The arm `flat`, laid along +x from the point of < or >, lengthened along its straight
+    part so that, turned to `direction`, its ink reaches the height `goal`. The end cap moves
+    along the arm, so its height changes by the gain times the sine."""
+    tip = TIP[name]
+    arm = turned(flat, name, direction)
+    arm.addExtrema("all")  # else the box reaches to the control points
+    _, low, _, high = arm.boundingBox()
+    gain = (goal - (high if goal > AXIS else low)) / math.sin(direction)
+    return geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+
+
+def longer_angle(font, name, reach, steeper=0.0):
+    """< or > with each arm turned `steeper` radians toward upright about the point and
+    lengthened along its own line until its ink reaches `reach`, the (bottom, top) heights.
+    Unlike scaling the glyph, lengthening and turning the arms keeps their stroke weight."""
     tip = TIP[name]
     inner = 0 if name == "greater" else 1  # which end of a span faces into the angle
     arms, inner_edges = [], []
-    for (_, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
+    for (_, end_y), half, goal in zip(ARM_ENDS[name], arm_halves(font, name), reversed(reach),
+                                      strict=True):
         # The arms are drawn by hand, so the point-to-end line misses their axis by up to 5°;
         # stretching along it would skew them. Take the axis through two cross-sections, on
         # the straight part between the point and the end cap.
@@ -237,10 +249,8 @@ def longer_angle(font, name, scale, steeper=0.0):
         # Upright is up for the upper arm and down for the lower, whichever way the point faces.
         toward_upright = math.copysign(1, math.cos(direction) * math.sin(direction))
         new_direction = direction + toward_upright * steeper
-        gain = rise * (scale / math.sin(new_direction) - 1 / math.sin(direction))
-        # Lay the arm along +x from the point, lengthen its straight part, then turn it into place.
-        flat = geo.stretch_span(turned(half, name, -direction),
-                                tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+        # Lay the arm along +x from the point, lengthen it, then turn it into place.
+        flat = reaching(turned(half, name, -direction), name, new_direction, goal)
         arms.append(turned(flat, name, new_direction))
         m = geo.about(psMat.rotate(new_direction - direction), tip, AXIS)
         inner_edges.append([(m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5])
@@ -280,10 +290,16 @@ def open_crotch(angle, name, upper, lower):
     return opened
 
 
+def arrowhead(font, name):
+    """> or < as the head of → or ←: its arms turned HEAD_TURN steeper and reaching as high and
+    low as that arrow, so → beside -> reads as the same arrow."""
+    _, y0, _, y1 = font["arrowright" if name == "greater" else "arrowleft"].boundingBox()
+    return longer_angle(font, name, (y0, y1), HEAD_TURN)
+
+
 def arrowheads(font):
     def head(name, shaft, x0, x1):
-        return geo.union(longer_angle(font, name, HEAD_SCALE, HEAD_TURN),
-                         stroke(font, shaft, x0, x1))
+        return geo.union(arrowhead(font, name), stroke(font, shaft, x0, x1))
 
     left, right = TIP["less"], TIP["greater"]
     return {
@@ -314,17 +330,18 @@ def not_equal(font, cells):
 
 
 def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
-    """< or > with each arm turned flatter about the point and lengthened so its end keeps
-    its height, which widens the angle by `width_gain`."""
+    """< or > with each arm turned flatter about the point, so its end cap's centre moves out
+    by `width_gain`, and lengthened until its ink reaches the height it had."""
     tip = TIP[name]
+    _, bottom, _, top = font[name].boundingBox()
     arms = []
-    for (end_x, end_y), half in zip(ARM_ENDS[name], arm_halves(font, name), strict=True):
+    for (end_x, end_y), half, goal in zip(ARM_ENDS[name], arm_halves(font, name), (top, bottom),
+                                          strict=True):
         dx, dy = end_x - tip, end_y - AXIS
-        new_dx = dx + OUTWARD[name] * width_gain
-        old_direction, new_direction = math.atan2(dy, dx), math.atan2(dy, new_dx)
-        gain = math.hypot(new_dx, dy) - math.hypot(dx, dy)
-        # Lay the arm along +x from the point, lengthen its far half, then turn it into place.
-        flat = geo.stretch(turned(half, name, -old_direction), tip + ARM_SPAN[0], gain)
+        old_direction = math.atan2(dy, dx)
+        new_direction = math.atan2(dy, dx + OUTWARD[name] * width_gain)
+        # Lay the arm along +x from the point, lengthen it, then turn it into place.
+        flat = reaching(turned(half, name, -old_direction), name, new_direction, goal)
         arms.append(turned(flat, name, new_direction))
     return geo.union(*arms)
 
@@ -345,8 +362,11 @@ def or_equal(font, name):
         psMat.compose(psMat.translate(-(x0 + x1) / 2, -(y0 + y1) / 2), psMat.rotate(direction)),
         psMat.translate((tip + far[0]) / 2, (AXIS + far[1]) / 2 - drop)))
     symbol = geo.union(flatter_angle(font, name), bar)
-    x0, y0, x1, y1 = symbol.boundingBox()
-    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, AXIS - (y0 + y1) / 2))
+    tight = symbol.dup()
+    tight.addExtrema("all")  # else the box reaches to the control points
+    x0, y0, x1, y1 = tight.boundingBox()
+    # Moved up by whole units, so rounding keeps the angle as tall as < >.
+    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, round(AXIS - (y0 + y1) / 2)))
 
 
 def squeezed_bar(font, height):
@@ -360,11 +380,10 @@ def squeezed_bar(font, height):
 
 
 def pipe_head(font, name):
-    """The head of > or < enlarged for |> <| <|>, centred on the axis. Its arms' ARM_ENDS
-    heights differ, and longer_angle() scales both about the axis, so uncentred it sits off."""
-    head = longer_angle(font, name, PIPE_HEAD_SCALE)
-    _, y0, _, y1 = head.boundingBox()
-    return geo.moved(head, 0, AXIS - (y0 + y1) / 2)
+    """The head of > or < enlarged for |> <| <|>: PIPE_HEIGHT x-heights tall, centred on the
+    axis."""
+    half = PIPE_HEIGHT * font.os2_xheight / 2
+    return longer_angle(font, name, (AXIS - half, AXIS + half))
 
 
 def pipe_bar(font, head):
@@ -407,8 +426,8 @@ def pipes(font):
 
 def end_centre(angle, above):
     """(x, y): the centre of the round end of the arm of `angle` above or below the axis, half
-    a stroke back from the arm's far end along its middle line. ARM_ENDS misses these centres
-    by up to 31."""
+    a stroke back from the arm's far end along its middle line. ARM_ENDS holds them for < and
+    > as drawn."""
     _, y0, _, y1 = angle.boundingBox()
     rise = (y1 if above else y0) - AXIS
     (ax, ay), (bx, by) = (middle_at(angle, AXIS + k * rise) for k in (0.3, 0.65))
@@ -436,7 +455,7 @@ def diamond(font):
 def tail(font, name):
     """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
-    angle = longer_angle(font, name, HEAD_SCALE, HEAD_TURN)
+    angle = arrowhead(font, name)
     parts = []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
@@ -454,7 +473,7 @@ def tail(font, name):
 
 def two_heads(font, name):
     """The end of ->> or <<-: a second head HEAD_PITCH inside the first, where the shaft ends."""
-    head = longer_angle(font, name, HEAD_SCALE, HEAD_TURN)
+    head = arrowhead(font, name)
     inner = geo.transformed(head, psMat.translate(OUTWARD[name] * HEAD_PITCH, 0))
     end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
     shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
@@ -470,7 +489,7 @@ def wave_arrows(font):
     point, which is filled.
     """
     tildes = tilde_pieces(font)
-    right, left = (longer_angle(font, name, HEAD_SCALE, HEAD_TURN) for name in ("greater", "less"))
+    right, left = (arrowhead(font, name) for name in ("greater", "less"))
     high = geo.trim(tildes["asciitilde.mid"], x1=WAVE_END)
     low = geo.trim(tildes["asciitilde.mid.low"], x1=WAVE_END)
     return {"greater.warrow": geo.without_specks(geo.union(right, high), SPECK),
@@ -485,7 +504,7 @@ def comment_open(font):
     shaft = stroke(font, "hyphen", TIP["less"] + SHAFT_INTO_HEAD)
     [bar] = RUNS["hyphen"]
     shaft = geo.stretch(shaft, bar.cuts[1], ADVANCE + OVERLAP - shaft.boundingBox()[2], bar.band)
-    arrow = geo.union(longer_angle(font, "less", HEAD_SCALE, HEAD_TURN), shaft)
+    arrow = geo.union(arrowhead(font, "less"), shaft)
     x0, _, x1, _ = font["exclam"].boundingBox()
     start = font["hyphen"].boundingBox()[0] + ADVANCE  # the run's start, from the !'s cell
     return arrow, round(((start - x1) - (x0 - OVERLAP)) / 2)
@@ -501,8 +520,10 @@ def build(font):
     glyphs["exclam_equal.liga"] = not_equal(font, 2)
     glyphs["exclam_equal_equal.liga"] = not_equal(font, 3)
     glyphs["colon.eq"] = [("colon", 0, COLON_LIFT)]
-    glyphs["less_equal.liga"] = or_equal(font, "less")
+    # <= is >= mirrored, as in Fira Code and Maple Mono: < is > turned, so built from its own
+    # arms, the bar would hang under the other hand-drawn arm and stand the two apart.
     glyphs["greater_equal.liga"] = or_equal(font, "greater")
+    glyphs["less_equal.liga"] = geo.mirrored_x(glyphs["greater_equal.liga"], 0)
     glyphs["bar_greater.liga"] = pipe(font, "greater")
     glyphs["less_bar.liga"] = pipe(font, "less")
     for name in TIGHT_KEEP:

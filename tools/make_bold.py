@@ -41,8 +41,8 @@ right one mirrored is the bold right one mirrored (mirror_pairs()).
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
-SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED); a bar moves up its stems (RAISED) or
-keeps its ends (BLUNT). An accent the pen grows out of the line box moves down into it
+SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART); a bar moves up its stems
+(RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line box moves down into it
 (lower_into_line()), and a mark it grows within MARK_CLEARANCE of its letter rises clear
 (raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
@@ -197,11 +197,13 @@ ACROSS_AS_UP = ("uni21D5",)
 MERGED = ("Theta",)
 
 # Outlines whose pieces stand side by side, which the pen would grow into one: the arrows and
-# bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 10 apart, and the letters
+# bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 75 apart, and the letters
 # of ℃ ℉ № beside their ring and o, 1 to 36 apart. Each piece grows on its own, and the wider
-# is condensed away from the other, its far end kept, or both alike when they are as wide,
-# until the white between them is the regular's: ⇥ ↹'s bar keeps the full pen, and the white
-# twice SYMBOL_SIDE (pieces_apart()); ℃'s ring stays before its C (tests/test_symbols.py).
+# is condensed away from the other, or both alike when they are as wide, until the white
+# between them is the regular's. Each keeps its far end where the pen grows it, or at the side
+# room where the pen would grow it past (‰'s zeros), so ‰ stays as wide as % and centred:
+# ⇥ ↹'s bar keeps the full pen, and the white twice SYMBOL_SIDE (pieces_apart()); ℃'s ring
+# stays before its C (tests/test_symbols.py).
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
@@ -247,6 +249,15 @@ BLUNT = ("uni20A9", "uni20A6")
 # further when its bar, grown as heavy as ⇧'s shaft walls (ROUND), comes within twice
 # SYMBOL_SIDE of it.
 LIFTED = {"uni21EA": "uni21E7"}
+
+# The arrows with two heads, ->> <<-: the pen grows the heads toward each other, leaving 147
+# between them, under Fira Code Bold's 155, the one reference bold that draws ->>. The inner
+# head, with the shaft it ends, moves along the shaft by the fewest whole units that keep
+# HEAD_WHITE between the two (heads_apart()); the shaft runs on under the cell before's. A
+# wider HEAD_PITCH in tools/add_ligatures.py would do it too, but would also take the regular's
+# white from 174 to 183, past 1.7.0's 173.
+HEADS_APART = ("greater.twohead", "less.twohead")
+HEAD_WHITE = 309.7 * ADVANCE / 1200  # Fira Code Bold's, 309.7 of its 1200 cell
 
 # A cut exactly on a piece's cut line runs through the points where the pen's round end meets
 # the stroke, and intersect() then fails, leaving the stroke uncut or the cutting box behind;
@@ -570,6 +581,13 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
     tallest = max(range(len(parts)), key=lambda k: boxes[k][3] - boxes[k][1])
     own = [light if name in LIGHT_PIECES and k != tallest else pen for k in range(len(parts))]
     grown = [fitted(name, part, bound, scratch, own[k]) for k, part in enumerate(parts)]
+
+    def far_kept(k, side):
+        """(parts[k], the x of its far end on `side`, 0 left or 1 right), moved in first as far
+        as the pen would grow that end past `bound`."""
+        x, out = boxes[k][2 * side], reach(own[k])[0]
+        inward = max(bound[0] + out - x, 0) if side == 0 else min(bound[1] - out - x, 0)
+        return geo.moved(parts[k], inward, 0), x + inward
     for a, b in itertools.permutations(range(len(parts)), 2):
         (a0, a1, a2, a3), (b0, b1, b2, b3) = boxes[a], boxes[b]
         white = b0 - a2  # a stands left of b
@@ -580,14 +598,12 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
             continue
         wider = (a2 - a0) - (b2 - b0)
         share = 0.5 if abs(wider) <= ROUNDING else float(wider > 0)  # how much a gives way
-        # About the far end, or the middle where the far end must come in too (№'s N).
         if share:
-            far = a0 if a0 - reach(own[a])[0] >= bound[0] else None
-            grown[a] = fitted(name, parts[a], (bound[0], left - share * lack), scratch,
-                              own[a], far)
+            part, far = far_kept(a, 0)
+            grown[a] = fitted(name, part, (bound[0], left - share * lack), scratch, own[a], far)
         if share < 1:
-            far = b2 if b2 + reach(own[b])[0] <= bound[1] else None
-            grown[b] = fitted(name, parts[b], (right + (1 - share) * lack, bound[1]), scratch,
+            part, far = far_kept(b, 1)
+            grown[b] = fitted(name, part, (right + (1 - share) * lack, bound[1]), scratch,
                               own[b], far)
     if name in SLASHES:
         i = tallest
@@ -684,6 +700,17 @@ def dashed(name, outline, bound, scratch, pen):
                                                    0, y0))
         grown.append(fitted(name, part, bound, scratch, pen))
     return geo.cleanup(geo.union(*grown))
+
+
+def heads_apart(name, layer):
+    """The HEADS_APART glyph's outline with its inner head, the piece with the shaft, moved
+    along the shaft until it stands HEAD_WHITE from the outer head."""
+    outer, inner = sorted(pieces(layer), key=lambda piece: piece.boundingBox()[2]
+                          - piece.boundingBox()[0])  # the shaft makes the inner the wider
+    way = LEFT if inner.boundingBox()[0] < outer.boundingBox()[0] else RIGHT
+    if (steps := clearance(inner, outer, way, HEAD_WHITE)) is None:
+        sys.exit(f"{name}: its inner head can't move clear of the outer one")
+    return geo.cleanup(geo.union(outer, geo.moved(inner, way[0] * steps, 0)))
 
 
 def placed(font, glyph):
@@ -885,13 +912,13 @@ def build(font):
     for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
-                   "HEAVY"):
+                   "HEAVY", "HEADS_APART"):
         for name in globals()[listed]:
             if classes.get(name) != BOLDER:
                 sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")
     ways = {"PIECES_APART": PIECES_APART, "SHRUNK": SHRUNK, "OPENED": OPENED, "DASHED": DASHED,
-            "LIFTED": LIFTED, "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT":
-            RAISED + MERGED + OWN_BOX + ACROSS_AS_UP + BLUNT}
+            "LIFTED": LIFTED, "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT, HEADS_APART":
+            RAISED + MERGED + OWN_BOX + ACROSS_AS_UP + BLUNT + HEADS_APART}
     for (a, first), (b, second) in itertools.combinations(ways.items(), 2):
         if both := sorted(set(first) & set(second)):
             sys.exit(f"make_bold: {a} and {b} both name {both}")
@@ -954,6 +981,8 @@ def build(font):
             if name in BLUNT:  # a unit wide, as the stroke needs a pen with some width
                 grown.append(fitted(name, outline, bound, scratch, (1, pen[1], 0)))
             glyph.foreground = grown[0] if len(grown) == 1 else geo.cleanup(geo.union(*grown))
+            if name in HEADS_APART:
+                glyph.foreground = heads_apart(name, glyph.foreground)
         glyph.autoHint()
     for left, right in mirrors.items():
         font[left].foreground = geo.mirrored_x(font[right].foreground, ADVANCE / 2)

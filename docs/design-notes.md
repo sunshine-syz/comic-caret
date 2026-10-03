@@ -18,7 +18,8 @@ New strokes are drawn in the font's own hand: round ends, the stem weight (about
 wobble. Reuse an existing stroke where one fits; move and shorten strokes rather than scaling
 them. The exceptions:
 
-- ∞ is 8's loop, scaled to fit; every reference draws ∞ lighter than its letters.
+- ∞ is 8's loop, scaled to fit, then its top and bottom strokes moved apart so its holes are
+  as tall as Maple Mono's at our cap height; every reference draws ∞ lighter than its letters.
 - The `*.small` components of superscripts, subscripts, fractions and signs are the regular
   glyph at 0.45 (figures, ⁱ ⁿ and the signs), 0.52 (the small parentheses, which reach past
   the figures as far as the references' do), 0.55 (ª º) or 0.41 (™ © ®), thickened with
@@ -135,24 +136,30 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
   550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
   keeps its own 174-unit half-waves.
-- **The ligatures.** `tools/add_ligatures.py` measures `TIP`, `HYPHEN_SPAN` and `ARM_ENDS`'s
-  x on the widened `-` `<` `>`. `ARM_ENDS`'s heights are fitted instead, so that the
-  arrowheads `longer_angle()` draws match → ←; the same function draws the heads of `|>` `<|`
-  `<|>`, which `pipe_head()` then centres on the axis. The gains that widen `<` `>` into
-  other ligatures shrank as `<` `>` grew 64 wider, so the shapes keep their reference sizes:
-  `ANGLE_WIDTH_GAIN` (94) still widens the angle of `<=` `>=` to 517, 1.09 x-heights, within
-  `WOBBLE` of Fira Code's 1.10 (Maple Mono's is 1.13), and `DIAMOND_WIDTH_GAIN` (35) keeps
-  `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76.
-- **`|>` `<|`.** `PIPE_HEAD_SCALE` (1.46) lengthens the head's arms until the triangle is
-  1.52 x-heights tall, as Fira Code's and JetBrains Mono's are; it then comes out 1.24 wide,
-  as theirs do. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its
+- **The ligatures.** `tools/add_ligatures.py` measures its constants on the widened `-` `<`
+  `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`); `ARM_ENDS` holds the centres of `>`'s round ends,
+  and `<`'s are those turned. `longer_angle()` lengthens each arm until its ink reaches the
+  height its caller asks: the arrowheads →'s and ←'s, so `->` reads as →, and the heads of
+  `|>` `<|` `<|>` a triangle as tall as Fira Code's, centred on the axis. The gains that
+  widen `<` `>` into other ligatures shrank as `<` `>` grew 64 wider, so the shapes keep their
+  reference sizes: `ANGLE_WIDTH_GAIN` (94) widens the angle of `<=` `>=` to 519, Fira Code's
+  1.10 x-heights (Maple Mono's is 1.13), its arms as tall as `<` `>`, and `DIAMOND_WIDTH_GAIN`
+  (35) keeps `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76. `<=`
+  is `>=` mirrored, as in Fira Code and Maple Mono: `<` is `>` turned, so each built from its
+  own angle, the bar would hang under a different hand-drawn arm and stand the two 9 apart.
+- **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
+  x-heights tall, as Fira Code's and JetBrains Mono's are; it then comes out 1.26 wide, theirs
+  1.24, as `>`'s flatter lower arm lengthens the further. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its
   own cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
 - **`->>`.** `HEAD_PITCH` (375) keeps the white between the two heads at 174, as in the 550
   cell, since the heads kept their size; Fira Code, the one reference that draws `->>`, leaves
   145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the shaft's cut
   end at the seam lies on the open shaft, as in `->`. A pitch from 388 to 429 puts the crotch
   onto that cut end, which then shows as a flat, and 432, which kept the inner head where the
-  550 cell had it, left 218 between the heads.
+  550 cell had it, left 218 between the heads. The bold's pen grows the heads to 147 apart,
+  under Fira Code Bold's 155, so there the inner head moves along its shaft until the white is
+  Fira Code Bold's (`make_bold.HEADS_APART`); a pitch that wide would take the regular's white
+  to 183, past 1.7.0's 173.
 
 ## Italic
 
@@ -288,7 +295,9 @@ what it does to them:
   reference bolds' 38; it keeps 39.
 - `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and ℃ ℉ №
   (letter and small pieces) grow on their own, and the wider is condensed away from the other
-  until the white between them is the regular's. The small pieces of ℃ ℉ № grow by the small
+  until the white between them is the regular's. Each keeps its far end where the pen grows
+  it, or at the side room, so the bold ‰ stays as wide as the bold % and centred. The small
+  pieces of ℃ ℉ № grow by the small
   pen, so they stay as light as the small figures; the full pen would close ℃'s ring to 42
   across, where the small pen leaves 54.
 - `SLASHES`: grown, ‰'s slash would come 14 from the zero under it, where the regular keeps

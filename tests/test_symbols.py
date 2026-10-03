@@ -41,10 +41,9 @@ APPROX_GAP = 69
 # The white between ¦'s pieces: at least the narrowest reference's, Maple Mono's at our cap
 # height (Fira Code's 192).
 BROKEN_BAR_GAP = 162
-# How wide and tall ∞'s holes are at least. Wide: Maple Mono's 169, the narrowest reference's,
-# at our advance (Fira Code's 184). Tall: 169, under both references' at our cap height (Maple
-# Mono's 203, Fira Code's 249).
-INFINITY_HOLE = (169, 169)
+# How wide and tall ∞'s holes are at least: Maple Mono's, the narrowest reference's, 169 wide
+# at our advance and 203 tall at our cap height (Fira Code's 184 and 249).
+INFINITY_HOLE = (169, 203)
 # How much taller each mark stands than ×: at least the least of the references that have it,
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
@@ -110,10 +109,8 @@ EXCLAMATION_DOTS = 93
 BOLD_NOT_EQUAL_REACH = 131
 BOLD_APPROX_GAP = 34  # Fira Code's 34.8 (Intel One Mono's 55.1, Maple Mono's 67.4)
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
-# Fira Code's holes are 134 wide (Maple Mono's 149). The regular's 169 tall doesn't come back by
-# this measure, which finds the regulars' holes 203 (Maple Mono) and 249 (Fira Code) tall; the
-# bold keeps its share of Maple Mono's, which its bold closes to 172: 169 × 172 / 203.
-BOLD_INFINITY_HOLE = (134, 143)
+# ∞'s holes: Fira Code's 134 wide (Maple Mono's 149), Maple Mono's 172 tall (Fira Code's 193).
+BOLD_INFINITY_HOLE = (134, 172)
 # The mark's ink height less ×'s, as for the regular's. ✓: Intel One Mono's 24.73 (Maple Mono's
 # 121.3, Fira Code's 280.5); its bold keeps the regular's ✓, 543 tall, while its × grows from 446
 # to 519, so the 98.9 its regular gives drops to a quarter. ✗ and ✕: Maple Mono's 135.0 and 73.9,
@@ -536,6 +533,12 @@ class BuiltFromTest(unittest.TestCase):
     def middle(self, outline):
         x0, y0, x1, y1 = outline.boundingBox()
         return (x0 + x1) / 2, (y0 + y1) / 2
+
+    def test_per_mille_is_as_wide_as_percent(self):
+        # ‰ is % with a second zero, its rings %'s copies, so it spans at least %'s width.
+        x0, _, x1, _ = self.font["perthousand"].boundingBox()
+        p0, _, p1, _ = self.font["percent"].boundingBox()
+        self.assertGreaterEqual(x1 - x0, p1 - p0 - ROUNDING)
 
     def test_turned_glyphs_are_references_turned(self):
         for char, (base, degrees) in TURNED.items():
