@@ -446,10 +446,21 @@ class LetterFollowUpTest(unittest.TestCase):
     """Ƿ, G and 5, which the legibility pass left for later, set apart from P and 6."""
     sfd = SFD
     five_top = 100  # the highest 5's lower terminal may reach
+    G_bar_white = 138  # Maple Mono's, the narrowest reference's (Fira Code 167, Intel 160)
 
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
+
+    def test_G_bar_stands_clear_of_the_left_stroke(self):
+        # Ours reached within 54 of it, closing G's lower half into 6's loop. Measured across
+        # 0.3-0.55 of the cap height, where every reference's bar lies; below the bar the line
+        # crosses the counter, wider still.
+        G = self.font["G"].foreground
+        cap = self.font["H"].boundingBox()[3]
+        whites = [spans[1][0] - spans[0][1] for i in range(51)
+                  if len(spans := measure.spans_at_y(G, cap * (0.3 + 0.25 * i / 50))) == 2]
+        self.assertGreaterEqual(min(whites), self.G_bar_white)
 
     def test_wynn_bowl_runs_to_a_point_low_on_the_stem(self):
         # As in ƿ. P's bowl closes halfway up, so a line 200 up crosses only P's stem.
@@ -574,6 +585,7 @@ class BoldLetterFollowUpTest(LetterFollowUpTest):
     # The pen raises every top by half its height, the terminal's too; the reference bolds'
     # terminals top out higher still, at 130-165.
     five_top = LetterFollowUpTest.five_top + make_bold.PEN[1] / 2
+    G_bar_white = 98  # Monaspace Radon Bold's, the narrowest reference bold's (Intel 106)
 
 
 class BoldDotsTest(DotsTest):

@@ -9,6 +9,7 @@
 - `?:` stays as typed after a TypeScript property name, as in `name?: T` and `[K]?: T`. Where it is an operator, as in `a ?: b` and `(?:x)`, it is still pulled together.
 - The dot of `?` stands further from its hook, as far as in Maple Mono, in the regular and the bold. At 12 px the bold dot no longer joins the hook. ¿ follows.
 - `!` is as tall as `?`, at the cap height. ¡ and ‼ follow.
+- `G` no longer reads as `6`. Its bar starts at the middle of the letter, and its right side rises straight up to the bar, as in Monaspace Radon. So `16GB` and `LOG6` read right in every style. Ĝ Ğ Ġ Ģ follow.
 - `/` and `\` are taller and a little steeper. They are as tall as in Fira Code, Maple Mono and Intel One Mono, and their strokes keep their weight. `//` and `/*` keep their spacing, and the slash of `!=` keeps its size.
 - The slash of ∄ is the `/` turned 6° steeper, so ∄ is no wider than ∃, as in Fira Code and Maple Mono.
 - `|` stands in the middle of the cell, on the line of `│`, so a table drawn with both lines up. ‖ follows.
