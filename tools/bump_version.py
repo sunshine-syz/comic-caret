@@ -7,7 +7,7 @@
 The SFDs' Version: always heads CHANGELOG.md (tests/test_metadata.py checks the pair); the
 italic and the bold are written too, so a bump never leaves them behind the regular they are
 derived from. A version is "unreleased" there until --release gives it its month, as in
-"## 1.0.0 (2026-09)".
+"## 1.0.0 (2026-09)". The font files carry X.Y.Z as X.YZZ (font_version).
 """
 import argparse
 import datetime
@@ -20,7 +20,8 @@ from project import ROOT, STYLES
 
 CHANGELOG = ROOT / "CHANGELOG.md"
 SFDS = tuple(STYLES.values())
-VERSION = re.compile(r"\d+\.\d+\.\d+")
+# One digit of Y and two of Z, so that X.YZZ, the form the font files carry, names one version.
+VERSION = re.compile(r"\d+\.\d\.\d\d?")
 HEADING = re.compile(r"^## (\S+) \((.+)\)$", re.MULTILINE)
 FIRST_HEADING = re.compile(r"^## .*$", re.MULTILINE)
 VALID_HEADING = re.compile(rf"## ({VERSION.pattern}) \((unreleased|\d{{4}}-(?:0[1-9]|1[0-2]))\)")
@@ -69,13 +70,24 @@ def ordered(version):
     return tuple(int(part) for part in version.split("."))
 
 
+def font_version(version):
+    """X.Y.Z as the font files carry it, X.YZZ: 2.0.1 ships as 2.001.
+
+    head.fontRevision holds one decimal number, and Font Bakery reads name ID 5 as one too;
+    from "2.0.1" FontForge derives 2.0, so fontconfig took 2.0.1 for 2.0.0. Intel One Mono
+    ships its 1.4.0 the same way, as 1.400.
+    """
+    major, minor, patch = ordered(version)
+    return f"{major}.{minor}{patch:02d}"
+
+
 def start(version, sfds=SFDS, changelog=CHANGELOG):
     """Make `version` the SFDs' and the changelog's newest, unreleased.
 
     An unreleased head is renamed, keeping its entries; after a release, a new head goes on top.
     """
     if not VERSION.fullmatch(version):
-        raise VersionError(f"{version!r} is not X.Y.Z")
+        raise VersionError(f"{version!r} is not X.Y.Z with Y below 10 and Z below 100")
     text = changelog.read_text(encoding="utf-8")
     _, month, head = newest(text, changelog)
     released = [v for v, m, _ in headings(text) if m != UNRELEASED]

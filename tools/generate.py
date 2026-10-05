@@ -12,6 +12,7 @@ import fontforge
 import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from bump_version import font_version
 from mark_advances import zero_mark_advances
 from sfnt import read_tables, write_tables
 
@@ -98,6 +99,8 @@ def main(source, output):
     # user's AutoHint preference allows it, so pin it to keep the OTF the same on every machine.
     fontforge.setPrefs("AutoHint", True)
     font = fontforge.open(source)
+    # FontForge derives head.fontRevision, the CFF version and the names from this.
+    font.version = font_version(font.version)
     # The unique ID in the form fontmake gives it, which names the release, where FontForge's
     # names the day of the build.
     font.appendSFNTName("English (US)", "UniqueID",

@@ -40,7 +40,9 @@ hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading
 ## Releasing
 
 The version being worked on heads `CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y.Z`
-starts the next one, setting every SFD's `Version:` and the heading together.
+starts the next one, setting every SFD's `Version:` and the heading together. The fonts carry
+it as the decimal X.YZZ (`tools/generate.py`; 2.0.1 ships as 2.001), so Y stays below 10 and Z
+below 100.
 
 1. `python3 tools/bump_version.py --release` gives the heading this month.
 2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd

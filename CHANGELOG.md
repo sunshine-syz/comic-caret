@@ -23,6 +23,7 @@
 - The slash of ∄ is the `/` turned 6° steeper, so ∄ is no wider than ∃, as in Fira Code and Maple Mono.
 - `|` stands in the middle of the cell, on the line of `│`, so a table drawn with both lines up. ‖ follows.
 - `‘` and `“` are turned commas, head down like a 6, as the mark of ģ is. As reversed 9s, they read as a misplaced `’`. ʻ follows.
+- The fonts carry their version as 2.001, in the head table and in the names, so fontconfig and font managers tell 2.0.1 from 2.0.0. Both carried 2.0 in the head table. The release and its zips keep the name 2.0.1.
 - Two `-` or two `_` stay as typed, as in `--help`, `i--`, `-- comment` and `__init__`. Three or more still join into a line, and `<!--` keeps its line.
 - `<=>` is pulled together as a comparison, as in C++, PHP, Ruby and Perl, and no longer draws an arrow. `<==>` is still an arrow.
 - `~>` stays as typed before a version, as in Ruby's and Terraform's `~> 1.0`.

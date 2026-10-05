@@ -20,7 +20,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import sfnt
-from bump_version import sfd_version
+from bump_version import font_version, sfd_version
 from helpers import NerdBuilds, require_current_build
 from make_italic import SLANT
 from project import (
@@ -93,6 +93,7 @@ print(json.dumps(off))
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
+HEAD_REVISION = 4  # offset of head.fontRevision, a 16.16 fixed-point number
 HEAD_MODIFIED = 28  # offset of head.modified
 HEAD_MAC_STYLE = 44  # offset of head.macStyle; bit 0 is bold
 MAC_EPOCH = 2082844800  # seconds from 1904-01-01, where head's dates count from, to 1970-01-01
@@ -186,9 +187,10 @@ class BuiltFontTest(unittest.TestCase):
         cls.widths = {g.glyphname: g.width for g in sfd.glyphs()}
         # The version string takes the form the OpenType spec gives it, and the unique ID the
         # one fontmake gives it, which names the release rather than the day of the build.
+        cls.version = font_version(sfd.version)
         cls.font_names = {1: sfd.familyname, 2: cls.style,
-                          3: f"{sfd.version};{sfd.os2_vendor};{sfd.fontname}", 4: sfd.fullname,
-                          5: f"Version {sfd.version}", 6: sfd.fontname}
+                          3: f"{cls.version};{sfd.os2_vendor};{sfd.fontname}", 4: sfd.fullname,
+                          5: f"Version {cls.version}", 6: sfd.fontname}
 
     def test_width_tables_declare_the_cell(self):
         # Apps that size the cell from these tables, not from the glyphs, read the cell here.
@@ -247,6 +249,15 @@ class BuiltFontTest(unittest.TestCase):
                                               if typographic in names}
                 self.assertEqual({name_id: names.get(name_id) for name_id in expected},
                                  expected)
+
+    def test_head_carries_the_version_of_the_names(self):
+        # fontconfig reads the version here, so 2.0.1 must not read as 2.0, the same as 2.0.0.
+        # 1/0x10000 is the step of the 16.16 number.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                revision = struct.unpack_from(">l", sfnt.tables(font)[b"head"], HEAD_REVISION)[0]
+                self.assertAlmostEqual(revision / 0x10000, float(self.version),
+                                       delta=1 / 0x10000)
 
     def test_fonts_carry_no_fontforge_table(self):
         # FFTM is FontForge's record of when it and the font were made; nothing else reads it.
@@ -506,7 +517,7 @@ class ReleaseZipTest(unittest.TestCase):
                             font = pathlib.Path(zf.extract(name, tmp))
                             # The Nerd Fonts patcher appends ";Nerd Fonts X.Y.Z" to the version.
                             release = english_names(font)[5].split(";")[0]
-                            self.assertEqual(release, f"Version {self.version}")
+                            self.assertEqual(release, f"Version {font_version(self.version)}")
 
     def test_the_license_is_the_repositorys(self):
         for zip_path in (self.plain, self.nerd):

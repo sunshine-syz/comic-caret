@@ -72,6 +72,21 @@ class BumpVersionTest(unittest.TestCase):
         self.assertEqual(self.changelog.read_text(encoding="utf-8"), UNRELEASED)
         self.assertEqual(bump_version.sfd_version(sfd), "1.2.0")
 
+    def test_start_refuses_a_version_the_fonts_cannot_carry(self):
+        # The fonts carry X.YZZ: 1.10.0 would ship as 1.1000, the number 1.1.0 ships as 1.100.
+        sfd = self.sfd_at("1.2.0")
+        self.write_changelog(UNRELEASED)
+        for version in ("1.10.0", "1.2.100"):
+            with self.subTest(version=version), self.assertRaises(VersionError):
+                bump_version.start(version, [sfd], self.changelog)
+        self.assertEqual(bump_version.sfd_version(sfd), "1.2.0")
+
+    def test_font_version_keeps_releases_apart_and_in_order(self):
+        versions = ["1.0.0", "1.0.9", "1.0.10", "1.1.0", "1.9.99", "2.0.0", "2.0.1"]
+        numbers = [float(bump_version.font_version(version)) for version in versions]
+        self.assertEqual(numbers, sorted(set(numbers)))
+        self.assertEqual(bump_version.font_version("2.0.1"), "2.001")
+
     def test_release_dates_the_unreleased_head(self):
         sfd = self.sfd_at("1.2.0")
         self.write_changelog(UNRELEASED)
