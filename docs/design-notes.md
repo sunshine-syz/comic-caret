@@ -83,6 +83,11 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
   exactly, and the Powerline separators do the same.
 - `|` stands on the cell's middle, on │'s line, so a table drawn with both meets; ‖ is two `|`.
+- `( [ {` span −145…800, 945 tall, within the references' 927–971. The descenders hang 133–152
+  below them (`p` −278, `y` −297), where the references leave 17–85, because ours keep Comic
+  Shanns' depth (the references' reach −172…−244). The brackets stay: lengthened to the
+  descenders, they would stand taller than every reference's and drag `⟨ ⟩` and `/ \` with
+  them.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's

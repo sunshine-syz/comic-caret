@@ -781,13 +781,14 @@ class KeyHintTest(unittest.TestCase):
         # ↑ and ↓ whole, with two bars of the hyphen's stroke across the shaft, reaching past
         # it on both sides: Fira Code's span 61% of the arrow's width, Maple Mono's 95%.
         [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
-        for char, plain in (("⇞", "↑"), ("⇟", "↓")):
+        # The shaft, a quarter of the way in from the tail: the head's arms reach past the middle.
+        for char, plain, tail in (("⇞", "↑", 0.25), ("⇟", "↓", 0.75)):
             with self.subTest(arrow=char):
                 layer = self.font[ord(char)].foreground
                 arrow = self.font[ord(plain)].foreground
                 self.assertGreaterEqual(measure.covered(arrow, layer), 0.99)
                 _, y0, _, y1 = arrow.boundingBox()
-                [(s0, s1)] = measure.spans_at_y(arrow, (y0 + y1) / 2)  # the shaft
+                [(s0, s1)] = measure.spans_at_y(arrow, y0 + tail * (y1 - y0))
                 # Half a stroke out from the shaft: clear of it, short of the bars' round ends.
                 for x in (s0 - (h1 - h0) / 2, s1 + (h1 - h0) / 2):
                     # Not the arrow's own spans, which may differ by both outlines' rounding.
