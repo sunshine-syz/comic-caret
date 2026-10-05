@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.1 (unreleased)
+## 2.0.1 (2026-10)
 
 - `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.
 - `===` draws three bars, as `!==` does and as Fira Code and Maple Mono draw it. So `==` and `===` differ by more than their length. It keeps its bars beside another operator, as in `a===-1`. A run of four or more `=` stays one double line, and so does `+===+`, a table's border.
