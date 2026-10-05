@@ -113,8 +113,11 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   Mono's are: 421 against Maple Mono's 420. Its foot stays at Fira Code's −121. A turned part
   can't stay a reference under the italic's shear or the bold's pen, so the italic draws ∄'s
   two parts as outlines and the bold merges them (`make_bold.MERGED`).
-- `‘` is the turned comma ģ carries, head down like a 6, moved 77 down to stand level with
-  `’`; `“` is two of it and ʻ is it. Drawn as a reversed 9, it read as a misplaced `’`.
+- `‘` is `’` mirrored about the cell's middle, so the two lean toward the quoted word; `“` is
+  `”` mirrored and ʻ is `‘`. Every reference draws a 6 and a 9, but `’` keeps no head, and a
+  headless stroke turned 180° is itself. A 6 drawn from ģ's turned comma leaned like `’`, so
+  GCC's `‘foo’` showed two opening marks. The mirrored `‘` leans like the backtick but stands
+  134 lower (426…683 against 560…808).
 
 ## Wider cell
 

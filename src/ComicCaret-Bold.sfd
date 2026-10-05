@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791226609
+ModificationTime: 1791239826
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -11140,13 +11140,30 @@ StartChar: quoteleft
 Encoding: 8216 8216 296
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 219 128<470.442 554.528>
+HStem: 419 271<286.992 321.312>
+VStem: 202 156<575.963 632.427> 274 132<437.984 500.626>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "top" 300 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 621 -1 N 1 0 0 1 0 -77 2
+SplineSet
+340 419 m 0xa0
+ 329 419 318 421 310 425 c 0
+ 295 432 283 442 274 457 c 0xa0
+ 261 481 242 530 240 537 c 0
+ 236 546 232 555 229 564 c 0
+ 215 596 202 628 202 641 c 0
+ 202 655 212 675 233 683 c 0
+ 244 688 260 690 272 690 c 2
+ 280 690 l 2
+ 281 690 282 690 283 690 c 0
+ 312 688 321 671 324 662 c 0
+ 346 608 358 581 358 580 c 0xc0
+ 371 552 399 501 399 501 c 2
+ 403 493 406 486 406 478 c 0
+ 405 470 403 463 398 455 c 0
+ 380 428 364 419 340 419 c 0xa0
+EndSplineSet
 EndChar
 
 StartChar: quoteright
@@ -11195,14 +11212,14 @@ StartChar: quotedblleft
 Encoding: 8220 8220 299
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 94 128<470.442 554.528> 344 128<470.442 554.528>
+HStem: 419 271<156.992 191.312 408.992 443.312>
+VStem: 72 156<575.963 632.427> 144 132<437.984 500.626> 324 156<575.963 632.427> 396 132<437.984 500.626>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "top" 300 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 296 8216 N 1 0 0 1 -125 0 2
-Refer: 296 8216 N 1 0 0 1 125 0 2
+Refer: 296 8216 N 1 0 0 1 -130 0 2
+Refer: 296 8216 N 1 0 0 1 122 0 2
 EndChar
 
 StartChar: quotedblright
@@ -33423,8 +33440,8 @@ Width: 600
 Flags: W
 HStem: 452 241
 VStem: 204 173
-AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "bottom" 304 0 basechar 0
+AnchorPoint: "top" 304 733 basechar 0
 LayerCount: 2
 Fore
 Refer: 296 8216 N 1 0 0 1 0 0 2

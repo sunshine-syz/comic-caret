@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791226597
+ModificationTime: 1791239813
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -12197,13 +12197,35 @@ StartChar: quoteleft
 Encoding: 8216 8216 296
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 219 128<470.442 554.528>
+HStem: 429 254
+VStem: 220 168
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "top" 300 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 621 -1 N 1 0 0 1 0 -77 2
+SplineSet
+223 625 m 0
+ 221 631 220 636 220 641 c 0
+ 220 647 222 654 225 659 c 0
+ 231 669 238 675 246 678 c 0
+ 254 682 263 683 272 683 c 0
+ 275 683 277 683 280 683 c 0
+ 293 682 302 674 307 661 c 0
+ 311 651 316 639 322 624 c 0
+ 328 609 334 594 341 579 c 0
+ 348 564 356 549 363 535 c 0
+ 370 521 377 508 382 499 c 0
+ 386 492 388 485 388 478 c 0
+ 388 471 386 464 381 457 c 0
+ 372 443 363 434 354 429 c 0
+ 350 427 345 426 340 426 c 0
+ 335 426 329 427 323 430 c 0
+ 311 435 300 444 291 459 c 0
+ 286 468 281 479 275 493 c 0
+ 269 507 263 522 257 538 c 0
+ 251 554 244 569 238 584 c 0
+ 232 599 227 613 223 625 c 0
+EndSplineSet
 EndChar
 
 StartChar: quoteright
@@ -12257,14 +12279,14 @@ StartChar: quotedblleft
 Encoding: 8220 8220 299
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 111 128<470.442 554.528> 327 128<470.442 554.528>
+HStem: 429 254
+VStem: 108 168 324 168
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "top" 300 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 296 8216 N 1 0 0 1 -108 0 2
-Refer: 296 8216 N 1 0 0 1 108 0 2
+Refer: 296 8216 N 1 0 0 1 -112 0 2
+Refer: 296 8216 N 1 0 0 1 104 0 2
 EndChar
 
 StartChar: quotedblright
@@ -35455,8 +35477,8 @@ Width: 600
 Flags: W
 HStem: 452 241
 VStem: 204 173
-AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 743 basechar 0
+AnchorPoint: "bottom" 304 0 basechar 0
+AnchorPoint: "top" 304 733 basechar 0
 LayerCount: 2
 Fore
 Refer: 296 8216 N 1 0 0 1 0 0 2

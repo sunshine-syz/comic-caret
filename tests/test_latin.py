@@ -55,9 +55,8 @@ BOLD_COUNTER_FLOOR = {"o": 93 / 285, "a": 255 / 909, "four": 49 / 360}
 BOLD_FRACTION_CLEARANCE = 7  # Fira Code's ⅘ 7.4 (Maple Mono's ½ 10.0, Intel One Mono's ⅓ 24.1)
 BOLD_ORDINAL_CLEARANCE = 86  # Intel One Mono's º 86.6 (Fira Code's 191)
 BOLD_PER_MILLE_CLEARANCE = 21  # Maple Mono's 21.5 (Fira Code's 24.7)
-# “ ” „ are two of their single mark (‘ ’ or the comma), level, not a copied outline; ‘ is the
-# turned comma ģ carries, so it reads as a 6, head down, not as a reversed 9.
-COMPOSITES = {"quoteleft": {"commaturnedabove"}, "periodcentered": {"period"}, "Dcroat": {"Eth"},
+# “ ” „ are two of their single mark (‘ ’ or the comma), level, not a copied outline.
+COMPOSITES = {"periodcentered": {"period"}, "Dcroat": {"Eth"},
               "Ldot": {"L", "periodcentered"}, "ldot": {"l", "periodcentered"},
               "Lcaron": {"L", "caron.alt"}, "lcaron": {"l", "caron.alt"},
               "quotedblleft": {"quoteleft"}, "quotedblright": {"quoteright"},

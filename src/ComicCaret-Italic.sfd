@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791226611
+ModificationTime: 1791239827
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -12705,13 +12705,37 @@ StartChar: quoteleft
 Encoding: 8216 8216 296
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 203 128<470.442 554.528>
+HStem: 426 257<336.797 389.887>
+VStem: 298 135
 AnchorPoint: "bottom" 243 0 basechar 0
-AnchorPoint: "top" 401 743 basechar 0
+AnchorPoint: "top" 399 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 621 -1 N 1 0 0 1 -16 -77 2
+SplineSet
+299 625 m 0
+ 298 628 298 631 298 633 c 0
+ 298 636 298 638 299 641 c 0
+ 300 647 304 654 308 659 c 0
+ 316 669 324 675 333 678 c 0
+ 342 682 351 683 360 683 c 0
+ 363 683 365 683 368 683 c 0
+ 381 682 388 674 390 661 c 0
+ 392 651 395 639 397 624 c 0
+ 400 609 403 594 407 579 c 0
+ 411 564 416 549 420 535 c 0
+ 424 521 428 508 431 499 c 0
+ 432 495 433 490 433 486 c 0
+ 433 483 433 481 432 478 c 0
+ 431 471 427 464 421 457 c 0
+ 409 443 398 434 388 429 c 0
+ 384 427 378 426 373 426 c 0
+ 368 426 363 427 357 430 c 0
+ 346 435 337 444 331 459 c 0
+ 328 468 326 479 323 493 c 0
+ 320 507 317 522 314 538 c 0
+ 312 554 308 569 305 584 c 0
+ 302 599 300 613 299 625 c 0
+EndSplineSet
 EndChar
 
 StartChar: quoteright
@@ -12767,14 +12791,14 @@ StartChar: quotedblleft
 Encoding: 8220 8220 299
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 95 128<470.442 554.528> 311 128<470.442 554.528>
+HStem: 426 257<224.797 277.887 440.797 493.887>
+VStem: 186 135 402 135
 AnchorPoint: "bottom" 243 0 basechar 0
-AnchorPoint: "top" 401 743 basechar 0
+AnchorPoint: "top" 399 733 basechar 0
 LayerCount: 2
 Fore
-Refer: 296 8216 N 1 0 0 1 -108 0 2
-Refer: 296 8216 N 1 0 0 1 108 0 2
+Refer: 296 8216 N 1 0 0 1 -112 0 2
+Refer: 296 8216 N 1 0 0 1 104 0 2
 EndChar
 
 StartChar: quotedblright
@@ -36992,10 +37016,10 @@ StartChar: uni02BB
 Encoding: 699 699 1085
 Width: 600
 Flags: W
-HStem: 453 240
-VStem: 203 128<470.442 554.528>
-AnchorPoint: "bottom" 243 0 basechar 0
-AnchorPoint: "top" 401 743 basechar 0
+HStem: 426 257<336.797 389.887>
+VStem: 298 135
+AnchorPoint: "bottom" 247 0 basechar 0
+AnchorPoint: "top" 403 733 basechar 0
 LayerCount: 2
 Fore
 Refer: 296 8216 N 1 0 0 1 0 0 2
