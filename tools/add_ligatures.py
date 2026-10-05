@@ -20,7 +20,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import ADVANCE, AXIS, OVERLAP, ROOT, SFD, save_checked, validation_errors
+from project import ADVANCE, AXIS, OVERLAP, ROOT, SFD, WOBBLE, save_checked, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
 LINE_EXTENSION = 0x23AF
@@ -157,6 +157,22 @@ def stroke(font, name, x0=None, x1=None):
     for x in (x0, x1):
         if x is not None and not 0 <= x <= ADVANCE:
             geo.snap_edge(layer, x, profile)
+    return level(layer, profile)
+
+
+def level(layer, profile, x0=-geo.FAR, x1=geo.FAR):
+    """`layer` with every point between x0 and x1 within the hand's wobble of a height in
+    `profile` moved onto it.
+
+    FreeType's light autohinter hints each piece alone and rounds a bar by its whole edges, so
+    a bar that strays from its profile, toward a cap or a head's point, lands a pixel row off
+    the next piece's. Edits `layer` in place and returns it.
+    """
+    for contour in layer:
+        for point in contour:
+            nearest = min(profile, key=lambda y: abs(y - point.y))
+            if abs(nearest - point.y) <= WOBBLE / 2 and x0 <= point.x <= x1:
+                point.y = nearest
     return layer
 
 
@@ -320,7 +336,8 @@ def arrowhead(font, name):
 
 def arrowheads(font):
     def head(name, shaft, x0, x1):
-        return geo.union(arrowhead(font, name), stroke(font, shaft, x0, x1))
+        return level(geo.union(arrowhead(font, name), stroke(font, shaft, x0, x1)),
+                     [y for bar in RUNS[shaft] for y in bar.profile])
 
     left, right = TIP["less"], TIP["greater"]
     return {
@@ -510,19 +527,22 @@ def tail(font, name):
     """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
     angle = arrowhead(font, name)
-    parts = []
+    parts, joins = [], []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
         upper = bottom > AXIS
         inner = bottom if upper else top  # the bar's edge nearer the axis
-        parts.append(geo.trim(angle, y0=inner + JOIN) if upper
-                     else geo.trim(angle, y1=inner - JOIN))
-        # The bar starts where the cut arm's outer edge ends, so the edge runs on into the
-        # bar's and the bar's flat end lies inside the arm.
-        x0, x1 = span_at(angle, inner + JOIN if upper else inner - JOIN)
+        parts.append(geo.trim(angle, y0=inner) if upper else geo.trim(angle, y1=inner))
+        # The bar starts where the arm's edge crosses the bar's inner edge, so the arm's edge
+        # runs on into the bar's with no step, and the bar's flat end lies inside the arm.
+        x0, x1 = span_at(angle, inner)
         cut = (x0, ADVANCE + OVERLAP) if name == "greater" else (-OVERLAP, x1)
         parts.append(geo.trim(stroke(font, "equal", *cut), y0=bar.band[0], y1=bar.band[1]))
-    return geo.union(*parts)
+        joins.append(x0 if name == "greater" else x1)
+    # The bars are level out to where they meet the arms; the arms' own curves stay as drawn.
+    reach = WOBBLE / 2 * OUTWARD[name]
+    span = (min(joins) + reach, geo.FAR) if name == "greater" else (-geo.FAR, max(joins) + reach)
+    return level(geo.union(*parts), [y for bar in RUNS["equal"] for y in bar.profile], *span)
 
 
 def two_heads(font, name):
@@ -532,7 +552,7 @@ def two_heads(font, name):
     end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
     shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
              else stroke(font, "hyphen", end, ADVANCE + OVERLAP))
-    return geo.union(head, inner, shaft)
+    return level(geo.union(head, inner, shaft), RUNS["hyphen"][0].profile)
 
 
 def wave_arrows(font):

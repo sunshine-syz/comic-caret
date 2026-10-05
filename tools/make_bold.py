@@ -716,8 +716,9 @@ def dashed(name, outline, bound, scratch, pen):
 def heads_apart(name, layer):
     """The HEADS_APART glyph's outline with its inner head, the piece with the shaft, moved
     along the shaft until it stands HEAD_WHITE from the outer head."""
-    outer, inner = sorted(pieces(layer), key=lambda piece: piece.boundingBox()[2]
-                          - piece.boundingBox()[0])  # the shaft makes the inner the wider
+    # The inner head is on the shaft's side: right of the outer one in <<-, left in ->>.
+    outer, inner = sorted(pieces(layer), key=lambda piece: piece.boundingBox()[0],
+                          reverse=name.startswith("greater"))
     way = LEFT if inner.boundingBox()[0] < outer.boundingBox()[0] else RIGHT
     if (steps := clearance(inner, outer, way, HEAD_WHITE)) is None:
         sys.exit(f"{name}: its inner head can't move clear of the outer one")

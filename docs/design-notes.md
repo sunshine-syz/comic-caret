@@ -228,6 +228,17 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   (35) keeps `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76. `<=`
   is `>=` mirrored, as in Fira Code and Maple Mono: `<` is `>` turned, so each built from its
   own angle, the bar would hang under a different hand-drawn arm and stand the two 9 apart.
+- **Seams under light hinting.** FreeType's light autohinter, the default on Linux desktops,
+  hints each glyph alone, so the pieces of a ligature meet on one pixel row only where each
+  piece's bar rounds the same way. Two things moved a bar a row off. A bar edge that strays
+  from its profile toward a cap or a head's point rounds with that stray: `level()` moves
+  every point within the wobble of a profile height onto it. And an arm end within reach of
+  a zone, which the autohinter aligns first and then places the bar from: → ⇒ and their
+  heads reach 21…531 and ← ⇐ 21…527. A lower end at 15 or under, 8 or under in the bold, is
+  aligned to the baseline; an upper end at 509 to the x-height; and ← reaching 529 or more
+  moves the bars of `<<-` and `<=<`. Measured with freetype-py 2.5.1 (FreeType 2.13.2) at
+  8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The bold `<=<`
+  still steps: its pen grows the tail's arms across the bars a few units off their edges.
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under

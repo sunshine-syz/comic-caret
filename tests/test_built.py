@@ -45,6 +45,51 @@ BOX_TOLERANCE = 5
 OTS = "opentype-sanitizer==9.2.0"
 OTS_EXCLUDE_NEWER = "2026-09-30"
 SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").returncode)'
+# FreeType, for the light autohinting Linux desktops apply by default; pinned as ots is.
+FREETYPE = ["--with", "freetype-py==2.5.1", "--with", "fonttools==4.66.1"]
+FREETYPE_EXCLUDE_NEWER = "2026-09-30"
+# The pieces that run a bar on into the next cell, by the middle piece of the run they meet.
+SEAMED = {"hyphen.mid": ["hyphen.sta", "hyphen.end", "less.arrow", "greater.arrow",
+                         "less.twohead", "greater.twohead", "less.shaft", "greater.shaft"],
+          "equal.mid": ["equal.sta", "equal.end", "less.darrow", "greater.darrow", "less.dtail",
+                        "greater.dtail"],
+          "underscore.mid": ["underscore.sta", "underscore.end"],
+          "numbersign.mid": ["numbersign.sta", "numbersign.end"]}
+# Prints {piece: [sizes]}: the pixel sizes, 8 to 36, where the piece's bar ends at a seam on a
+# corner of the middle piece's (its first or last point at a height) and lands half a pixel
+# or more off the middle piece's there under light hinting.
+SEAMS = """
+import json, sys
+import freetype
+from fontTools.ttLib import TTFont
+
+path, seamed = sys.argv[1], json.loads(sys.argv[2])
+order = TTFont(path).getGlyphOrder()
+face = freetype.Face(path)
+
+def hinted(name, size):
+    face.set_pixel_sizes(0, size)
+    face.load_glyph(order.index(name), freetype.FT_LOAD_NO_SCALE)
+    points = [tuple(p) for p in face.glyph.outline.points]
+    face.load_glyph(order.index(name), freetype.FT_LOAD_TARGET_LIGHT | freetype.FT_LOAD_NO_BITMAP)
+    return dict(zip(points, (y for _, y in face.glyph.outline.points)))
+
+def corners(points):
+    heights = {y for _, y in points}
+    return ({min(p for p in points if p[1] == y) for y in heights}
+            | {max(p for p in points if p[1] == y) for y in heights})
+
+off = {}
+for middle, pieces in seamed.items():
+    for size in range(8, 37):
+        mid = hinted(middle, size)
+        for name in pieces:
+            piece = hinted(name, size)
+            shared = corners(mid) & corners(piece)
+            if any(abs(piece[c] - mid[c]) >= 32 for c in shared):
+                off.setdefault(name, []).append(size)
+print(json.dumps(off))
+"""
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
 MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
@@ -259,6 +304,43 @@ class ItalicBuiltFontTest(BuiltFontTest):
 
 class BoldBuiltFontTest(BuiltFontTest):
     style = "Bold"
+
+
+class LigatureSeamTest(unittest.TestCase):
+    """Under FreeType's light hinting, each ligature piece's bar meets the next piece's on the
+    same pixel rows. The autohinter hints each glyph alone, so a bar edge that strays from its
+    profile, or an arm end it aligns to the baseline or x-height zone, moves that piece's bar a
+    row off. The TrueType fonts only: FreeType reads the OpenType fonts' own hints. Skips
+    without uvx."""
+
+    style = "Regular"
+
+    @classmethod
+    def setUpClass(cls):
+        if shutil.which("uvx") is None:
+            raise unittest.SkipTest("uvx is not installed")
+        require_current_build((cls.style,))
+
+    known = {}
+
+    def test_pieces_meet_on_the_same_pixel_rows(self):
+        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
+                   SEAMS, str(font_file(self.style, "ttf")), json.dumps(SEAMED)]
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        off = {name: sizes for name, sizes in json.loads(result.stdout).items()
+               if name not in self.known}
+        self.assertEqual(off, {})
+
+
+class ItalicLigatureSeamTest(LigatureSeamTest):
+    style = "Italic"
+
+
+class BoldLigatureSeamTest(LigatureSeamTest):
+    style = "Bold"
+    # Known exception: <=<'s tail, whose arms the pen grows across its bars a few units off
+    # their edges; the autohinter takes those for the bars' edges at 15-36 px.
+    known = {"less.dtail"}
 
 
 class MarkShapingTest(unittest.TestCase):

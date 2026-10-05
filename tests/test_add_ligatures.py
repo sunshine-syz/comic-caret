@@ -277,8 +277,9 @@ class GlyphShapeTest(unittest.TestCase):
         # Every stroke in the font ends round. A straight edge is a stroke cut flat, which a
         # piece may show only where it runs on into the next cell: upright, at the cell's
         # edge. Any other cut has to lie inside a stroke it runs into. The bars of _ and # are
-        # drawn with straight sides.
+        # drawn with straight sides, and a run's bars are levelled onto their profiles.
         seams = {-OVERLAP, ADVANCE + OVERLAP}
+        levelled = {y for bars in add_ligatures.RUNS.values() for bar in bars for y in bar.profile}
         cut = {}
         for glyph in self.font.glyphs():
             name = glyph.glyphname
@@ -287,7 +288,8 @@ class GlyphShapeTest(unittest.TestCase):
             edges = [e for e in vertical_edges(glyph.foreground)
                      if e[2] - e[1] >= 20 and e[0] not in seams]
             if not name.startswith(("underscore.", "numbersign.")):
-                edges += [e for e in horizontal_edges(glyph.foreground) if e[2] - e[1] >= 20]
+                edges += [e for e in horizontal_edges(glyph.foreground)
+                          if e[2] - e[1] >= 20 and e[0] not in levelled]
             if edges:
                 cut[name] = edges
         self.assertEqual(cut, {})
