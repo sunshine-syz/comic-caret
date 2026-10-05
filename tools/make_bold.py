@@ -938,6 +938,21 @@ def build(font):
         if outside := sorted(set(globals()[listed]) - set(PIECES_APART)):
             sys.exit(f"make_bold.{listed}: {outside} not in PIECES_APART")
     grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * project.SYMBOL_SIDE
+    # The pen raises every top and lowers every bottom by half its height, so the alignment
+    # zones move out with them, before any glyph is hinted against them: the first pair of
+    # BlueValues and OtherBlues hold bottoms, the rest of BlueValues tops. The baseline zone
+    # only grows down: FreeType pulls its flat top edge down by up to 0.6 px at small sizes,
+    # and from -12 that sank every letter a row at 9-12 px. BlueScale shrinks with the taller
+    # zone, keeping the regular's share of the spec's limit (BlueScale times it under 1).
+    def tallest():
+        zones = (*font.private["BlueValues"], *font.private["OtherBlues"])
+        return max(high - low for low, high in zip(zones[::2], zones[1::2]))
+
+    rise, was = reach((*PEN, 0))[1], tallest()
+    blues = font.private["BlueValues"]
+    font.private["BlueValues"] = (blues[0] - rise, blues[1], *(y + rise for y in blues[2:]))
+    font.private["OtherBlues"] = tuple(y - rise for y in font.private["OtherBlues"])
+    font.private["BlueScale"] *= was / tallest()
     # Read before anything changes: where each glyph's ink must stay (side_bounds()); where
     # the outline of each of OWN_BOX, ACROSS_AS_UP and BLUNT must, its own box; the gap each part
     # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; and where

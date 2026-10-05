@@ -31,6 +31,12 @@ SHARED = ("familyname", "weight", "copyright", "version", "em", "ascent", "desce
 FAMILY, WEIGHT, PROPORTION, LETTERFORM = 0, 2, 3, 7
 LATIN_TEXT, MONOSPACED = 2, 9
 NORMAL_FORMS, TO_OBLIQUE = range(2, 9), 7  # letterforms 2-8 upright, 9-15 the same oblique
+# The glyphs whose extremes each alignment zone holds, in BlueValues' order: the baseline,
+# then the tops of the x-height letters, the capitals and figures, and the ascenders. J and Q
+# reach below the baseline, as the descenders in OtherBlues do.
+CAPITALS = "ABCDEFGHIKLMNOPRSTUVWXYZ0123456789"
+X_HEIGHT, ASCENDERS, DESCENDERS = "acemnorsuvwxz", "bdhkl", "gjpqy"
+TOPS = (X_HEIGHT, CAPITALS, ASCENDERS)
 
 
 def lang_name_fields(path=SFD):
@@ -93,6 +99,21 @@ class MetadataTest(unittest.TestCase):
     def test_declared_heights_are_the_tops_of_x_and_H(self):
         self.assertEqual(self.font.os2_xheight, self.font["x"].boundingBox()[3])
         self.assertEqual(self.font.os2_capheight, self.font["H"].boundingBox()[3])
+
+    def test_alignment_zones_hold_the_letters_extremes(self):
+        # The OTF's hints put every extreme in a zone on one pixel row; one outside it stands
+        # a row off the rest, as the bold H and the regular E did over the regular's zones.
+        blues, other = self.font.private["BlueValues"], self.font.private["OtherBlues"]
+        zones = list(zip(blues[::2], blues[1::2]))
+        checks = [(CAPITALS + X_HEIGHT + ASCENDERS, 1, zones[0]), (DESCENDERS, 1, other)]
+        checks += [(chars, 3, zone) for chars, zone in zip(TOPS, zones[1:], strict=True)]
+        for chars, side, (low, high) in checks:
+            for char in chars:
+                with self.subTest(glyph=char, side=side):
+                    self.assertTrue(low <= self.font[ord(char)].boundingBox()[side] <= high)
+        # The CFF spec holds BlueScale times the tallest zone under 1.
+        tallest = max(high - low for low, high in [*zones, other])
+        self.assertLess(self.font.private["BlueScale"] * tallest, 1)
 
     def test_strikeout_covers_the_hyphen(self):
         _, bottom, _, top = self.font["hyphen"].boundingBox()
