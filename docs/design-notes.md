@@ -250,7 +250,10 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   aligned to the baseline; an upper end at 509 to the x-height; and ← reaching 529 or more
   moves the bars of `<<-` and `<=<`. Measured with freetype-py 2.5.1 (FreeType 2.13.2) at
   8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The bold `<=<`
-  still steps: its pen grows the tail's arms across the bars a few units off their edges.
+  still steps at 15–17, 20–21, 26–29 and 34–36 px: the autohinter places the tail's bars from
+  another first edge than `=`'s. Lifting or lowering the arms' ends and levelling the joins
+  only moved the failing sizes; `greater.dtail` mirrored stays level but reaches 28 across and
+  11 up past the regular tail, beyond the pen.
 - **Alignment zones.** The OTF's hints put the extremes inside one zone on one pixel row, so
   each zone runs from the lowest to the highest of its letters' extremes, the hand's wobble
   included: the baseline −37…−5, the x-height 461…493, the capitals and figures 658…692, the
@@ -258,7 +261,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   half the pen's height, 7, but its baseline zone keeps its top at −5: FreeType pulls that
   flat edge down by up to 0.6 px at small sizes, and from −12 it sank every bold letter a
   row at 9–12 px. Its BlueScale shrinks with that taller zone. `tests/test_metadata.py`
-  checks that every style's letters stay inside.
+  checks that every style's letters stay inside. The bold `U` (671) still stands a row above
+  `H` (675) at 20 and 23 px, though both lie in the capitals' zone; BlueShift 12 changes
+  nothing, and the cause is not found.
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under

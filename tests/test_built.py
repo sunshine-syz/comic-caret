@@ -349,8 +349,8 @@ class ItalicLigatureSeamTest(LigatureSeamTest):
 
 class BoldLigatureSeamTest(LigatureSeamTest):
     style = "Bold"
-    # Known exception: <=<'s tail, whose arms the pen grows across its bars a few units off
-    # their edges; the autohinter takes those for the bars' edges at 15-36 px.
+    # Known exception: <=<'s tail, whose bars the autohinter places from another first edge
+    # than ='s at 15-36 px; reshaping its arms only moves the sizes (docs/design-notes.md).
     known = {"less.dtail"}
 
 
