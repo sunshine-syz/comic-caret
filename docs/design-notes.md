@@ -82,6 +82,10 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
   1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
   exactly, and the Powerline separators do the same.
+- Braille's dots stand on an even grid: columns every half cell, rows every quarter of the
+  line box, so a graph's dots stand as far apart across cells and lines as inside one. Graphs
+  in btop, Rich and UnicodePlots come first; Braille text reads looser than in Maple Mono,
+  whose dots stand 1.5 times closer inside a cell across and 3.2 times down.
 - `|` stands on the cell's middle, on │'s line, so a table drawn with both meets; ‖ is two `|`.
 - `( [ {` span −145…800, 945 tall, within the references' 927–971. The descenders hang 133–152
   below them (`p` −278, `y` −297), where the references leave 17–85, because ours keep Comic

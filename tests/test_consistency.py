@@ -355,6 +355,19 @@ class CompositionTest(unittest.TestCase):
                 wrong[f"U+{code:04X}"] = shown
         self.assertEqual(wrong, {})
 
+    def test_braille_dots_stand_on_an_even_grid(self):
+        # Graphs drawn in Braille (btop, Rich, UnicodePlots) break into stripes where the dots
+        # stand closer inside a cell than across cells and lines.
+        centers = self.dot_centers(0x28FF)
+        xs = sorted(x for x, _ in centers)
+        ys = sorted((y for _, y in centers), reverse=True)
+        left, right = statistics.mean(xs[:4]), statistics.mean(xs[4:])
+        rows = [statistics.mean(ys[i:i + 2]) for i in range(0, 8, 2)]
+        line = self.font.hhea_ascent - self.font.hhea_descent
+        self.assertAlmostEqual(right - left, ADVANCE - (right - left), delta=2 * ROUNDING)
+        for pitch in [a - b for a, b in itertools.pairwise(rows)] + [rows[3] + line - rows[0]]:
+            self.assertAlmostEqual(pitch, line / 4, delta=2 * ROUNDING)
+
     def dot_centers(self, code):
         """The middle of each dot of a Braille pattern."""
         return [((x0 + x1) / 2, (y0 + y1) / 2)

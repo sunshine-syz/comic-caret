@@ -15,6 +15,7 @@
 - `C` and `G` no longer lean. The upper left of their bowl stands over that of `O`, as in Fira Code, Maple Mono and Intel One Mono. The top of `A` stands in the middle of the cell, and its legs slope alike. The accented letters, Α and ∀ follow.
 - The upper bowl of `8` and both bowls of `B` are wider, as wide as in Intel One Mono, Fira Code and Maple Mono. The bowl of `d` is as wide as Maple Mono's, and `b` `p` `q` widen with it, so the four stay one width. Their strokes keep their weight.
 - ↑ ↓ ⇑ ⇓ ⇞ ⇟ have the heads of → and ⇒, so an arrow up or down is as big as one along the line. The diagonal arrows ↖ ↗ ↘ ↙ have longer shafts.
+- The dots of Braille stand on an even grid, as far apart inside a character as across characters and lines. So a graph drawn in Braille, as btop and UnicodePlots draw them, no longer breaks into stripes.
 - The leg of ₹ runs down to the right, and its bowl turns back under the bar, as in Fira Code, Maple Mono and Intel One Mono.
 - `/` and `\` are taller and a little steeper. They are as tall as in Fira Code, Maple Mono and Intel One Mono, and their strokes keep their weight. `//` and `/*` keep their spacing, and the slash of `!=` keeps its size.
 - The slash of ∄ is the `/` turned 6° steeper, so ∄ is no wider than ∃, as in Fira Code and Maple Mono.
