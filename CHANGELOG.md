@@ -3,9 +3,11 @@
 ## 2.0.1 (unreleased)
 
 - `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.
-- `===` draws three bars, as `!==` does and as Fira Code and Maple Mono draw it. So `==` and `===` differ by more than their length. A run of four or more `=` stays one double line.
-- The two characters of `&&` no longer touch. They keep about as much white between them as Maple Mono's. In the bold, every pulled-together pair keeps the regular's white, so the bold `&&` no longer merges into one shape and the bold `??` stays apart.
-- `///` and `/**` are pulled together like `//` and `/*`, so a doc comment opens as tightly as a plain one.
+- `===` draws three bars, as `!==` does and as Fira Code and Maple Mono draw it. So `==` and `===` differ by more than their length. It keeps its bars beside another operator, as in `a===-1`. A run of four or more `=` stays one double line, and so does `+===+`, a table's border.
+- The two characters of `&&` no longer touch. They keep about as much white between them as Maple Mono's. In the bold, every pulled-together pair keeps the regular's white, so the bold `&&` no longer merges into one shape and the bold `??` stays apart. The two hooks of `??` keep as much white between them as Maple Mono's, about twice as much as before.
+- `///` and `/**` are pulled together like `//` and `/*`, so a doc comment opens as tightly as a plain one. So are `//!`, `/*!`, `///<` and `/**<`, which open Rust's and Doxygen's doc comments.
+- `..` between two names or numbers, a range, is pulled together, as `..=`, `..<` and `...` are. So `0..n` and `0..=n` look alike. In a path, as in `../` and `cd ..`, it stays as typed.
+- The bar of the `<=` and `>=` ligatures stands further from the arm above it, as far as in Maple Mono. In the 12 px bold, `<=` no longer reads as `<`.
 - `?:` stays as typed after a TypeScript property name, as in `name?: T` and `[K]?: T`. Where it is an operator, as in `a ?: b` and `(?:x)`, it is still pulled together.
 - The dot of `?` stands further from its hook, as far as in Maple Mono, in the regular and the bold. At 12 px the bold dot no longer joins the hook. ¿ follows.
 - `!` is as tall as `?`, at the cap height. ¡ and ‼ follow.
@@ -17,7 +19,7 @@
 - Two `-` or two `_` stay as typed, as in `--help`, `i--`, `-- comment` and `__init__`. Three or more still join into a line, and `<!--` keeps its line.
 - `<=>` is pulled together as a comparison, as in C++, PHP, Ruby and Perl, and no longer draws an arrow. `<==>` is still an arrow.
 - `~>` stays as typed before a version, as in Ruby's and Terraform's `~> 1.0`.
-- Pairs beside a name stay as typed where they are no operator: `/*` after one, as in `src/*`, `*/` before one, as in the cron step `*/5`, and `>>` or `>>>` after one, as generics close in `Vec<Vec<u8>>`. With spaces, as in `a >> b`, they are still pulled together.
+- Pairs beside a name stay as typed where they are no operator: `/*` after one, as in `src/*`, `*/` before one, as in the cron step `*/5`, and `>>` or `>>>` after one, as generics close in `Vec<Vec<u8>>`. A shift is still pulled together: with spaces, as in `a >> b`, and without, where a name or a number follows, as in `cin>>n`, `x>>1` and `a>>>0`.
 
 ## 2.0.0 (2026-10)
 

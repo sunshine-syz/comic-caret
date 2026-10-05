@@ -222,6 +222,15 @@ LIGATED = {
     "<<": ["less.tight_r", "less.tight_l"],
     ">>": ["greater.tight_r", "greater.tight_l"],
     "a >> b": ["a", "space", "greater.tight_r", "greater.tight_l", "space", "b"],
+    # A shift without spaces: a name or a number follows, which never follows closing generics
+    "cin>>n": ["c", "i", "n", "greater.tight_r", "greater.tight_l", "n"],
+    "x>>1": ["x", "greater.tight_r", "greater.tight_l", "one"],
+    "f()>>2": ["f", "parenleft", "parenright", "greater.tight_r", "greater.tight_l", "two"],
+    # A range between two names or numbers, as ..= ..< tighten
+    "0..n": ["zero", "period.tight_r", "period.tight_l", "n"],
+    # A comment opener before the ! or < of a doc comment
+    "//!": ["slash.tight_r", "slash.tight_l", "exclam"],
+    "/*!": ["slash.tight_r", "asterisk.tight_l", "exclam"],
     "/* c */": ["slash.tight_r", "asterisk.tight_l", "space", "c", "space", "asterisk.tight_r",
                 "slash.tight_l"],
     "??": ["question.tight_r", "question.tight_l"],
@@ -231,6 +240,11 @@ LIGATED = {
     # === as three bars, as !== draws them
     "===": ["LIG", "LIG", "equal_equal_equal.liga"],
     "a === b": ["a", "space", "LIG", "LIG", "equal_equal_equal.liga", "space", "b"],
+    "a===-1": ["a", "LIG", "LIG", "equal_equal_equal.liga", "hyphen", "one"],
+    "x===+y": ["x", "LIG", "LIG", "equal_equal_equal.liga", "plus", "y"],
+    # A table's border of exactly three = stays one line
+    "+===+": ["plus", "equal.sta", "equal.mid", "equal.end", "plus"],
+    "|===|": ["bar", "equal.sta", "equal.mid", "equal.end", "bar"],
     # Tightened threes: the outer glyphs move in
     "|||": ["bar.tight_r", "bar", "bar.tight_l"],
     "///": ["slash.tight_r", "slash", "slash.tight_l"],
@@ -240,6 +254,10 @@ LIGATED = {
     ">>>": ["greater.tight_r", "greater", "greater.tight_l"],
     ">>=": ["greater.tight_r", "greater", "equal.tight_l"],
     "m >>= f": ["m", "space", "greater.tight_r", "greater", "equal.tight_l", "space", "f"],
+    "m>>=f": ["m", "greater.tight_r", "greater", "equal.tight_l", "f"],
+    "a>>>0": ["a", "greater.tight_r", "greater", "greater.tight_l", "zero"],
+    "///<": ["slash.tight_r", "slash", "slash.tight_l", "less"],
+    "/**<": ["slash.tight_r", "asterisk", "asterisk.tight_l", "less"],
     "<<=": ["less.tight_r", "less", "equal.tight_l"],
     "=<<": ["equal.tight_r", "less", "less.tight_l"],
     "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
@@ -280,12 +298,15 @@ PLAIN = [
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
     "<<<<<<<", ">>>>>>>", "////", "/***", "||=", "&&=", "??=",
     "a::<T>", "https://", "....", "..", "<||", "|>>", "||||", "&&&&", ">>>=", "...=",
-    "?..", "??.", "**", "a**b",
+    "?..", "??.", "**", "a**b", "/**/",
+    # .. in a path, not between two names or numbers
+    "../x", "cd ..", "a[2..]",
     # TypeScript's optional property, where ?: is no operator
     "x?: T", "[K]?: T",
     # A path's glob, a cron step and closing generics, where a pair after or before a name is
     # no operator
-    "src/*", "src/**/*.js", "*/5", "Vec<Vec<u8>>", "A<B<C<D>>>",
+    "src/*", "src/**/*.js", "*/5", "Vec<Vec<u8>>", "A<B<C<D>>>", "Box<dyn Fn()>>",
+    "Vec<[u8; 4]>>",
 ]
 
 

@@ -39,6 +39,9 @@ languagesystem latn dflt;
 # What a name ends in. /* or /** after one is a path (src/*), */ before one a step in a cron
 # field (*/5), and >> or >>> after one closes generics (Vec<Vec<u8>>): none is an operator.
 @Word = [A - Z a - z @Digit underscore];
+# What generics close after: Vec<u8>> Box<dyn Fn()>> Vec<[u8; 4]>>. They never close right
+# before a name or a number, as a shift without spaces does: cin>>n, x>>1, a>>>0.
+@Operand = [@Word parenright bracketright];
 # What ends a TypeScript property name before its optional ?: : name?: T, [K in keyof T]?: T.
 @PropertyEnd = [@Word dollar bracketright];
 # What follows a < that opens an HTML tag or comment: <p </p <!--.
@@ -117,10 +120,13 @@ feature calt {
   } lig_colon_equal;
 
   # === as three bars, as both references draw it and as !== has them, so it differs from ==
-  # by more than its length. A longer run (setext headings, conflict markers) stays one line.
+  # by more than its length, also beside another operator (a===-1, x===+y). A longer run
+  # (setext headings, conflict markers), an arrow (<===, ===>) and a table's border (+===+)
+  # stay one line.
   lookup lig_triple_equal {
-    ignore sub @Op equal' equal equal;
-    ignore sub equal' equal equal @Op;
+    ignore sub [equal exclam colon less greater] equal' equal equal;
+    ignore sub equal' equal equal [equal less greater];
+    ignore sub [plus bar] equal' equal equal [plus bar];
     sub equal' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_equal_equal_equal;
   } lig_triple_equal;
 
@@ -360,14 +366,18 @@ feature calt {
   # 6. Tightened threes, their outer glyphs moved in and the middle one left in place, then
   #    tightened pairs. The threes come first: a pair's ignore rules would claim them. An =
   #    may close << >> (<<= >>=) or open << (=<<), as in C's shifts and Haskell's binds; ///
-  #    and /** open doc comments, so they tighten as // and /* do. None tightens beside a
-  #    @Word where it is no operator there.
+  #    and /** open doc comments, so they tighten as // and /* do, and a comment opener
+  #    tightens before the ! or < that marks a doc comment (//! /*! ///< /**<). None tightens
+  #    beside a @Word where it is no operator there. .. tightens only between two names or
+  #    numbers, a range (0..n), so a path (../, cd ..) stays as typed.
   lookup lig_tight {
     ignore sub @Op slash' slash slash;
+    sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l [exclam less];
     ignore sub slash' slash slash @Op;
     sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l;
     ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
+    sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l [exclam less];
     ignore sub slash' asterisk asterisk @Op;
     sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l;
     ignore sub @Op period' period period;
@@ -382,9 +392,10 @@ feature calt {
     ignore sub @Op less' less [less equal];
     ignore sub less' less [less equal] @Op;
     sub less' lookup lig_tight_r less [less equal]' lookup lig_tight_l;
-    ignore sub @Word greater' greater [greater equal];
     ignore sub @Op greater' greater [greater equal];
     ignore sub greater' greater [greater equal] @Op;
+    sub @Operand greater' lookup lig_tight_r greater greater' lookup lig_tight_l @Word;
+    ignore sub @Operand greater' greater greater;
     sub greater' lookup lig_tight_r greater [greater equal]' lookup lig_tight_l;
     ignore sub @Op equal' less less;
     ignore sub equal' less less @Op;
@@ -392,6 +403,7 @@ feature calt {
     ignore sub @Op less' [dollar asterisk equal] greater;
     ignore sub less' [dollar asterisk equal] greater @Op;
     sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
+    sub @Word period' lookup lig_tight_r period' lookup lig_tight_l @Word;
     ignore sub @Op colon' colon;
     ignore sub colon' colon @Op;
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
@@ -402,10 +414,12 @@ feature calt {
     ignore sub plus' plus @Op;
     sub plus' lookup lig_tight_r plus' lookup lig_tight_l;
     ignore sub @Op slash' slash;
+    sub slash' lookup lig_tight_r slash' lookup lig_tight_l [exclam less];
     ignore sub slash' slash @Op;
     sub slash' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Word slash' asterisk;
     ignore sub @Op slash' asterisk;
+    sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l [exclam less];
     ignore sub slash' asterisk @Op;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l;
     ignore sub @Op asterisk' slash;
@@ -415,9 +429,10 @@ feature calt {
     ignore sub @Op less' less;
     ignore sub less' less @Op;
     sub less' lookup lig_tight_r less' lookup lig_tight_l;
-    ignore sub @Word greater' greater;
     ignore sub @Op greater' greater;
     ignore sub greater' greater @Op;
+    sub @Operand greater' lookup lig_tight_r greater' lookup lig_tight_l @Word;
+    ignore sub @Operand greater' greater;
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;
     ignore sub question' question @Op;

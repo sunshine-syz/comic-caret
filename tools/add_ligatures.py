@@ -85,7 +85,10 @@ GREATER_ENDS = ((150, 490), (153, 63))
 ARM_ENDS = {"greater": GREATER_ENDS,
             "less": tuple((ADVANCE - x, 2 * AXIS - y) for x, y in reversed(GREATER_ENDS))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
-BAR_GAP = 140          # lower arm to bar, centre to centre: a stroke plus our ≤'s 60 gap
+# <= >=: lower arm to bar, centre to centre. The bar runs along the arm, so the white between
+# them is about this less a stroke all along: Maple Mono's 106 at our cap height, and 85 in
+# the bold, where the pen takes 20 (Fira Code's are 141 and 121).
+BAR_GAP = 196
 
 # |> <|: the head with its arms lengthened until it is as tall as Fira Code's triangle, 1603
 # of its 1053 x-height (JetBrains Mono's is 835 of 550), over the round ends of a bar as tall
@@ -109,9 +112,9 @@ DIAMOND_WIDTH_GAIN = 35
 
 # The side bearing each glyph keeps toward its partner once moved, so the white between a pair
 # stays when the cell or the glyph's width changes. & keeps 45 of white in &&, Maple Mono's
-# (Fira Code joins its two).
+# (Fira Code joins its two), and ? 107 between the hooks of ??, Maple Mono's (Fira Code 104).
 TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -41.5,
-              "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 21, "bar": 131,
+              "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 53, "bar": 131,
               "equal": 20.5}
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet

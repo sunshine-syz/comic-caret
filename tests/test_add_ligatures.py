@@ -27,6 +27,9 @@ DIAMOND_WIDTHS = (1.67, 1.76)
 # The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
 # Mono's (620 of 550).
 OR_EQUAL_ANGLES = (1.098, 1.127)
+# The white between <= >='s lower arm and its bar: Maple Mono's, the narrower reference's (Fira
+# Code's are 141 and 121), at our cap height; regular, then bold.
+OR_EQUAL_WHITE, BOLD_OR_EQUAL_WHITE = 106, 85
 # |> <|'s ink in x-heights, tall then wide: Fira Code's is 1603 by 1306 of 1053 (1.52, 1.240),
 # JetBrains Mono's 835 by 685 of 550 (1.52, 1.245).
 PIPE_HEIGHT, PIPE_WIDTHS = 1.52, (1.240, 1.245)
@@ -165,6 +168,27 @@ class TwoHeadsTest(unittest.TestCase):
 
 class BoldTwoHeadsTest(TwoHeadsTest):
     sfd, head_gap = BOLD_SFD, HEAD_WHITE
+
+
+class OrEqualTest(unittest.TestCase):
+    """<= >=: the bar stands clear of the lower arm, by at least the narrower reference's."""
+    sfd, white = SFD, OR_EQUAL_WHITE
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_bar_stands_clear_of_the_arm(self):
+        # At 54 the bold's bar and arm read as one stroke at 12 px, so <= read as <.
+        for glyph in ("less_equal.liga", "greater_equal.liga"):
+            with self.subTest(glyph=glyph):
+                angle, bar = sorted(self.font[glyph].foreground,
+                                    key=lambda contour: contour.boundingBox()[3], reverse=True)
+                self.assertGreaterEqual(gap(one_layer(angle), one_layer(bar)), self.white)
+
+
+class BoldOrEqualTest(OrEqualTest):
+    sfd, white = BOLD_SFD, BOLD_OR_EQUAL_WHITE
 
 
 class GlyphShapeTest(unittest.TestCase):
