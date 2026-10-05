@@ -191,6 +191,14 @@ class OperatorTest(unittest.TestCase):
                 _, y0, _, y1 = self.font[name].boundingBox()
                 self.assertGreaterEqual(y1 - y0, self.slash_height)
 
+    def test_not_exists_stays_within_exists(self):
+        # Fira Code's and Maple Mono's ∄ are no wider than their ∃: the slash turns steeper
+        # rather than reaching past it.
+        e0, _, e1, _ = self.font[0x2203].boundingBox()
+        x0, _, x1, _ = self.font[0x2204].boundingBox()
+        self.assertGreaterEqual(x0, e0 - ROUNDING)
+        self.assertLessEqual(x1, e1 + ROUNDING)
+
     def test_identical_bars_are_three_equal_bars(self):
         # ≡'s bars weigh as ='s, within the pen's measured weight tolerance, and are spaced as
         # ='s, within the hand's wobble.

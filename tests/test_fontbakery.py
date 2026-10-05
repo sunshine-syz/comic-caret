@@ -89,7 +89,7 @@ def known():
     # FontForge derives the italic's caret slope from its angle in hundredths, 100/21, which
     # is 11.86°, where the check wants 1000/213: 0.14° on a text cursor.
     caret_slope = ("WARN", "opentype/caret_slope", "caretslope-mismatch", frozenset())
-    contours = frozenset({"uni2204", "uni20B9", "uni20B1", "uni25CC"})
+    contours = frozenset({"uni20B9", "uni20B1", "uni25CC"})
     return {
         "ttf": {
             soft_hyphen, no_stat, caret_slope,
@@ -99,16 +99,16 @@ def known():
             ("WARN", "opentype/monospace", "bad-numberOfHMetrics", frozenset()),
             # ď is a reference to d and caron.alt, which the check can't inspect.
             ("WARN", "alt_caron", "decomposed-outline", frozenset({"dcaron"})),
-            # ∄ is E and a slash as two references, where the check expects 3 contours; ₹'s
-            # bowl closes on its leg, so it has a counter, where the check expects the open
+            # ₹'s bowl closes on its leg, so it has a counter, where the check expects the open
             # shape's one contour; ₱'s upper bar cuts P's counter in two, one contour more than it
             # expects; ◌ is eight dashes, as Maple Mono's, where it expects fewer.
             ("WARN", "contour_count", "contour-count", contours),
-            # In the regular and the italic, ₩ too: its upper bar crosses the tip of W's middle
-            # notch, as Maple Mono's does, so no counter is left above it, one contour fewer
-            # than the check expects. The bold's pen closes all but two of its counters,
-            # leaving the 3 contours the check expects.
-            ("WARN", "contour_count", "contour-count", contours | {"uni20A9"}),
+            # In the regular and the italic, ∄ and ₩ too. ∄ is E and a slash, overlapping, where
+            # the check expects 3 contours; the bold draws it as one outline, which has them.
+            # ₩'s upper bar crosses the tip of W's middle notch, as Maple Mono's does, so no
+            # counter is left above it, one contour fewer than the check expects. The bold's pen
+            # closes all but two of its counters, leaving the 3 contours the check expects.
+            ("WARN", "contour_count", "contour-count", contours | {"uni2204", "uni20A9"}),
             # FontForge adds nonmarkingreturn to every TTF.
             ("WARN", "unreachable_glyphs", "unreachable-glyphs",
              frozenset({"nonmarkingreturn"})),

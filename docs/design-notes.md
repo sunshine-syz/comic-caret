@@ -87,7 +87,11 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
   520. `//` `/*` keep their pitch through `TIGHT_KEEP` (−41.5), and the `!=` slash, the `/` at
-  83 %, stands 726 tall, between Maple Mono's 662 and Fira Code's 786. ∄ holds the `/`.
+  83 %, stands 726 tall, between Maple Mono's 662 and Fira Code's 786.
+- ∄ is ∃ and the `/` turned 6° steeper, so it is no wider than ∃, as Fira Code's and Maple
+  Mono's are: 421 against Maple Mono's 420. Its foot stays at Fira Code's −121. A turned part
+  can't stay a reference under the italic's shear or the bold's pen, so the italic draws ∄'s
+  two parts as outlines and the bold merges them (`make_bold.MERGED`).
 - `‘` is the turned comma ģ carries, head down like a 6, moved 77 down to stand level with
   `’`; `“` is two of it and ʻ is it. Drawn as a reversed 9, it read as a misplaced `’`.
 

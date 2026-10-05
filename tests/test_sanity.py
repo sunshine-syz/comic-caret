@@ -58,6 +58,8 @@ BOLD_TONOS_OVERHANG = round(425 * ADVANCE / 1200)
 BOLD_INK_OUTSIDE_CELL = {**INK_OUTSIDE_CELL, **dict.fromkeys(TONOS_CAPITALS, BOLD_TONOS_OVERHANG)}
 # ∄'s rotated E and slash overlap, and so do the references to ☐ and a quarter of ■ in ◰ ◱ ◲ ◳.
 VALIDATE_FLAGS = {"uni2204": 0x4, "uni25F0": 0x4, "uni25F1": 0x4, "uni25F2": 0x4, "uni25F3": 0x4}
+# The bold draws ∄ as one outline (make_bold.MERGED).
+BOLD_VALIDATE_FLAGS = {name: flags for name, flags in VALIDATE_FLAGS.items() if name != "uni2204"}
 # The spaces, the blank Braille pattern and the zero-width format characters.
 # The soft hyphen is blank because a terminal that gives it no cell (Alacritty) draws its glyph
 # over the letter before it.
@@ -118,7 +120,7 @@ class SanityTest(unittest.TestCase):
         self.assertEqual(wrong, [])
 
     rounding = 0  # how far ink may miss its allowance through rounding
-    outside_cell = INK_OUTSIDE_CELL
+    outside_cell, validate_flags = INK_OUTSIDE_CELL, VALIDATE_FLAGS
 
     def box(self, glyph):
         return glyph.boundingBox()
@@ -168,7 +170,7 @@ class SanityTest(unittest.TestCase):
         # extrema and the other validate() problems.
         flags = {g.glyphname: validation_errors(g) for g in self.glyphs}
         self.assertEqual({n: hex(x) for n, x in flags.items() if x},
-                         {n: hex(x) for n, x in VALIDATE_FLAGS.items()})
+                         {n: hex(x) for n, x in self.validate_flags.items()})
 
     def test_reference_offsets_are_whole_units(self):
         # validate() holds the points to whole units; a reference's offset places every point
@@ -214,7 +216,7 @@ class BoldSanityTest(SanityTest):
     """The same rules for the bold, whose strokes grow within the regular's cell and line box."""
 
     sfd = BOLD_SFD
-    outside_cell = BOLD_INK_OUTSIDE_CELL
+    outside_cell, validate_flags = BOLD_INK_OUTSIDE_CELL, BOLD_VALIDATE_FLAGS
 
 
 if __name__ == "__main__":

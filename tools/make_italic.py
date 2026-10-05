@@ -198,13 +198,15 @@ def build(font):
     for glyph in font.glyphs():
         parts = {styles[name] for name, *_ in glyph.references}
         if styles[glyph.glyphname] == UPRIGHT and parts - {UPRIGHT}:
-            glyph.unlinkRef()
+            for name, *_ in glyph.references:
+                glyph.unlinkRef(name)  # one reference per call
             glyph.autoHint()
         elif styles[glyph.glyphname] != UPRIGHT and UPRIGHT in parts:
             sys.exit(f"{glyph.glyphname} slants but is built on an upright glyph")
         elif (styles[glyph.glyphname] != UPRIGHT
               and any(not conjugable(matrix) for _, matrix, *_ in glyph.references)):
-            glyph.unlinkRef()  # slant() rehints it
+            for name, *_ in glyph.references:
+                glyph.unlinkRef(name)  # one reference per call; slant() rehints it
     for glyph in font.glyphs():
         if styles[glyph.glyphname] != UPRIGHT:
             slant(glyph)
@@ -216,7 +218,7 @@ def build(font):
 
 def check(path):
     """Exit non-zero if a glyph of the italic at `path` fails validate() where the regular's
-    doesn't (∄'s references overlap in both)."""
+    doesn't (∄'s parts overlap in both)."""
     italic, regular = fontforge.open(str(path)), fontforge.open(str(SFD))
     failed = {g.glyphname: hex(flags) for g in italic.glyphs()
               if (flags := validation_errors(g)) != validation_errors(regular[g.glyphname])}

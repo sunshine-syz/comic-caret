@@ -202,8 +202,9 @@ ACROSS_AS_UP = ("uni21D5",)
 
 # Composites drawn as one outline, each part grown on its own: Θ, whose bar beside a reference
 # to the bold O fails validate() once saved, as FontForge reads the hint masks O's overlapping
-# stems need against Θ's own stems, which the bar's wobble makes overlap too.
-MERGED = ("Theta",)
+# stems need against Θ's own stems, which the bar's wobble makes overlap too; and ∄, whose
+# slash, / turned steeper, grows as an outline (unlinked_parts()) beside ∃'s E the same way.
+MERGED = ("Theta", "uni2204")
 
 # Outlines whose pieces stand side by side, which the pen would grow into one: the arrows and
 # bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 75 apart, and the letters
@@ -1057,7 +1058,7 @@ def build(font):
 
 def check(path):
     """Exit non-zero if a glyph of the bold at `path` fails a validate() check that the
-    regular's passes (∄'s references overlap in both)."""
+    regular's passes (the regular's ∄ overlaps its references; the bold's is one outline)."""
     bold, regular = fontforge.open(str(path)), fontforge.open(str(SFD))
     failed = {g.glyphname: hex(flags) for g in bold.glyphs()
               if (flags := validation_errors(g) & ~validation_errors(regular[g.glyphname]))}
