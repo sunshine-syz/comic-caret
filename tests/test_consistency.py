@@ -57,9 +57,6 @@ OFF_ROW = {
     # The slash runs 45 past the bowl at both ends; Fira Code's and Intel One Mono's run
     # further (57 and more), Maple Mono's less (7 to 25).
     ("baseline", "Ø"), ("cap height", "Ø"), ("baseline", "ø"), ("x-height", "ø"),
-    # Where a's foot meets e's bowl it dips 26 lower than o; the references' æ go no lower
-    # than their o.
-    ("baseline", "æ"),
 }
 
 # Symmetric glyphs; the brackets, which the legibility pass centered; the figures, and the

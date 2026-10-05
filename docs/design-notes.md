@@ -66,6 +66,18 @@ them. The exceptions:
 - Where three strokes share the cell (φ Φ ψ Ψ), the middle one takes the bar's weight (78),
   and the sides reach as far out as `w`'s, to keep up with the references' lighter strokes.
 
+## Latin
+
+- **`a`** is double-storey, after a hand-drawn reference, so it reads apart from `o` and `α`
+  at 12 px; the single-storey one blurred into `o` there. Its head rises nearly straight from
+  a terminal at 0.87 of the x-height to a tight shoulder, the stem leans out as the old one
+  did, and the bowl, a flat oval, leaves the stem at mid-height and rises back into it above
+  the baseline. The bowl's top is at 0.59 of the x-height, Fira Code's and Intel One Mono's
+  0.60, and its counter 0.33 tall (Intel One Mono 0.31, Fira Code 0.39). It is drawn on two
+  centrelines with an elliptical pen 95 wide and 76 tall, `o`'s sides and top. Its top stays
+  at 486, the old `a`'s, so å's ring keeps 24 of white. `æ`'s a half is the same centrelines
+  at 0.62 across with the old `æ`'s pen (72 × 80), and `ª`'s small a is `a` at 0.55.
+
 ## Greek
 
 Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
@@ -366,8 +378,9 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   • ‣ ∙ stay too, as ◉ ⊙ and ▸ are built on them, and ℹ, which stands beside ⚠.
 - **Dots** shear with the letters, as Maple Mono's and Monaspace's do; round dots that only
   move with the slant looked the same at 14 px and would need a special case.
-- **Cursive letters**: only f. The regular's single-storey a and g already read as italic
-  forms; Maple Mono's looped l made "all" and "full" busy at 15 px and turned l into ℓ; a
+- **Cursive letters**: only f. The regular's single-storey g already reads as an italic
+  form. a slants double-storey, as Intel One Mono's and Monaspace's italics keep theirs, so
+  a and o stay apart in italic comments; Maple Mono's looped l made "all" and "full" busy at 15 px and turned l into ℓ; a
   plain stem lost the tail that keeps l apart from I and 1. f drops its foot and runs its
   stem 268 below the baseline, as deep as j, ending in a flick 70 left of the stem in the
   stem's own stroke, chosen over ƒ's hook (Maple Mono's f), which reached 72 units left of

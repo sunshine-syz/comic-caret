@@ -68,7 +68,7 @@ COMPOSITES = {"quoteleft": {"commaturnedabove"}, "periodcentered": {"period"}, "
 SMALL_PROBES = {"zero": (0.5, 0), "one": (0.5, 0), "two": (0.75, -1), "three": (0.75, -1),
                 "four": (0.12, 0), "five": (0.8, 0), "six": (0.3, 0), "eight": (0.25, 0),
                 "nine": (0.7, -1), "i": (0.3, 0), "n": (0.5, 0), "plus": (0.2, 0),
-                "parenleft": (0.5, 0), "a": (0.5, 0), "o": (0.5, 0), "T": (0.4, 0),
+                "parenleft": (0.5, 0), "a": (0.7, -1), "o": (0.5, 0), "T": (0.4, 0),
                 "M": (0.25, 0), "C": (0.5, 0), "R": (0.75, 0)}
 # Each superscript and the subscript Unicode pairs with it.
 SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"

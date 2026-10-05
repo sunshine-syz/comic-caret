@@ -11,6 +11,7 @@
 - `?:` stays as typed after a TypeScript property name, as in `name?: T` and `[K]?: T`. Where it is an operator, as in `a ?: b` and `(?:x)`, it is still pulled together.
 - The dot of `?` stands further from its hook, as far as in Maple Mono, in the regular and the bold. At 12 px the bold dot no longer joins the hook. ¿ follows.
 - `!` is as tall as `?`, at the cap height, and its stem ends higher above the dot. At 12 px the dot no longer joins the stem, in the regular and the bold. ¡ and ‼ follow.
+- `a` is double-storey, so it no longer reads as `o` or `α` at small sizes. Its head rises nearly straight to the stem, and its bowl is a flat oval, as wide as `o`. The italic slants it, as Intel One Mono's and Monaspace's italics do. à á â ã ä å ā ă ą æ ª follow.
 - `G` no longer reads as `6`. Its bar starts at the middle of the letter, and its right side rises straight up to the bar, as in Monaspace Radon. So `16GB` and `LOG6` read right in every style. Its stroke keeps its weight where the bowl turns up into the right side. Ĝ Ğ Ġ Ģ follow.
 - The top of `A` stands in the middle of the cell, and its legs slope alike, as in Fira Code, Maple Mono and Intel One Mono. The accented letters, Α and ∀ follow.
 - The upper bowl of `8` and both bowls of `B` are wider, as wide as in Intel One Mono, Fira Code and Maple Mono. The bowl of `d` is as wide as Maple Mono's, and `b` `p` `q` widen with it, so the four stay one width. Their strokes keep their weight.
