@@ -36,8 +36,11 @@ languagesystem latn dflt;
 @Delimiter = [A - Z a - z underscore quotesingle quotedbl backslash];
 # A digit after <- makes it a minus sign: x<-1 is x < -1.
 @Digit = [zero one two three four five six seven eight nine];
+# What a name ends in. /* or /** after one is a path (src/*), */ before one a step in a cron
+# field (*/5), and >> or >>> after one closes generics (Vec<Vec<u8>>): none is an operator.
+@Word = [A - Z a - z @Digit underscore];
 # What ends a TypeScript property name before its optional ?: : name?: T, [K in keyof T]?: T.
-@PropertyEnd = [A - Z a - z @Digit underscore dollar bracketright];
+@PropertyEnd = [@Word dollar bracketright];
 # What follows a < that opens an HTML tag or comment: <p </p <!--.
 @TagStart = [A - Z a - z slash exclam];
 # What an HTML element's name is made of: <p> <h1> <blockquote>.
@@ -69,6 +72,10 @@ lookup lig_twohead { sub [less greater] by [less.twohead greater.twohead]; } lig
 lookup lig_shaft { sub [less greater] by [less.shaft greater.shaft]; } lig_shaft;
 lookup lig_comment { sub [less exclam] by [less.comment exclam.tight_r]; } lig_comment;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
+lookup lig_plain {
+  sub [hyphen.sta hyphen.end underscore.sta underscore.end]
+   by [hyphen hyphen underscore underscore];
+} lig_plain;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
 lookup lig_equal_equal_equal { sub equal by equal_equal_equal.liga; } lig_equal_equal_equal;
@@ -233,9 +240,11 @@ feature calt {
   } lig_hyphen_unwind;
 
   # A left-only = arrow needs two =, since <= alone is ≤. An = run right after ! or : stays
-  # plain, so !=== and :== show no join.
+  # plain, so !=== and :== show no join. <=> is no arrow but C++'s, PHP's, Ruby's and Perl's
+  # comparison: it tightens as a three (6.); <==> is an arrow.
   lookup lig_equal_build {
     ignore sub @EqualRun less' equal;
+    ignore sub less' equal greater;
     sub less' lookup lig_darrow equal [equal greater];
     sub [less.darrow equal.sta equal.mid] equal' lookup lig_mid [equal greater];
     sub [less.darrow equal.sta equal.mid] equal' lookup lig_end;
@@ -253,7 +262,7 @@ feature calt {
     rsub [less.darrow]' [equal] by less;
   } lig_equal_unwind;
 
-  # 3. <= >=, exactly two characters; <== and <=> were taken as arrows above.
+  # 3. <= >=, exactly two characters; <== was taken as an arrow above.
   lookup lig_or_equal {
     ignore sub @Op less' equal;
     ignore sub less' equal @Op;
@@ -286,6 +295,9 @@ feature calt {
     sub asciitilde.mid asciitilde' lookup lig_mid_low [asciitilde greater];
     sub asciitilde.mid asciitilde' lookup lig_end_low;
     ignore sub asciitilde' greater @Op;
+    # Before a version, as in Ruby's and Terraform's "~> 4.0", ~> means "at least, within".
+    ignore sub asciitilde' greater @Digit;
+    ignore sub asciitilde' greater space @Digit;
     sub asciitilde' lookup lig_sta [asciitilde greater];
     sub [asciitilde.sta asciitilde.mid.low] greater' lookup lig_warrow;
     sub asciitilde.mid greater' lookup lig_warrow_low;
@@ -310,6 +322,14 @@ feature calt {
     sub asciitilde' lookup lig_sta asciitilde;
   } lig_wave_rebuild;
 
+  # A run of exactly two - or _ goes back to two characters, so --help, i--, -- comments and
+  # __init__ count as typed; three or more join, and <!-- keeps its run.
+  lookup lig_two_plain {
+    ignore sub exclam.tight_r hyphen.sta' hyphen.end;
+    sub hyphen.sta' lookup lig_plain hyphen.end' lookup lig_plain;
+    sub underscore.sta' lookup lig_plain underscore.end' lookup lig_plain;
+  } lig_two_plain;
+
   # 5. Pipes, and <> as a diamond.
   lookup lig_pipes {
     ignore sub @Op less' bar greater;
@@ -329,6 +349,8 @@ feature calt {
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
 
+  # <> stays a diamond: Java's diamond operator is named for it, and in SQL's a <> b the shape
+  # stands for nothing else.
   lookup lig_diamond {
     ignore sub @Op less' greater;
     ignore sub less' greater @Op;
@@ -338,11 +360,13 @@ feature calt {
   # 6. Tightened threes, their outer glyphs moved in and the middle one left in place, then
   #    tightened pairs. The threes come first: a pair's ignore rules would claim them. An =
   #    may close << >> (<<= >>=) or open << (=<<), as in C's shifts and Haskell's binds; ///
-  #    and /** open doc comments, so they tighten as // and /* do.
+  #    and /** open doc comments, so they tighten as // and /* do. None tightens beside a
+  #    @Word where it is no operator there.
   lookup lig_tight {
     ignore sub @Op slash' slash slash;
     ignore sub slash' slash slash @Op;
     sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l;
+    ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
     ignore sub slash' asterisk asterisk @Op;
     sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l;
@@ -358,15 +382,16 @@ feature calt {
     ignore sub @Op less' less [less equal];
     ignore sub less' less [less equal] @Op;
     sub less' lookup lig_tight_r less [less equal]' lookup lig_tight_l;
+    ignore sub @Word greater' greater [greater equal];
     ignore sub @Op greater' greater [greater equal];
     ignore sub greater' greater [greater equal] @Op;
     sub greater' lookup lig_tight_r greater [greater equal]' lookup lig_tight_l;
     ignore sub @Op equal' less less;
     ignore sub equal' less less @Op;
     sub equal' lookup lig_tight_r less less' lookup lig_tight_l;
-    ignore sub @Op less' [dollar asterisk] greater;
-    ignore sub less' [dollar asterisk] greater @Op;
-    sub less' lookup lig_tight_r [dollar asterisk] greater' lookup lig_tight_l;
+    ignore sub @Op less' [dollar asterisk equal] greater;
+    ignore sub less' [dollar asterisk equal] greater @Op;
+    sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
     ignore sub @Op colon' colon;
     ignore sub colon' colon @Op;
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
@@ -379,21 +404,26 @@ feature calt {
     ignore sub @Op slash' slash;
     ignore sub slash' slash @Op;
     sub slash' lookup lig_tight_r slash' lookup lig_tight_l;
+    ignore sub @Word slash' asterisk;
     ignore sub @Op slash' asterisk;
     ignore sub slash' asterisk @Op;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l;
     ignore sub @Op asterisk' slash;
     ignore sub asterisk' slash @Op;
+    ignore sub asterisk' slash @Word;
     sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Op less' less;
     ignore sub less' less @Op;
     sub less' lookup lig_tight_r less' lookup lig_tight_l;
+    ignore sub @Word greater' greater;
     ignore sub @Op greater' greater;
     ignore sub greater' greater @Op;
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;
     ignore sub question' question @Op;
     sub question' lookup lig_tight_r question' lookup lig_tight_l;
+    # ?. tightens after a name too, as JavaScript's optional chaining a?.b does; Rust's x?.y,
+    # ? then a field, can't be told apart from it.
     ignore sub @Op question' [period colon];
     ignore sub question' [period colon] @Op;
     ignore sub @PropertyEnd question' colon;

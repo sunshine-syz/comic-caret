@@ -9,6 +9,13 @@
 - `?:` stays as typed after a TypeScript property name, as in `name?: T` and `[K]?: T`. Where it is an operator, as in `a ?: b` and `(?:x)`, it is still pulled together.
 - The dot of `?` stands further from its hook, as far as in Maple Mono, in the regular and the bold. At 12 px the bold dot no longer joins the hook. ¿ follows.
 - `!` is as tall as `?`, at the cap height. ¡ and ‼ follow.
+- `/` and `\` are taller and a little steeper. They are as tall as in Fira Code, Maple Mono and Intel One Mono, and their strokes keep their weight. `//` and `/*` keep their spacing, and the slash of `!=` keeps its size. ∄ follows.
+- `|` stands in the middle of the cell, on the line of `│`, so a table drawn with both lines up. ‖ follows.
+- `‘` and `“` are turned commas, head down like a 6, as the mark of ģ is. As reversed 9s, they read as a misplaced `’`. ʻ follows.
+- Two `-` or two `_` stay as typed, as in `--help`, `i--`, `-- comment` and `__init__`. Three or more still join into a line, and `<!--` keeps its line.
+- `<=>` is pulled together as a comparison, as in C++, PHP, Ruby and Perl, and no longer draws an arrow. `<==>` is still an arrow.
+- `~>` stays as typed before a version, as in Ruby's and Terraform's `~> 1.0`.
+- Pairs beside a name stay as typed where they are no operator: `/*` after one, as in `src/*`, `*/` before one, as in the cron step `*/5`, and `>>` or `>>>` after one, as generics close in `Vec<Vec<u8>>`. With spaces, as in `a >> b`, they are still pulled together.
 
 ## 2.0.0 (2026-10)
 

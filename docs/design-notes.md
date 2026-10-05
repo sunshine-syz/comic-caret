@@ -82,6 +82,14 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
   1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
   exactly, and the Powerline separators do the same.
+- `|` stands on the cell's middle, on │'s line, so a table drawn with both meets; ‖ is two `|`.
+- `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
+  the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
+  stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
+  520. `//` `/*` keep their pitch through `TIGHT_KEEP` (−41.5), and the `!=` slash, the `/` at
+  83 %, stands 726 tall, between Maple Mono's 662 and Fira Code's 786. ∄ holds the `/`.
+- `‘` is the turned comma ģ carries, head down like a 6, moved 77 down to stand level with
+  `’`; `“` is two of it and ʻ is it. Drawn as a reversed 9, it read as a misplaced `’`.
 
 ## Wider cell
 
@@ -239,8 +247,6 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
   (`tests/test_ligatures.py`). `///` and `/**` tighten as threes, as `|||` `<<<` do, so a doc
   comment opens as tightly as a plain one.
-- **`===`.** Three bars, as both references and our `!==` draw them, so `==` and `===` differ
-  by more than their length. A run of four or more stays one double line.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
   have 25 more room on each side. So the pen no longer pushes @ # ∞ « » Æ œ K ✔ ➜ past their
   side room, and `fitted()` keeps them at full width, where 1.7.0 condensed them.
@@ -279,6 +285,25 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   boxes stay one size.
 - **The italic ↦ ⁄.** They slant past the cell, ↦ to −5..579 and ⁄ to −47..664, as Maple Mono
   Italic's do (−53..565 and −73..642).
+
+## Ligatures
+
+The rules live in `src/ligatures.fea`; these are the choices behind them.
+
+- **`===`.** Three bars, as both references and our `!==` draw them, so `==` and `===` differ
+  by more than their length. A run of four or more stays one double line.
+- **Two `-` or `_`.** A run of exactly two stays as typed: an option (`--help`), a decrement
+  (`i--`), an SQL or Lua comment and a Python dunder name (`__init__`) show the characters
+  typed. Three or more join into a line, and `<!--` keeps its run.
+- **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
+  as `<$>` does. `<==>` is still an arrow.
+- **Beside a name.** `~>` before a version (Ruby's and Terraform's `~> 1.0`) stays plain, and
+  so do `/*` `/**` after a name (`src/*`), `*/` before one (cron's `*/5`) and `>>` `>>>` after
+  one (`Vec<Vec<u8>>`). With spaces, `a >> b` still tightens; `a>>b` stays plain, the price
+  of closing generics as typed.
+- **Kept.** `<>` stays a diamond: Java's diamond operator is named for the shape, and SQL's
+  `<>` stands for nothing else. `?.` tightens after a name too, as JavaScript's `a?.b` does;
+  Rust's `x?.y`, `?` then a field, can't be told apart from it.
 
 ## Italic
 

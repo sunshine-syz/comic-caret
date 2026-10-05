@@ -88,12 +88,9 @@ def equals(count, left="equal.sta", right="equal.end"):
 
 # Input -> expected glyph names. Letters and digits are named as themselves or spelled out.
 LIGATED = {
-    # Runs of - and =
-    "--": hyphens(2),
+    # Runs of three or more - and two or more =
     "---": hyphens(3),
     "------": hyphens(6),
-    "i--": ["i"] + hyphens(2),
-    "--help": hyphens(2) + ["h", "e", "l", "p"],
     "|---|": ["bar"] + hyphens(3) + ["bar"],
     "+----+": ["plus"] + hyphens(4) + ["plus"],
     "==": equals(2),
@@ -117,7 +114,7 @@ LIGATED = {
     "====>": equals(5, right="greater.darrow"),
     "<==": equals(3, left="less.darrow"),
     "<====": equals(5, left="less.darrow"),
-    "<=>": equals(3, "less.darrow", "greater.darrow"),
+    "<==>": equals(4, "less.darrow", "greater.darrow"),
     # An arrow's head before a tag: HTML, and JSX's x=><li>. <a> and <A> too: FontForge's
     # feature parser drops the first glyph of a [X-Y] range written without spaces.
     "--><p>": hyphens(3, right="greater.arrow") + ["less", "p", "greater"],
@@ -129,9 +126,7 @@ LIGATED = {
     # A run or arrow right after a short tag, though >- is otherwise an inward head
     "</p>-->": ["less", "slash", "p", "greater"] + hyphens(3, right="greater.arrow"),
     "</p>--->": ["less", "slash", "p", "greater"] + hyphens(4, right="greater.arrow"),
-    "<code>--help</code>": (["less", "c", "o", "d", "e", "greater"] + hyphens(2)
-                            + ["h", "e", "l", "p", "less", "slash", "c", "o", "d", "e", "greater"]),
-    "<li>-- item": ["less", "l", "i", "greater"] + hyphens(2) + ["space", "i", "t", "e", "m"],
+    "<li>--- item": ["less", "l", "i", "greater"] + hyphens(3) + ["space", "i", "t", "e", "m"],
     "<a>->": ["less", "a", "greater"] + hyphens(2, right="greater.arrow"),
     "<a>->>": ["less", "a", "greater", "hyphen.sta", "greater.shaft", "greater.twohead"],
     "<====>": equals(6, "less.darrow", "greater.darrow"),
@@ -157,7 +152,7 @@ LIGATED = {
     "<=<": ["less.darrow", "equal.mid", "less.dtail"],
     # Wave arrows: a > head starts high or low, after whichever the run ends on
     "~>": ["asciitilde.sta", "greater.warrow"],
-    "~> 1.0": ["asciitilde.sta", "greater.warrow", "space", "one", "period", "zero"],
+    "a ~> b": ["a", "space", "asciitilde.sta", "greater.warrow", "space", "b"],
     "~~>": ["asciitilde.sta", "asciitilde.mid", "greater.warrow.low"],
     "~~~>": ["asciitilde.sta", "asciitilde.mid", "asciitilde.mid.low", "greater.warrow"],
     "<~": ["less.warrow", "asciitilde.end"],
@@ -194,10 +189,8 @@ LIGATED = {
     "a<=b": ["a", "LIG", "less_equal.liga", "b"],
     "x >= y": ["x", "space", "LIG", "greater_equal.liga", "space", "y"],
     # Runs of _ # ~
-    "__": pieces("underscore.sta", "underscore.mid", "underscore.end", 2),
+    "___": pieces("underscore.sta", "underscore.mid", "underscore.end", 3),
     "____": pieces("underscore.sta", "underscore.mid", "underscore.end", 4),
-    "__init__": ["underscore.sta", "underscore.end", "i", "n", "i", "t",
-                 "underscore.sta", "underscore.end"],
     "##": pieces("numbersign.sta", "numbersign.mid", "numbersign.end", 2),
     "#####": pieces("numbersign.sta", "numbersign.mid", "numbersign.end", 5),
     "## Heading": ["numbersign.sta", "numbersign.end", "space", "H", "e", "a", "d", "i", "n", "g"],
@@ -228,6 +221,9 @@ LIGATED = {
     "*/": ["asterisk.tight_r", "slash.tight_l"],
     "<<": ["less.tight_r", "less.tight_l"],
     ">>": ["greater.tight_r", "greater.tight_l"],
+    "a >> b": ["a", "space", "greater.tight_r", "greater.tight_l", "space", "b"],
+    "/* c */": ["slash.tight_r", "asterisk.tight_l", "space", "c", "space", "asterisk.tight_r",
+                "slash.tight_l"],
     "??": ["question.tight_r", "question.tight_l"],
     "a?.b": ["a", "question.tight_r", "period.tight_l", "b"],
     "a ?: b": ["a", "space", "question.tight_r", "colon.tight_l", "space", "b"],
@@ -247,6 +243,8 @@ LIGATED = {
     "<<=": ["less.tight_r", "less", "equal.tight_l"],
     "=<<": ["equal.tight_r", "less", "less.tight_l"],
     "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
+    "<=>": ["less.tight_r", "equal", "greater.tight_l"],
+    "a <=> b": ["a", "space", "less.tight_r", "equal", "greater.tight_l", "space", "b"],
     "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
     "0..=9": ["zero", "period.tight_r", "period", "equal.tight_l", "nine"],
     "0..<n": ["zero", "period.tight_r", "period", "less.tight_l", "n"],
@@ -265,11 +263,16 @@ PLAIN = [
     "-><", "=><", "-><1", "x>-1", "a>--b", "x>->y", "0>--->1",
     # <- before a digit is less than a negative number
     "x<-1", "<-12>",
+    # A run of exactly two - or _: an option, a decrement, a comment, a dunder name
+    "--", "i--", "--help", "-- note", "<code>--help</code>", "<li>-- item", "__", "__init__",
+    "a__b",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
     # One- and two-headed wave arrows followed by another operator, and Ruby's <<~ heredoc
     "~>>", "~>=", "<~>>", "<~>=", "<<~", "=~", "!~",
+    # ~> before a version: Ruby's and Terraform's "at least, within"
+    "~> 1.0", "~>1.0",
     # <!-- without its -- run
     "<!-",
     # Lone run characters
@@ -280,6 +283,9 @@ PLAIN = [
     "?..", "??.", "**", "a**b",
     # TypeScript's optional property, where ?: is no operator
     "x?: T", "[K]?: T",
+    # A path's glob, a cron step and closing generics, where a pair after or before a name is
+    # no operator
+    "src/*", "src/**/*.js", "*/5", "Vec<Vec<u8>>", "A<B<C<D>>>",
 ]
 
 
@@ -320,11 +326,11 @@ class LigatureShapingTest(unittest.TestCase):
         elements = ["a", "h1", "div", "code", "table", "button", "article", "fieldset",
                     "plaintext", "blockquote"]
         for font in FONTS:
-            run = names(font, "--")
+            run = names(font, "---")
             for element in elements:
                 for tag in (f"<{element}>", f"</{element}>", f"<{element}/>"):
                     with self.subTest(font=font.name, tag=tag):
-                        self.assertEqual(names(font, tag + "--"), names(font, tag) + run)
+                        self.assertEqual(names(font, tag + "---"), names(font, tag) + run)
 
     def test_a_comment_closes_after_a_tag_ending_in_any_character_a_tag_can_end_in(self):
         # A tag's last character before > is a letter or digit, a slash, or a closing quote.

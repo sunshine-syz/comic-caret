@@ -69,8 +69,9 @@ BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
 ARM_SPAN = (200, 370)  # along an arm from the point: straight, clear of the join and cap
 HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_halves)
 
-# != !==: the / at 95 %, centred on the bars.
-SLASH_SCALE = 0.95
+# != !==: the / at 83 %, centred on the bars: 726 tall, between Maple Mono's 662 and Fira
+# Code's 786, with a stroke (70) near the bars' (75).
+SLASH_SCALE = 0.83
 EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
 EQUAL_PITCH = 326 - 143  # distance between the two = bars
 
@@ -109,7 +110,7 @@ DIAMOND_WIDTH_GAIN = 35
 # The side bearing each glyph keeps toward its partner once moved, so the white between a pair
 # stays when the cell or the glyph's width changes. & keeps 45 of white in &&, Maple Mono's
 # (Fira Code joins its two).
-TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -23.5,
+TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -41.5,
               "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 21, "bar": 131,
               "equal": 20.5}
 

@@ -155,6 +155,12 @@ class PlacementTest(unittest.TestCase):
                 off[char] = round((x0 + x1) / 2 - ADVANCE / 2)
         self.assertEqual(off, {})
 
+    def test_bar_shares_the_box_drawing_lines_middle(self):
+        # | and │ meet in one table only on one middle; the rule above allows the wobble.
+        x0, _, x1, _ = box(self.font, "|")
+        b0, _, b1, _ = box(self.font, "│")
+        self.assertAlmostEqual((x0 + x1) / 2, (b0 + b1) / 2, delta=ROUNDING)
+
     def test_the_math_axis_is_the_hyphens_middle(self):
         # The generators center box drawing, the ligatures and the shapes on AXIS; the
         # hyphen is what the rest of the font's operators center on. AXIS is the hyphen's

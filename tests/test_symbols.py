@@ -38,6 +38,9 @@ NOT_EQUAL_REACH = 146
 # The white between ≈'s waves: at least the narrowest reference's, Intel One Mono's at our cap
 # height (Fira Code's 79, Maple Mono's 85).
 APPROX_GAP = 69
+# How tall / and \ stand: at least the shortest reference's, Maple Mono's 866.6 at our cap
+# height (Intel One Mono's 872.0, Fira Code's 885.3).
+SLASH_HEIGHT = 866
 # The white between ¦'s pieces: at least the narrowest reference's, Maple Mono's at our cap
 # height (Fira Code's 192).
 BROKEN_BAR_GAP = 162
@@ -108,6 +111,8 @@ EXCLAMATION_DOTS = 93
 # ≠: Fira Code's 131.0 above its bars (Intel One Mono's 159.7, Maple Mono's 179.7).
 BOLD_NOT_EQUAL_REACH = 131
 BOLD_APPROX_GAP = 34  # Fira Code's 34.8 (Intel One Mono's 55.1, Maple Mono's 67.4)
+# / and \: Monaspace Neon's 767.5 (Maple Mono's 875.7, Intel One Mono's 881.1, Fira Code's 904.9).
+BOLD_SLASH_HEIGHT = 767
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
 # ∞'s holes: Fira Code's 134 wide (Maple Mono's 149), Maple Mono's 172 tall (Fira Code's 193).
 BOLD_INFINITY_HOLE = (134, 172)
@@ -165,7 +170,7 @@ class CoverageTest(unittest.TestCase):
 class OperatorTest(unittest.TestCase):
     sfd = SFD
     not_equal_reach, approx_gap, broken_bar_gap = NOT_EQUAL_REACH, APPROX_GAP, BROKEN_BAR_GAP
-    infinity_hole = INFINITY_HOLE
+    infinity_hole, slash_height = INFINITY_HOLE, SLASH_HEIGHT
 
     @classmethod
     def setUpClass(cls):
@@ -179,6 +184,12 @@ class OperatorTest(unittest.TestCase):
         self.assertEqual(len(glyph.foreground), 1)  # slash and bars are one outline
         self.assertGreaterEqual(top - bar_top, self.not_equal_reach)
         self.assertGreaterEqual(bar_bottom - bottom, self.not_equal_reach)
+
+    def test_slashes_stand_as_tall_as_the_references(self):
+        for name in ("slash", "backslash"):
+            with self.subTest(glyph=name):
+                _, y0, _, y1 = self.font[name].boundingBox()
+                self.assertGreaterEqual(y1 - y0, self.slash_height)
 
     def test_identical_bars_are_three_equal_bars(self):
         # ≡'s bars weigh as ='s, within the pen's measured weight tolerance, and are spaced as
@@ -938,6 +949,7 @@ class BoldOperatorTest(OperatorTest):
     sfd = BOLD_SFD
     not_equal_reach, approx_gap = BOLD_NOT_EQUAL_REACH, BOLD_APPROX_GAP
     broken_bar_gap, infinity_hole = BOLD_BROKEN_BAR_GAP, BOLD_INFINITY_HOLE
+    slash_height = BOLD_SLASH_HEIGHT
 
 
 class BoldArrowTest(ArrowTest):
