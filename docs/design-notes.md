@@ -234,7 +234,13 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   `//` `<<` …), the side bearing it keeps toward its partner, not how far it moves. The white
   between the pair is the sum of the two kept side bearings, so it stays when the cell grows or
   the glyph widens; a shift stated as a number would let the white grow 50 with the cell and
-  shrink as `&` `+` `<` `>` `?` widen.
+  shrink as `&` `+` `<` `>` `?` widen. `&&` keeps 46 of white, about Maple Mono's 45 (Fira
+  Code joins its two); much less, and the two read as touching at 12–16 px. No pair but `++`,
+  whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
+  (`tests/test_ligatures.py`). `///` and `/**` tighten as threes, as `|||` `<<<` do, so a doc
+  comment opens as tightly as a plain one.
+- **`===`.** Three bars, as both references and our `!==` draw them, so `==` and `===` differ
+  by more than their length. A run of four or more stays one double line.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
   have 25 more room on each side. So the pen no longer pushes @ # ∞ « » Æ œ K ✔ ➜ past their
   side room, and `fitted()` keeps them at full width, where 1.7.0 condensed them.
@@ -403,6 +409,9 @@ what it does to them:
   and ĳ, one outline, keeps its dots 14 lower than i j's.
 - `DOUBLES`: both copies of “ ” „ ″ ‖ ‼ move apart, each as far, so the mark stays on the
   cell's middle and keeps the regular's white between its copies.
+- `TIGHT`: each glyph of a tightened pair moves back out by half the pen's width, as far as
+  the pen grew it toward its partner, so the pair keeps the regular's white. Unmoved, `&&`
+  would merge into one shape and `??` keep 9; `++`'s bars keep their overlap.
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
   reference bolds' 38; it keeps 39.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.1 (unreleased)
+
+- `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.
+- `===` draws three bars, as `!==` does and as Fira Code and Maple Mono draw it. So `==` and `===` differ by more than their length. A run of four or more `=` stays one double line.
+- The two characters of `&&` no longer touch. They keep about as much white between them as Maple Mono's. In the bold, every pulled-together pair keeps the regular's white, so the bold `&&` no longer merges into one shape and the bold `??` stays apart.
+- `///` and `/**` are pulled together like `//` and `/*`, so a doc comment opens as tightly as a plain one.
+- `?:` stays as typed after a TypeScript property name, as in `name?: T` and `[K]?: T`. Where it is an operator, as in `a ?: b` and `(?:x)`, it is still pulled together.
+- The dot of `?` stands further from its hook, as far as in Maple Mono, in the regular and the bold. At 12 px the bold dot no longer joins the hook. ¿ follows.
+- `!` is as tall as `?`, at the cap height. ¡ and ‼ follow.
+
 ## 2.0.0 (2026-10)
 
 - Every character is 600 units wide, up from 550, at the same letter height. Most coding fonts are 600 to 620 wide, but their letters are bigger too. The cell is now 1.27 times the x-height, between Source Code Pro's 1.26 and Intel One Mono's 1.32, where 1.7.0's was 1.16. So text reads more open.

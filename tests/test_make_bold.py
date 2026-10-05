@@ -226,7 +226,9 @@ class BoldTest(unittest.TestCase):
     def test_pieces_keep_their_overlap(self):
         # A ligature piece cut flat past the cell, where it overlaps the next piece, ends at the
         # same line as the regular's, so the seams keep their overlap and no rounded corner
-        # shows. Its round ends past the cell, as <='s tips and <|'s point, grow like any stroke.
+        # shows. Its round ends past the cell, as <='s tips and <|'s point, grow like any stroke,
+        # but for a tightened glyph's side toward its partner, which moves back to where the
+        # regular's stands (make_bold.TIGHT).
         wrong, cut = {}, set()
         for name in self.of_class(BOLDER):
             if not (GENERATED.fullmatch(name) or name == "uni23AF"):
@@ -242,6 +244,9 @@ class BoldTest(unittest.TestCase):
                 if x == seam and x in flat:
                     cut.add((name, side))
                     if grown != x:
+                        wrong[name, side] = (grown, x)
+                elif name in make_bold.TIGHT and outward == -make_bold.TIGHT[name][0]:
+                    if abs(grown - x) > ROUNDING:
                         wrong[name, side] = (grown, x)
                 elif past and outward * (grown - x) < ROUNDING:
                     wrong[name, side] = (grown, x)

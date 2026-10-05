@@ -13,10 +13,21 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
-from add_ligatures import GENERATED
+import lig_geometry as geo
+from add_ligatures import GENERATED, TIGHT_KEEP
 from helpers import NerdBuilds, require_current_build
-from measure import ink, spans_at_x, vertical_edges
-from project import ADVANCE, BOLD_SFD, FORMATS, OVERLAP, SFD, STYLES, font_file, style_of
+from measure import gap, ink, spans_at_x, vertical_edges
+from project import (
+    ADVANCE,
+    BOLD_SFD,
+    FORMATS,
+    OVERLAP,
+    SFD,
+    STYLES,
+    SYMBOL_SIDE,
+    font_file,
+    style_of,
+)
 
 # Each built font.
 FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
@@ -86,7 +97,7 @@ LIGATED = {
     "|---|": ["bar"] + hyphens(3) + ["bar"],
     "+----+": ["plus"] + hyphens(4) + ["plus"],
     "==": equals(2),
-    "===": equals(3),
+    "====": equals(4),
     "========": equals(8),
     "a==b": ["a"] + equals(2) + ["b"],
     # Arrows, heads at either or both ends
@@ -100,7 +111,7 @@ LIGATED = {
     "<->": hyphens(3, "less.arrow", "greater.arrow"),
     "<---->": hyphens(6, "less.arrow", "greater.arrow"),
     "|->": ["bar"] + hyphens(2, right="greater.arrow"),
-    "x<-1": ["x"] + hyphens(2, left="less.arrow") + ["one"],
+    "x<-y": ["x"] + hyphens(2, left="less.arrow") + ["y"],
     "=>": equals(2, right="greater.darrow"),
     "==>": equals(3, right="greater.darrow"),
     "====>": equals(5, right="greater.darrow"),
@@ -219,10 +230,15 @@ LIGATED = {
     ">>": ["greater.tight_r", "greater.tight_l"],
     "??": ["question.tight_r", "question.tight_l"],
     "a?.b": ["a", "question.tight_r", "period.tight_l", "b"],
-    "x?: T": ["x", "question.tight_r", "colon.tight_l", "space", "T"],
+    "a ?: b": ["a", "space", "question.tight_r", "colon.tight_l", "space", "b"],
     "(?:a)": ["parenleft", "question.tight_r", "colon.tight_l", "a", "parenright"],
+    # === as three bars, as !== draws them
+    "===": ["LIG", "LIG", "equal_equal_equal.liga"],
+    "a === b": ["a", "space", "LIG", "LIG", "equal_equal_equal.liga", "space", "b"],
     # Tightened threes: the outer glyphs move in
     "|||": ["bar.tight_r", "bar", "bar.tight_l"],
+    "///": ["slash.tight_r", "slash", "slash.tight_l"],
+    "/**": ["slash.tight_r", "asterisk", "asterisk.tight_l"],
     "&&&": ["ampersand.tight_r", "ampersand", "ampersand.tight_l"],
     "<<<": ["less.tight_r", "less", "less.tight_l"],
     ">>>": ["greater.tight_r", "greater", "greater.tight_l"],
@@ -247,6 +263,8 @@ PLAIN = [
     # An arrow before a < that opens no tag, and a - after a > that closes no short tag and
     # doesn't start -->
     "-><", "=><", "-><1", "x>-1", "a>--b", "x>->y", "0>--->1",
+    # <- before a digit is less than a negative number
+    "x<-1", "<-12>",
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
@@ -257,9 +275,11 @@ PLAIN = [
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
-    "<<<<<<<", ">>>>>>>", "////", "///", "/**", "||=", "&&=", "??=",
+    "<<<<<<<", ">>>>>>>", "////", "/***", "||=", "&&=", "??=",
     "a::<T>", "https://", "....", "..", "<||", "|>>", "||||", "&&&&", ">>>=", "...=",
     "?..", "??.", "**", "a**b",
+    # TypeScript's optional property, where ?: is no operator
+    "x?: T", "[K]?: T",
 ]
 
 
@@ -368,6 +388,35 @@ class SeamTest(unittest.TestCase):
 
 
 class BoldSeamTest(SeamTest):
+    sfd = BOLD_SFD
+
+
+class TightPairTest(unittest.TestCase):
+    """A tightened pair keeps at least the white two symbols side by side keep (twice
+    SYMBOL_SIDE), so it reads as two characters, not one blot. On the regular and the bold,
+    whose pen grows the two toward each other; the italic's are the regular's sheared."""
+    sfd = SFD
+    TIGHT = frozenset(f"{name}.{side}" for name in TIGHT_KEEP for side in ("tight_r", "tight_l"))
+    JOINED = frozenset({("plus.tight_r", "plus.tight_l")})  # ++'s bars join, as Fira Code's do
+
+    @classmethod
+    def setUpClass(cls):
+        require_current_build()
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_tightened_glyphs_keep_white_toward_their_neighbours(self):
+        for text in LIGATED:
+            for left, right in itertools.pairwise(names(REGULAR, text)):
+                first, second = ink(self.font, left), ink(self.font, right)
+                if ({left, right}.isdisjoint(self.TIGHT) or (left, right) in self.JOINED
+                        or not len(first) or not len(second)):  # a space beside it
+                    continue
+                with self.subTest(text=text, left=left, right=right):
+                    white = gap(first, geo.moved(second, ADVANCE, 0))
+                    self.assertGreaterEqual(white, 2 * SYMBOL_SIDE)
+
+
+class BoldTightPairTest(TightPairTest):
     sfd = BOLD_SFD
 
 

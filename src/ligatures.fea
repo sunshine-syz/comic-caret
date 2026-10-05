@@ -20,8 +20,8 @@ languagesystem latn dflt;
   less.arrow greater.arrow less.darrow greater.darrow
   less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail
   less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r
-  exclam_equal.liga exclam_equal_equal.liga less_equal.liga greater_equal.liga
-  bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
+  exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga
+  greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
@@ -34,6 +34,10 @@ languagesystem latn dflt;
 # FontForge's feature parser drops the first glyph of a range written A-Z; A - Z keeps it.
 # What starts a shell heredoc's delimiter after <<-: EOF 'EOF' "EOF" \EOF.
 @Delimiter = [A - Z a - z underscore quotesingle quotedbl backslash];
+# A digit after <- makes it a minus sign: x<-1 is x < -1.
+@Digit = [zero one two three four five six seven eight nine];
+# What ends a TypeScript property name before its optional ?: : name?: T, [K in keyof T]?: T.
+@PropertyEnd = [A - Z a - z @Digit underscore dollar bracketright];
 # What follows a < that opens an HTML tag or comment: <p </p <!--.
 @TagStart = [A - Z a - z slash exclam];
 # What an HTML element's name is made of: <p> <h1> <blockquote>.
@@ -67,6 +71,7 @@ lookup lig_comment { sub [less exclam] by [less.comment exclam.tight_r]; } lig_c
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_exclam_equal { sub equal by exclam_equal.liga; } lig_exclam_equal;
 lookup lig_exclam_equal_equal { sub equal by exclam_equal_equal.liga; } lig_exclam_equal_equal;
+lookup lig_equal_equal_equal { sub equal by equal_equal_equal.liga; } lig_equal_equal_equal;
 lookup lig_colon_eq { sub colon by colon.eq; } lig_colon_eq;
 lookup lig_less_equal { sub equal by less_equal.liga; } lig_less_equal;
 lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
@@ -104,6 +109,14 @@ feature calt {
     sub colon' lookup lig_colon_eq equal;
   } lig_colon_equal;
 
+  # === as three bars, as both references draw it and as !== has them, so it differs from ==
+  # by more than its length. A longer run (setext headings, conflict markers) stays one line.
+  lookup lig_triple_equal {
+    ignore sub @Op equal' equal equal;
+    ignore sub equal' equal equal @Op;
+    sub equal' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_equal_equal_equal;
+  } lig_triple_equal;
+
   # >=> <=< as a double arrow with a tail: the second > or < is its head, the first its tail.
   lookup lig_fish {
     ignore sub @Op greater' equal greater;
@@ -135,6 +148,7 @@ feature calt {
     sub less' lookup lig_twohead less hyphen;
     sub less.twohead less' lookup lig_shaft;
     ignore sub @HyphenRun less' hyphen;
+    ignore sub less' hyphen @Digit;
     sub less' lookup lig_arrow hyphen;
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_end;
@@ -323,8 +337,15 @@ feature calt {
 
   # 6. Tightened threes, their outer glyphs moved in and the middle one left in place, then
   #    tightened pairs. The threes come first: a pair's ignore rules would claim them. An =
-  #    may close << >> (<<= >>=) or open << (=<<), as in C's shifts and Haskell's binds.
+  #    may close << >> (<<= >>=) or open << (=<<), as in C's shifts and Haskell's binds; ///
+  #    and /** open doc comments, so they tighten as // and /* do.
   lookup lig_tight {
+    ignore sub @Op slash' slash slash;
+    ignore sub slash' slash slash @Op;
+    sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l;
+    ignore sub @Op slash' asterisk asterisk;
+    ignore sub slash' asterisk asterisk @Op;
+    sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l;
     ignore sub @Op period' period period;
     ignore sub period' period period @Op;
     sub period' lookup lig_tight_r period period' lookup lig_tight_l;
@@ -375,6 +396,7 @@ feature calt {
     sub question' lookup lig_tight_r question' lookup lig_tight_l;
     ignore sub @Op question' [period colon];
     ignore sub question' [period colon] @Op;
+    ignore sub @PropertyEnd question' colon;
     sub question' lookup lig_tight_r [period colon]' lookup lig_tight_l;
   } lig_tight;
 

@@ -39,7 +39,7 @@ turned a quarter (⋮ on …) grows as the glyph's outline. A left glyph the reg
 right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
-instead: parts move apart (APART, DOUBLES); an outline keeps its own box (OWN_BOX,
+instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
 SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART); a bar moves up its stems
 (RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line box moves down into it
@@ -60,7 +60,7 @@ import psMat
 
 import lig_geometry as geo
 import project
-from add_ligatures import GENERATED
+from add_ligatures import GENERATED, TIGHT_KEEP
 from add_shapes import CODES
 from measure import (
     area,
@@ -179,6 +179,14 @@ APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
 # white between them (spread()), which the reference bolds' keep too (tests/test_symbols.py).
 # One moving alone would take the mark off the cell's middle.
 DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016", "uni203C")
+
+# The glyphs of a tightened pair (add_ligatures.TIGHT_KEEP), each the way it moves back out.
+# The pen grows the two toward each other by half its width each, which would merge && into
+# one shape and all but close ??; each moves back that far, so the pair keeps the regular's
+# white, and ++'s bars their overlap.
+TIGHT = {f"{name}.{side}": way for name in TIGHT_KEEP
+         for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
+TIGHT_BACK = round(PEN[0] / 2)
 
 # The outlines condensed to keep their own regular box, so the pen grows them no closer to
 # their neighbours than half its width: ™'s T and M, 23 apart, which the small pen would grow
@@ -914,7 +922,7 @@ def build(font):
     for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
-                   "HEAVY", "HEADS_APART"):
+                   "HEAVY", "HEADS_APART", "TIGHT"):
         for name in globals()[listed]:
             if classes.get(name) != BOLDER:
                 sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")
@@ -1010,6 +1018,9 @@ def build(font):
             move_apart(font, glyph, gaps[name])  # from the parts as lowered (΅'s tonos)
         if name in DOUBLES:
             spread(font, glyph, gaps[name])
+        if name in TIGHT:
+            (dx, dy), [(part, *_)] = TIGHT[name], glyph.references
+            reposition(glyph, shifted({part: (dx * TIGHT_BACK, dy * TIGHT_BACK)}))
         if glyph.references != before:
             glyph.autoHint()  # a reference assigned leaves the hints stale
     raise_clear(font, [glyph for glyph in font.glyphs()

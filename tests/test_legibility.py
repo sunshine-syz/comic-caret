@@ -470,9 +470,13 @@ class LetterFollowUpTest(unittest.TestCase):
 
 
 class DotsTest(unittest.TestCase):
-    """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off."""
+    """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off.
+    ? and ! keep their dot clear of the stroke above it, and stand one height."""
     sfd = SFD
     divide_white = 81  # between ÷'s dots and its bar: the narrowest reference's
+    # Between the dot of ? or ! and the stroke above it, at our cap height: Maple Mono's 88, the
+    # narrowest reference's (Fira Code's 102, Intel One Mono's 133). Ours left 69 under ?.
+    point_white = 88
 
     @classmethod
     def setUpClass(cls):
@@ -492,6 +496,22 @@ class DotsTest(unittest.TestCase):
     def test_ellipsis_dots_are_evenly_spaced(self):
         left, middle, right = self.dots("ellipsis")
         self.assertAlmostEqual(middle[0] - left[2], right[0] - middle[2], delta=1)
+
+    def test_question_and_exclamation_dots_clear_their_strokes(self):
+        for name in ("question", "exclam"):
+            glyph = self.font[name]
+            [(dot, matrix, *_)] = glyph.references
+            with self.subTest(glyph=name):
+                self.assertGreaterEqual(
+                    measure.gap(glyph.foreground,
+                                geo.transformed(measure.ink(self.font, dot), matrix)),
+                    self.point_white)
+
+    def test_question_and_exclamation_stand_one_height(self):
+        # As in all three references: Fira Code and Maple Mono at the cap height, Intel One
+        # Mono at its ascender. Ours stood 63 apart.
+        question, exclam = (self.font[name].boundingBox()[3] for name in ("question", "exclam"))
+        self.assertAlmostEqual(question, exclam, delta=WOBBLE)
 
 
 class TurnedCommaTest(unittest.TestCase):
@@ -559,6 +579,7 @@ class BoldLetterFollowUpTest(LetterFollowUpTest):
 class BoldDotsTest(DotsTest):
     sfd = BOLD_SFD
     divide_white = 61  # Fira Code Bold's 61.4 (Maple Mono Bold's 62.9, Intel One Mono's 96.9)
+    point_white = 76  # Maple Mono Bold's (Fira Code Bold's 89, Intel One Mono Bold's 119)
 
 
 class BoldTurnedCommaTest(TurnedCommaTest):
