@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791239826
+ModificationTime: 1791265848
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -84,28 +84,28 @@ Lookup: 1 0 0 "lig_less_bar_greater" { "lig_less_bar_greater subtable"  } []
 Lookup: 1 0 0 "lig_less_greater" { "lig_less_greater subtable"  } []
 Lookup: 1 0 0 "lig_tight_r" { "lig_tight_r subtable"  } []
 Lookup: 1 0 0 "lig_tight_l" { "lig_tight_l subtable"  } []
-Lookup: 6 0 0 "lig_not_equal" { "lig_not_equal contextual 0"  "lig_not_equal contextual 1"  "lig_not_equal contextual 2"  "lig_not_equal contextual 3"  "lig_not_equal contextual 4"  "lig_not_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_colon_equal" { "lig_colon_equal contextual 0"  "lig_colon_equal contextual 1"  "lig_colon_equal contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_not_equal" { "lig_not_equal contextual 0"  "lig_not_equal contextual 1"  "lig_not_equal contextual 2"  "lig_not_equal contextual 3"  "lig_not_equal contextual 4"  "lig_not_equal contextual 5"  "lig_not_equal contextual 6"  "lig_not_equal contextual 7"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_colon_equal" { "lig_colon_equal contextual 0"  "lig_colon_equal contextual 1"  "lig_colon_equal contextual 2"  "lig_colon_equal contextual 3"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_triple_equal" { "lig_triple_equal contextual 0"  "lig_triple_equal contextual 1"  "lig_triple_equal contextual 2"  "lig_triple_equal contextual 3"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_fish" { "lig_fish contextual 0"  "lig_fish contextual 1"  "lig_fish contextual 2"  "lig_fish contextual 3"  "lig_fish contextual 4"  "lig_fish contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  "lig_hyphen_build contextual 7"  "lig_hyphen_build contextual 8"  "lig_hyphen_build contextual 9"  "lig_hyphen_build contextual 10"  "lig_hyphen_build contextual 11"  "lig_hyphen_build contextual 12"  "lig_hyphen_build contextual 13"  "lig_hyphen_build contextual 14"  "lig_hyphen_build contextual 15"  "lig_hyphen_build contextual 16"  "lig_hyphen_build contextual 17"  "lig_hyphen_build contextual 18"  "lig_hyphen_build contextual 19"  "lig_hyphen_build contextual 20"  "lig_hyphen_build contextual 21"  "lig_hyphen_build contextual 22"  "lig_hyphen_build contextual 23"  "lig_hyphen_build contextual 24"  "lig_hyphen_build contextual 25"  "lig_hyphen_build contextual 26"  "lig_hyphen_build contextual 27"  "lig_hyphen_build contextual 28"  "lig_hyphen_build contextual 29"  "lig_hyphen_build contextual 30"  "lig_hyphen_build contextual 31"  "lig_hyphen_build contextual 32"  "lig_hyphen_build contextual 33"  "lig_hyphen_build contextual 34"  "lig_hyphen_build contextual 35"  "lig_hyphen_build contextual 36"  "lig_hyphen_build contextual 37"  "lig_hyphen_build contextual 38"  "lig_hyphen_build contextual 39"  "lig_hyphen_build contextual 40"  "lig_hyphen_build contextual 41"  "lig_hyphen_build contextual 42"  "lig_hyphen_build contextual 43"  "lig_hyphen_build contextual 44"  "lig_hyphen_build contextual 45"  "lig_hyphen_build contextual 46"  "lig_hyphen_build contextual 47"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_hyphen_unwind" { "lig_hyphen_unwind contextual 0"  "lig_hyphen_unwind contextual 1"  "lig_hyphen_unwind contextual 2"  "lig_hyphen_unwind contextual 3"  "lig_hyphen_unwind contextual 4"  "lig_hyphen_unwind contextual 5"  "lig_hyphen_unwind contextual 6"  "lig_hyphen_unwind contextual 7"  "lig_hyphen_unwind contextual 8"  "lig_hyphen_unwind contextual 9"  "lig_hyphen_unwind contextual 10"  "lig_hyphen_unwind contextual 11"  "lig_hyphen_unwind contextual 12"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_build contextual 1"  "lig_equal_build contextual 2"  "lig_equal_build contextual 3"  "lig_equal_build contextual 4"  "lig_equal_build contextual 5"  "lig_equal_build contextual 6"  "lig_equal_build contextual 7"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  "lig_equal_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_or_equal" { "lig_or_equal contextual 0"  "lig_or_equal contextual 1"  "lig_or_equal contextual 2"  "lig_or_equal contextual 3"  "lig_or_equal contextual 4"  "lig_or_equal contextual 5"  "lig_or_equal contextual 6"  "lig_or_equal contextual 7"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_runs" { "lig_runs contextual 0"  "lig_runs contextual 1"  "lig_runs contextual 2"  "lig_runs contextual 3"  "lig_runs contextual 4"  "lig_runs contextual 5"  "lig_runs contextual 6"  "lig_runs contextual 7"  "lig_runs contextual 8"  "lig_runs contextual 9"  "lig_runs contextual 10"  "lig_runs contextual 11"  "lig_runs contextual 12"  "lig_runs contextual 13"  "lig_runs contextual 14"  "lig_runs contextual 15"  "lig_runs contextual 16"  "lig_runs contextual 17"  "lig_runs contextual 18"  "lig_runs contextual 19"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_wave_unwind" { "lig_wave_unwind contextual 0"  "lig_wave_unwind contextual 1"  "lig_wave_unwind contextual 2"  "lig_wave_unwind contextual 3"  "lig_wave_unwind contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_wave_rebuild" { "lig_wave_rebuild contextual 0"  "lig_wave_rebuild contextual 1"  "lig_wave_rebuild contextual 2"  "lig_wave_rebuild contextual 3"  "lig_wave_rebuild contextual 4"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_two_plain" { "lig_two_plain contextual 0"  "lig_two_plain contextual 1"  "lig_two_plain contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_pipes" { "lig_pipes contextual 0"  "lig_pipes contextual 1"  "lig_pipes contextual 2"  "lig_pipes contextual 3"  "lig_pipes contextual 4"  "lig_pipes contextual 5"  "lig_pipes contextual 6"  "lig_pipes contextual 7"  "lig_pipes contextual 8"  "lig_pipes contextual 9"  "lig_pipes contextual 10"  "lig_pipes contextual 11"  "lig_pipes contextual 12"  "lig_pipes contextual 13"  "lig_pipes contextual 14"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_diamond" { "lig_diamond contextual 0"  "lig_diamond contextual 1"  "lig_diamond contextual 2"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_tight" { "lig_tight contextual 0"  "lig_tight contextual 1"  "lig_tight contextual 2"  "lig_tight contextual 3"  "lig_tight contextual 4"  "lig_tight contextual 5"  "lig_tight contextual 6"  "lig_tight contextual 7"  "lig_tight contextual 8"  "lig_tight contextual 9"  "lig_tight contextual 10"  "lig_tight contextual 11"  "lig_tight contextual 12"  "lig_tight contextual 13"  "lig_tight contextual 14"  "lig_tight contextual 15"  "lig_tight contextual 16"  "lig_tight contextual 17"  "lig_tight contextual 18"  "lig_tight contextual 19"  "lig_tight contextual 20"  "lig_tight contextual 21"  "lig_tight contextual 22"  "lig_tight contextual 23"  "lig_tight contextual 24"  "lig_tight contextual 25"  "lig_tight contextual 26"  "lig_tight contextual 27"  "lig_tight contextual 28"  "lig_tight contextual 29"  "lig_tight contextual 30"  "lig_tight contextual 31"  "lig_tight contextual 32"  "lig_tight contextual 33"  "lig_tight contextual 34"  "lig_tight contextual 35"  "lig_tight contextual 36"  "lig_tight contextual 37"  "lig_tight contextual 38"  "lig_tight contextual 39"  "lig_tight contextual 40"  "lig_tight contextual 41"  "lig_tight contextual 42"  "lig_tight contextual 43"  "lig_tight contextual 44"  "lig_tight contextual 45"  "lig_tight contextual 46"  "lig_tight contextual 47"  "lig_tight contextual 48"  "lig_tight contextual 49"  "lig_tight contextual 50"  "lig_tight contextual 51"  "lig_tight contextual 52"  "lig_tight contextual 53"  "lig_tight contextual 54"  "lig_tight contextual 55"  "lig_tight contextual 56"  "lig_tight contextual 57"  "lig_tight contextual 58"  "lig_tight contextual 59"  "lig_tight contextual 60"  "lig_tight contextual 61"  "lig_tight contextual 62"  "lig_tight contextual 63"  "lig_tight contextual 64"  "lig_tight contextual 65"  "lig_tight contextual 66"  "lig_tight contextual 67"  "lig_tight contextual 68"  "lig_tight contextual 69"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_pipes" { "lig_pipes contextual 0"  "lig_pipes contextual 1"  "lig_pipes contextual 2"  "lig_pipes contextual 3"  "lig_pipes contextual 4"  "lig_pipes contextual 5"  "lig_pipes contextual 6"  "lig_pipes contextual 7"  "lig_pipes contextual 8"  "lig_pipes contextual 9"  "lig_pipes contextual 10"  "lig_pipes contextual 11"  "lig_pipes contextual 12"  "lig_pipes contextual 13"  "lig_pipes contextual 14"  "lig_pipes contextual 15"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_diamond" { "lig_diamond contextual 0"  "lig_diamond contextual 1"  "lig_diamond contextual 2"  "lig_diamond contextual 3"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_tight" { "lig_tight contextual 0"  "lig_tight contextual 1"  "lig_tight contextual 2"  "lig_tight contextual 3"  "lig_tight contextual 4"  "lig_tight contextual 5"  "lig_tight contextual 6"  "lig_tight contextual 7"  "lig_tight contextual 8"  "lig_tight contextual 9"  "lig_tight contextual 10"  "lig_tight contextual 11"  "lig_tight contextual 12"  "lig_tight contextual 13"  "lig_tight contextual 14"  "lig_tight contextual 15"  "lig_tight contextual 16"  "lig_tight contextual 17"  "lig_tight contextual 18"  "lig_tight contextual 19"  "lig_tight contextual 20"  "lig_tight contextual 21"  "lig_tight contextual 22"  "lig_tight contextual 23"  "lig_tight contextual 24"  "lig_tight contextual 25"  "lig_tight contextual 26"  "lig_tight contextual 27"  "lig_tight contextual 28"  "lig_tight contextual 29"  "lig_tight contextual 30"  "lig_tight contextual 31"  "lig_tight contextual 32"  "lig_tight contextual 33"  "lig_tight contextual 34"  "lig_tight contextual 35"  "lig_tight contextual 36"  "lig_tight contextual 37"  "lig_tight contextual 38"  "lig_tight contextual 39"  "lig_tight contextual 40"  "lig_tight contextual 41"  "lig_tight contextual 42"  "lig_tight contextual 43"  "lig_tight contextual 44"  "lig_tight contextual 45"  "lig_tight contextual 46"  "lig_tight contextual 47"  "lig_tight contextual 48"  "lig_tight contextual 49"  "lig_tight contextual 50"  "lig_tight contextual 51"  "lig_tight contextual 52"  "lig_tight contextual 53"  "lig_tight contextual 54"  "lig_tight contextual 55"  "lig_tight contextual 56"  "lig_tight contextual 57"  "lig_tight contextual 58"  "lig_tight contextual 59"  "lig_tight contextual 60"  "lig_tight contextual 61"  "lig_tight contextual 62"  "lig_tight contextual 63"  "lig_tight contextual 64"  "lig_tight contextual 65"  "lig_tight contextual 66"  "lig_tight contextual 67"  "lig_tight contextual 68"  "lig_tight contextual 69"  "lig_tight contextual 70"  "lig_tight contextual 71"  "lig_tight contextual 72"  "lig_tight contextual 73"  "lig_tight contextual 74"  "lig_tight contextual 75"  "lig_tight contextual 76"  "lig_tight contextual 77"  "lig_tight contextual 78"  "lig_tight contextual 79"  "lig_tight contextual 80"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 260 0 0 "marks_base" { "marks_base subtable"  } ['mark' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 262 0 0 "marks_stack_top" { "marks_stack_top subtable"  } ['mkmk' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 262 0 0 "marks_stack_bottom" { "marks_stack_bottom subtable"  } ['mkmk' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 MarkAttachClasses: 1
 DEI: 91125
-ChainSub2: coverage "lig_tight contextual 69" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 80" 0 0 0 1
  2 0 0
   Coverage: 8 question
   Coverage: 12 period colon
@@ -113,28 +113,38 @@ ChainSub2: coverage "lig_tight contextual 69" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 68" 0 0 0 1
- 1 1 1
-  Coverage: 8 question
-  BCoverage: 184 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore dollar bracketright
-  FCoverage: 5 colon
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 67" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 79" 0 0 0 1
  1 0 2
   Coverage: 8 question
   FCoverage: 12 period colon
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 66" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 78" 0 0 0 1
+ 2 0 2
+  Coverage: 8 question
+  Coverage: 12 period colon
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 77" 0 0 0 1
+ 1 1 1
+  Coverage: 8 question
+  BCoverage: 184 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore dollar bracketright
+  FCoverage: 5 colon
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 76" 0 0 0 1
  1 1 1
   Coverage: 8 question
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 12 period colon
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 65" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 75" 0 0 0 1
  String: 17 question question
  BString: 0 
  FString: 0 
@@ -142,21 +152,31 @@ ChainSub2: glyph "lig_tight contextual 65" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 64" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 74" 0 0 0 1
  1 0 2
   Coverage: 8 question
   FCoverage: 8 question
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 63" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 73" 0 0 0 1
+ 2 0 2
+  Coverage: 8 question
+  Coverage: 8 question
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 72" 0 0 0 1
  1 1 1
   Coverage: 8 question
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 8 question
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 62" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 71" 0 0 0 1
  String: 15 greater greater
  BString: 0 
  FString: 0 
@@ -164,14 +184,14 @@ ChainSub2: glyph "lig_tight contextual 62" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 61" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 70" 0 0 0 1
  1 1 1
   Coverage: 7 greater
   BCoverage: 188 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenright bracketright
   FCoverage: 7 greater
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 60" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 69" 0 0 0 1
  2 1 1
   Coverage: 7 greater
   Coverage: 7 greater
@@ -181,21 +201,21 @@ ChainSub2: coverage "lig_tight contextual 60" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 59" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 68" 0 0 0 1
  1 0 2
   Coverage: 7 greater
   FCoverage: 7 greater
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 58" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 67" 0 0 0 1
  1 1 1
   Coverage: 7 greater
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 7 greater
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 57" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 66" 0 0 0 1
  String: 9 less less
  BString: 0 
  FString: 0 
@@ -203,22 +223,89 @@ ChainSub2: glyph "lig_tight contextual 57" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 56" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 65" 0 0 0 1
  1 0 2
   Coverage: 4 less
   FCoverage: 4 less
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 55" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 64" 0 0 0 1
  1 1 1
   Coverage: 4 less
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 4 less
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 54" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 63" 0 0 0 1
  String: 14 asterisk slash
+ BString: 0 
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 62" 0 0 0 1
+ 1 0 2
+  Coverage: 8 asterisk
+  FCoverage: 5 slash
+  FCoverage: 164 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 61" 0 0 0 1
+ 1 0 2
+  Coverage: 8 asterisk
+  FCoverage: 5 slash
+  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 60" 0 0 0 1
+ 1 1 1
+  Coverage: 8 asterisk
+  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+  FCoverage: 5 slash
+ 0
+EndFPST
+ChainSub2: glyph "lig_tight contextual 59" 0 0 0 1
+ String: 14 slash asterisk
+ BString: 0 
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 58" 0 0 0 1
+ 1 0 2
+  Coverage: 5 slash
+  FCoverage: 8 asterisk
+  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 57" 0 0 0 1
+ 2 0 1
+  Coverage: 5 slash
+  Coverage: 8 asterisk
+  FCoverage: 11 exclam less
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 56" 0 0 0 1
+ 1 1 1
+  Coverage: 5 slash
+  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+  FCoverage: 8 asterisk
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 55" 0 0 0 1
+ 1 1 1
+  Coverage: 5 slash
+  BCoverage: 164 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore
+  FCoverage: 8 asterisk
+ 0
+EndFPST
+ChainSub2: glyph "lig_tight contextual 54" 0 0 0 1
+ String: 11 slash slash
  BString: 0 
  FString: 0 
  2
@@ -227,27 +314,29 @@ ChainSub2: glyph "lig_tight contextual 54" 0 0 0 1
 EndFPST
 ChainSub2: coverage "lig_tight contextual 53" 0 0 0 1
  1 0 2
-  Coverage: 8 asterisk
-  FCoverage: 5 slash
-  FCoverage: 164 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 52" 0 0 0 1
- 1 0 2
-  Coverage: 8 asterisk
+  Coverage: 5 slash
   FCoverage: 5 slash
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
+ChainSub2: coverage "lig_tight contextual 52" 0 0 0 1
+ 2 0 1
+  Coverage: 5 slash
+  Coverage: 5 slash
+  FCoverage: 11 exclam less
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
 ChainSub2: coverage "lig_tight contextual 51" 0 0 0 1
  1 1 1
-  Coverage: 8 asterisk
+  Coverage: 5 slash
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 5 slash
  0
 EndFPST
 ChainSub2: glyph "lig_tight contextual 50" 0 0 0 1
- String: 14 slash asterisk
+ String: 9 plus plus
  BString: 0 
  FString: 0 
  2
@@ -256,88 +345,19 @@ ChainSub2: glyph "lig_tight contextual 50" 0 0 0 1
 EndFPST
 ChainSub2: coverage "lig_tight contextual 49" 0 0 0 1
  1 0 2
-  Coverage: 5 slash
-  FCoverage: 8 asterisk
+  Coverage: 4 plus
+  FCoverage: 4 plus
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
 ChainSub2: coverage "lig_tight contextual 48" 0 0 0 1
- 2 0 1
-  Coverage: 5 slash
-  Coverage: 8 asterisk
-  FCoverage: 11 exclam less
- 2
-  SeqLookup: 0 "lig_tight_r"
-  SeqLookup: 1 "lig_tight_l"
-EndFPST
-ChainSub2: coverage "lig_tight contextual 47" 0 0 0 1
- 1 1 1
-  Coverage: 5 slash
-  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
-  FCoverage: 8 asterisk
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 46" 0 0 0 1
- 1 1 1
-  Coverage: 5 slash
-  BCoverage: 164 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore
-  FCoverage: 8 asterisk
- 0
-EndFPST
-ChainSub2: glyph "lig_tight contextual 45" 0 0 0 1
- String: 11 slash slash
- BString: 0 
- FString: 0 
- 2
-  SeqLookup: 0 "lig_tight_r"
-  SeqLookup: 1 "lig_tight_l"
-EndFPST
-ChainSub2: coverage "lig_tight contextual 44" 0 0 0 1
- 1 0 2
-  Coverage: 5 slash
-  FCoverage: 5 slash
-  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 43" 0 0 0 1
- 2 0 1
-  Coverage: 5 slash
-  Coverage: 5 slash
-  FCoverage: 11 exclam less
- 2
-  SeqLookup: 0 "lig_tight_r"
-  SeqLookup: 1 "lig_tight_l"
-EndFPST
-ChainSub2: coverage "lig_tight contextual 42" 0 0 0 1
- 1 1 1
-  Coverage: 5 slash
-  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
-  FCoverage: 5 slash
- 0
-EndFPST
-ChainSub2: glyph "lig_tight contextual 41" 0 0 0 1
- String: 9 plus plus
- BString: 0 
- FString: 0 
- 2
-  SeqLookup: 0 "lig_tight_r"
-  SeqLookup: 1 "lig_tight_l"
-EndFPST
-ChainSub2: coverage "lig_tight contextual 40" 0 0 0 1
- 1 0 2
-  Coverage: 4 plus
-  FCoverage: 4 plus
-  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 39" 0 0 0 1
  1 1 1
   Coverage: 4 plus
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 4 plus
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 38" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 47" 0 0 0 1
  String: 19 ampersand ampersand
  BString: 0 
  FString: 0 
@@ -345,21 +365,31 @@ ChainSub2: glyph "lig_tight contextual 38" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 37" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 46" 0 0 0 1
  1 0 2
   Coverage: 9 ampersand
   FCoverage: 9 ampersand
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 36" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 45" 0 0 0 1
+ 2 0 2
+  Coverage: 9 ampersand
+  Coverage: 9 ampersand
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 44" 0 0 0 1
  1 1 1
   Coverage: 9 ampersand
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 9 ampersand
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 35" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 43" 0 0 0 1
  String: 11 colon colon
  BString: 0 
  FString: 0 
@@ -367,21 +397,30 @@ ChainSub2: glyph "lig_tight contextual 35" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 34" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 42" 0 0 0 1
  1 0 2
   Coverage: 5 colon
   FCoverage: 5 colon
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 33" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 41" 0 0 0 1
+ 2 0 1
+  Coverage: 5 colon
+  Coverage: 5 colon
+  FCoverage: 31 less asterisk hyphen asciitilde
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 40" 0 0 0 1
  1 1 1
   Coverage: 5 colon
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 5 colon
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 32" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 39" 0 0 0 1
  2 1 1
   Coverage: 6 period
   Coverage: 6 period
@@ -391,7 +430,7 @@ ChainSub2: coverage "lig_tight contextual 32" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 31" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 38" 0 0 0 1
  3 0 0
   Coverage: 4 less
   Coverage: 21 dollar asterisk equal
@@ -400,7 +439,7 @@ ChainSub2: coverage "lig_tight contextual 31" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 30" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 37" 0 0 0 1
  1 0 3
   Coverage: 4 less
   FCoverage: 21 dollar asterisk equal
@@ -408,7 +447,7 @@ ChainSub2: coverage "lig_tight contextual 30" 0 0 0 1
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 29" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 36" 0 0 0 1
  1 1 2
   Coverage: 4 less
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
@@ -416,7 +455,7 @@ ChainSub2: coverage "lig_tight contextual 29" 0 0 0 1
   FCoverage: 7 greater
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 28" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 35" 0 0 0 1
  String: 15 equal less less
  BString: 0 
  FString: 0 
@@ -424,7 +463,7 @@ ChainSub2: glyph "lig_tight contextual 28" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 27" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 34" 0 0 0 1
  1 0 3
   Coverage: 5 equal
   FCoverage: 4 less
@@ -432,7 +471,7 @@ ChainSub2: coverage "lig_tight contextual 27" 0 0 0 1
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 26" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 33" 0 0 0 1
  1 1 2
   Coverage: 5 equal
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
@@ -440,7 +479,7 @@ ChainSub2: coverage "lig_tight contextual 26" 0 0 0 1
   FCoverage: 4 less
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 25" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 32" 0 0 0 1
  3 0 0
   Coverage: 7 greater
   Coverage: 7 greater
@@ -449,7 +488,7 @@ ChainSub2: coverage "lig_tight contextual 25" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 24" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 31" 0 0 0 1
  1 1 2
   Coverage: 7 greater
   BCoverage: 188 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenright bracketright
@@ -457,7 +496,7 @@ ChainSub2: coverage "lig_tight contextual 24" 0 0 0 1
   FCoverage: 7 greater
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 23" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 30" 0 0 0 1
  3 1 1
   Coverage: 7 greater
   Coverage: 7 greater
@@ -468,7 +507,7 @@ ChainSub2: coverage "lig_tight contextual 23" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 22" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 29" 0 0 0 1
  1 0 3
   Coverage: 7 greater
   FCoverage: 7 greater
@@ -476,7 +515,7 @@ ChainSub2: coverage "lig_tight contextual 22" 0 0 0 1
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 21" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 28" 0 0 0 1
  1 1 2
   Coverage: 7 greater
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
@@ -484,7 +523,33 @@ ChainSub2: coverage "lig_tight contextual 21" 0 0 0 1
   FCoverage: 13 greater equal
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 20" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 27" 0 0 0 1
+ String: 29 greater greater greater equal
+ BString: 0 
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 3 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 26" 0 0 0 1
+ 1 0 4
+  Coverage: 7 greater
+  FCoverage: 7 greater
+  FCoverage: 7 greater
+  FCoverage: 5 equal
+  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 25" 0 0 0 1
+ 1 1 3
+  Coverage: 7 greater
+  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+  FCoverage: 7 greater
+  FCoverage: 7 greater
+  FCoverage: 5 equal
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 24" 0 0 0 1
  3 0 0
   Coverage: 4 less
   Coverage: 4 less
@@ -493,7 +558,7 @@ ChainSub2: coverage "lig_tight contextual 20" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 19" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 23" 0 0 0 1
  1 0 3
   Coverage: 4 less
   FCoverage: 4 less
@@ -501,7 +566,7 @@ ChainSub2: coverage "lig_tight contextual 19" 0 0 0 1
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 18" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 22" 0 0 0 1
  1 1 2
   Coverage: 4 less
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
@@ -509,31 +574,56 @@ ChainSub2: coverage "lig_tight contextual 18" 0 0 0 1
   FCoverage: 10 less equal
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 17" 0 0 0 1
- String: 29 ampersand ampersand ampersand
+ChainSub2: glyph "lig_tight contextual 21" 0 0 0 1
+ String: 23 question question equal
  BString: 0 
  FString: 0 
  2
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 16" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 20" 0 0 0 1
  1 0 3
-  Coverage: 9 ampersand
-  FCoverage: 9 ampersand
-  FCoverage: 9 ampersand
+  Coverage: 8 question
+  FCoverage: 8 question
+  FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 15" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 19" 0 0 0 1
+ 1 1 2
+  Coverage: 8 question
+  BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+  FCoverage: 8 question
+  FCoverage: 5 equal
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 18" 0 0 0 1
+ 3 0 0
+  Coverage: 9 ampersand
+  Coverage: 9 ampersand
+  Coverage: 15 ampersand equal
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 2 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 17" 0 0 0 1
+ 1 0 3
+  Coverage: 9 ampersand
+  FCoverage: 9 ampersand
+  FCoverage: 15 ampersand equal
+  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+ 0
+EndFPST
+ChainSub2: coverage "lig_tight contextual 16" 0 0 0 1
  1 1 2
   Coverage: 9 ampersand
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 9 ampersand
-  FCoverage: 9 ampersand
+  FCoverage: 15 ampersand equal
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 14" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 15" 0 0 0 1
  3 0 0
   Coverage: 6 period
   Coverage: 6 period
@@ -542,7 +632,7 @@ ChainSub2: coverage "lig_tight contextual 14" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 13" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 14" 0 0 0 1
  1 0 3
   Coverage: 6 period
   FCoverage: 6 period
@@ -550,7 +640,7 @@ ChainSub2: coverage "lig_tight contextual 13" 0 0 0 1
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_tight contextual 12" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 13" 0 0 0 1
  1 1 2
   Coverage: 6 period
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
@@ -558,7 +648,7 @@ ChainSub2: coverage "lig_tight contextual 12" 0 0 0 1
   FCoverage: 10 equal less
  0
 EndFPST
-ChainSub2: glyph "lig_tight contextual 11" 0 0 0 1
+ChainSub2: glyph "lig_tight contextual 12" 0 0 0 1
  String: 20 period period period
  BString: 0 
  FString: 0 
@@ -566,20 +656,28 @@ ChainSub2: glyph "lig_tight contextual 11" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_tight contextual 10" 0 0 0 1
- 1 0 3
-  Coverage: 6 period
-  FCoverage: 6 period
-  FCoverage: 6 period
-  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
- 0
-EndFPST
-ChainSub2: coverage "lig_tight contextual 9" 0 0 0 1
+ChainSub2: coverage "lig_tight contextual 11" 0 0 0 1
  1 1 2
   Coverage: 6 period
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 6 period
   FCoverage: 6 period
+ 0
+EndFPST
+ChainSub2: glyph "lig_tight contextual 10" 0 0 0 1
+ String: 20 period period period
+ BString: 7 greater
+ FString: 0 
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 2 "lig_tight_l"
+EndFPST
+ChainSub2: coverage "lig_tight contextual 9" 0 0 0 1
+ 1 0 3
+  Coverage: 6 period
+  FCoverage: 6 period
+  FCoverage: 6 period
+  FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
 ChainSub2: glyph "lig_tight contextual 8" 0 0 0 1
@@ -658,7 +756,7 @@ ChainSub2: coverage "lig_tight contextual 0" 0 0 0 1
   FCoverage: 5 slash
  0
 EndFPST
-ChainSub2: glyph "lig_diamond contextual 2" 0 0 0 1
+ChainSub2: glyph "lig_diamond contextual 3" 0 0 0 1
  String: 12 less greater
  BString: 0 
  FString: 0 
@@ -666,12 +764,22 @@ ChainSub2: glyph "lig_diamond contextual 2" 0 0 0 1
   SeqLookup: 0 "lig_spacer"
   SeqLookup: 1 "lig_less_greater"
 EndFPST
-ChainSub2: coverage "lig_diamond contextual 1" 0 0 0 1
+ChainSub2: coverage "lig_diamond contextual 2" 0 0 0 1
  1 0 2
   Coverage: 4 less
   FCoverage: 7 greater
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
+EndFPST
+ChainSub2: coverage "lig_diamond contextual 1" 0 0 0 1
+ 2 0 2
+  Coverage: 4 less
+  Coverage: 7 greater
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_less_greater"
 EndFPST
 ChainSub2: coverage "lig_diamond contextual 0" 0 0 0 1
  1 1 1
@@ -680,7 +788,7 @@ ChainSub2: coverage "lig_diamond contextual 0" 0 0 0 1
   FCoverage: 7 greater
  0
 EndFPST
-ChainSub2: glyph "lig_pipes contextual 14" 0 0 0 1
+ChainSub2: glyph "lig_pipes contextual 15" 0 0 0 1
  String: 7 bar bar
  BString: 0 
  FString: 0 
@@ -688,12 +796,22 @@ ChainSub2: glyph "lig_pipes contextual 14" 0 0 0 1
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 1 "lig_tight_l"
 EndFPST
-ChainSub2: coverage "lig_pipes contextual 13" 0 0 0 1
+ChainSub2: coverage "lig_pipes contextual 14" 0 0 0 1
  1 0 2
   Coverage: 3 bar
   FCoverage: 3 bar
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
+EndFPST
+ChainSub2: coverage "lig_pipes contextual 13" 0 0 0 1
+ 2 0 2
+  Coverage: 3 bar
+  Coverage: 3 bar
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
 EndFPST
 ChainSub2: coverage "lig_pipes contextual 12" 0 0 0 1
  1 1 1
@@ -702,10 +820,11 @@ ChainSub2: coverage "lig_pipes contextual 12" 0 0 0 1
   FCoverage: 3 bar
  0
 EndFPST
-ChainSub2: glyph "lig_pipes contextual 11" 0 0 0 1
- String: 11 bar bar bar
- BString: 0 
- FString: 0 
+ChainSub2: coverage "lig_pipes contextual 11" 0 0 0 1
+ 3 0 0
+  Coverage: 3 bar
+  Coverage: 3 bar
+  Coverage: 9 bar equal
  2
   SeqLookup: 0 "lig_tight_r"
   SeqLookup: 2 "lig_tight_l"
@@ -714,7 +833,7 @@ ChainSub2: coverage "lig_pipes contextual 10" 0 0 0 1
  1 0 3
   Coverage: 3 bar
   FCoverage: 3 bar
-  FCoverage: 3 bar
+  FCoverage: 9 bar equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
@@ -723,7 +842,7 @@ ChainSub2: coverage "lig_pipes contextual 9" 0 0 0 1
   Coverage: 3 bar
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 3 bar
-  FCoverage: 3 bar
+  FCoverage: 9 bar equal
  0
 EndFPST
 ChainSub2: glyph "lig_pipes contextual 8" 0 0 0 1
@@ -1032,7 +1151,7 @@ ChainSub2: coverage "lig_runs contextual 0" 0 0 0 1
  1
   SeqLookup: 0 "lig_mid"
 EndFPST
-ChainSub2: glyph "lig_or_equal contextual 5" 0 0 0 1
+ChainSub2: glyph "lig_or_equal contextual 7" 0 0 0 1
  String: 13 greater equal
  BString: 0 
  FString: 0 
@@ -1040,21 +1159,31 @@ ChainSub2: glyph "lig_or_equal contextual 5" 0 0 0 1
   SeqLookup: 0 "lig_spacer"
   SeqLookup: 1 "lig_greater_equal"
 EndFPST
-ChainSub2: coverage "lig_or_equal contextual 4" 0 0 0 1
+ChainSub2: coverage "lig_or_equal contextual 6" 0 0 0 1
  1 0 2
   Coverage: 7 greater
   FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_or_equal contextual 3" 0 0 0 1
+ChainSub2: coverage "lig_or_equal contextual 5" 0 0 0 1
+ 2 0 2
+  Coverage: 7 greater
+  Coverage: 5 equal
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_greater_equal"
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 4" 0 0 0 1
  1 1 1
   Coverage: 7 greater
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 5 equal
  0
 EndFPST
-ChainSub2: glyph "lig_or_equal contextual 2" 0 0 0 1
+ChainSub2: glyph "lig_or_equal contextual 3" 0 0 0 1
  String: 10 less equal
  BString: 0 
  FString: 0 
@@ -1062,12 +1191,22 @@ ChainSub2: glyph "lig_or_equal contextual 2" 0 0 0 1
   SeqLookup: 0 "lig_spacer"
   SeqLookup: 1 "lig_less_equal"
 EndFPST
-ChainSub2: coverage "lig_or_equal contextual 1" 0 0 0 1
+ChainSub2: coverage "lig_or_equal contextual 2" 0 0 0 1
  1 0 2
   Coverage: 4 less
   FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
+EndFPST
+ChainSub2: coverage "lig_or_equal contextual 1" 0 0 0 1
+ 2 0 2
+  Coverage: 4 less
+  Coverage: 5 equal
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_less_equal"
 EndFPST
 ChainSub2: coverage "lig_or_equal contextual 0" 0 0 0 1
  1 1 1
@@ -1928,19 +2067,28 @@ ChainSub2: coverage "lig_triple_equal contextual 0" 0 0 0 1
   FCoverage: 5 equal
  0
 EndFPST
-ChainSub2: glyph "lig_colon_equal contextual 2" 0 0 0 1
+ChainSub2: glyph "lig_colon_equal contextual 3" 0 0 0 1
  String: 5 colon
  BString: 0 
  FString: 5 equal
  1
   SeqLookup: 0 "lig_colon_eq"
 EndFPST
-ChainSub2: coverage "lig_colon_equal contextual 1" 0 0 0 1
+ChainSub2: coverage "lig_colon_equal contextual 2" 0 0 0 1
  1 0 2
   Coverage: 5 colon
   FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
+EndFPST
+ChainSub2: coverage "lig_colon_equal contextual 1" 0 0 0 1
+ 1 0 3
+  Coverage: 5 colon
+  FCoverage: 5 equal
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 1
+  SeqLookup: 0 "lig_colon_eq"
 EndFPST
 ChainSub2: coverage "lig_colon_equal contextual 0" 0 0 0 1
  1 1 1
@@ -1949,7 +2097,7 @@ ChainSub2: coverage "lig_colon_equal contextual 0" 0 0 0 1
   FCoverage: 5 equal
  0
 EndFPST
-ChainSub2: glyph "lig_not_equal contextual 5" 0 0 0 1
+ChainSub2: glyph "lig_not_equal contextual 7" 0 0 0 1
  String: 12 exclam equal
  BString: 0 
  FString: 0 
@@ -1957,21 +2105,31 @@ ChainSub2: glyph "lig_not_equal contextual 5" 0 0 0 1
   SeqLookup: 0 "lig_spacer"
   SeqLookup: 1 "lig_exclam_equal"
 EndFPST
-ChainSub2: coverage "lig_not_equal contextual 4" 0 0 0 1
+ChainSub2: coverage "lig_not_equal contextual 6" 0 0 0 1
  1 0 2
   Coverage: 6 exclam
   FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
 EndFPST
-ChainSub2: coverage "lig_not_equal contextual 3" 0 0 0 1
+ChainSub2: coverage "lig_not_equal contextual 5" 0 0 0 1
+ 2 0 2
+  Coverage: 6 exclam
+  Coverage: 5 equal
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 2
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_exclam_equal"
+EndFPST
+ChainSub2: coverage "lig_not_equal contextual 4" 0 0 0 1
  1 1 1
   Coverage: 6 exclam
   BCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
   FCoverage: 5 equal
  0
 EndFPST
-ChainSub2: glyph "lig_not_equal contextual 2" 0 0 0 1
+ChainSub2: glyph "lig_not_equal contextual 3" 0 0 0 1
  String: 18 exclam equal equal
  BString: 0 
  FString: 0 
@@ -1980,13 +2138,25 @@ ChainSub2: glyph "lig_not_equal contextual 2" 0 0 0 1
   SeqLookup: 1 "lig_spacer"
   SeqLookup: 2 "lig_exclam_equal_equal"
 EndFPST
-ChainSub2: coverage "lig_not_equal contextual 1" 0 0 0 1
+ChainSub2: coverage "lig_not_equal contextual 2" 0 0 0 1
  1 0 3
   Coverage: 6 exclam
   FCoverage: 5 equal
   FCoverage: 5 equal
   FCoverage: 1072 exclam numbersign ampersand asterisk plus hyphen period slash colon less equal greater question bar asciitilde underscore LIG colon.eq hyphen.sta hyphen.mid hyphen.end equal.sta equal.mid equal.end underscore.sta underscore.mid underscore.end numbersign.sta numbersign.mid numbersign.end asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low less.arrow greater.arrow less.darrow greater.darrow less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
  0
+EndFPST
+ChainSub2: coverage "lig_not_equal contextual 1" 0 0 0 1
+ 3 0 2
+  Coverage: 6 exclam
+  Coverage: 5 equal
+  Coverage: 5 equal
+  FCoverage: 13 hyphen exclam
+  FCoverage: 174 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenleft
+ 3
+  SeqLookup: 0 "lig_spacer"
+  SeqLookup: 1 "lig_spacer"
+  SeqLookup: 2 "lig_exclam_equal_equal"
 EndFPST
 ChainSub2: coverage "lig_not_equal contextual 0" 0 0 0 1
  1 1 2

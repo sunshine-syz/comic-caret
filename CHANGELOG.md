@@ -2,6 +2,11 @@
 
 ## 2.0.2 (unreleased)
 
+- `||=`, `&&=`, `??=` and `>>>=` are pulled together, as `<<=` and `>>=` already were. So `x ??= 1` reads like `a ?? b`, as in Fira Code and Maple Mono.
+- `::` is pulled together before `<`, `*`, `-` and `~`, as in Rust's `collect::<Vec<_>>()` and `use std::*;`, C++'s `Foo::~Foo()` and Python's `a[::-1]`. So `a[::-1]` reads like `a[::2]`.
+- `...` is pulled together after a `>`, as in a usage line's `<FILE>...`, as it already was after `]`.
+- `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
+
 ## 2.0.1 (2026-10)
 
 - `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.

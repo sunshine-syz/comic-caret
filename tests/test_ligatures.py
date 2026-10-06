@@ -266,6 +266,40 @@ LIGATED = {
     "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
     "0..=9": ["zero", "period.tight_r", "period", "equal.tight_l", "nine"],
     "0..<n": ["zero", "period.tight_r", "period", "less.tight_l", "n"],
+    # An assignment that closes a tightened pair, as <<= and >>= do
+    "||=": ["bar.tight_r", "bar", "equal.tight_l"],
+    "&&=": ["ampersand.tight_r", "ampersand", "equal.tight_l"],
+    "??=": ["question.tight_r", "question", "equal.tight_l"],
+    "x ??= 1": ["x", "space", "question.tight_r", "question", "equal.tight_l", "space", "one"],
+    ">>>=": ["greater.tight_r", "greater", "greater", "equal.tight_l"],
+    "y >>>= 1": ["y", "space", "greater.tight_r", "greater", "greater", "equal.tight_l", "space",
+                 "one"],
+    # :: before a turbofish, a glob, a destructor or a negative step
+    "a::<T>": ["a", "colon.tight_r", "colon.tight_l", "less", "T", "greater"],
+    "use std::*;": ["u", "s", "e", "space", "s", "t", "d", "colon.tight_r", "colon.tight_l",
+                    "asterisk", "semicolon"],
+    "Foo::~Foo()": ["F", "o", "o", "colon.tight_r", "colon.tight_l", "asciitilde", "F", "o",
+                    "o", "parenleft", "parenright"],
+    "a[::-1]": ["a", "bracketleft", "colon.tight_r", "colon.tight_l", "hyphen", "one",
+                "bracketright"],
+    "x[:, ::-1]": ["x", "bracketleft", "colon", "comma", "space", "colon.tight_r",
+                   "colon.tight_l", "hyphen", "one", "bracketright"],
+    # ... after the > of a placeholder
+    "<FILE>...": ["less", "F", "I", "L", "E", "greater", "period.tight_r", "period",
+                  "period.tight_l"],
+    # A ligature before a sign or a not on an operand, as x==-1 joins as a run
+    "x!=-1": ["x", "LIG", "exclam_equal.liga", "hyphen", "one"],
+    "x!==-1": ["x", "LIG", "LIG", "exclam_equal_equal.liga", "hyphen", "one"],
+    "x:=-1": ["x", "colon.eq", "equal", "hyphen", "one"],
+    "x<=-1": ["x", "LIG", "less_equal.liga", "hyphen", "one"],
+    "x>=-1": ["x", "LIG", "greater_equal.liga", "hyphen", "one"],
+    "a<>-1": ["a", "LIG", "less_greater.liga", "hyphen", "one"],
+    "a||!b": ["a", "bar.tight_r", "bar.tight_l", "exclam", "b"],
+    "a&&!b": ["a", "ampersand.tight_r", "ampersand.tight_l", "exclam", "b"],
+    "a&&!(b)": ["a", "ampersand.tight_r", "ampersand.tight_l", "exclam", "parenleft", "b",
+                "parenright"],
+    "a??-1": ["a", "question.tight_r", "question.tight_l", "hyphen", "one"],
+    "a?.-b": ["a", "question.tight_r", "period.tight_l", "hyphen", "b"],
 }
 
 # Input that must shape exactly as it does with calt off.
@@ -296,9 +330,11 @@ PLAIN = [
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
-    "<<<<<<<", ">>>>>>>", "////", "/***", "||=", "&&=", "??=",
-    "a::<T>", "https://", "....", "..", "<||", "|>>", "||||", "&&&&", ">>>=", "...=",
+    "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", ">>>>=", ":::", ">....",
+    "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
     "?..", "??.", "**", "a**b", "/**/",
+    # A sign or a not that no operand follows
+    "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
     # .. in a path, not between two names or numbers
     "../x", "cd ..", "a[2..]",
     # TypeScript's optional property, where ?: is no operator
