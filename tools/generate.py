@@ -70,41 +70,55 @@ def decompose_transformed_references(font):
 
 
 def hint_zones(font):
-    """Hint every letter and figure so that its top and foot reach the alignment zones that
-    hold them.
+    """Give every letter and figure a hint edge in each alignment zone that holds its top or
+    foot, and every glyph hints the CFF spec defines.
 
     The CFF hinter aligns hint edges, not the outline's extremes, to the zones. A composite
     keeps the hints its parts had when it was last hinted, which may predate the zones or the
-    parts. FontForge's autohinter can also end a stem just outside the zone that holds the
-    extreme, as at the bold E's bar (660 under its 665 top), and draws no ghost there. Such a
-    letter stands a row off the rest at some sizes. So composites are hinted again, and a
-    ghost hint marks each extreme a zone holds without an edge.
+    parts, so letter composites are hinted again. FontForge's autohinter can end a stem just
+    outside the zone that holds the extreme, as at the bold E's bar (660 under its 665 top),
+    and draws no ghost there, so a ghost marks each extreme a zone holds without an edge. It
+    also writes some stems top first, with a negative width the spec leaves undefined; FreeType
+    then aligned none of their edges to a zone (the bold U's top), so they are written bottom
+    first. Without these, a letter stood a row off the rest at some sizes.
     """
     blues, other = font.private["BlueValues"], font.private["OtherBlues"]
     fuzz = 1  # the CFF default; the SFDs set no BlueFuzz
     tops = list(zip(blues[2::2], blues[3::2]))
     feet = [tuple(blues[:2]), *zip(other[::2], other[1::2])]
     for glyph in font.glyphs():
-        if not is_alphanumeric(glyph.unicode):
-            continue
-        if glyph.references:
+        letter = is_alphanumeric(glyph.unicode)
+        if letter and glyph.references:
             glyph.autoHint()
-        hints = glyph.hhints
         # FontForge gives a top ghost as (edge, -20) and a bottom one as (edge + 21, -21).
-        top_edges = [y if w == -20 else y + w for y, w in hints if w != -21]
-        foot_edges = [y + w if w == -21 else y for y, w in hints if w != -20]
-        _, y0, _, y1 = glyph.boundingBox()
+        hints = [(y + w, -w) if w < 0 and w not in (-20, -21) else (y, w)
+                 for y, w in glyph.hhints]
         ghosts = []
-        for y, zones, edges, ghost in ((y1, tops, top_edges, (y1, -20)),
-                                       (y0, feet, foot_edges, (y0 + 21, -21))):
-            for low, high in zones:
-                if (low - fuzz <= y <= high + fuzz
-                        and not any(low - fuzz <= e <= high + fuzz for e in edges)):
-                    ghosts.append(ghost)
-        if ghosts:
-            # From the bottom up, or FontForge drops a hint out of order.
-            glyph.hhints = sorted((*hints, *ghosts), key=lambda hint: min(hint[0], sum(hint)))
-            glyph.manualHints = True  # else generating hints it again, without the ghosts
+        if letter:
+            top_edges = [y if w == -20 else y + w for y, w in hints if w != -21]
+            foot_edges = [y + w if w == -21 else y for y, w in hints if w != -20]
+            _, y0, _, y1 = glyph.boundingBox()
+            for y, zones, edges, ghost in ((y1, tops, top_edges, (y1, -20)),
+                                           (y0, feet, foot_edges, (y0 + 21, -21))):
+                for low, high in zones:
+                    if (low - fuzz <= y <= high + fuzz
+                            and not any(low - fuzz <= e <= high + fuzz for e in edges)):
+                        ghosts.append(ghost)
+        # A ghost the autohinter already drew across a new one's span, as m's top ghost at -1
+        # over its feet at -21, would share its hint mask: the two edges would cross as they
+        # are hinted and throw the points between them past the baseline.
+        hints = [hint for hint in hints
+                 if hint[1] not in (-20, -21) or not any(overlap(hint, g) for g in ghosts)]
+        hints = sorted((*hints, *ghosts), key=lambda hint: min(hint[0], sum(hint)))
+        if tuple(hints) != glyph.hhints:
+            glyph.hhints = hints  # from the bottom up, or FontForge drops a hint out of order
+            glyph.manualHints = True  # else generating hints it again, without these
+
+
+def overlap(a, b):
+    """Whether the spans of the hints `a` and `b`, as (position, width), overlap."""
+    (a0, a1), (b0, b1) = sorted((a[0], sum(a))), sorted((b[0], sum(b)))
+    return a0 < b1 and b0 < a1
 
 
 def without_mac_roman(cmap):

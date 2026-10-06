@@ -3,6 +3,7 @@ the font's names; and they pass ots, the sanitizer browsers run web fonts throug
 
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
+import itertools
 import json
 import os
 import pathlib
@@ -319,7 +320,16 @@ class BuiltFontTest(unittest.TestCase):
             if not is_alphanumeric(glyph.unicode):
                 continue
             # FontForge reads a top ghost as (edge, -20) and a bottom one as (edge + 21, -21).
+            # Any other negative width is undefined in CFF, and FreeType aligned neither edge
+            # of such a stem to a zone: the bold U's top stood a row high at 20 and 23 px.
+            # Two ghosts across one span share a hint mask, and their edges cross as they are
+            # hinted: the italic m's right foot fell under the baseline at 20 and 22 px.
             hints = glyph.hhints
+            ghosts = [sorted((y, y + w)) for y, w in hints if w in (-20, -21)]
+            with self.subTest(glyph=glyph.glyphname, hints=hints):
+                self.assertTrue(all(w >= 0 or w in (-20, -21) for _, w in hints))
+                self.assertFalse(any(a0 < b1 and b0 < a1 for (a0, a1), (b0, b1)
+                                     in itertools.combinations(ghosts, 2)))
             top_edges = [y if w == -20 else y + w for y, w in hints if w != -21]
             foot_edges = [y + w if w == -21 else y for y, w in hints if w != -20]
             _, y0, _, y1 = glyph.boundingBox()

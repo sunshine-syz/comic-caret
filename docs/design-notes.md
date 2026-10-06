@@ -264,11 +264,12 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   row (38 after; Fira Code 126, Maple Mono 17), `=` blurred into one grey band at 11 px (bar
   contrast 0.02, 0.93 after) and in monochrome `8` read as `B`. Light hinting is unchanged:
   FreeType's autohinter, which ttfautohint follows, hints the TTF there either way.
-  `--composites` and `--fallback-script=latn` changed none of these numbers. The italic `H`
-  alone drops a row at 9 px. ttfautohint's `prep` keeps the smart dropout control the SFD's
-  own `prep` carried. ttfautohint hints a component alone and then turns it, so the TTF draws
-  every turned reference as an outline: turned, `)` stood a row below `(` at 11 px, and `∀`
-  `∃` a row under the baseline.
+  `--composites` and `--fallback-script=latn` changed none of these numbers. At 9 px the
+  italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round stem ends fill only
+  half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep` keeps the
+  smart dropout control the SFD's own `prep` carried. ttfautohint hints a component alone and
+  then turns it, so the TTF draws every turned reference as an outline: turned, `)` stood a
+  row below `(` at 11 px, and `∀` `∃` a row under the baseline.
 - **Alignment zones.** The OTF's hints put the extremes inside one zone on one pixel row, so
   each zone runs from the lowest to the highest of its letters' extremes, the hand's wobble
   included: the baseline −37…−5, the x-height 461…493, the capitals and figures 658…692, the
@@ -279,15 +280,18 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   checks that every style's letters stay inside. The hinter aligns hint edges, not extremes,
   so a letter needs a stem or ghost edge in each zone that holds its top or foot. FontForge's
   autohinter left some without: the bold `E`'s bar ends at 660 under its 665 top, the
-  italic `z`'s bars at 458 and −3, the bold `U`'s top and `V`'s foot had none, and composites
-  kept hints from before the zones, so the Greek capitals had the Latin ones' old edges or
-  none. Each stood a row off at 8–24 px. `tools/generate.py` hints the letter composites
-  again and adds a ghost at each such extreme; `tests/test_built.py` checks the built OTFs.
-  Rows off `H` and `x` at 8–24 px, native hinting: regular 139 → 112, italic 118 → 114, bold
-  155 → 85. `Λ`, `V` turned, stands 5 lower, so its feet reach the baseline zone as `A`'s do;
-  with its top aligned and its feet at 0 it stood a row high at 11 and 14 px. The italic
-  `m`'s foot dips half a row below the baseline at 20 and 22 px with its ghost (0.54 of a
-  pixel row, 0.27–0.35 without).
+  italic `z`'s bars at 458 and −3, `V`'s foot had none, and composites kept hints from before
+  the zones, so the Greek capitals had the Latin ones' old edges or none. It also writes some
+  stems top first, with a negative width the CFF spec leaves undefined, and FreeType aligns
+  neither of their edges: the bold `U`'s top was one. Each stood a row off at 8–24 px.
+  `tools/generate.py` hints the letter composites again, writes every stem bottom first and
+  adds a ghost at each extreme a zone holds without an edge; `tests/test_built.py` checks the
+  built OTFs. A ghost the autohinter drew across the new one's span goes: the italic `m`'s top
+  ghost at −1 crossed the new one over its feet at −21 as both were hinted, and threw the
+  foot half a row below the baseline at 20 and 22 px. Rows off `H` and `x` at 8–24 px,
+  native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
+  5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
+  at 0 it stood a row high at 11 and 14 px.
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under
