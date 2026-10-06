@@ -1,15 +1,5 @@
 # Changelog
 
-## 2.0.2 (unreleased)
-
-- `||=`, `&&=`, `??=` and `>>>=` are pulled together, as `<<=` and `>>=` already were. So `x ??= 1` reads like `a ?? b`, as in Fira Code and Maple Mono.
-- `::` is pulled together before `<`, `*`, `-` and `~`, as in Rust's `collect::<Vec<_>>()` and `use std::*;`, C++'s `Foo::~Foo()` and Python's `a[::-1]`, and after a `>` before a name, as in `Vec::<u8>::new()` and `vector<int>::iterator`. So `a[::-1]` reads like `a[::2]`.
-- `...` is pulled together after a `>`, as in a usage line's `<FILE>...`, as it already was after `]`.
-- `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
-- The TTF is hinted, by ttfautohint. Where a renderer runs the font's own hints, as FreeType's full and monochrome hinting on Linux do, the TTF was drawn unhinted. There `=` blurred into one grey band at 11 px, letters stood a pixel row off their neighbours, and without antialiasing `8` read as `B`. Linux's default light hinting and macOS draw as before.
-- In the OTF, every letter whose top or foot reaches an alignment zone carries a hint there, so it stands on its neighbours' pixel row. At small sizes the bold `E` and `Ę` stood a row below `H`, the bold `U` a row above it, the italic `z` `ź` `ż` `ž` a row below `x`, and the Greek capitals off the Latin ones. `Λ` stands 5 units lower, on the baseline as `A` does.
-- The bars of `=` stand further apart, as far as in Intel One Mono. At 8 px, where FreeType runs the font's own hints, they no longer merge into one band, in any style or format. ≡ ≠ ⇒ ⇐ ⇔ ⇑ ⇓ ⇕ and the ligatures drawn with `=`'s bars, such as `==`, `!=` and `=>`, follow.
-
 ## 2.0.1 (2026-10)
 
 - `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.
@@ -26,11 +16,13 @@
 - The top of `A` stands in the middle of the cell, and its legs slope alike, as in Fira Code, Maple Mono and Intel One Mono. The accented letters, Α and ∀ follow.
 - The upper bowl of `8` and both bowls of `B` are wider, as wide as in Intel One Mono, Fira Code and Maple Mono. The bowl of `d` is as wide as Maple Mono's, and `b` `p` `q` widen with it, so the four stay one width. Their strokes keep their weight.
 - On Linux, where FreeType's light hinting is the default, the pieces of `->`, `<-`, `=>`, `-->`, `<==>`, `---` and the other arrows and lines meet on one pixel row in the TTF at every size from 8 to 36 px. Their shafts stepped by a pixel at 14 to 21 px. The bars of the pieces are level, and the lower arms of → ← ⇒ ⇐ and their heads end a little higher. The bold `<=<`'s right end still steps at some sizes.
+- The TTF is hinted, by ttfautohint. Where a renderer runs the font's own hints, as FreeType's full and monochrome hinting on Linux do, the TTF was drawn unhinted. There `=` blurred into one grey band at 11 px, letters stood a pixel row off their neighbours, and without antialiasing `8` read as `B`. Linux's default light hinting and macOS draw as before.
 - ↑ ↓ ⇑ ⇓ ⇞ ⇟ have the heads of → and ⇒, so an arrow up or down is as big as one along the line. The diagonal arrows ↖ ↗ ↘ ↙ have longer shafts.
-- In the OTF, the capitals and figures stand on one pixel row at small sizes, and so do the lowercase letters, in every style. Each style carried the regular's alignment zones, which missed the tops of `A` `C` `E` `G` `L` `M` `N` `S`, the figures and `c` `m` `w`, and every top of the bold. So at 16 px `E` and `T` stood a row above `H`, and the bold's capitals and lowercase letters split into two rows at 13 to 22 px. The bold `U` still stands a row above `H` at 20 and 23 px.
+- In the OTF, the capitals and figures stand on one pixel row at small sizes, and so do the lowercase letters, in every style. Each style carried the regular's alignment zones, which missed the tops of `A` `C` `E` `G` `L` `M` `N` `S`, the figures and `c` `m` `w`, and every top of the bold. So at 16 px `E` and `T` stood a row above `H`, and the bold's capitals and lowercase letters split into two rows at 13 to 22 px. Every letter whose top or foot reaches an alignment zone carries a hint there, so the bold `E` `Ę` and `U`, the italic `z` `ź` `ż` `ž` and the Greek capitals stand on their neighbours' row too. `Λ` stands 5 units lower, on the baseline as `A` does.
 - The dots of Braille stand on an even grid, as far apart inside a character as across characters and lines. So a graph drawn in Braille, as btop and UnicodePlots draw them, no longer breaks into stripes.
 - The leg of ₹ runs down to the right, and its bowl turns back under the bar, as in Fira Code, Maple Mono and Intel One Mono.
 - `/` and `\` are taller and a little steeper. They are as tall as in Fira Code, Maple Mono and Intel One Mono, and their strokes keep their weight. `//` and `/*` keep their spacing, and the slash of `!=` keeps its size.
+- The bars of `=` stand further apart, as far as in Intel One Mono. At 8 px, where FreeType runs the font's own hints, they no longer merge into one band, in any style or format. ≡ ≠ ⇒ ⇐ ⇔ ⇑ ⇓ ⇕ and the ligatures drawn with `=`'s bars, such as `==`, `!=` and `=>`, follow.
 - The slash of ∄ is the `/` turned 6° steeper, so ∄ is no wider than ∃, as in Fira Code and Maple Mono.
 - `|` stands in the middle of the cell, on the line of `│`, so a table drawn with both lines up. ‖ follows.
 - `‘` and `“` are `’` and `”` mirrored exactly, so each pair stands level and leans toward the quoted word. ʻ follows.
@@ -39,6 +31,10 @@
 - `<=>` is pulled together as a comparison, as in C++, PHP, Ruby and Perl, and no longer draws an arrow. `<==>` is still an arrow.
 - `~>` stays as typed before a version, as in Ruby's and Terraform's `~> 1.0`.
 - Pairs beside a name stay as typed where they are no operator: `/*` after one, as in `src/*`, `*/` before one, as in the cron step `*/5`, and `>>` or `>>>` after one, as generics close in `Vec<Vec<u8>>`. A shift is still pulled together: with spaces, as in `a >> b`, and without, where a name or a number follows, as in `cin>>n`, `x>>1` and `a>>>0`.
+- `||=`, `&&=`, `??=` and `>>>=` are pulled together, as `<<=` and `>>=` already were. So `x ??= 1` reads like `a ?? b`, as in Fira Code and Maple Mono.
+- `::` is pulled together before `<`, `*`, `-` and `~`, as in Rust's `collect::<Vec<_>>()` and `use std::*;`, C++'s `Foo::~Foo()` and Python's `a[::-1]`, and after a `>` before a name, as in `Vec::<u8>::new()` and `vector<int>::iterator`. So `a[::-1]` reads like `a[::2]`.
+- `...` is pulled together after a `>`, as in a usage line's `<FILE>...`, as it already was after `]`.
+- `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
 
 ## 2.0.0 (2026-10)
 
