@@ -276,6 +276,10 @@ LIGATED = {
                  "one"],
     # :: before a turbofish, a glob, a destructor or a negative step
     "a::<T>": ["a", "colon.tight_r", "colon.tight_l", "less", "T", "greater"],
+    # :: after generics close, before a name
+    "Box::<u8>::new()": ["B", "o", "x", "colon.tight_r", "colon.tight_l", "less", "u", "eight",
+                         "greater", "colon.tight_r", "colon.tight_l", "n", "e", "w", "parenleft",
+                         "parenright"],
     "use std::*;": ["u", "s", "e", "space", "s", "t", "d", "colon.tight_r", "colon.tight_l",
                     "asterisk", "semicolon"],
     "Foo::~Foo()": ["F", "o", "o", "colon.tight_r", "colon.tight_l", "asciitilde", "F", "o",
@@ -330,7 +334,7 @@ PLAIN = [
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
-    "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", ">>>>=", ":::", ">....",
+    "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", ">>>>=", ":::", ">....", ">::=",
     "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
     "?..", "??.", "**", "a**b", "/**/",
     # A sign or a not that no operand follows

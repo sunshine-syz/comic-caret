@@ -3,7 +3,7 @@
 ## 2.0.2 (unreleased)
 
 - `||=`, `&&=`, `??=` and `>>>=` are pulled together, as `<<=` and `>>=` already were. So `x ??= 1` reads like `a ?? b`, as in Fira Code and Maple Mono.
-- `::` is pulled together before `<`, `*`, `-` and `~`, as in Rust's `collect::<Vec<_>>()` and `use std::*;`, C++'s `Foo::~Foo()` and Python's `a[::-1]`. So `a[::-1]` reads like `a[::2]`.
+- `::` is pulled together before `<`, `*`, `-` and `~`, as in Rust's `collect::<Vec<_>>()` and `use std::*;`, C++'s `Foo::~Foo()` and Python's `a[::-1]`, and after a `>` before a name, as in `Vec::<u8>::new()` and `vector<int>::iterator`. So `a[::-1]` reads like `a[::2]`.
 - `...` is pulled together after a `>`, as in a usage line's `<FILE>...`, as it already was after `]`.
 - `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
 - The TTF is hinted, by ttfautohint. Where a renderer runs the font's own hints, as FreeType's full and monochrome hinting on Linux do, the TTF was drawn unhinted. There `=` blurred into one grey band at 11 px, letters stood a pixel row off their neighbours, and without antialiasing `8` read as `B`. Linux's default light hinting and macOS draw as before.

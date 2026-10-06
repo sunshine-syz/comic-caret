@@ -425,6 +425,8 @@ feature calt {
     ignore sub less' [dollar asterisk equal] greater @Op;
     sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
     sub @Word period' lookup lig_tight_r period' lookup lig_tight_l @Word;
+    # After generics close, before a name: Vec::<u8>::new(), vector<int>::iterator.
+    sub greater colon' lookup lig_tight_r colon' lookup lig_tight_l @Word;
     ignore sub @Op colon' colon;
     # Before a turbofish, a glob, a destructor or a negative step: a::<T> std::* ::~T [::-1].
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l [less asterisk hyphen asciitilde];
