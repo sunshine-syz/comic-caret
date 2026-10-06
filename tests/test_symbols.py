@@ -47,6 +47,11 @@ BROKEN_BAR_GAP = 162
 # How wide and tall ∞'s holes are at least: Maple Mono's, the narrowest reference's, 169 wide
 # at our advance and 203 tall at our cap height (Fira Code's 184 and 249).
 INFINITY_HOLE = (169, 203)
+# How wide and tall the holes of %'s and ‰'s rings are at least: the narrowest reference's, at
+# our advance and cap height. %: Maple Mono's 132.0 by 171.5 (Fira Code's 140.0 by 196.5, Intel
+# One Mono's 156.4 by 245.8). ‰: Maple Mono's 111.0 by 152.6 (Fira Code's 125.0 by 165.9; Intel
+# One Mono has none).
+RING_HOLES = {"percent": (132, 171), "perthousand": (111, 152)}
 # How much taller each mark stands than ×: at least the least of the references that have it,
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
@@ -78,7 +83,7 @@ MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
 # ⌃, the up arrowhead, at its top. Not ⇪, ⇧ lifted over a bar, which rises past the band.
 KEYS = "⌘⌥⇧⎋⏎⇦⇨⇩"
 # Symbols drawn as separate pieces, which keep apart (№'s o and its bar sit as close as º's).
-PIECES = "※⧉⇥⇤↹⎋⌦⌫℃℉"
+PIECES = "※⧉⇥⇤↹⎋⌦⌫℃℉%"
 FISHEYE_GAP = 58  # ◉'s dot clears the ring by at least Maple Mono's gap; Fira Code's is 73
 # Turned glyph -> (the glyph it turns, degrees anticlockwise), as its one reference.
 TURNED = {"▲": ("▶", 90), "△": ("▷", 90), "▴": ("▸", 90), "▵": ("▹", 90),
@@ -116,6 +121,11 @@ BOLD_SLASH_HEIGHT = 767
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
 # ∞'s holes: Fira Code's 134 wide (Maple Mono's 149), Maple Mono's 172 tall (Fira Code's 193).
 BOLD_INFINITY_HOLE = (134, 172)
+# %: Monaspace Radon's 75.0 wide (Monaspace Neon's 86.1, Fira Code's 80.0, Maple Mono's 100.0,
+# Intel One Mono's 130.0) and Monaspace Neon's 134.1 tall (Monaspace Radon's 136.3, Maple Mono's
+# 147.8, Fira Code's 153.9, Intel One Mono's 207.1). ‰: Fira Code's 66.5 by 128.6 (Monaspace
+# Radon's 86.1 by 130.0, Monaspace Neon's 86.1 by 134.1, Maple Mono's 96.0 by 160.5).
+BOLD_RING_HOLES = {"percent": (75, 134), "perthousand": (66, 128)}
 # The mark's ink height less ×'s, as for the regular's. ✓: Intel One Mono's 24.73 (Maple Mono's
 # 121.3, Fira Code's 280.5); its bold keeps the regular's ✓, 543 tall, while its × grows from 446
 # to 519, so the 98.9 its regular gives drops to a quarter. ✗ and ✕: Maple Mono's 135.0 and 73.9,
@@ -170,7 +180,7 @@ class CoverageTest(unittest.TestCase):
 class OperatorTest(unittest.TestCase):
     sfd = SFD
     not_equal_reach, approx_gap, broken_bar_gap = NOT_EQUAL_REACH, APPROX_GAP, BROKEN_BAR_GAP
-    infinity_hole, slash_height = INFINITY_HOLE, SLASH_HEIGHT
+    infinity_hole, slash_height, ring_holes = INFINITY_HOLE, SLASH_HEIGHT, RING_HOLES
 
     @classmethod
     def setUpClass(cls):
@@ -259,6 +269,19 @@ class OperatorTest(unittest.TestCase):
         (a0, b0, a1, b1), (c0, d0, c1, d1) = holes
         self.assertAlmostEqual(a1 - a0, c1 - c0, delta=WOBBLE)
         self.assertAlmostEqual(b1 - b0, d1 - d0, delta=WOBBLE)
+
+    def test_percent_rings_keep_open_holes(self):
+        # Small holes in a heavy ring show % as two loops on a long slash, in printf formats,
+        # modulo and progress output; each ring's hole is at least the narrowest reference's.
+        for name, (wide, tall) in self.ring_holes.items():
+            merged = self.font[name].foreground.dup()
+            merged.removeOverlap()  # the holes as they show, were a ring to touch the slash
+            holes = [c.boundingBox() for c in merged if not c.isClockwise()]
+            with self.subTest(glyph=name):
+                self.assertEqual(len(holes), {"percent": 2, "perthousand": 3}[name])
+                for x0, y0, x1, y1 in holes:
+                    self.assertGreaterEqual(x1 - x0, wide)
+                    self.assertGreaterEqual(y1 - y0, tall)
 
 
 class ArrowTest(unittest.TestCase):
@@ -522,7 +545,7 @@ class ApartTest(unittest.TestCase):
 
     def test_pieces_keep_apart(self):
         # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
-        # expects them apart), ⎋'s ring and arrow, and ⌫ ⌦'s tag and ×.
+        # expects them apart), ⎋'s ring and arrow, ⌫ ⌦'s tag and ×, and %'s rings and slash.
         for char in PIECES:
             pieces = self.pieces(char)
             with self.subTest(symbol=char):
@@ -554,7 +577,7 @@ class BuiltFromTest(unittest.TestCase):
         return (x0 + x1) / 2, (y0 + y1) / 2
 
     def test_per_mille_is_as_wide_as_percent(self):
-        # ‰ is % with a second zero, its rings %'s copies, so it spans at least %'s width.
+        # ‰ is % with a second zero, so it spans at least %'s width.
         x0, _, x1, _ = self.font["perthousand"].boundingBox()
         p0, _, p1, _ = self.font["percent"].boundingBox()
         self.assertGreaterEqual(x1 - x0, p1 - p0 - ROUNDING)
@@ -958,6 +981,7 @@ class BoldOperatorTest(OperatorTest):
     sfd = BOLD_SFD
     not_equal_reach, approx_gap = BOLD_NOT_EQUAL_REACH, BOLD_APPROX_GAP
     broken_bar_gap, infinity_hole = BOLD_BROKEN_BAR_GAP, BOLD_INFINITY_HOLE
+    ring_holes = BOLD_RING_HOLES
     slash_height = BOLD_SLASH_HEIGHT
 
 

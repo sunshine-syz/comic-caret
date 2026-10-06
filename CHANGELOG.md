@@ -6,6 +6,7 @@
 - `/**` opens as `/*` does, and its two asterisks stand as far apart as in a plain `**`, in the regular and the bold. They stood half as far apart. Every Javadoc and JSDoc comment opens with it.
 - `..` is pulled together in a slice and beside a quote or a bracket, as in `&s[..n]`, `&s[1..]`, `[1..]`, `'a'..'z'`, `Foo { ..x }` and `p()..q`, as it already was in `0..n`. In a path, as in `../`, `cd ..` and `"../.."`, and in Python's relative imports, as in `from .. import` and `from ..models import`, it stays as typed. So does `...` in `from ... import`, which was pulled together.
 - Erlang's and Elixir's binaries open as typed, as they close: `<<1, 2, 3>>`, `<<"abc">>`. So does a heredoc, as in `cat <<EOF`, as `<<-EOF` already did, and so do a shell's here-string and PHP's heredoc, as in `<<<"$x"` and `<<<EOT`. A shift is still pulled together, as in `x<<1`, `cout<<x` and `a << b`. `>>` after a quote stays as typed, as it closes `<<"abc">>`.
+- The rings of `%` and `‰` have larger holes in every style. No hole is smaller than the smallest reference font's. At 16 to 20 px, `%` showed two small loops on a long slash. The rings stand further out in the corners, so they keep their white to the slash. In the bold, the rings of `%` shrink a little to keep it.
 - `|` stands inside the brackets and is centred on them, as in every reference. Its foot hung 30 units below `(`, `[` and `{`, as in `[a|b]` and `{|x| x}`. `¦` and `‖` follow.
 
 ## 2.0.1 (2026-10)

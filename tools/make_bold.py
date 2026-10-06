@@ -211,7 +211,7 @@ ACROSS_AS_UP = ("uni21D5",)
 MERGED = ("Theta", "uni2204")
 
 # Outlines whose pieces stand side by side, which the pen would grow into one: the arrows and
-# bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 75 apart, and the letters
+# bars of ⇥ and ↹ (⇤ is ⇥ mirrored), 30 apart, ‰'s two lower zeros, 53 apart, and the letters
 # of ℃ ℉ № beside their ring and o, 1 to 36 apart. Each piece grows on its own, and the wider
 # is condensed away from the other, or both alike when they are as wide, until the white
 # between them is the regular's. Each keeps its far end where the pen grows it, or at the side
@@ -221,8 +221,8 @@ MERGED = ("Theta", "uni2204")
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
-# piece below its foot: ‰'s, which would come 14 from the zero under it, where the regular
-# keeps 27 (Maple Mono Bold's ‰ keeps 21.5). The slash shrinks about its top end, by the fewest
+# piece below its foot: ‰'s, which would come 27 from the zero under it, where the regular
+# keeps 46 (Maple Mono Bold's ‰ keeps 21.5). The slash shrinks about its top end, by the fewest
 # units at its foot that keep the regular's white, so it ends higher up its slant.
 SLASHES = ("perthousand",)
 
@@ -233,10 +233,11 @@ LIGHT_PIECES = ("uni2103", "uni2109", "uni2116")
 
 # Outlines whose pieces the pen grows within twice SYMBOL_SIDE of each other, where condensing
 # them apart can't help: ※'s dots in the notches of its X, ⧉'s front square before its back one,
-# and ⌦'s × in its tag (⌫ is ⌦ mirrored). Each piece grows on its own, and of two too close,
-# the one that clears with less shrinks about its point farthest from the other, just enough
-# to keep the seam (shrunk()), which the regular keeps and tests/test_symbols.py holds them to.
-SHRUNK = ("uni203B", "uni29C9", "uni2326")
+# ⌦'s × in its tag (⌫ is ⌦ mirrored) and %'s rings beside its slash. Each piece grows on its
+# own, and of two too close, the one that clears with less shrinks about its point farthest
+# from the other, just enough to keep the seam (shrunk()), which the regular keeps and
+# tests/test_symbols.py holds them to.
+SHRUNK = ("uni203B", "uni29C9", "uni2326", "percent")
 
 # Outlines with a piece through a gap in their ring, which the pen grows shut on it: ⎋'s arrow
 # out through its ring. The ring's ends are cut back about its middle, just enough to keep twice

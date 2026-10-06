@@ -198,7 +198,7 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   centre of the point's round end and lengthens until its end is back at its height, so `<` `>`
   (425) keep their height within a unit. ≤ ≥'s angle widens by 62 the same way, to 446, and the
   bar lengthens with it. `%`'s rings, `"`'s ticks and the parts of `?` `&` move apart, and the
-  slash of `%` and ‰ lengthens: `%` and ‰ are 543, `&` 517, `?` 404, `"` 307. `+` − ± ÷ are 463.
+  slash of `%` and ‰ lengthens: `%` is 564 and ‰ 563, `&` 517, `?` 404, `"` 307. `+` − ± ÷ are 463.
   ❯ ❮ (332) and ❱ ❰ (452) are built on the wider `>` (see Heavy marks and shapes).
 - **Dashes and arrows.** – (445) and — (504) are Intel One Mono's lengths at the wider cell. …
   is 483, at least Maple Mono's 480; its dots keep their size and stay evenly spaced. The axis
@@ -548,14 +548,14 @@ what it does to them:
 - `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
   ℃ ℉ № (letter and small pieces) grow on their own, and the wider is condensed away from the
   other until the white between them is the regular's. Each keeps its far end where the pen
-  grows it, or at the side room, so the bold ‰ stays at least as wide as the bold % (562): it
+  grows it, or at the side room, so the bold ‰ stays at least as wide as the bold % (569): it
   is 570, and centred. The small pieces of ℃ ℉ № grow by the small pen, so they stay as light
   as the small figures; the full pen would close ℃'s ring to 42 across, where the small pen
   leaves 54.
-- `SLASHES`: grown, ‰'s slash would come 14 from the zero under it, where the regular keeps
-  27. It shortens at its foot until it keeps the regular's white.
-- `SHRUNK`: ※'s dots, ⧉'s front square and ⌫ ⌦'s × shrink just enough to keep twice
-  `SYMBOL_SIDE` from the piece beside them, where condensing can't part the two.
+- `SLASHES`: grown, ‰'s slash would come 27 from the zero under it, where the regular keeps
+  46. It shortens at its foot until it keeps the regular's white.
+- `SHRUNK`: ※'s dots, ⧉'s front square, ⌫ ⌦'s × and %'s rings shrink just enough to keep
+  twice `SYMBOL_SIDE` from the piece beside them, where condensing can't part the two.
 - `OPENED`: ⎋'s ring opens wider around its arrow; the arrow would have to shrink by a third
   to clear.
 - `DASHED`: ⇡ ⇣'s dashes shorten at their top by twice the pen's height, so each gap stays as
