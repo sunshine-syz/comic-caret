@@ -39,9 +39,10 @@ languagesystem latn dflt;
 # What a name ends in. /* or /** after one is a path (src/*), */ before one a step in a cron
 # field (*/5), and >> or >>> after one closes generics (Vec<Vec<u8>>): none is an operator.
 @Word = [A - Z a - z @Digit underscore];
-# What generics close after: Vec<u8>> Box<dyn Fn()>> Vec<[u8; 4]>>. They never close right
-# before a name or a number, as a shift without spaces does: cin>>n, x>>1, a>>>0.
-@Operand = [@Word parenright bracketright];
+# What generics close after: Vec<u8>> Box<dyn Fn()>> Vec<[u8; 4]>>, and what an Erlang or
+# Elixir binary closes after: <<1>> <<"a">>. They never close right before a name or a number,
+# as a shift without spaces does: cin>>n, x>>1, a>>>0.
+@Operand = [@Word parenright bracketright quotedbl quotesingle];
 # A sign or a not, when an operand follows it: -1 !b !(a). A comparison or a logical operator
 # before one still joins, as x!=-1 and a&&!b do, and as x==-1 joins as a run.
 @Prefix = [hyphen exclam];
@@ -454,6 +455,10 @@ feature calt {
     sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Op less' less;
     ignore sub less' less @Op;
+    # An Erlang or Elixir binary opens as typed, as it closes (<<1>> <<"a">>), and so does a
+    # heredoc, as <<-EOF does (cat <<EOF). A shift without spaces still tightens: x<<1.
+    sub @Operand less' lookup lig_tight_r less' lookup lig_tight_l [@Word quotedbl quotesingle];
+    ignore sub less' less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r less' lookup lig_tight_l;
     ignore sub @Op greater' greater;
     ignore sub greater' greater @Op;

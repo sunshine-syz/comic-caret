@@ -2,6 +2,8 @@
 
 ## 2.0.2 (unreleased)
 
+- Erlang's and Elixir's binaries open as typed, as they close: `<<1, 2, 3>>`, `<<"abc">>`. So does a heredoc, as in `cat <<EOF`, as `<<-EOF` already did. A shift is still pulled together, as in `x<<1`, `cout<<x` and `a << b`. `>>` after a quote stays as typed, as it closes `<<"abc">>`.
+
 ## 2.0.1 (2026-10)
 
 - `x<-1` no longer shows an arrow. A digit after `<-` makes it a minus sign: x is less than −1. `x<-y`, `a <- b` and `<-ch` keep the arrow, as in JetBrains Mono and Maple Mono.

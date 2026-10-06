@@ -226,6 +226,15 @@ LIGATED = {
     "cin>>n": ["c", "i", "n", "greater.tight_r", "greater.tight_l", "n"],
     "x>>1": ["x", "greater.tight_r", "greater.tight_l", "one"],
     "f()>>2": ["f", "parenleft", "parenright", "greater.tight_r", "greater.tight_l", "two"],
+    "a << b": ["a", "space", "less.tight_r", "less.tight_l", "space", "b"],
+    "x<<1": ["x", "less.tight_r", "less.tight_l", "one"],
+    "cout<<x": ["c", "o", "u", "t", "less.tight_r", "less.tight_l", "x"],
+    # An Erlang or Elixir binary opens and closes as typed; what it holds still joins
+    "<<x::8>>": ["less", "less", "x", "colon.tight_r", "colon.tight_l", "eight", "greater",
+                 "greater"],
+    "<<H, T/binary>> -> ok": ["less", "less", "H", "comma", "space", "T", "slash", "b", "i", "n",
+                              "a", "r", "y", "greater", "greater", "space", "hyphen.sta",
+                              "greater.arrow", "space", "o", "k"],
     # A range between two names or numbers, as ..= ..< tighten
     "0..n": ["zero", "period.tight_r", "period.tight_l", "n"],
     # A comment opener before the ! or < of a doc comment
@@ -341,6 +350,8 @@ PLAIN = [
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
     # .. in a path, not between two names or numbers
     "../x", "cd ..", "a[2..]",
+    # An Erlang or Elixir binary, and a heredoc, as <<-EOF is
+    "<<1, 2, 3>>", '<<"abc">>', "X = <<1, 2>>", "cat <<EOF",
     # TypeScript's optional property, where ?: is no operator
     "x?: T", "[K]?: T",
     # A path's glob, a cron step and closing generics, where a pair after or before a name is
