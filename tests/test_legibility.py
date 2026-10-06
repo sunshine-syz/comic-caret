@@ -150,6 +150,14 @@ class BracketTest(unittest.TestCase):
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
 
+    def test_bar_stands_inside_the_brackets_and_centred_on_them(self):
+        # As in every reference, so | doesn't hang below ] in [x|y], (a|b) and {|x| x}.
+        _, bottom, _, top = self.font["parenleft"].boundingBox()
+        _, y0, _, y1 = self.font["bar"].boundingBox()
+        self.assertGreaterEqual(y0, bottom)
+        self.assertLessEqual(y1, top)
+        self.assertAlmostEqual((y0 + y1) / 2, (bottom + top) / 2, delta=WOBBLE)
+
     def test_brackets_share_one_height(self):
         _, bottom, _, top = self.font["parenleft"].boundingBox()
         for name in ("bracketleft", "braceleft", *PAIRS):
