@@ -4,6 +4,7 @@ nothing else.
 Run: python3 -m unittest discover tests
 """
 import pathlib
+import re
 import subprocess
 import sys
 import tempfile
@@ -21,6 +22,8 @@ from make_bold import BOLDER, PEN, SHARED
 from measure import area, ink, outline, vertical_edges
 from project import ADVANCE, BOLD_SFD, OVERLAP, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
 from sfd_files import differences
+
+THREE_END = re.compile(r".+\.tight_[lr]2")  # the outer glyph of a tightened three
 
 GENERATOR = ROOT / "tools" / "make_bold.py"
 # The pieces cut flat at both sides of the cell, which a row of them joins at.
@@ -228,8 +231,8 @@ class BoldTest(unittest.TestCase):
         # same line as the regular's, so the seams keep their overlap and no rounded corner
         # shows. Its round ends past the cell, as <='s tips and <|'s point, grow like any stroke,
         # but for a tightened glyph's side toward its partner, which moves back to where the
-        # regular's stands, and at a three's end past it by what the pen grows the middle glyph
-        # (make_bold.TIGHT).
+        # regular's stands (make_bold.TIGHT). A three's outer glyph moves back past it, by what
+        # the pen grows its unmoved middle neighbour, a copy of its own glyph, toward it.
         wrong, cut = {}, set()
         for name in self.of_class(BOLDER):
             if not (GENERATED.fullmatch(name) or name == "uni23AF"):
@@ -247,7 +250,12 @@ class BoldTest(unittest.TestCase):
                     if grown != x:
                         wrong[name, side] = (grown, x)
                 elif name in make_bold.TIGHT and outward == -make_bold.TIGHT[name][0][0]:
-                    beyond = make_bold.TIGHT[name][1] - make_bold.TIGHT_BACK
+                    beyond = 0
+                    if THREE_END.fullmatch(name):
+                        middle = name.split(".")[0]
+                        r0, _, r1, _ = ink(self.regular, middle).boundingBox()
+                        b0, _, b1, _ = ink(self.bold, middle).boundingBox()
+                        beyond = r0 - b0 if outward > 0 else b1 - r1
                     if abs(grown - (x - outward * beyond)) > ROUNDING:
                         wrong[name, side] = (grown, x)
                 elif past and outward * (grown - x) < ROUNDING:

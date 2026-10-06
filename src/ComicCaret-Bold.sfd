@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791311767
+ModificationTime: 1791312017
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -38590,7 +38590,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 16 47 N 1 0 0 1 144 0 2
+Refer: 16 47 N 1 0 0 1 145 0 2
 EndChar
 
 StartChar: period.tight_r2
@@ -38598,11 +38598,11 @@ Encoding: 65624 -1 1220
 Width: 600
 VWidth: 0
 Flags: W
-HStem: -21 159<436.466 559.969>
-VStem: 406 186<10.0042 107.924>
+HStem: -21 159<437.466 560.969>
+VStem: 407 186<10.0042 107.924>
 LayerCount: 2
 Fore
-Refer: 15 46 N 1 0 0 1 198 0 2
+Refer: 15 46 N 1 0 0 1 199 0 2
 EndChar
 
 StartChar: ampersand.tight_r2
@@ -38610,11 +38610,11 @@ Encoding: 65625 -1 1221
 Width: 600
 VWidth: 0
 Flags: W
-HStem: -46 102<202.406 343.562> -45 21G<514 536> 596 88<255.813 324.258>
-VStem: 42 128<89.0294 260.083> 122 124<468.007 584.424> 342 112<471.534 582.829>
+HStem: -46 102<203.406 344.562> -45 21G<515 537> 596 88<256.813 325.258>
+VStem: 43 128<89.0294 260.083> 123 124<468.007 584.424> 343 112<471.534 582.829>
 LayerCount: 2
 Fore
-Refer: 7 38 N 1 0 0 1 16 0 2
+Refer: 7 38 N 1 0 0 1 17 0 2
 EndChar
 
 StartChar: question.tight_r2
@@ -38622,11 +38622,11 @@ Encoding: 65626 -1 1222
 Width: 600
 VWidth: 0
 Flags: W
-HStem: -21 159<283.466 406.969> 481 21G<194 222> 589 93<302.813 428.328>
-VStem: 253 186<10.0042 107.924> 284 129<230.47 311.25> 450 128<448.71 565.196>
+HStem: -21 159<284.466 407.969> 481 21G<195 223> 589 93<303.813 429.328>
+VStem: 254 186<10.0042 107.924> 285 129<230.47 311.25> 451 128<448.71 565.196>
 LayerCount: 2
 Fore
-Refer: 32 63 N 1 0 0 1 54 0 2
+Refer: 32 63 N 1 0 0 1 55 0 2
 EndChar
 
 StartChar: less.tight_r2
@@ -38636,7 +38636,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 29 60 N 1 0 0 1 30 0 2
+Refer: 29 60 N 1 0 0 1 31 0 2
 EndChar
 
 StartChar: greater.tight_r2
@@ -38646,7 +38646,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 31 62 N 1 0 0 1 30 0 2
+Refer: 31 62 N 1 0 0 1 31 0 2
 EndChar
 
 StartChar: bar.tight_r2
@@ -38654,10 +38654,10 @@ Encoding: 65629 -1 1225
 Width: 600
 VWidth: 0
 Flags: W
-VStem: 452 118<-164.624 282.891> 460 116<460.654 772.574>
+VStem: 453 118<-164.624 282.891> 461 116<460.654 772.574>
 LayerCount: 2
 Fore
-Refer: 93 124 N 1 0 0 1 214 0 2
+Refer: 93 124 N 1 0 0 1 215 0 2
 EndChar
 
 StartChar: slash.tight_l2
@@ -38667,7 +38667,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 16 47 N 1 0 0 1 -144 0 2
+Refer: 16 47 N 1 0 0 1 -145 0 2
 EndChar
 
 StartChar: period.tight_l2
@@ -38675,11 +38675,11 @@ Encoding: 65631 -1 1227
 Width: 600
 VWidth: 0
 Flags: W
-HStem: -21 159<40.4659 163.969>
-VStem: 10 186<10.0042 107.924>
+HStem: -21 159<39.4659 162.969>
+VStem: 9 186<10.0042 107.924>
 LayerCount: 2
 Fore
-Refer: 15 46 N 1 0 0 1 -198 0 2
+Refer: 15 46 N 1 0 0 1 -199 0 2
 EndChar
 
 StartChar: ampersand.tight_l2
@@ -38687,11 +38687,11 @@ Encoding: 65632 -1 1228
 Width: 600
 VWidth: 0
 Flags: W
-HStem: -46 102<170.406 311.562> -45 21G<482 504> 596 88<223.813 292.258>
-VStem: 10 128<89.0294 260.083> 90 124<468.007 584.424> 310 112<471.534 582.829>
+HStem: -46 102<169.406 310.562> -45 21G<481 503> 596 88<222.813 291.258>
+VStem: 9 128<89.0294 260.083> 89 124<468.007 584.424> 309 112<471.534 582.829>
 LayerCount: 2
 Fore
-Refer: 7 38 N 1 0 0 1 -16 0 2
+Refer: 7 38 N 1 0 0 1 -17 0 2
 EndChar
 
 StartChar: less.tight_l2
@@ -38701,7 +38701,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 29 60 N 1 0 0 1 -30 0 2
+Refer: 29 60 N 1 0 0 1 -31 0 2
 EndChar
 
 StartChar: greater.tight_l2
@@ -38711,7 +38711,7 @@ VWidth: 0
 Flags: W
 LayerCount: 2
 Fore
-Refer: 31 62 N 1 0 0 1 -30 0 2
+Refer: 31 62 N 1 0 0 1 -31 0 2
 EndChar
 
 StartChar: bar.tight_l2
@@ -38719,10 +38719,10 @@ Encoding: 65635 -1 1231
 Width: 600
 VWidth: 0
 Flags: W
-VStem: 24 118<-164.624 282.891> 32 116<460.654 772.574>
+VStem: 23 118<-164.624 282.891> 31 116<460.654 772.574>
 LayerCount: 2
 Fore
-Refer: 93 124 N 1 0 0 1 -214 0 2
+Refer: 93 124 N 1 0 0 1 -215 0 2
 EndChar
 
 StartChar: less_greater.liga

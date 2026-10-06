@@ -188,7 +188,7 @@ DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016",
 TIGHT_BACK = round(PEN[0] / 2)
 TIGHT = ({f"{name}.{side}": (way, TIGHT_BACK) for name in TIGHT_KEEP
           for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
-         | {f"{name}.{side}": (way, 2 * TIGHT_BACK)
+         | {f"{name}.{side}": (way, PEN[0])
             for side, way in (("tight_r2", LEFT), ("tight_l2", RIGHT))
             for name in THREE_ENDS[side]})
 

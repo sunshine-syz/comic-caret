@@ -540,7 +540,8 @@ what it does to them:
   cell's middle and keeps the regular's white between its copies.
 - `TIGHT`: each glyph of a tightened pair moves back out by half the pen's width, as far as
   the pen grew it toward its partner, so the pair keeps the regular's white. Unmoved, `&&`
-  would merge into one shape and `??` keep 9; `++`'s bars keep their overlap.
+  would merge into one shape and `??` keep 9; `++`'s bars keep their overlap. A three's outer
+  glyph moves back the pen's whole width, as its unmoved middle glyph grows toward it too.
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
   reference bolds' 38; it keeps 39.
