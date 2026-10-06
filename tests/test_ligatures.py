@@ -284,6 +284,7 @@ LIGATED = {
     "///<": ["slash.tight_r2", "slash", "slash.tight_l2", "less"],
     "/**<": ["slash.tight_r2", "asterisk", "asterisk", "less"],
     "<<=": ["less.tight_r2", "less", "equal.tight_l"],
+    "f <<< g": ["f", "space", "less.tight_r2", "less", "less.tight_l2", "space", "g"],
     "=<<": ["equal.tight_r", "less", "less.tight_l2"],
     "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
     "<=>": ["less.tight_r", "equal", "greater.tight_l"],
@@ -369,8 +370,10 @@ PLAIN = [
     "from .. import", "from ..models import x", "from ... import x", "from ...pkg import x",
     # .. after another operator: the tail of a longer run, or Dart's cascade after ?
     "....x", "+...x", "x?..y",
-    # An Erlang or Elixir binary, and a heredoc, as <<-EOF is
-    "<<1, 2, 3>>", '<<"abc">>', "X = <<1, 2>>", "cat <<EOF",
+    # An Erlang or Elixir binary, and a heredoc, as <<-EOF is: a shell's here-string and PHP's
+    # heredoc open with <<<
+    "<<1, 2, 3>>", '<<"abc">>', "X = <<1, 2>>", "cat <<EOF", 'tr a b <<<"$x"', "$x = <<<EOT",
+    "<<<'EOT'",
     # TypeScript's optional property, where ?: is no operator
     "x?: T", "[K]?: T",
     # A path's glob, a cron step and closing generics, where a pair after or before a name is

@@ -42,9 +42,11 @@ languagesystem latn dflt;
 # What a name ends in. /* or /** after one is a path (src/*), */ before one a step in a cron
 # field (*/5), and >> or >>> after one closes generics (Vec<Vec<u8>>): none is an operator.
 @Word = [A - Z a - z @Digit underscore];
-# What generics close after: Vec<u8>> Box<dyn Fn()>> Vec<[u8; 4]>>, and what an Erlang or
-# Elixir binary closes after: <<1>> <<"a">>. They never close right before a name or a number,
-# as a shift without spaces does: cin>>n, x>>1, a>>>0.
+# What ends an operand. Generics close after one (Vec<u8>> Box<dyn Fn()>> Vec<[u8; 4]>>), and
+# so does an Erlang or Elixir binary (<<1>> <<"a">>), but never right before a name or a
+# number, as a shift without spaces does: cin>>n, x>>1, a>>>0. << after one is a shift, as in
+# x<<1, where a binary or a heredoc opens with <<1 or <<EOF; and .. after one is a range, as
+# in 0..n.
 @Operand = [@Word parenright bracketright quotedbl quotesingle];
 # A sign or a not, when an operand follows it: -1 !b !(a). A comparison or a logical operator
 # before one still joins, as x!=-1 and a&&!b do, and as x==-1 joins as a run.
@@ -428,6 +430,11 @@ feature calt {
     sub question' lookup lig_tight_r2 question equal' lookup lig_tight_l;
     ignore sub @Op less' less [less equal];
     ignore sub less' less [less equal] @Op;
+    # A here-string and PHP's heredoc open as typed, as << does before a name or a quote:
+    # <<<"$x" <<<EOT.
+    sub @Operand less' lookup lig_tight_r2 less less' lookup lig_tight_l2
+      [@Word quotedbl quotesingle];
+    ignore sub less' less less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r2 less less' lookup lig_tight_l2;
     sub less' lookup lig_tight_r2 less equal' lookup lig_tight_l;
     ignore sub @Op greater' greater greater equal;

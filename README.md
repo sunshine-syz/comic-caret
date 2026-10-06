@@ -108,9 +108,10 @@ Sequences that run into other operators stay as separate characters, for example
 `<<<-`, `==<`, `<<==` or `https://`. So do two `-` or `_`, as in `--help`, `i--` and
 `__init__`; `~>` before a version, as in `~> 1.0`; `..` in a path or a Python import, as in
 `../`, `cd ..` and `from .. import`; and pairs beside a name where they are no operator, as in
-`src/*`, `*/5` and `Vec<Vec<u8>>`. A shell heredoc's `<<-EOF`, `<<-'EOF'`,
-`<<-"EOF"` and `<<-\EOF` stay plain too; with a space, `<<- EOF` draws the two-headed arrow,
-since that is how R writes `x <<- y`.
+`src/*`, `*/5` and `Vec<Vec<u8>>`. An Erlang or Elixir binary, as in `<<1, 2>>`, stays plain
+too, and so do heredocs and here-strings: `cat <<EOF`, `<<<"$x"`, PHP's `<<<EOT`, and
+`<<-EOF`, `<<-'EOF'`, `<<-"EOF"` and `<<-\EOF`; with a space, `<<- EOF` draws the two-headed
+arrow, since that is how R writes `x <<- y`.
 
 The ligatures use the `calt` (contextual alternates) OpenType feature:
 

@@ -387,8 +387,15 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   as `<$>` does. `<==>` is still an arrow.
 - **Beside a name.** `~>` before a version (Ruby's and Terraform's `~> 1.0`) stays plain, and
   so do `/*` `/**` after a name (`src/*`), `*/` before one (cron's `*/5`) and `>>` `>>>` after
-  one (`Vec<Vec<u8>>`). With spaces, `a >> b` still tightens; `a>>b` stays plain, the price
-  of closing generics as typed.
+  one (`Vec<Vec<u8>>`), unless a name or a number follows, as in a shift without spaces
+  (`x>>1`, `cin>>n`). With spaces, `a >> b` still tightens.
+- **Binaries and heredocs.** `<<` and `<<<` before a name, a number or a quote stay plain
+  unless an operand stands before them. So Erlang's and Elixir's binaries (`<<1, 2>>`,
+  `<<"a">>`) open as they close, and heredocs and here-strings (`cat <<EOF`, `<<<"$x"`, PHP's
+  `<<<EOT`) show as typed, as `<<-EOF` does; a shift without spaces (`x<<1`, `cout<<x`) still
+  tightens. Fira Code tightens a binary at both ends, Maple Mono only where it opens. A quote
+  counts as an operand, so `">>"` in a string stays plain where `"<<"` tightens:
+  `cout<<"a"<<"b"` can't be told from it.
 - **`..`.** A range or a slice tightens: after a name, a number, a closing quote or a bracket,
   or before a name, a number, a quote or a closing bracket (`0..n` `'a'..'z'` `&s[..n]`
   `[1..]` `{ ..x }`), as in Fira Code and Maple Mono. A path stays as typed, quoted or not
