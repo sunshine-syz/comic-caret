@@ -7,6 +7,7 @@
 - `...` is pulled together after a `>`, as in a usage line's `<FILE>...`, as it already was after `]`.
 - `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
 - The TTF is hinted, by ttfautohint. Where a renderer runs the font's own hints, as FreeType's full and monochrome hinting on Linux do, the TTF was drawn unhinted. There `=` blurred into one grey band at 11 px, letters stood a pixel row off their neighbours, and without antialiasing `8` read as `B`. Linux's default light hinting and macOS draw as before.
+- In the OTF, every letter whose top or foot reaches an alignment zone carries a hint there, so it stands on its neighbours' pixel row. At small sizes the bold `E` and `Ę` stood a row below `H`, the bold `U` a row above it, the italic `z` `ź` `ż` `ž` a row below `x`, and the Greek capitals off the Latin ones. `Λ` stands 5 units lower, on the baseline as `A` does.
 
 ## 2.0.1 (2026-10)
 

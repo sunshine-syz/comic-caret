@@ -15,6 +15,7 @@ import psMat
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from bump_version import font_version
 from mark_advances import zero_mark_advances
+from project import is_alphanumeric
 from sfnt import read_tables, write_tables
 
 CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
@@ -66,6 +67,44 @@ def decompose_transformed_references(font):
         for name, matrix, *_ in glyph.references:
             if any(abs(a - b) > 1e-6 for a, b in zip(matrix[:4], (1, 0, 0, 1))):
                 glyph.unlinkRef(name)
+
+
+def hint_zones(font):
+    """Hint every letter and figure so that its top and foot reach the alignment zones that
+    hold them.
+
+    The CFF hinter aligns hint edges, not the outline's extremes, to the zones. A composite
+    keeps the hints its parts had when it was last hinted, which may predate the zones or the
+    parts. FontForge's autohinter can also end a stem just outside the zone that holds the
+    extreme, as at the bold E's bar (660 under its 665 top), and draws no ghost there. Such a
+    letter stands a row off the rest at some sizes. So composites are hinted again, and a
+    ghost hint marks each extreme a zone holds without an edge.
+    """
+    blues, other = font.private["BlueValues"], font.private["OtherBlues"]
+    fuzz = 1  # the CFF default; the SFDs set no BlueFuzz
+    tops = list(zip(blues[2::2], blues[3::2]))
+    feet = [tuple(blues[:2]), *zip(other[::2], other[1::2])]
+    for glyph in font.glyphs():
+        if not is_alphanumeric(glyph.unicode):
+            continue
+        if glyph.references:
+            glyph.autoHint()
+        hints = glyph.hhints
+        # FontForge gives a top ghost as (edge, -20) and a bottom one as (edge + 21, -21).
+        top_edges = [y if w == -20 else y + w for y, w in hints if w != -21]
+        foot_edges = [y + w if w == -21 else y for y, w in hints if w != -20]
+        _, y0, _, y1 = glyph.boundingBox()
+        ghosts = []
+        for y, zones, edges, ghost in ((y1, tops, top_edges, (y1, -20)),
+                                       (y0, feet, foot_edges, (y0 + 21, -21))):
+            for low, high in zones:
+                if (low - fuzz <= y <= high + fuzz
+                        and not any(low - fuzz <= e <= high + fuzz for e in edges)):
+                    ghosts.append(ghost)
+        if ghosts:
+            # From the bottom up, or FontForge drops a hint out of order.
+            glyph.hhints = sorted((*hints, *ghosts), key=lambda hint: min(hint[0], sum(hint)))
+            glyph.manualHints = True  # else generating hints it again, without the ghosts
 
 
 def without_mac_roman(cmap):
@@ -134,11 +173,13 @@ def main(source, output):
     # names the day of the build.
     font.appendSFNTName("English (US)", "UniqueID",
                         f"{font.version};{font.os2_vendor};{font.fontname}")
-    # CFF has no components, so only the TTF needs this. Leaving the OTF path alone keeps its
-    # stored hints valid.
+    # CFF has no components, so only the TTF needs these, and only the OTF reads the SFD's
+    # hints.
     if output.endswith(".ttf"):
         flatten_nested_references(font)
         decompose_transformed_references(font)
+    else:
+        hint_zones(font)
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
     # "no-mac-names" drops the platform-1 name records that nothing current reads, and
     # "no-FFTM-table" FontForge's record of when it and the font were made.

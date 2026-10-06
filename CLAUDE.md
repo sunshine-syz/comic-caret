@@ -68,8 +68,9 @@ below 100.
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
-- The OTF carries the SFD's hints. The TTF gets ttfautohint's (`tools/generate.py`), which
-  replace any TrueType instructions the SFD holds, so the SFD holds none.
+- The OTF carries the SFD's hints; `tools/generate.py` hints letter composites again and adds
+  a ghost hint where a letter's top or foot lies in a zone without a hint edge. The TTF gets
+  ttfautohint's, which replace any TrueType instructions the SFD holds, so the SFD holds none.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
   ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
   8–14: maker, designer, description, URLs and license.

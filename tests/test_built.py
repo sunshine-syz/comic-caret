@@ -31,6 +31,7 @@ from project import (
     SFD,
     STYLES,
     font_file,
+    is_alphanumeric,
     nerd_fonts,
     newest_sfd,
     style_of,
@@ -304,6 +305,30 @@ class BuiltFontTest(unittest.TestCase):
         # malformed, and FontForge warns about it as it reads the glyph.
         otf = font_file(self.style, "otf")
         self.assertEqual([line for line in opening_warnings(otf) if "Hint mask" in line], [])
+
+    def test_letters_have_a_hint_edge_in_each_zone_that_holds_them(self):
+        # The CFF hinter aligns hint edges, not the outline's extremes, to the alignment zones:
+        # a letter or figure whose top or foot lies in a zone where none of its stems or ghosts
+        # ends stood a row off the rest, as the bold E did at 14, 20 and 23 px.
+        otf = fontforge.open(str(font_file(self.style, "otf")))
+        blues, other = otf.private["BlueValues"], otf.private["OtherBlues"]
+        fuzz = 1  # the CFF default; the fonts set no BlueFuzz
+        tops = list(zip(blues[2::2], blues[3::2]))
+        feet = [tuple(blues[:2]), *zip(other[::2], other[1::2])]
+        for glyph in otf.glyphs():
+            if not is_alphanumeric(glyph.unicode):
+                continue
+            # FontForge reads a top ghost as (edge, -20) and a bottom one as (edge + 21, -21).
+            hints = glyph.hhints
+            top_edges = [y if w == -20 else y + w for y, w in hints if w != -21]
+            foot_edges = [y + w if w == -21 else y for y, w in hints if w != -20]
+            _, y0, _, y1 = glyph.boundingBox()
+            for y, zones, edges in ((y1, tops, top_edges), (y0, feet, foot_edges)):
+                for low, high in zones:
+                    if low - fuzz <= y <= high + fuzz:
+                        with self.subTest(glyph=glyph.glyphname, extreme=y):
+                            self.assertTrue(any(low - fuzz <= e <= high + fuzz for e in edges))
+        otf.close()
 
     def test_mac_style_has_the_bold_bit_in_the_bold_alone(self):
         # make_bold leaves macStyle to FontForge, which derives it from the weight.
