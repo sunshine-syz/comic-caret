@@ -389,6 +389,11 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   so do `/*` `/**` after a name (`src/*`), `*/` before one (cron's `*/5`) and `>>` `>>>` after
   one (`Vec<Vec<u8>>`). With spaces, `a >> b` still tightens; `a>>b` stays plain, the price
   of closing generics as typed.
+- **`..`.** A range or a slice tightens: after a name, a number, a closing quote or a bracket,
+  or before a name, a number, a quote or a closing bracket (`0..n` `'a'..'z'` `&s[..n]`
+  `[1..]` `{ ..x }`), as in Fira Code and Maple Mono. A path stays as typed, quoted or not
+  (`../..` `"$DIR/.."` `".."`), and so do Python's relative imports (`from ..models`,
+  `from ... import`), which no other context tells from a range.
 - **Kept.** `<>` stays a diamond: Java's diamond operator is named for the shape, and SQL's
   `<>` stands for nothing else. `?.` tightens after a name too, as JavaScript's `a?.b` does;
   Rust's `x?.y`, `?` then a field, can't be told apart from it.

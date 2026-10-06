@@ -4,7 +4,7 @@
 
 - The outer characters of a pulled-together three, as in `...`, `///`, `&&&`, `<<<`, `>>>` and `|||`, move in twice as far as a pair's. So a three keeps the white of its pair: `0..=n` reads like `0..n`, and `///` like `//`. `..=`, `..<`, `<<=`, `>>=`, `=<<`, `&&=`, `||=` and `??=` do the same on their doubled side. In the bold, a three keeps the regular's white, as a pair does.
 - `/**` pulls in only its slash, so its asterisks keep the white of a plain `**`, in the regular and the bold. Every Javadoc and JSDoc comment opens with it.
-- `..` is pulled together in a slice and beside a quote or a bracket, as in `&s[..n]`, `&s[1..]`, `[1..]`, `'a'..'z'`, `Foo { ..x }` and `p()..q`, as it already was in `0..n`. In a path, as in `../` and `cd ..`, and in Python's `from .. import`, it stays as typed.
+- `..` is pulled together in a slice and beside a quote or a bracket, as in `&s[..n]`, `&s[1..]`, `[1..]`, `'a'..'z'`, `Foo { ..x }` and `p()..q`, as it already was in `0..n`. In a path, as in `../`, `cd ..` and `"../.."`, and in Python's relative imports, as in `from .. import` and `from ..models import`, it stays as typed. So does `...` in `from ... import`, which was pulled together.
 - Erlang's and Elixir's binaries open as typed, as they close: `<<1, 2, 3>>`, `<<"abc">>`. So does a heredoc, as in `cat <<EOF`, as `<<-EOF` already did. A shift is still pulled together, as in `x<<1`, `cout<<x` and `a << b`. `>>` after a quote stays as typed, as it closes `<<"abc">>`.
 
 ## 2.0.1 (2026-10)

@@ -101,13 +101,14 @@ own cell, so columns line up and the cursor moves one character at a time.
 - Continuous lines: `==` `##` `~~` of any length, and `---` `___` from three characters on
 - `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centered on the `=`
 - `|>` `<|` `<|>` as triangles, `<>` as a diamond, and `<!--` with an arrowhead like `-->`'s
-- Pulled together: `::` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` `?.` `?:`, and
+- Pulled together: `::` `..` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` `?.` `?:`, and
   `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` `<=>` `..=` `..<`
 
 Sequences that run into other operators stay as separate characters, for example `->>>`,
 `<<<-`, `==<`, `<<==` or `https://`. So do two `-` or `_`, as in `--help`, `i--` and
-`__init__`; `~>` before a version, as in `~> 1.0`; and pairs beside a name where they are no
-operator, as in `src/*`, `*/5` and `Vec<Vec<u8>>`. A shell heredoc's `<<-EOF`, `<<-'EOF'`,
+`__init__`; `~>` before a version, as in `~> 1.0`; `..` in a path or a Python import, as in
+`../`, `cd ..` and `from .. import`; and pairs beside a name where they are no operator, as in
+`src/*`, `*/5` and `Vec<Vec<u8>>`. A shell heredoc's `<<-EOF`, `<<-'EOF'`,
 `<<-"EOF"` and `<<-\EOF` stay plain too; with a space, `<<- EOF` draws the two-headed arrow,
 since that is how R writes `x <<- y`.
 

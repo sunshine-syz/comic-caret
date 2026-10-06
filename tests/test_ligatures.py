@@ -364,8 +364,11 @@ PLAIN = [
     "?..", "??.", "**", "a**b", "/**/",
     # A sign or a not that no operand follows
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
-    # .. in a path, and Python's relative import
-    "../x", "cd ..", "from .. import",
+    # .. in a path, quoted or not, and Python's relative imports
+    "../x", "cd ..", "../..", '"../.."', "'..'", 'cd "$DIR/.."', 'path.join(d, "..")',
+    "from .. import", "from ..models import x", "from ... import x", "from ...pkg import x",
+    # .. after another operator: the tail of a longer run, or Dart's cascade after ?
+    "....x", "+...x", "x?..y",
     # An Erlang or Elixir binary, and a heredoc, as <<-EOF is
     "<<1, 2, 3>>", '<<"abc">>', "X = <<1, 2>>", "cat <<EOF",
     # TypeScript's optional property, where ?: is no operator
