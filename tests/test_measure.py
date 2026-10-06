@@ -143,6 +143,24 @@ class PiecesTest(unittest.TestCase):
         self.assertEqual([piece.boundingBox() for piece in found],
                          [(0, 0, 100, 100), (150, 0, 200, 100)])
 
+    def test_a_counter_stays_with_its_own_outline_inside_anothers_box(self):
+        # %'s slash: its box takes in both rings, counters and all.
+        ring = geo.rect(0, 200, 100, 300)
+        hole = geo.rect(25, 225, 75, 275)
+        for contour in hole:
+            contour.reverseDirection()
+        slash = fontforge.contour()
+        slash.moveTo(0, 0)
+        slash.lineTo(250, 400)
+        slash.lineTo(300, 400)
+        slash.lineTo(50, 0)
+        slash.closed = True
+        layer = ring.dup()
+        layer += hole
+        layer += slash
+        found = sorted(measure.pieces(layer), key=lambda piece: piece.boundingBox())
+        self.assertEqual([len(piece) for piece in found], [1, 2])
+
 
 class EdgeTest(unittest.TestCase):
     def test_a_rectangle_has_two_edges_each_way(self):

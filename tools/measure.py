@@ -104,20 +104,24 @@ def outline(contours):
 
 
 def pieces(layer):
-    """Each outline of the layer with the counters inside it, as a layer of its own."""
-    contours = list(layer)
+    """Each outline of the layer with the counters inside it, as a layer of its own. A counter
+    goes with the smallest outline whose box holds it: a slash's box can take in a ring (%)."""
+    shells = [contour for contour in layer if contour.isClockwise()]
+    boxes = [shell.boundingBox() for shell in shells]
+    areas = [(x1 - x0) * (y1 - y0) for x0, y0, x1, y1 in boxes]
     found = []
-    for shell in contours:
-        if not shell.isClockwise():
-            continue
-        x0, y0, x1, y1 = shell.boundingBox()
+    for shell in shells:
         piece = fontforge.layer()
         piece += shell
-        for counter in contours:
-            a0, b0, a1, b1 = counter.boundingBox()
-            if not counter.isClockwise() and x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1:
-                piece += counter
         found.append(piece)
+    for counter in layer:
+        if counter.isClockwise():
+            continue
+        a0, b0, a1, b1 = counter.boundingBox()
+        holding = [k for k, (x0, y0, x1, y1) in enumerate(boxes)
+                   if x0 <= a0 and a1 <= x1 and y0 <= b0 and b1 <= y1]
+        if holding:
+            found[min(holding, key=areas.__getitem__)] += counter
     return found
 
 
