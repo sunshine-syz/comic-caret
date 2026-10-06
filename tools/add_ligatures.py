@@ -120,7 +120,7 @@ TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash
               "equal": 20.5}
 # The outer glyphs of a tightened three beside a copy of themselves (/// ... &&& <<< >>> |||, and
 # ..= ??= <<= >>= =<< ||= &&=): the middle glyph stays in place, so each moves twice a pair's
-# shift and the three keeps its pair's white. /** moves only its slash; ** stays plain.
+# shift and the three keeps its pair's white.
 THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "question", "less", "greater", "bar"),
               "tight_l2": ("slash", "period", "ampersand", "less", "greater", "bar")}
 

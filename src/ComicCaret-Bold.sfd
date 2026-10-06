@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791311305
+ModificationTime: 1791311767
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -795,11 +795,13 @@ ChainSub2: glyph "lig_tight contextual 9" 0 0 0 1
  0
 EndFPST
 ChainSub2: glyph "lig_tight contextual 8" 0 0 0 1
- String: 5 slash
+ String: 23 slash asterisk asterisk
  BString: 0 
- FString: 17 asterisk asterisk
- 1
-  SeqLookup: 0 "lig_tight_r2"
+ FString: 0 
+ 3
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+  SeqLookup: 2 "lig_tight_l"
 EndFPST
 ChainSub2: coverage "lig_tight contextual 7" 0 0 0 1
  1 0 3
@@ -810,13 +812,15 @@ ChainSub2: coverage "lig_tight contextual 7" 0 0 0 1
  0
 EndFPST
 ChainSub2: coverage "lig_tight contextual 6" 0 0 0 1
- 1 0 3
+ 3 0 1
   Coverage: 5 slash
-  FCoverage: 8 asterisk
-  FCoverage: 8 asterisk
+  Coverage: 8 asterisk
+  Coverage: 8 asterisk
   FCoverage: 11 exclam less
- 1
-  SeqLookup: 0 "lig_tight_r2"
+ 3
+  SeqLookup: 0 "lig_tight_r"
+  SeqLookup: 1 "lig_tight_l"
+  SeqLookup: 2 "lig_tight_l"
 EndFPST
 ChainSub2: coverage "lig_tight contextual 5" 0 0 0 1
  1 1 2

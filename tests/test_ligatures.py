@@ -269,11 +269,11 @@ LIGATED = {
     # A table's border of exactly three = stays one line
     "+===+": ["plus", "equal.sta", "equal.mid", "equal.end", "plus"],
     "|===|": ["bar", "equal.sta", "equal.mid", "equal.end", "bar"],
-    # Tightened threes: the outer glyphs move in, twice as far beside the same glyph; /** moves
-    # only its slash
+    # Tightened threes: the outer glyphs move in, twice as far beside the same glyph; /** opens
+    # as /* does, its second asterisk moved with the first
     "|||": ["bar.tight_r2", "bar", "bar.tight_l2"],
     "///": ["slash.tight_r2", "slash", "slash.tight_l2"],
-    "/**": ["slash.tight_r2", "asterisk", "asterisk"],
+    "/**": ["slash.tight_r", "asterisk.tight_l", "asterisk.tight_l"],
     "&&&": ["ampersand.tight_r2", "ampersand", "ampersand.tight_l2"],
     "<<<": ["less.tight_r2", "less", "less.tight_l2"],
     ">>>": ["greater.tight_r2", "greater", "greater.tight_l2"],
@@ -282,7 +282,7 @@ LIGATED = {
     "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
     "a>>>0": ["a", "greater.tight_r2", "greater", "greater.tight_l2", "zero"],
     "///<": ["slash.tight_r2", "slash", "slash.tight_l2", "less"],
-    "/**<": ["slash.tight_r2", "asterisk", "asterisk", "less"],
+    "/**<": ["slash.tight_r", "asterisk.tight_l", "asterisk.tight_l", "less"],
     "<<=": ["less.tight_r2", "less", "equal.tight_l"],
     "f <<< g": ["f", "space", "less.tight_r2", "less", "less.tight_l2", "space", "g"],
     "=<<": ["equal.tight_r", "less", "less.tight_l2"],
@@ -493,8 +493,9 @@ class BoldSeamTest(SeamTest):
 
 class TightPairTest(unittest.TestCase):
     """A tightened pair keeps at least the white two symbols side by side keep (twice
-    SYMBOL_SIDE), so it reads as two characters, not one blot. On the regular and the bold,
-    whose pen grows the two toward each other; the italic's are the regular's sheared."""
+    SYMBOL_SIDE), so it reads as two characters, not one blot, and a three keeps its pair's
+    white. On the regular and the bold, whose pen grows the glyphs toward each other; the
+    italic's are the regular's sheared."""
     sfd = SFD
     # A glyph moved in by a pair (name.tight_r, name.tight_l) or a three (name.tight_r2, ...).
     TIGHT = re.compile(rf"({'|'.join(TIGHT_KEEP)})\.tight_[lr]2?")
@@ -523,10 +524,14 @@ class TightPairTest(unittest.TestCase):
 
     def test_a_three_keeps_its_pairs_white(self):
         # The middle glyph of a three stays in place, so ... reads as tight as .., and /// and
-        # &&& as // and &&. Each glyph's offset is rounded to a whole unit.
-        pairs = {name: self.white(f"{name}.tight_r", f"{name}.tight_l") for name in TIGHT_KEEP}
-        for text in LIGATED.keys() - self.UNEVEN:
-            for left, right in itertools.pairwise(names(REGULAR, text)):
+        # &&& as // and &&. Each glyph's offset is rounded to a whole unit. ** stays plain, so
+        # an asterisk has no pair.
+        shaped = {text: names(REGULAR, text) for text in LIGATED.keys() - self.UNEVEN}
+        pairs = {name: self.white(f"{name}.tight_r", f"{name}.tight_l") for name in TIGHT_KEEP
+                 if any((f"{name}.tight_r", f"{name}.tight_l") in itertools.pairwise(glyphs)
+                        for glyphs in shaped.values())}
+        for text, glyphs in shaped.items():
+            for left, right in itertools.pairwise(glyphs):
                 name = left.split(".")[0]
                 if (name != right.split(".")[0] or name not in pairs
                         or not (self.TIGHT.fullmatch(left) or self.TIGHT.fullmatch(right))):
@@ -535,13 +540,16 @@ class TightPairTest(unittest.TestCase):
                     self.assertAlmostEqual(self.white(left, right), pairs[name],
                                            delta=2 * ROUNDING)
 
-    def test_the_asterisks_of_a_doc_comment_keep_a_plain_pairs_white(self):
-        # /** opens every Javadoc and JSDoc comment; only its slash moves in.
+    def test_a_doc_comment_opens_as_a_plain_one(self):
+        # /** opens every Javadoc and JSDoc comment: its slash keeps /*'s white to the first
+        # asterisk, and its asterisks keep a plain **'s.
+        opener = self.white(*names(REGULAR, "/*"))
         plain = self.white("asterisk", "asterisk")
         for text in ("/**", "/**<"):
-            _, first, second, *_ = names(REGULAR, text)
+            slash, first, second, *_ = names(REGULAR, text)
             with self.subTest(text=text):
-                self.assertGreaterEqual(self.white(first, second), plain - ROUNDING)
+                self.assertAlmostEqual(self.white(slash, first), opener, delta=2 * ROUNDING)
+                self.assertAlmostEqual(self.white(first, second), plain, delta=2 * ROUNDING)
 
 
 class BoldTightPairTest(TightPairTest):
