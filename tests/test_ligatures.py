@@ -235,8 +235,21 @@ LIGATED = {
     "<<H, T/binary>> -> ok": ["less", "less", "H", "comma", "space", "T", "slash", "b", "i", "n",
                               "a", "r", "y", "greater", "greater", "space", "hyphen.sta",
                               "greater.arrow", "space", "o", "k"],
-    # A range between two names or numbers, as ..= ..< tighten
+    # A range or a slice, as ..= ..< tighten: a name, a number, a quote or a bracket on either
+    # side
     "0..n": ["zero", "period.tight_r", "period.tight_l", "n"],
+    "&s[..n]": ["ampersand", "s", "bracketleft", "period.tight_r", "period.tight_l", "n",
+                "bracketright"],
+    "&s[1..]": ["ampersand", "s", "bracketleft", "one", "period.tight_r", "period.tight_l",
+                "bracketright"],
+    "&s[..]": ["ampersand", "s", "bracketleft", "period.tight_r", "period.tight_l",
+               "bracketright"],
+    "[1..]": ["bracketleft", "one", "period.tight_r", "period.tight_l", "bracketright"],
+    "'a'..'z'": ["quotesingle", "a", "quotesingle", "period.tight_r", "period.tight_l",
+                 "quotesingle", "z", "quotesingle"],
+    "Foo { ..x }": ["F", "o", "o", "space", "braceleft", "space", "period.tight_r",
+                    "period.tight_l", "x", "space", "braceright"],
+    "p()..q": ["p", "parenleft", "parenright", "period.tight_r", "period.tight_l", "q"],
     # A comment opener before the ! or < of a doc comment
     "//!": ["slash.tight_r", "slash.tight_l", "exclam"],
     "/*!": ["slash.tight_r", "asterisk.tight_l", "exclam"],
@@ -348,8 +361,8 @@ PLAIN = [
     "?..", "??.", "**", "a**b", "/**/",
     # A sign or a not that no operand follows
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
-    # .. in a path, not between two names or numbers
-    "../x", "cd ..", "a[2..]",
+    # .. in a path, and Python's relative import
+    "../x", "cd ..", "from .. import",
     # An Erlang or Elixir binary, and a heredoc, as <<-EOF is
     "<<1, 2, 3>>", '<<"abc">>', "X = <<1, 2>>", "cat <<EOF",
     # TypeScript's optional property, where ?: is no operator

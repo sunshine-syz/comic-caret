@@ -382,9 +382,10 @@ feature calt {
   #    (=<<), as in C's and JavaScript's assignments and Haskell's binds; /// and /** open doc
   #    comments, so they tighten as // and /* do, and a comment opener tightens before the !
   #    or < that marks a doc comment (//! /*! ///< /**<). None tightens beside a @Word where
-  #    it is no operator there. .. tightens only between two names or numbers, a range
-  #    (0..n), so a path (../, cd ..) stays as typed; ... also after the > of a placeholder,
-  #    as in a usage line's <FILE>....
+  #    it is no operator there. .. tightens in a range or a slice, beside a name, a number, a
+  #    quote or a bracket (0..n 'a'..'z' [..n] [1..] { ..x }), so a path (../, cd ..) and
+  #    Python's relative import (from .. import) stay as typed; ... also after the > of a
+  #    placeholder, as in a usage line's <FILE>....
   lookup lig_tight {
     ignore sub @Op slash' slash slash;
     sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l [exclam less];
@@ -425,7 +426,9 @@ feature calt {
     ignore sub @Op less' [dollar asterisk equal] greater;
     ignore sub less' [dollar asterisk equal] greater @Op;
     sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
-    sub @Word period' lookup lig_tight_r period' lookup lig_tight_l @Word;
+    ignore sub period' period [slash backslash];
+    sub [@Operand bracketleft parenleft] period' lookup lig_tight_r period' lookup lig_tight_l;
+    sub period' lookup lig_tight_r period' lookup lig_tight_l @Operand;
     # After generics close, before a name: Vec::<u8>::new(), vector<int>::iterator.
     sub greater colon' lookup lig_tight_r colon' lookup lig_tight_l @Word;
     ignore sub @Op colon' colon;
