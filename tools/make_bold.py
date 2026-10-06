@@ -60,7 +60,7 @@ import psMat
 
 import lig_geometry as geo
 import project
-from add_ligatures import GENERATED, TIGHT_KEEP
+from add_ligatures import GENERATED, THREE_ENDS, TIGHT_KEEP
 from add_shapes import CODES
 from measure import (
     area,
@@ -180,13 +180,17 @@ APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
 # One moving alone would take the mark off the cell's middle.
 DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016", "uni203C")
 
-# The glyphs of a tightened pair (add_ligatures.TIGHT_KEEP), each the way it moves back out.
-# The pen grows the two toward each other by half its width each, which would merge && into
-# one shape and all but close ??; each moves back that far, so the pair keeps the regular's
-# white, and ++'s bars their overlap.
-TIGHT = {f"{name}.{side}": way for name in TIGHT_KEEP
-         for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
+# The glyphs of a tightened pair or three (add_ligatures.TIGHT_KEEP, THREE_ENDS), each with the
+# way and how far it moves back out. The pen grows the two of a pair toward each other by half
+# its width each, which would merge && into one shape and all but close ??; each moves back
+# that far, so the pair keeps the regular's white, and ++'s bars their overlap. A three's
+# middle glyph stays in place, so its outer glyphs move back the pen's whole width.
 TIGHT_BACK = round(PEN[0] / 2)
+TIGHT = ({f"{name}.{side}": (way, TIGHT_BACK) for name in TIGHT_KEEP
+          for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
+         | {f"{name}.{side}": (way, 2 * TIGHT_BACK)
+            for side, way in (("tight_r2", LEFT), ("tight_l2", RIGHT))
+            for name in THREE_ENDS[side]})
 
 # The outlines condensed to keep their own regular box, so the pen grows them no closer to
 # their neighbours than half its width: ™'s T and M, 23 apart, which the small pen would grow
@@ -1036,8 +1040,8 @@ def build(font):
         if name in DOUBLES:
             spread(font, glyph, gaps[name])
         if name in TIGHT:
-            (dx, dy), [(part, *_)] = TIGHT[name], glyph.references
-            reposition(glyph, shifted({part: (dx * TIGHT_BACK, dy * TIGHT_BACK)}))
+            ((dx, dy), back), [(part, *_)] = TIGHT[name], glyph.references
+            reposition(glyph, shifted({part: (dx * back, dy * back)}))
         if glyph.references != before:
             glyph.autoHint()  # a reference assigned leaves the hints stale
     raise_clear(font, [glyph for glyph in font.glyphs()

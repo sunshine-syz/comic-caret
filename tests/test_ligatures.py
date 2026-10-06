@@ -5,6 +5,7 @@ Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 import itertools
 import json
 import pathlib
+import re
 import subprocess
 import sys
 import unittest
@@ -22,6 +23,7 @@ from project import (
     BOLD_SFD,
     FORMATS,
     OVERLAP,
+    ROUNDING,
     SFD,
     STYLES,
     SYMBOL_SIDE,
@@ -213,7 +215,7 @@ LIGATED = {
     "a || b": ["a", "space", "bar.tight_r", "bar.tight_l", "space", "b"],
     "::": ["colon.tight_r", "colon.tight_l"],
     "a::b": ["a", "colon.tight_r", "colon.tight_l", "b"],
-    "...": ["period.tight_r", "period", "period.tight_l"],
+    "...": ["period.tight_r2", "period", "period.tight_l2"],
     "&&": ["ampersand.tight_r", "ampersand.tight_l"],
     "++": ["plus.tight_r", "plus.tight_l"],
     "//": ["slash.tight_r", "slash.tight_l"],
@@ -267,32 +269,33 @@ LIGATED = {
     # A table's border of exactly three = stays one line
     "+===+": ["plus", "equal.sta", "equal.mid", "equal.end", "plus"],
     "|===|": ["bar", "equal.sta", "equal.mid", "equal.end", "bar"],
-    # Tightened threes: the outer glyphs move in
-    "|||": ["bar.tight_r", "bar", "bar.tight_l"],
-    "///": ["slash.tight_r", "slash", "slash.tight_l"],
-    "/**": ["slash.tight_r", "asterisk", "asterisk.tight_l"],
-    "&&&": ["ampersand.tight_r", "ampersand", "ampersand.tight_l"],
-    "<<<": ["less.tight_r", "less", "less.tight_l"],
-    ">>>": ["greater.tight_r", "greater", "greater.tight_l"],
-    ">>=": ["greater.tight_r", "greater", "equal.tight_l"],
-    "m >>= f": ["m", "space", "greater.tight_r", "greater", "equal.tight_l", "space", "f"],
-    "m>>=f": ["m", "greater.tight_r", "greater", "equal.tight_l", "f"],
-    "a>>>0": ["a", "greater.tight_r", "greater", "greater.tight_l", "zero"],
-    "///<": ["slash.tight_r", "slash", "slash.tight_l", "less"],
-    "/**<": ["slash.tight_r", "asterisk", "asterisk.tight_l", "less"],
-    "<<=": ["less.tight_r", "less", "equal.tight_l"],
-    "=<<": ["equal.tight_r", "less", "less.tight_l"],
+    # Tightened threes: the outer glyphs move in, twice as far beside the same glyph; /** moves
+    # only its slash
+    "|||": ["bar.tight_r2", "bar", "bar.tight_l2"],
+    "///": ["slash.tight_r2", "slash", "slash.tight_l2"],
+    "/**": ["slash.tight_r2", "asterisk", "asterisk"],
+    "&&&": ["ampersand.tight_r2", "ampersand", "ampersand.tight_l2"],
+    "<<<": ["less.tight_r2", "less", "less.tight_l2"],
+    ">>>": ["greater.tight_r2", "greater", "greater.tight_l2"],
+    ">>=": ["greater.tight_r2", "greater", "equal.tight_l"],
+    "m >>= f": ["m", "space", "greater.tight_r2", "greater", "equal.tight_l", "space", "f"],
+    "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
+    "a>>>0": ["a", "greater.tight_r2", "greater", "greater.tight_l2", "zero"],
+    "///<": ["slash.tight_r2", "slash", "slash.tight_l2", "less"],
+    "/**<": ["slash.tight_r2", "asterisk", "asterisk", "less"],
+    "<<=": ["less.tight_r2", "less", "equal.tight_l"],
+    "=<<": ["equal.tight_r", "less", "less.tight_l2"],
     "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
     "<=>": ["less.tight_r", "equal", "greater.tight_l"],
     "a <=> b": ["a", "space", "less.tight_r", "equal", "greater.tight_l", "space", "b"],
     "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
-    "0..=9": ["zero", "period.tight_r", "period", "equal.tight_l", "nine"],
-    "0..<n": ["zero", "period.tight_r", "period", "less.tight_l", "n"],
+    "0..=9": ["zero", "period.tight_r2", "period", "equal.tight_l", "nine"],
+    "0..<n": ["zero", "period.tight_r2", "period", "less.tight_l", "n"],
     # An assignment that closes a tightened pair, as <<= and >>= do
-    "||=": ["bar.tight_r", "bar", "equal.tight_l"],
-    "&&=": ["ampersand.tight_r", "ampersand", "equal.tight_l"],
-    "??=": ["question.tight_r", "question", "equal.tight_l"],
-    "x ??= 1": ["x", "space", "question.tight_r", "question", "equal.tight_l", "space", "one"],
+    "||=": ["bar.tight_r2", "bar", "equal.tight_l"],
+    "&&=": ["ampersand.tight_r2", "ampersand", "equal.tight_l"],
+    "??=": ["question.tight_r2", "question", "equal.tight_l"],
+    "x ??= 1": ["x", "space", "question.tight_r2", "question", "equal.tight_l", "space", "one"],
     ">>>=": ["greater.tight_r", "greater", "greater", "equal.tight_l"],
     "y >>>= 1": ["y", "space", "greater.tight_r", "greater", "greater", "equal.tight_l", "space",
                  "one"],
@@ -311,8 +314,8 @@ LIGATED = {
     "x[:, ::-1]": ["x", "bracketleft", "colon", "comma", "space", "colon.tight_r",
                    "colon.tight_l", "hyphen", "one", "bracketright"],
     # ... after the > of a placeholder
-    "<FILE>...": ["less", "F", "I", "L", "E", "greater", "period.tight_r", "period",
-                  "period.tight_l"],
+    "<FILE>...": ["less", "F", "I", "L", "E", "greater", "period.tight_r2", "period",
+                  "period.tight_l2"],
     # A ligature before a sign or a not on an operand, as x==-1 joins as a run
     "x!=-1": ["x", "LIG", "exclam_equal.liga", "hyphen", "one"],
     "x!==-1": ["x", "LIG", "LIG", "exclam_equal_equal.liga", "hyphen", "one"],
@@ -487,24 +490,52 @@ class TightPairTest(unittest.TestCase):
     SYMBOL_SIDE), so it reads as two characters, not one blot. On the regular and the bold,
     whose pen grows the two toward each other; the italic's are the regular's sheared."""
     sfd = SFD
-    TIGHT = frozenset(f"{name}.{side}" for name in TIGHT_KEEP for side in ("tight_r", "tight_l"))
+    # A glyph moved in by a pair (name.tight_r, name.tight_l) or a three (name.tight_r2, ...).
+    TIGHT = re.compile(rf"({'|'.join(TIGHT_KEEP)})\.tight_[lr]2?")
     JOINED = frozenset({("plus.tight_r", "plus.tight_l")})  # ++'s bars join, as Fira Code's do
+    # >>>= moves only its outer glyphs, so its middle two keep a plain >>'s white.
+    UNEVEN = frozenset({">>>=", "y >>>= 1"})
 
     @classmethod
     def setUpClass(cls):
         require_current_build()
         cls.font = fontforge.open(str(cls.sfd))
 
+    def white(self, left, right):
+        """The white between `left` and `right` side by side."""
+        return gap(ink(self.font, left), geo.moved(ink(self.font, right), ADVANCE, 0))
+
     def test_tightened_glyphs_keep_white_toward_their_neighbours(self):
         for text in LIGATED:
             for left, right in itertools.pairwise(names(REGULAR, text)):
-                first, second = ink(self.font, left), ink(self.font, right)
-                if ({left, right}.isdisjoint(self.TIGHT) or (left, right) in self.JOINED
-                        or not len(first) or not len(second)):  # a space beside it
+                if (not (self.TIGHT.fullmatch(left) or self.TIGHT.fullmatch(right))
+                        or (left, right) in self.JOINED
+                        or not len(ink(self.font, left)) or not len(ink(self.font, right))):
+                    continue  # no tightened glyph, or a space beside it
+                with self.subTest(text=text, left=left, right=right):
+                    self.assertGreaterEqual(self.white(left, right), 2 * SYMBOL_SIDE)
+
+    def test_a_three_keeps_its_pairs_white(self):
+        # The middle glyph of a three stays in place, so ... reads as tight as .., and /// and
+        # &&& as // and &&. Each glyph's offset is rounded to a whole unit.
+        pairs = {name: self.white(f"{name}.tight_r", f"{name}.tight_l") for name in TIGHT_KEEP}
+        for text in LIGATED.keys() - self.UNEVEN:
+            for left, right in itertools.pairwise(names(REGULAR, text)):
+                name = left.split(".")[0]
+                if (name != right.split(".")[0] or name not in pairs
+                        or not (self.TIGHT.fullmatch(left) or self.TIGHT.fullmatch(right))):
                     continue
                 with self.subTest(text=text, left=left, right=right):
-                    white = gap(first, geo.moved(second, ADVANCE, 0))
-                    self.assertGreaterEqual(white, 2 * SYMBOL_SIDE)
+                    self.assertAlmostEqual(self.white(left, right), pairs[name],
+                                           delta=2 * ROUNDING)
+
+    def test_the_asterisks_of_a_doc_comment_keep_a_plain_pairs_white(self):
+        # /** opens every Javadoc and JSDoc comment; only its slash moves in.
+        plain = self.white("asterisk", "asterisk")
+        for text in ("/**", "/**<"):
+            _, first, second, *_ = names(REGULAR, text)
+            with self.subTest(text=text):
+                self.assertGreaterEqual(self.white(first, second), plain - ROUNDING)
 
 
 class BoldTightPairTest(TightPairTest):

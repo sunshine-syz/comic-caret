@@ -25,7 +25,10 @@ languagesystem latn dflt;
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
+  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+  slash.tight_r2 period.tight_r2 ampersand.tight_r2 question.tight_r2 less.tight_r2
+  greater.tight_r2 bar.tight_r2 slash.tight_l2 period.tight_l2 ampersand.tight_l2 less.tight_l2
+  greater.tight_l2 bar.tight_l2];
 
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow
@@ -104,6 +107,16 @@ lookup lig_tight_l {
    by [colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
        asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
 } lig_tight_l;
+lookup lig_tight_r2 {
+  sub [slash period ampersand question less greater bar]
+   by [slash.tight_r2 period.tight_r2 ampersand.tight_r2 question.tight_r2 less.tight_r2
+       greater.tight_r2 bar.tight_r2];
+} lig_tight_r2;
+lookup lig_tight_l2 {
+  sub [slash period ampersand less greater bar]
+   by [slash.tight_l2 period.tight_l2 ampersand.tight_l2 less.tight_l2 greater.tight_l2
+       bar.tight_l2];
+} lig_tight_l2;
 
 feature calt {
 
@@ -360,7 +373,8 @@ feature calt {
     sub less' lookup lig_spacer bar' lookup lig_less_bar;
     ignore sub @Op bar' bar [bar equal];
     ignore sub bar' bar [bar equal] @Op;
-    sub bar' lookup lig_tight_r bar [bar equal]' lookup lig_tight_l;
+    sub bar' lookup lig_tight_r2 bar bar' lookup lig_tight_l2;
+    sub bar' lookup lig_tight_r2 bar equal' lookup lig_tight_l;
     ignore sub @Op bar' bar;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l @Prefix @OperandStart;
     ignore sub bar' bar @Op;
@@ -376,53 +390,57 @@ feature calt {
     sub less' lookup lig_spacer greater' lookup lig_less_greater;
   } lig_diamond;
 
-  # 6. Tightened threes and >>>=, their outer glyphs moved in and the middle ones left in
-  #    place, then tightened pairs. The longer ones come first: a pair's ignore rules would
-  #    claim them. An = may close << >> >>> && || ?? (<<= >>= >>>= &&= ||= ??=) or open <<
-  #    (=<<), as in C's and JavaScript's assignments and Haskell's binds; /// and /** open doc
-  #    comments, so they tighten as // and /* do, and a comment opener tightens before the !
-  #    or < that marks a doc comment (//! /*! ///< /**<). None tightens beside a @Word where
-  #    it is no operator there. .. tightens in a range or a slice, beside a name, a number, a
-  #    quote or a bracket (0..n 'a'..'z' [..n] [1..] { ..x }), so a path (../, cd ..) and
-  #    Python's relative import (from .. import) stay as typed; ... also after the > of a
-  #    placeholder, as in a usage line's <FILE>....
+  # 6. Tightened threes and >>>=, their outer glyphs moved in and the middle ones left in place,
+  #    then tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a
+  #    pair, so the three keeps the pair's white; /** moves only its slash, as ** stays plain.
+  #    The longer ones come first: a pair's ignore rules would claim them. An = may close << >>
+  #    >>> && || ?? (<<= >>= >>>= &&= ||= ??=) or open << (=<<), as in C's and JavaScript's
+  #    assignments and Haskell's binds; /// and /** open doc comments, so they tighten as // and
+  #    /* do, and a comment opener tightens before the ! or < that marks a doc comment (//! /*!
+  #    ///< /**<). None tightens beside a @Word where it is no operator there. .. tightens in a
+  #    range or a slice, beside a name, a number, a quote or a bracket (0..n 'a'..'z' [..n]
+  #    [1..] { ..x }), so a path (../, cd ..) and Python's relative import (from .. import) stay
+  #    as typed; ... also after the > of a placeholder, as in a usage line's <FILE>....
   lookup lig_tight {
     ignore sub @Op slash' slash slash;
-    sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l [exclam less];
+    sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2 [exclam less];
     ignore sub slash' slash slash @Op;
-    sub slash' lookup lig_tight_r slash slash' lookup lig_tight_l;
+    sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2;
     ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
-    sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l [exclam less];
+    sub slash' lookup lig_tight_r2 asterisk asterisk [exclam less];
     ignore sub slash' asterisk asterisk @Op;
-    sub slash' lookup lig_tight_r asterisk asterisk' lookup lig_tight_l;
+    sub slash' lookup lig_tight_r2 asterisk asterisk;
     ignore sub period' period period @Op;
-    sub greater period' lookup lig_tight_r period period' lookup lig_tight_l;
+    sub greater period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period period;
-    sub period' lookup lig_tight_r period period' lookup lig_tight_l;
+    sub period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period [equal less];
     ignore sub period' period [equal less] @Op;
-    sub period' lookup lig_tight_r period [equal less]' lookup lig_tight_l;
+    sub period' lookup lig_tight_r2 period [equal less]' lookup lig_tight_l;
     ignore sub @Op ampersand' ampersand [ampersand equal];
     ignore sub ampersand' ampersand [ampersand equal] @Op;
-    sub ampersand' lookup lig_tight_r ampersand [ampersand equal]' lookup lig_tight_l;
+    sub ampersand' lookup lig_tight_r2 ampersand ampersand' lookup lig_tight_l2;
+    sub ampersand' lookup lig_tight_r2 ampersand equal' lookup lig_tight_l;
     ignore sub @Op question' question equal;
     ignore sub question' question equal @Op;
-    sub question' lookup lig_tight_r question equal' lookup lig_tight_l;
+    sub question' lookup lig_tight_r2 question equal' lookup lig_tight_l;
     ignore sub @Op less' less [less equal];
     ignore sub less' less [less equal] @Op;
-    sub less' lookup lig_tight_r less [less equal]' lookup lig_tight_l;
+    sub less' lookup lig_tight_r2 less less' lookup lig_tight_l2;
+    sub less' lookup lig_tight_r2 less equal' lookup lig_tight_l;
     ignore sub @Op greater' greater greater equal;
     ignore sub greater' greater greater equal @Op;
     sub greater' lookup lig_tight_r greater greater equal' lookup lig_tight_l;
     ignore sub @Op greater' greater [greater equal];
     ignore sub greater' greater [greater equal] @Op;
-    sub @Operand greater' lookup lig_tight_r greater greater' lookup lig_tight_l @Word;
+    sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
     ignore sub @Operand greater' greater greater;
-    sub greater' lookup lig_tight_r greater [greater equal]' lookup lig_tight_l;
+    sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2;
+    sub greater' lookup lig_tight_r2 greater equal' lookup lig_tight_l;
     ignore sub @Op equal' less less;
     ignore sub equal' less less @Op;
-    sub equal' lookup lig_tight_r less less' lookup lig_tight_l;
+    sub equal' lookup lig_tight_r less less' lookup lig_tight_l2;
     ignore sub @Op less' [dollar asterisk equal] greater;
     ignore sub less' [dollar asterisk equal] greater @Op;
     sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;

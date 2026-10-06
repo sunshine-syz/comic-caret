@@ -33,7 +33,7 @@ HEAD_TURN = math.radians(14.4)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
-                       r"|warrow|warrow\.low|dtail|twohead|shaft|comment|liga|tight_l|tight_r)")
+                       r"|warrow|warrow\.low|dtail|twohead|shaft|comment|liga|tight_[lr]2?)")
 
 
 class Bar(NamedTuple):
@@ -118,6 +118,11 @@ DIAMOND_WIDTH_GAIN = 35
 TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -41.5,
               "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 53, "bar": 131,
               "equal": 20.5}
+# The outer glyphs of a tightened three beside a copy of themselves (/// ... &&& <<< >>> |||, and
+# ..= ??= <<= >>= =<< ||= &&=): the middle glyph stays in place, so each moves twice a pair's
+# shift and the three keeps its pair's white. /** moves only its slash; ** stays plain.
+THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "question", "less", "greater", "bar"),
+              "tight_l2": ("slash", "period", "ampersand", "less", "greater", "bar")}
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
@@ -610,6 +615,9 @@ def build(font):
         shift = tight_shift(font, name)
         glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
         glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
+    for side, sign in (("tight_r2", 2), ("tight_l2", -2)):
+        for name in THREE_ENDS[side]:
+            glyphs[f"{name}.{side}"] = [(name, sign * tight_shift(font, name), 0)]
     glyphs["less_greater.liga"] = diamond(font)
     glyphs["less_bar_greater.liga"] = pipes(font)
     for name in ("greater", "less"):
