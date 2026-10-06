@@ -582,7 +582,7 @@ class BoldBracketTest(BracketTest):
 class BoldCounterTest(CounterTest):
     sfd = BOLD_SFD
     floors = BOLD_FLOORS
-    narrow = set()  # the bold's n and h clear the reference bolds' floors
+    narrow = frozenset()  # the bold's n and h clear the reference bolds' floors
 
 
 class BoldWidthTest(WidthTest):

@@ -396,7 +396,7 @@ class LigatureSeamTest(unittest.TestCase):
             raise unittest.SkipTest("uvx is not installed")
         require_current_build((cls.style,))
 
-    known = {}
+    known = frozenset()
 
     def test_pieces_meet_on_the_same_pixel_rows(self):
         for hinting, flag in HINTING.items():
@@ -435,7 +435,7 @@ class BoldLigatureSeamTest(LigatureSeamTest):
     # Known exception: <=<'s tail, whose bars the autohinter, and ttfautohint after it, place
     # from another first edge than ='s at 15-36 px; reshaping its arms only moves the sizes
     # (docs/design-notes.md).
-    known = {"less.dtail"}
+    known = frozenset({"less.dtail"})
 
 
 class MarkShapingTest(unittest.TestCase):
