@@ -5,6 +5,7 @@ Usage: fontforge -quiet -script tools/generate.py SOURCE.sfd OUTPUT.otf|OUTPUT.t
 import os
 import pathlib
 import struct
+import subprocess
 import sys
 import time
 
@@ -21,6 +22,8 @@ CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset
 MAC_ROMAN = (1, 0)                   # the platform and encoding of the subtable to drop
 HEAD_MODIFIED = 28                   # offset of head.modified
 MAC_EPOCH = 2082844800               # seconds from 1904-01-01, where head's dates count, to 1970
+# Pinned so the TTF's hints change only when we bump it on purpose.
+TTFAUTOHINT = ["uvx", "--with", "ttfautohint-py==0.6.1", "python", "-m", "ttfautohint"]
 
 
 def is_composite(glyph):
@@ -50,6 +53,19 @@ def flatten_nested_references(font):
         refs = glyph.references
         if is_composite(glyph) and any(is_composite(font[ref[0]]) for ref in refs):
             glyph.references = tuple(leaf for ref in refs for leaf in leaves(ref[0], ref[1]))
+
+
+def decompose_transformed_references(font):
+    """Draw every reference that turns or scales its glyph as an outline.
+
+    ttfautohint hints a component as its own glyph and then transforms it, so one turned 180°,
+    as in ¡ ∀ ⇓ ▼, lands off the pixel rows its glyph's hints aligned (Font Bakery
+    transformed_components). Turned, never mirrored, so the outlines keep their direction.
+    """
+    for glyph in font.glyphs():
+        for name, matrix, *_ in glyph.references:
+            if any(abs(a - b) > 1e-6 for a, b in zip(matrix[:4], (1, 0, 0, 1))):
+                glyph.unlinkRef(name)
 
 
 def without_mac_roman(cmap):
@@ -94,6 +110,19 @@ def finish_tables(path, modified):
     path.write_bytes(write_tables(version, search, out))
 
 
+def autohint(path):
+    """Give the TTF at `path` ttfautohint's hints.
+
+    FontForge writes no TrueType hints. Without them, every renderer that runs a font's own
+    hints draws the TTF unhinted: FreeType's native and monochrome modes and Windows GDI. There
+    = blurs into one grey band at 11 px, and in monochrome 8 reads as B. --no-info keeps the
+    version string FontForge writes.
+    """
+    hinted = path.with_name(f"{path.stem}.hinted{path.suffix}")
+    subprocess.run([*TTFAUTOHINT, "--no-info", str(path), str(hinted)], check=True)
+    hinted.replace(path)
+
+
 def main(source, output):
     # Glyphs edited since they were last hinted get autohinted while generating only if the
     # user's AutoHint preference allows it, so pin it to keep the OTF the same on every machine.
@@ -109,11 +138,15 @@ def main(source, output):
     # stored hints valid.
     if output.endswith(".ttf"):
         flatten_nested_references(font)
+        decompose_transformed_references(font)
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
     # "no-mac-names" drops the platform-1 name records that nothing current reads, and
     # "no-FFTM-table" FontForge's record of when it and the font were made.
     font.generate(output, flags=("opentype", "no-mac-names", "no-FFTM-table"))
     path = pathlib.Path(output)
+    # Before finish_tables, which dates the font: ttfautohint dates it the time now.
+    if output.endswith(".ttf"):
+        autohint(path)
     # build.sh sets it to the last commit's time so a rebuild gives the same bytes; a direct run
     # (proof_sheet.py --before) takes the time now.
     modified = int(os.environ.get("SOURCE_DATE_EPOCH", time.time()))

@@ -48,6 +48,9 @@ SANITIZE = 'import ots, sys; sys.exit(ots.sanitize(sys.argv[1], "/dev/null").ret
 # FreeType, for the light autohinting Linux desktops apply by default; pinned as ots is.
 FREETYPE = ["--with", "freetype-py==2.5.1", "--with", "fonttools==4.66.1"]
 FREETYPE_EXCLUDE_NEWER = "2026-09-30"
+# FreeType's load flags: its light autohinting, and native hinting, which runs the font's own
+# hints, as hintfull, monochrome and Windows do.
+HINTING = {"light": "FT_LOAD_TARGET_LIGHT", "native": "FT_LOAD_DEFAULT"}
 # The pieces that run a bar on into the next cell, by the middle piece of the run they meet.
 SEAMED = {"hyphen.mid": ["hyphen.sta", "hyphen.end", "less.arrow", "greater.arrow",
                          "less.twohead", "greater.twohead", "less.shaft", "greater.shaft"],
@@ -57,13 +60,13 @@ SEAMED = {"hyphen.mid": ["hyphen.sta", "hyphen.end", "less.arrow", "greater.arro
           "numbersign.mid": ["numbersign.sta", "numbersign.end"]}
 # Prints {piece: [sizes]}: the pixel sizes, 8 to 36, where the piece's bar ends at a seam on a
 # corner of the middle piece's (its first or last point at a height) and lands half a pixel
-# or more off the middle piece's there under light hinting.
+# or more off the middle piece's there under the hinting a HINTING flag names.
 SEAMS = """
 import json, sys
 import freetype
 from fontTools.ttLib import TTFont
 
-path, seamed = sys.argv[1], json.loads(sys.argv[2])
+path, seamed, flag = sys.argv[1], json.loads(sys.argv[2]), getattr(freetype, sys.argv[3])
 order = TTFont(path).getGlyphOrder()
 face = freetype.Face(path)
 
@@ -71,7 +74,7 @@ def hinted(name, size):
     face.set_pixel_sizes(0, size)
     face.load_glyph(order.index(name), freetype.FT_LOAD_NO_SCALE)
     points = [tuple(p) for p in face.glyph.outline.points]
-    face.load_glyph(order.index(name), freetype.FT_LOAD_TARGET_LIGHT | freetype.FT_LOAD_NO_BITMAP)
+    face.load_glyph(order.index(name), flag | freetype.FT_LOAD_NO_BITMAP)
     return dict(zip(points, (y for _, y in face.glyph.outline.points)))
 
 def corners(points):
@@ -89,6 +92,24 @@ for middle, pieces in seamed.items():
             if any(abs(piece[c] - mid[c]) >= 32 for c in shared):
                 off.setdefault(name, []).append(size)
 print(json.dumps(off))
+"""
+# Prints {size: contrast} for = under native hinting at 9 to 16 px: how much lighter than the
+# lighter bar the lightest pixel row between the bars is, from 0, one grey band, to 1.
+EQUALS_BARS = """
+import json, sys
+import freetype
+
+face = freetype.Face(sys.argv[1])
+contrast = {}
+for size in range(9, 17):
+    face.set_pixel_sizes(0, size)
+    face.load_char("=", freetype.FT_LOAD_DEFAULT | freetype.FT_LOAD_NO_BITMAP | freetype.FT_LOAD_RENDER)
+    bitmap = face.glyph.bitmap
+    rows = [max(bitmap.buffer[r * bitmap.pitch:r * bitmap.pitch + bitmap.width]) / 255
+            for r in range(bitmap.rows)]
+    gap = min(range(1, len(rows) - 1), key=rows.__getitem__)
+    contrast[size] = min(max(rows[:gap]), max(rows[gap + 1:])) - rows[gap]
+print(json.dumps(contrast))
 """
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
@@ -318,11 +339,11 @@ class BoldBuiltFontTest(BuiltFontTest):
 
 
 class LigatureSeamTest(unittest.TestCase):
-    """Under FreeType's light hinting, each ligature piece's bar meets the next piece's on the
-    same pixel rows. The autohinter hints each glyph alone, so a bar edge that strays from its
-    profile, or an arm end it aligns to the baseline or x-height zone, moves that piece's bar a
-    row off. The TrueType fonts only: FreeType reads the OpenType fonts' own hints. Skips
-    without uvx."""
+    """Under FreeType's light and native hinting, each ligature piece's bar meets the next
+    piece's on the same pixel rows. The autohinter, and ttfautohint's hints, which follow it,
+    hint each glyph alone, so a bar edge that strays from its profile, or an arm end aligned to
+    the baseline or x-height zone, moves that piece's bar a row off. The TrueType fonts only:
+    FreeType reads the OpenType fonts' own hints. Skips without uvx."""
 
     style = "Regular"
 
@@ -335,12 +356,25 @@ class LigatureSeamTest(unittest.TestCase):
     known = {}
 
     def test_pieces_meet_on_the_same_pixel_rows(self):
+        for hinting, flag in HINTING.items():
+            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
+                       "-c", SEAMS, str(font_file(self.style, "ttf")), json.dumps(SEAMED), flag]
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            with self.subTest(hinting=hinting):
+                off = {name: sizes for name, sizes in json.loads(result.stdout).items()
+                       if name not in self.known}
+                self.assertEqual(off, {})
+
+    def test_equals_keeps_two_bars_under_native_hinting(self):
+        # The TTF's own hints keep a white row between the bars at text sizes. Unhinted, they
+        # blurred into one grey band at 11 px (0.02). The floor is the references' lowest at
+        # 9-16 px: Intel One Mono's 0.64 at 9 px, where Fira Code keeps 0.75 and Maple Mono 0.78.
         command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
-                   SEAMS, str(font_file(self.style, "ttf")), json.dumps(SEAMED)]
+                   EQUALS_BARS, str(font_file(self.style, "ttf"))]
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        off = {name: sizes for name, sizes in json.loads(result.stdout).items()
-               if name not in self.known}
-        self.assertEqual(off, {})
+        for size, contrast in json.loads(result.stdout).items():
+            with self.subTest(size=size):
+                self.assertGreaterEqual(contrast, 0.64)
 
 
 class ItalicLigatureSeamTest(LigatureSeamTest):
@@ -349,8 +383,9 @@ class ItalicLigatureSeamTest(LigatureSeamTest):
 
 class BoldLigatureSeamTest(LigatureSeamTest):
     style = "Bold"
-    # Known exception: <=<'s tail, whose bars the autohinter places from another first edge
-    # than ='s at 15-36 px; reshaping its arms only moves the sizes (docs/design-notes.md).
+    # Known exception: <=<'s tail, whose bars the autohinter, and ttfautohint after it, place
+    # from another first edge than ='s at 15-36 px; reshaping its arms only moves the sizes
+    # (docs/design-notes.md).
     known = {"less.dtail"}
 
 

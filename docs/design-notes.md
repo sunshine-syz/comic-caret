@@ -257,6 +257,18 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   another first edge than `=`'s. Lifting or lowering the arms' ends and levelling the joins
   only moved the failing sizes; `greater.dtail` mirrored stays level but reaches 28 across and
   11 up past the regular tail, beyond the pen.
+- **The TTF's hints.** FontForge writes no TrueType hints, so `tools/generate.py` gives each
+  TTF ttfautohint's, with its default options. Without them every renderer that runs a font's
+  own hints drew the TTF unhinted: FreeType's native and monochrome modes, and Windows GDI
+  (not tested). At 8–24 px under native hinting, 281 letters of the regular stood off their
+  row (38 after; Fira Code 126, Maple Mono 17), `=` blurred into one grey band at 11 px (bar
+  contrast 0.02, 0.93 after) and in monochrome `8` read as `B`. Light hinting is unchanged:
+  FreeType's autohinter, which ttfautohint follows, hints the TTF there either way.
+  `--composites` and `--fallback-script=latn` changed none of these numbers. The italic `H`
+  alone drops a row at 9 px. ttfautohint's `prep` keeps the smart dropout control the SFD's
+  own `prep` carried. ttfautohint hints a component alone and then turns it, so the TTF draws
+  every turned reference as an outline: turned, `)` stood a row below `(` at 11 px, and `∀`
+  `∃` a row under the baseline.
 - **Alignment zones.** The OTF's hints put the extremes inside one zone on one pixel row, so
   each zone runs from the lowest to the highest of its letters' extremes, the hand's wobble
   included: the baseline −37…−5, the x-height 461…493, the capitals and figures 658…692, the

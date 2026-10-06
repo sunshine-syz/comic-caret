@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791265848
+ModificationTime: 1791266352
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -2173,14 +2173,6 @@ ChainSub2: coverage "marks_dotless" 0 0 0 1
  1
   SeqLookup: 0 "marks_dotless_single"
 EndFPST
-TtTable: prep
-PUSHW_1
- 511
-SCANCTRL
-PUSHB_1
- 4
-SCANTYPE
-EndTTInstrs
 LangName: 1033 "" "" "" "" "" "" "" "" "YZ Sun" "YZ Sun" "A hand-drawn monospaced font for code. Based on Comic Shanns Mono by Jes+APoA-s Gonz+AOEA-lez and Comic Shanns by Shannon Miwa." "https://github.com/sunshine-syz/comic-caret" "https://github.com/sunshine-syz" "Licensed under the MIT License. See https://opensource.org/license/mit for the full text." "https://opensource.org/license/mit"
 GaspTable: 1 65535 15 1
 Encoding: UnicodeBmp
