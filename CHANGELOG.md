@@ -8,6 +8,7 @@
 - `!=`, `!==`, `:=`, `<=`, `>=`, `<>`, `&&`, `||`, `??`, `?.` and `?:` keep their ligature before a minus or a not, as in `x!=-1`, `x<=-1` and `a&&!b`, as `x==-1` already did.
 - The TTF is hinted, by ttfautohint. Where a renderer runs the font's own hints, as FreeType's full and monochrome hinting on Linux do, the TTF was drawn unhinted. There `=` blurred into one grey band at 11 px, letters stood a pixel row off their neighbours, and without antialiasing `8` read as `B`. Linux's default light hinting and macOS draw as before.
 - In the OTF, every letter whose top or foot reaches an alignment zone carries a hint there, so it stands on its neighbours' pixel row. At small sizes the bold `E` and `Ę` stood a row below `H`, the bold `U` a row above it, the italic `z` `ź` `ż` `ž` a row below `x`, and the Greek capitals off the Latin ones. `Λ` stands 5 units lower, on the baseline as `A` does.
+- The bars of `=` stand further apart, as far as in Intel One Mono. At 8 px, where FreeType runs the font's own hints, they no longer merge into one band, in any style or format. ≡ ≠ ⇒ ⇐ ⇔ ⇑ ⇓ ⇕ and the ligatures drawn with `=`'s bars, such as `==`, `!=` and `=>`, follow.
 
 ## 2.0.1 (2026-10)
 

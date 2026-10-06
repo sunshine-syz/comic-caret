@@ -292,6 +292,17 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
   5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
   at 0 it stood a row high at 11 and 14 px.
+- **`=`'s gap.** The white between `=`'s bars is 126, Intel One Mono's, between Fira Code's
+  114 and Maple Mono's 135 at our cap height. At 106 the fonts' own hints merged the bars
+  into one band at 8 px in every style and format (contrast 0; 0.55–0.75 at 126). Each
+  bar moved 10 away from the axis. ≡ ≠ ⇒ ⇐ ⇔ ⇑ ⇕ moved theirs the same, ≡'s outer bars 20,
+  and where a bar meets an arm or ≠'s slash, the corner slid along it, so the heads and the
+  slash keep their size. FreeType's CFF hinter moves each bar whole to the nearer pixel edge,
+  so at 8 px the upper bar rounds up, off the lower one, only while its middle lies above 375.
+  The ligature pieces, `equal_bars()` and ⇒ ⇐ ⇔ therefore lie on `=`'s own hint edges,
+  131–208 and 338–414; at 133–209 and 336–413 they still merged. At 8 px ≠ ⇒ ⇔ still
+  merge in the TTF, where ttfautohint fits ⇒ into 4 rows, and ⇒ in the bold OTF, whose head
+  carries a hint 18 over the upper bar.
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under

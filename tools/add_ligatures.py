@@ -45,7 +45,9 @@ class Bar(NamedTuple):
 # Straight run strokes, one Bar per horizontal stroke.
 RUNS = {
     "hyphen": (Bar((225, 375), (215, 325), (231, 310)),),
-    "equal": (Bar((225, 375), (135, 228), (143, 219)), Bar((225, 375), (318, 410), (326, 403))),
+    # ='s profile is ='s own hint edges, so the CFF hinter snaps the pieces' bars as it snaps
+    # ='s. With the upper bar's middle 1.5 lower, at 8 px it rounded down onto the lower bar.
+    "equal": (Bar((225, 375), (125, 218), (131, 208)), Bar((225, 375), (328, 420), (338, 414))),
     "underscore": (Bar((225, 375), (-115, -20), (-107, -29)),),
     # The crossbars stick out past the slanted verticals, each by a different amount.
     "numbersign": (Bar((125, 465), (170, 262), (178, 255)),
@@ -73,7 +75,7 @@ HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_hal
 # Code's 786, with a stroke (70) near the bars' (75).
 SLASH_SCALE = 0.83
 EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
-EQUAL_PITCH = 326 - 143  # distance between the two = bars
+EQUAL_PITCH = 338 - 131  # distance between the two = bars
 
 # <= >=: the arms of < > turned flatter about the point and lengthened so their ends keep
 # their height, widening the angle from 425 to 519, Fira Code's 1.10 x-heights.
@@ -356,8 +358,11 @@ def equal_bars(font, cells):
                            psMat.translate(-span, 0))
     if cells == 3:
         third = geo.transformed(geo.trim(bars, y1=AXIS), psMat.translate(0, -EQUAL_PITCH))
-        bars = geo.transformed(geo.union(bars, third), psMat.translate(0, EQUAL_PITCH / 2))
-    return bars
+        return geo.transformed(geo.union(bars, third), psMat.translate(0, EQUAL_PITCH / 2))
+    # Level, so the stretched middle, which the hinter takes the bars' edges from, lies on ='s
+    # hint edges: there != kept the upper bar's middle on a pixel edge at 8 px, a tie the
+    # hinter rounded down onto the lower bar.
+    return level(bars, [y for bar in RUNS["equal"] for y in bar.profile])
 
 
 def not_equal(font, cells):

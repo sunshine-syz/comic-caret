@@ -95,22 +95,29 @@ for middle, pieces in seamed.items():
                 off.setdefault(name, []).append(size)
 print(json.dumps(off))
 """
-# Prints {size: contrast} for = under native hinting at 9 to 16 px: how much lighter than the
-# lighter bar the lightest pixel row between the bars is, from 0, one grey band, to 1.
+# Prints {glyph: {size: contrast}} for = and the pieces of == under native hinting at 8 to 16
+# px: how much lighter than the lighter bar the lightest pixel row between the bars is, from 0,
+# one grey band, to 1.
 EQUALS_BARS = """
 import json, sys
 import freetype
 
 face = freetype.Face(sys.argv[1])
 contrast = {}
-for size in range(9, 17):
-    face.set_pixel_sizes(0, size)
-    face.load_char("=", freetype.FT_LOAD_DEFAULT | freetype.FT_LOAD_NO_BITMAP | freetype.FT_LOAD_RENDER)
-    bitmap = face.glyph.bitmap
-    rows = [max(bitmap.buffer[r * bitmap.pitch:r * bitmap.pitch + bitmap.width]) / 255
-            for r in range(bitmap.rows)]
-    gap = min(range(1, len(rows) - 1), key=rows.__getitem__)
-    contrast[size] = min(max(rows[:gap]), max(rows[gap + 1:])) - rows[gap]
+for name in json.loads(sys.argv[2]):
+    contrast[name] = {}
+    for size in range(8, 17):
+        face.set_pixel_sizes(0, size)
+        face.load_glyph(face.get_name_index(name.encode()),
+                        freetype.FT_LOAD_DEFAULT | freetype.FT_LOAD_NO_BITMAP | freetype.FT_LOAD_RENDER)
+        bitmap = face.glyph.bitmap
+        rows = [max(bitmap.buffer[r * bitmap.pitch:r * bitmap.pitch + bitmap.width]) / 255
+                for r in range(bitmap.rows)]
+        if len(rows) < 3:  # no row between two bars
+            contrast[name][size] = 0
+            continue
+        gap = min(range(1, len(rows) - 1), key=rows.__getitem__)
+        contrast[name][size] = min(max(rows[:gap]), max(rows[gap + 1:])) - rows[gap]
 print(json.dumps(contrast))
 """
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
@@ -377,8 +384,9 @@ class LigatureSeamTest(unittest.TestCase):
     """Under FreeType's light and native hinting, each ligature piece's bar meets the next
     piece's on the same pixel rows. The autohinter, and ttfautohint's hints, which follow it,
     hint each glyph alone, so a bar edge that strays from its profile, or an arm end aligned to
-    the baseline or x-height zone, moves that piece's bar a row off. The TrueType fonts only:
-    FreeType reads the OpenType fonts' own hints. Skips without uvx."""
+    the baseline or x-height zone, moves that piece's bar a row off. The seams are checked
+    in the TrueType fonts only: FreeType reads the OpenType fonts' own hints. Skips without
+    uvx."""
 
     style = "Regular"
 
@@ -401,15 +409,21 @@ class LigatureSeamTest(unittest.TestCase):
                 self.assertEqual(off, {})
 
     def test_equals_keeps_two_bars_under_native_hinting(self):
-        # The TTF's own hints keep a white row between the bars at text sizes. Unhinted, they
-        # blurred into one grey band at 11 px (0.02). The floor is the references' lowest at
-        # 9-16 px: Intel One Mono's 0.64 at 9 px, where Fira Code keeps 0.75 and Maple Mono 0.78.
-        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
-                   EQUALS_BARS, str(font_file(self.style, "ttf"))]
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        for size, contrast in json.loads(result.stdout).items():
-            with self.subTest(size=size):
-                self.assertGreaterEqual(contrast, 0.64)
+        # Each font's own hints keep a white row between the bars at text sizes. The unhinted
+        # TTF blurred them into one grey band at 11 px (0.02), and every font did at 8 px while
+        # the gap was 106. The floors are the references' lowest: Intel One Mono's, 0.33 at 8 px
+        # and 0.64 at 9 px, where Fira Code keeps 0.75 and Maple Mono 0.78.
+        # The pieces of == are drawn level on a profile of their own (add_ligatures.RUNS).
+        floors = {8: 0.33, **dict.fromkeys(range(9, 17), 0.64)}
+        glyphs = ["equal", "equal.sta", "equal.mid", "equal.end"]
+        for ext in FORMATS:
+            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
+                       "-c", EQUALS_BARS, str(font_file(self.style, ext)), json.dumps(glyphs)]
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            for glyph, contrasts in json.loads(result.stdout).items():
+                for size, contrast in contrasts.items():
+                    with self.subTest(ext=ext, glyph=glyph, size=size):
+                        self.assertGreaterEqual(contrast, floors[int(size)])
 
 
 class ItalicLigatureSeamTest(LigatureSeamTest):
