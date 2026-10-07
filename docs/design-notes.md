@@ -92,14 +92,19 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
   semicolon, brackets and letter widths; read it before changing them.
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
-  1.5 em line height), horizontals −10…610. Ink that fills the cell runs `CELL_REACH` (36)
-  into the next cell, as far as the Nerd Fonts patcher's round separators, so a grid that
-  rounds the cell or the line to whole pixels leaves no light row or column: each edge of a
-  block element on the cell's side or the line box, and the flat side of a solid Powerline
-  separator. Fira Code and Maple Mono keep blocks exact, and their stacked blocks show those
-  lines; Monaspace overlaps 5 units. A block beside an empty cell paints a sliver of
-  0.036 em into it, 0.6 px at 16 px. The shades stay within the cell, so their pattern tiles;
-  so do the thin separators, which part two segments of one colour and leave no seam to cover.
+  1.5 em line height), horizontals −20…620, as in Intel One Mono and Maple Mono (Fira Code's
+  run 5). At 10, which the ligatures' lines keep, as Fira Code's and Maple Mono's do, a grid
+  that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
+  and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 139 past the
+  line box: the font's furthest ink, which sets its win ascent and descent (1039/489).
+- Ink that fills the cell runs `CELL_REACH` (36) into the next cell, as far as the Nerd Fonts
+  patcher's round separators, so a grid that rounds the cell or the line to whole pixels
+  leaves no light row or column: each edge of a block element on the cell's side or the line
+  box, and the flat side of a solid Powerline separator. Fira Code and Maple Mono keep blocks
+  exact, and their stacked blocks show those lines; Monaspace overlaps 5 units. A block beside
+  an empty cell paints a sliver of 0.036 em into it, 0.6 px at 16 px. The shades stay within
+  the cell, so their pattern tiles; so do the thin separators, which part two segments of one
+  colour and leave no seam to cover.
 - Braille's dots stand on an even grid: columns every half cell, rows every quarter of the
   line box, so a graph's dots stand as far apart across cells and lines as inside one. Graphs
   in btop, Rich and UnicodePlots come first; Braille text reads looser than in Maple Mono,

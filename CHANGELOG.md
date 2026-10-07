@@ -13,6 +13,7 @@
 - The leg of `₹` ends level with the leg of `R`, in every style. It ended 42 units below the baseline, so at 20 to 24 px its foot showed a pixel under the figures, as in `₹1,250`. The leg keeps its slope and its weight.
 - The solid Powerline separators `` and `` run a little into the segment they end, as the Nerd Fonts patcher's round separators do. Where a terminal rounds the cell to whole pixels, a light column showed between a segment and its separator, as at 13 and 16 px.
 - The block elements, as `█` `▀` `▄` `▌` `▐` and the quadrants, run a little past the cell and the line box. Where a terminal rounds the cell or the line to whole pixels, light rows and columns showed between stacked blocks, as at 13 to 16 px. The shades `░` `▒` `▓` stay within the cell, so their pattern tiles. Terminals that draw blocks themselves, such as Ghostty and kitty, draw them as before.
+- The box-drawing lines across the cell, as `─` `━` `═` and the arms of `┌` `┬` `├`, run a little further into the next cell, as in Intel One Mono and Maple Mono. Where a terminal rounds the cell up to whole pixels, a light notch showed at every seam of a line, as at 11, 16 and 21 px. `╱` `╲` `╳` follow. Terminals that draw box drawing themselves, such as Ghostty and kitty, draw these lines as before.
 
 ## 2.0.1 (2026-10)
 

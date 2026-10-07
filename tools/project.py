@@ -19,7 +19,7 @@ ADVANCE = 600  # every glyph's advance width
 SYMBOL_SIDE = 15
 LINE_TOP, LINE_BOTTOM = 900, -350  # the line box: hhea and typo ascender and descender
 AXIS = 269  # the math axis, the hyphen's middle: - = + and the arrows' shafts center on it
-OVERLAP = 10  # how far joining strokes (box drawing, the ligatures) reach into the next cell
+OVERLAP = 10  # how far joining strokes (ligatures, box drawing at 1.5 em) reach into the next cell
 # How far ink that fills the cell to its edges runs into the next cell (the block elements, the
 # solid Powerline separators): a grid that rounds the cell or the line to whole pixels leaves
 # up to about 0.4 px around it, 36 units at 11 px. The Nerd Fonts patcher's round separators

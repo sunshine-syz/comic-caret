@@ -38,7 +38,10 @@ LINE_HEIGHT = LINE_TOP - LINE_BOTTOM
 # Verticals run this far past the line box, so they still meet at 1.5 em line spacing, which
 # apps get by adding space evenly above and below.
 REACH = (1500 - LINE_HEIGHT) // 2 + OVERLAP
-LEFT, RIGHT = -OVERLAP, ADVANCE + OVERLAP
+# Horizontals run this far into the next cell, as Intel One Mono's and Maple Mono's do. At
+# OVERLAP, a grid that rounds the cell up to whole pixels showed a light notch at every seam.
+SIDE_REACH = 20
+LEFT, RIGHT = -SIDE_REACH, ADVANCE + SIDE_REACH
 BOTTOM, TOP = LINE_BOTTOM - REACH, LINE_TOP + REACH
 BLOCK_LEFT, BLOCK_RIGHT = -CELL_REACH, ADVANCE + CELL_REACH
 BLOCK_BOTTOM, BLOCK_TOP = LINE_BOTTOM - CELL_REACH, LINE_TOP + CELL_REACH

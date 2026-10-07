@@ -37,6 +37,10 @@ from project import (
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
 # by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
 BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + OVERLAP
+# Box-drawing horizontals run at least this far into the next cell: Intel One Mono's and Maple
+# Mono's run 20. At 10, a grid that rounds the cell up to whole pixels showed a light notch at
+# every seam of ─ ━ ═ at 11, 16 and 21 px.
+BOX_SIDE_REACH = 20
 
 # Known exceptions.
 # How far a glyph may run into the next cell: ď's caron, no further than the furthest
@@ -122,6 +126,11 @@ class SanityTest(unittest.TestCase):
                     or x0 < 0 and x0 != left or x1 > ADVANCE and x1 != right):
                 wrong[glyph.glyphname] = (x0, bottom, x1, top)
         self.assertEqual(wrong, {})
+
+    def test_box_drawing_horizontals_overlap_the_next_cell(self):
+        # Every horizontal ends where ─ does (test_box_drawing_strokes_reach_the_next_cell).
+        x0, _, x1, _ = self.font[ord("─")].boundingBox()
+        self.assertGreaterEqual(min(-x0, x1 - ADVANCE), BOX_SIDE_REACH)
 
     def test_every_glyph_is_one_cell_wide(self):
         wrong = [g.glyphname for g in self.glyphs
