@@ -213,12 +213,17 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   ends round; its legs lean 45% less. `W`'s middle peak stops at 0.81 of the cap height, and
   `w`'s at 0.87 of its height. ₩'s upper bar rises 46, so it still crosses the lowered middle
   peak, its top 84 under the peak's top, as in Maple Mono's ₩ at the same cap height; both bars
-  run from 31 to 570.
+  run out to the side room, from 15 to 585.
 - **Beyond ASCII.** € and Œ open the C and the O at their middle, on the line through their top
   and bottom extremes. ð's bowl opens at its middle, and its rising stroke moves with its right
   side. ß's arch opens at its crown, and ẞ's top bar lengthens. Ħ ħ Ð Đ đ ₽ lengthen their bars
   past the stem, and Ł its bar along its slant. ₺'s tail lengthens along its level bottom, as
   `t`'s does. ¥'s arms turn out about the crotch.
+- **Signs.** ₱ ₦'s bars run out to the side room, as ₩'s do: 570, the most `SYMBOL_SIDE`
+  allows, within `WOBBLE` of Intel One Mono's 572 and 571. ℃ ℉'s rings move left and the
+  letter's strokes run on, the C's top and foot and the F's arms: 569 and 566, against Maple
+  Mono's 579 and 565. №'s N widens 40, its diagonal flatter, to Fira Code's 556, and ⌥'s three
+  bars run out to Fira Code's 541.
 - **Symbols.** `-` lengthens at its middle, to 365. Each arm of `<` `>` turns flatter about the
   centre of the point's round end and lengthens until its end is back at its height, so `<` `>`
   (425) keep their height within a unit. ≤ ≥'s angle widens by 62 the same way, to 446, and the
@@ -555,12 +560,11 @@ what it does to them:
 - `OUTWARD`: © ®'s ring grows outward only, by the small pen's whole width, so it stays as
   heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©.
-- `BLUNT`: ₩ ₦'s bars run 31 to 52 past their letter on both sides. The pen lengthens their
+- `BLUNT`: ₩ ₦ ₱'s bars run 43 to 127 past their letter on both sides. The pen lengthens their
   round ends, which tapers the bars' run clear of the letter, so the bars would reach the
-  hyphen's weight only inside it. So the sign keeps its regular box, condensed, and a second
+  hyphen's weight only near it. So the sign keeps its regular box, condensed, and a second
   pen, as tall but a unit wide, is united with the first: the bars' ends keep the regular's
-  length and weigh as much as the hyphen. ₱'s bars run 70 left of its P and reach that weight
-  there with the pen alone.
+  length and weigh as much as the hyphen.
 - `ACROSS_AS_UP`: ⇕ is ⇔ turned, and the turned pen would grow it past ↑'s height. So ⇕
   grows by the pen as it stands, condensed until it grows across only by the pen's height,
   and stays as wide as ⇔ is tall.
@@ -582,9 +586,10 @@ what it does to them:
   toward any neighbour, so the bold keeps about 16 less white there (`||=` 24, by `|`'s wider
   pen). Each operator still groups as typed, and keeping the white would take a piece of its
   own for each glyph beside an unmoved one, as `<` `>` share theirs with `<<` `>>`.
-- `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
+- `OWN_BOX`: ™'s T and M, Θ's bar and ⌥ are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
-  reference bolds' 38; it keeps 39.
+  reference bolds' 38; it keeps 39. Fira Code Bold, the one reference bold with ⌥, draws it as
+  wide as its regular, 541; grown, ours would be 569.
 - `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
   ℃ ℉ № (letter and small pieces) grow on their own, and the wider is condensed away from the
   other until the white between them is the regular's. Each keeps its far end where the pen

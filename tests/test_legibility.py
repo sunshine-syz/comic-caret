@@ -299,6 +299,14 @@ WIDTHS = {
     "☒": (502, 566),  # Intel One Mono, Maple Mono
     "‰": (562, 620),  # Fira Code, Maple Mono; Intel One Mono has none
     "₩": (573, 600),  # Intel One Mono, Maple Mono; Fira Code has none
+    # Signs only one or two references draw. ₱ ₦ ℃ stop at the side room, 570
+    # (project.SYMBOL_SIDE), within the wobble of their floor.
+    "₱": (572, 572),  # Intel One Mono; Fira Code and Maple Mono have none
+    "₦": (571, 600),  # Intel One Mono, Maple Mono; Fira Code has none
+    "℃": (579, 579),  # Maple Mono; Fira Code and Intel One Mono have none
+    "℉": (565, 565),  # Maple Mono; Fira Code and Intel One Mono have none
+    "№": (556, 572),  # Fira Code, Maple Mono; Intel One Mono has none
+    "⌥": (541, 541),  # Fira Code; Maple Mono and Intel One Mono have none
     # Intel One Mono has none of these letters.
     "π": (530, 552),  # Maple Mono, Fira Code
     "γ": (489, 514),  # Maple Mono, Fira Code
@@ -378,6 +386,12 @@ BOLD_WIDTHS = {
     "☒": (502, 579),  # Intel One Mono, Fira Code
     "‰": (530, 648),  # Monaspace Neon, Maple Mono; Intel One Mono has none
     "₩": (567, 614),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "₱": (547, 564),  # Monaspace Neon, Intel One Mono; Fira Code and Maple Mono have none
+    "₦": (552, 614),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "℃": (560, 579),  # Monaspace Neon, Maple Mono; Fira Code and Intel One Mono have none
+    "℉": (544, 576),  # Monaspace Neon, Maple Mono; Fira Code and Intel One Mono have none
+    "№": (546, 599),  # Monaspace Neon, Fira Code; Intel One Mono has none
+    "⌥": (541, 541),  # Fira Code; the others have none
     # Intel One Mono has none of these letters.
     "π": (562, 573),  # Maple Mono, Monaspace Radon
     "γ": (503, 570),  # Maple Mono, Fira Code

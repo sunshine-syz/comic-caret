@@ -208,11 +208,13 @@ TIGHT = ({f"{name}.{side}": (way, 0.5) for name in TIGHT_KEEP
             for side, way in (("tight_r2", LEFT), ("tight_l2", RIGHT))
             for name in THREE_ENDS[side]})
 
-# The outlines condensed to keep their own regular box, so the pen grows them no closer to
-# their neighbours than half its width: ™'s T and M, 23 apart, which the small pen would grow
-# until they all but touch, so ™ stays a composite of the two; and Θ's bar, which would come
-# 21 from the ring, under the reference bolds' 38, and keeps 39.
-OWN_BOX = ("T.small", "M.small", "Theta")
+# The outlines condensed to keep their own regular box, where the pen would grow them into
+# their neighbours or wider than the reference bolds draw them: ™'s T and M, 23 apart, which
+# the small pen would grow until they all but touch, so ™ stays a composite of the two; Θ's
+# bar, which would come 21 from the ring, under the reference bolds' 38, and keeps 39; and ⌥,
+# which Fira Code Bold, the one reference bold that draws it, draws as wide as its regular
+# (tests/test_legibility.py).
+OWN_BOX = ("T.small", "M.small", "Theta", "uni2325")
 
 # The glyphs the regular draws as another turned a quarter: ⇕, ⇔ turned with its shaft
 # lengthened. Turned, the pen would grow ⇕ as tall as it grows ⇔ wide, past ↑'s height; so ⇕
@@ -267,13 +269,13 @@ OPENED = ("uni238B",)
 # so it stays open at 12 px (tests/test_symbols.py).
 DASHED = ("uni21E1",)
 
-# The signs whose bars run past their letter on both sides, 31 to 52 units: ₩ ₦. The pen
+# The signs whose bars run past their letter on both sides, 43 to 127 units: ₩ ₦ ₱. The pen
 # lengthens a round end by half its width, which tapers the bars' run clear of the letter, so
-# they would reach the hyphen's weight only inside it (tests/test_symbols.py); ₱'s, 70 left of
-# its P, reach it there with the pen alone. So the sign keeps its regular box, condensed, and
-# also grows by a pen of the full height and next to no width, and the two are united: the bars'
-# ends keep the regular's length, as heavy as the hyphen's stroke.
-BLUNT = ("uni20A9", "uni20A6")
+# they would reach the hyphen's weight only near it (tests/test_symbols.py). So the sign keeps
+# its regular box, condensed, and also grows by a pen of the full height and next to no width,
+# and the two are united: the bars' ends keep the regular's length, as heavy as the hyphen's
+# stroke.
+BLUNT = ("uni20A9", "uni20A6", "uni20B1")
 
 # The outlines that are another glyph's outline moved, over a bar: ⇪, ⇧ lifted. The bold draws
 # that piece as the bold ⇧ moved as far, so it stays ⇧ (tests/test_symbols.py), lifted a little
