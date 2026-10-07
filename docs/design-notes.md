@@ -97,6 +97,13 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
   and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 139 past the
   line box: the font's furthest ink, which sets its win ascent and descent (1039/489).
+- A dashed column puts half a dash at the line box's top and bottom and runs it on into the
+  overlap, so lines 1.25 em apart keep the rhythm and lines 1.5 em apart meet in one longer
+  dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
+  long gap marks each seam. Picked by proof 2026-10-06. Lines closer than 1.25 em lose the
+  rhythm sooner: ┊ ┋'s half dash runs on as far as the next line's first gap, so at 1.2 em
+  their seam turns into one dash about three long, where it was two. A dashed row takes half
+  a gap at each side, as in the references.
 - Ink that fills the cell runs `CELL_REACH` (36) into the next cell, as far as the Nerd Fonts
   patcher's round separators, so a grid that rounds the cell or the line to whole pixels
   leaves no light row or column: each edge of a block element on the cell's side or the line

@@ -110,8 +110,8 @@ class SanityTest(unittest.TestCase):
     def test_box_drawing_strokes_reach_the_next_cell(self):
         # Ink above or below ═, the widest horizontal, is a vertical, and each must end the same
         # distance past the line box; ink past the cell's sides is a horizontal, and must end
-        # where ─ does. Dashed lines end short of the cell to keep their gaps even, and
-        # diagonals end at the sides.
+        # where ─ does. Dashes keep a rhythm of their own (test_consistency), and diagonals
+        # end at the sides.
         left, _, right, _ = self.font[ord("─")].boundingBox()
         _, low, _, high = self.font[ord("═")].boundingBox()
         wrong = {}

@@ -10,6 +10,7 @@ glyphs are geometric rather than hand-drawn so they tile. Keep the range complet
 Fonts patcher replaces all of it unless every glyph is there.
 """
 import argparse
+import itertools
 import math
 import pathlib
 import sys
@@ -57,7 +58,7 @@ GAP = LIGHT // 2  # half the gap between the two strokes of a double line
 HALF = {"light": LIGHT // 2, "heavy": HEAVY // 2, "double": GAP + LIGHT}  # half of the width
 
 # Dashes per cell -> the gap between dashes, from Maple Mono, the middle of the three reference
-# fonts. Cell edges take half a gap, so the rhythm stays even across cells.
+# fonts. The rhythm stays even across cells (dashes()).
 DASH_GAP = {2: 128, 3: 68, 4: 46}
 DASH_COUNT = {"DOUBLE": 2, "TRIPLE": 3, "QUADRUPLE": 4}
 
@@ -234,19 +235,25 @@ def lines(sides):
 
 
 def dashes(count, weight, orientation):
-    """`count` dashes per cell, evenly spaced across cells."""
+    """`count` dashes per cell, evenly spaced across cells. A row's cells take half a gap at
+    each side. A column's take half a dash at the top and the bottom and run it on into the
+    overlap, so lines spaced up to 1.5 em apart still meet in one dash; it stops at half a dash,
+    where at 1.25 em the next line's first gap starts."""
     half, gap = HALF[weight], DASH_GAP[count]
-    rects = []
-    for k in range(count):
-        if orientation == "HORIZONTAL":
-            period = ADVANCE / count
-            rects.append((round_half_up(k * period + gap / 2), MIDDLE_Y - half,
-                          round_half_up((k + 1) * period - gap / 2), MIDDLE_Y + half))
-        else:
-            period = LINE_HEIGHT / count
-            rects.append((MIDDLE_X - half, LINE_BOTTOM + round_half_up(k * period + gap / 2),
-                          MIDDLE_X + half, LINE_BOTTOM + round_half_up((k + 1) * period - gap / 2)))
-    return union(rects)
+    if orientation == "HORIZONTAL":
+        period = ADVANCE / count
+        return union([(round_half_up(k * period + gap / 2), MIDDLE_Y - half,
+                       round_half_up((k + 1) * period - gap / 2), MIDDLE_Y + half)
+                      for k in range(count)])
+    period = LINE_HEIGHT / count
+    dash = period - gap
+    past = min(REACH, int(dash / 2))
+    # Where each gap starts and ends, from the bottom up.
+    gaps = [LINE_BOTTOM + round_half_up(k * period + dash / 2 + side * gap)
+            for k in range(count) for side in (0, 1)]
+    ends = [LINE_BOTTOM - past, *gaps, LINE_TOP + past]
+    return union([(MIDDLE_X - half, y0, MIDDLE_X + half, y1)
+                  for y0, y1 in itertools.batched(ends, 2)])
 
 
 def arc(vertical, horizontal):

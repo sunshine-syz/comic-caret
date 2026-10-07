@@ -89,7 +89,8 @@ def known():
     # FontForge derives the italic's caret slope from its angle in hundredths, 100/21, which
     # is 11.86°, where the check wants 1000/213: 0.14° on a text cursor.
     caret_slope = ("WARN", "opentype/caret_slope", "caretslope-mismatch", frozenset())
-    contours = frozenset({"uni20B9", "uni20B1", "uni25CC"})
+    contours = frozenset({"uni20B9", "uni20B1", "uni25CC", "uni254E", "uni2506", "uni250A",
+                          "uni254F", "uni2507", "uni250B"})
     return {
         "ttf": {
             soft_hyphen, no_stat, caret_slope,
@@ -101,7 +102,9 @@ def known():
             ("WARN", "alt_caron", "decomposed-outline", frozenset({"dcaron"})),
             # ₹'s bowl closes on its leg, so it has a counter, where the check expects the open
             # shape's one contour; ₱'s upper bar cuts P's counter in two, one contour more than it
-            # expects; ◌ is eight dashes, as Maple Mono's, where it expects fewer.
+            # expects; ◌ is eight dashes, as Maple Mono's, where it expects fewer; and the dashed
+            # verticals ╎ ┆ ┊ ╏ ┇ ┋ end in half a dash at the top and the bottom, so they have one
+            # contour more than their dashes per cell, which it expects.
             ("WARN", "contour_count", "contour-count", contours),
             # In the regular and the italic, ∄ and ₩ too. ∄ is E and a slash, overlapping, where
             # the check expects 3 contours; the bold draws it as one outline, which has them.

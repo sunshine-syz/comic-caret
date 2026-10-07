@@ -534,8 +534,11 @@ class BoxDrawingTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_dashes_keep_their_rhythm_across_cells(self):
-        # The gap between two cells' dashes matches the gaps inside a cell, and each dash is
-        # as thick as the solid line of its weight.
+        # In three cells' dashes side by side, or stacked a line box apart, every dash but the
+        # outer two is as long and every gap as wide, a cell holds as many gaps as its name's
+        # dashes, and each dash is as thick as the solid line of its weight. Stacked 1.5 em
+        # apart, where the solid verticals still meet, no gap opens wider than a cell's own:
+        # the dashes run into the overlap, so a longer dash, not a longer gap, marks the seam.
         _, y0, _, y1 = self.font[ord("─")].boundingBox()
         x0, _, x1, _ = self.font[ord("│")].boundingBox()
         wrong = {}
@@ -547,20 +550,28 @@ class BoxDrawingTest(unittest.TestCase):
             horizontal, vertical = LINES[words[2].lower()]
             ink = self.ink(chr(code))
             if words[-1] == "HORIZONTAL":
-                period, dashes = ADVANCE, measure.spans_at_y(ink, (y0 + y1) / 2)
-                middle = sum(dashes[0]) / 2
+                start, steps, dashes = 0, (ADVANCE,), measure.spans_at_y(ink, (y0 + y1) / 2)
+                middle = sum(dashes[1]) / 2
                 across = (measure.spans_at_x(ink, middle),
                           measure.spans_at_x(self.ink(horizontal), middle))
             else:
-                period, dashes = self.top - self.bottom, measure.spans_at_x(ink, (x0 + x1) / 2)
-                middle = sum(dashes[0]) / 2
+                start, steps = self.bottom, (self.top - self.bottom, 1.5 * self.font.em)
+                dashes = measure.spans_at_x(ink, (x0 + x1) / 2)
+                middle = sum(dashes[1]) / 2
                 across = (measure.spans_at_y(ink, middle),
                           measure.spans_at_y(self.ink(vertical), middle))
-            two = dashes + [(a + period, b + period) for a, b in dashes]
-            lengths = [b - a for a, b in two]
-            gaps = [c - b for (_, b), (c, _) in itertools.pairwise(two)]
-            if (len(dashes) != count or max(lengths) - min(lengths) > RHYTHM_TOLERANCE
-                    or max(gaps) - min(gaps) > RHYTHM_TOLERANCE or across[0] != across[1]):
+            # Three cells' dashes at each step, and the gaps between them as (from, to).
+            stacks = [merged((a + k * step, b + k * step) for k in range(3) for a, b in dashes)
+                      for step in steps]
+            gaps = [[(b, c) for (_, b), (c, _) in itertools.pairwise(spans)] for spans in stacks]
+            lengths = [b - a for a, b in stacks[0][1:-1]]
+            widths = [c - b for b, c in gaps[0]]
+            cell = (start + steps[0], start + 2 * steps[0])
+            in_cell = sum(cell[0] <= (b + c) / 2 < cell[1] for b, c in gaps[0])
+            widest = max(c - b for spans in gaps for b, c in spans)
+            if (in_cell != count or max(lengths) - min(lengths) > RHYTHM_TOLERANCE
+                    or max(widths) - min(widths) > RHYTHM_TOLERANCE or across[0] != across[1]
+                    or widest > max(widths) + RHYTHM_TOLERANCE):
                 wrong[chr(code)] = (rounded(dashes), rounded(across[0]))
         self.assertEqual(wrong, {})
 
