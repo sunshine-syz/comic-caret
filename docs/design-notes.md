@@ -104,6 +104,12 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   rhythm sooner: ┊ ┋'s half dash runs on as far as the next line's first gap, so at 1.2 em
   their seam turns into one dash about three long, where it was two. A dashed row takes half
   a gap at each side, as in the references.
+- `⎯` (U+23AF) is the `--` line's middle piece and runs `OVERLAP` into each neighbour, as the
+  line's pieces do, so a row of them joins as one line, as Vitest's dividers need; a single one
+  beside text touches its neighbour's cell. Its seams keep the line's faint notch at 11, 16 and
+  21 px. None of the references has it. Picked by proof 2026-10-06 over drawing it within the
+  cell, where a row's seams showed lighter still, and over keeping it 15 from each edge, where
+  a row turned dashed.
 - Ink that fills the cell runs `CELL_REACH` (36) into the next cell, as far as the Nerd Fonts
   patcher's round separators, so a grid that rounds the cell or the line to whole pixels
   leaves no light row or column: each edge of a block element on the cell's side or the line
