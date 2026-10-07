@@ -16,7 +16,8 @@ classify() puts every glyph of the regular in one of two sets:
   tall (offset()). A stem grows half the pen's width on each side and a level stroke half
   its height, so a bold letter keeps the regular's rows. Some glyphs take another pen
   (pen_of()): the small parts a smaller one (small_pen()), the heavy marks a larger one
-  (HEAVY), and the glyphs of TURNED, ROUND, NARROW and OUTWARD the pen as those lists change it.
+  (HEAVY), | and ¦ a wider one (BAR_WEIGHT), and the glyphs of TURNED, ROUND, NARROW and
+  OUTWARD the pen as those lists change it.
 - SHARED: what is drawn as a picture, which the reference bolds keep as their regulars draw
   them (SHARED_BLOCKS, SHARED_CHARS), and .notdef, a box. Copied unchanged, hints included.
 
@@ -41,9 +42,9 @@ right one mirrored is the bold right one mirrored (mirror_pairs()).
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
-SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART); a bar moves up its stems
-(RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line box moves down into it
-(lower_into_line()), and a mark it grows within MARK_CLEARANCE of its letter rises clear
+SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
+stems (RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line box moves down
+into it (lower_into_line()), and a mark it grows within MARK_CLEARANCE of its letter rises clear
 (raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import argparse
@@ -137,6 +138,21 @@ ROUND = ("bar.ordinal", "uni21EA")
 # grow 10.5 and 3.7 less than the others'.
 NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
 
+# How heavy the bold draws |, across its middle. The regular draws it lighter than its stems,
+# 77 where I is 94, and the pen would grow it to 111, 0.85 of the bold I, under every reference
+# bold's 0.896 to 1.112 (tests/test_make_bold.py), so || read thin beside I|l. | and ¦ grow by
+# a pen as much wider as brings | to 125, as heavy as the bold l.
+BAR_WEIGHT = 125
+
+# The glyphs drawn with two ticks of | through a letter, and that letter: ₿'s, past B's top
+# and foot. The letter grows by the pen, and the ticks by |'s, so they stay as heavy as |
+# (tests/test_symbols.py); grown in place they would come 4 apart, where the regular keeps 52,
+# so each moves away from the other by as far as |'s pen grows it (ticks_apart()).
+TICKED = {"uni20BF": "B"}
+# How far a moved tick runs into its letter, so it meets B's bowl past the corner it moved over:
+# inside ₿'s top and foot strokes (79 and 102 deep), clear of its counters.
+TICK_ROOT = 60
+
 # The strokes the regular draws as another stroke turned, and the turn, anticlockwise: the
 # tonos is the acute turned 25° steeper (docs/design-notes.md). The pen turns with it, so the
 # bold tonos is the bold acute turned. The level pen would grow the steeper stroke heavier.
@@ -181,14 +197,14 @@ APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
 DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016", "uni203C")
 
 # The glyphs of a tightened pair or three (add_ligatures.TIGHT_KEEP, THREE_ENDS), each with the
-# way and how far it moves back out. The pen grows the two of a pair toward each other by half
-# its width each, which would merge && into one shape and all but close ??; each moves back
-# that far, so the pair keeps the regular's white, and ++'s bars their overlap. A three's
-# middle glyph stays in place, so its outer glyphs move back the pen's whole width.
-TIGHT_BACK = round(PEN[0] / 2)
-TIGHT = ({f"{name}.{side}": (way, TIGHT_BACK) for name in TIGHT_KEEP
+# way and the share of its pen's width it moves back out. The pen grows the two of a pair
+# toward each other by half its width each, which would merge && into one shape and all but
+# close ??; each moves back that far, so the pair keeps the regular's white, and ++'s bars
+# their overlap. A three's middle glyph stays in place, so its outer glyphs move back the
+# pen's whole width.
+TIGHT = ({f"{name}.{side}": (way, 0.5) for name in TIGHT_KEEP
           for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
-         | {f"{name}.{side}": (way, PEN[0])
+         | {f"{name}.{side}": (way, 1)
             for side, way in (("tight_r2", LEFT), ("tight_l2", RIGHT))
             for name in THREE_ENDS[side]})
 
@@ -326,8 +342,8 @@ def small_pen(font):
 
 def pens(font):
     """{glyph name: (width, height)} for each glyph of the regular, opened as `font`, that grows
-    by another pen than PEN: the small_pen() for a small part, and for a HEAVY mark PEN scaled by
-    its ink over its light glyph's."""
+    by another pen than PEN: the small_pen() for a small part, for a HEAVY mark PEN scaled by
+    its ink over its light glyph's, and for | and ¦ PEN as wide as grows | to BAR_WEIGHT."""
     small = small_pen(font)
     found = {glyph.glyphname: small for glyph in font.glyphs()
              if glyph.glyphname.endswith(".small") or glyph.glyphname in LIGHT_PARTS}
@@ -336,6 +352,10 @@ def pens(font):
         return 2 * area(layer) / length(layer)
     for heavy, light in HEAVY.items():
         found[heavy] = tuple(size * weight(heavy) / weight(light) for size in PEN)
+    bar = ink(font, "bar")
+    _, y0, _, y1 = bar.boundingBox()
+    [(x0, x1)] = spans_at_y(bar, (y0 + y1) / 2)
+    found["bar"] = found["brokenbar"] = (BAR_WEIGHT - (x1 - x0), PEN[1])
     return found
 
 
@@ -703,6 +723,22 @@ def opened(name, outline, bound, scratch, pen, wanted):
     return geo.cleanup(geo.union(cut(degrees), grown))
 
 
+def ticks_apart(name, outline, letter, bound, scratch, pen, bar_pen):
+    """The TICKED outline's part inside `letter`'s box fitted() by `pen`, and each of its two
+    ticks above and below fitted() by |'s `bar_pen`, moved away from the other by as far as
+    that pen grows it toward it, so the two keep the regular's white. Each tick takes the
+    outline TICK_ROOT into the letter with it, so it still meets the letter."""
+    _, foot, _, top = letter
+    grown = [fitted(name, geo.trim(outline, y0=foot, y1=top), bound, scratch, pen)]
+    for y, y0, y1 in ((top + 1, top - TICK_ROOT, geo.FAR), (foot - 1, -geo.FAR, foot + TICK_ROOT)):
+        (l0, l1), (r0, r1) = spans_at_y(outline, y)
+        for x0, x1, way in ((l0, l1, -1), (r0, r1, 1)):
+            tick = geo.trim(outline, x0=x0, x1=x1, y0=y0, y1=y1)
+            grown.append(fitted(name, geo.moved(tick, way * bar_pen[0] / 2, 0), bound, scratch,
+                                bar_pen))
+    return geo.cleanup(geo.union(*grown))
+
+
 def dashed(name, outline, bound, scratch, pen):
     """The DASHED arrow's pieces each fitted() within `bound`: its head, the widest, as it is,
     and each dash shortened at its top by twice the pen's height first."""
@@ -929,12 +965,13 @@ def build(font):
     for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
-                   "HEAVY", "HEADS_APART", "TIGHT"):
+                   "HEAVY", "HEADS_APART", "TIGHT", "TICKED"):
         for name in globals()[listed]:
             if classes.get(name) != BOLDER:
                 sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")
     ways = {"PIECES_APART": PIECES_APART, "SHRUNK": SHRUNK, "OPENED": OPENED, "DASHED": DASHED,
-            "LIFTED": LIFTED, "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT, HEADS_APART":
+            "LIFTED": LIFTED, "TICKED": tuple(TICKED),
+            "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT, HEADS_APART":
             RAISED + MERGED + OWN_BOX + ACROSS_AS_UP + BLUNT + HEADS_APART}
     for (a, first), (b, second) in itertools.combinations(ways.items(), 2):
         if both := sorted(set(first) & set(second)):
@@ -960,8 +997,9 @@ def build(font):
     font.private["BlueScale"] *= was / tallest()
     # Read before anything changes: where each glyph's ink must stay (side_bounds()); where
     # the outline of each of OWN_BOX, ACROSS_AS_UP and BLUNT must, its own box; the gap each part
-    # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; and where
-    # each LIFTED glyph's lifted piece stands and its other pieces.
+    # APART moves keeps, and each DOUBLES glyph's copies; how high each mark stands; where
+    # each LIFTED glyph's lifted piece stands and its other pieces; and the box of the letter
+    # each TICKED glyph's ticks pass.
     bounds, own = side_bounds(font, classes), {}
     for name in OWN_BOX + ACROSS_AS_UP + BLUNT:
         x0, _, x1, _ = font[name].foreground.boundingBox()
@@ -974,6 +1012,7 @@ def build(font):
     # A MERGED glyph's own outline and its parts' ink, as the regular draws them.
     merged = {name: (font[name].foreground, placed(font, font[name])) for name in MERGED}
     lifted = {name: lifted_piece(font, name, base) for name, base in LIFTED.items()}
+    letters = {name: font[letter].boundingBox() for name, letter in TICKED.items()}
     mirrors = mirror_pairs(font, classes)
     # Every unlink comes before any base grows: unlinkRef() bakes the base's outline as the
     # composite last saw it, not its current foreground, so a shared glyph's bolder part must
@@ -1003,6 +1042,9 @@ def build(font):
             glyph.foreground = opened(name, glyph.foreground, bound, scratch, pen, seam)
         elif name in DASHED:
             glyph.foreground = dashed(name, glyph.foreground, bound, scratch, pen)
+        elif name in TICKED:
+            glyph.foreground = ticks_apart(name, glyph.foreground, letters[name], bound, scratch,
+                                           pen, pen_of("bar", grows_by))
         else:
             outline, parts = merged.get(name, (glyph.foreground, []))
             if name in RAISED:
@@ -1041,7 +1083,8 @@ def build(font):
         if name in DOUBLES:
             spread(font, glyph, gaps[name])
         if name in TIGHT:
-            ((dx, dy), back), [(part, *_)] = TIGHT[name], glyph.references
+            ((dx, dy), share), [(part, *_)] = TIGHT[name], glyph.references
+            back = round(share * pen_of(part, grows_by)[0])
             reposition(glyph, shifted({part: (dx * back, dy * back)}))
         if glyph.references != before:
             glyph.autoHint()  # a reference assigned leaves the hints stale

@@ -19,7 +19,7 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
-from measure import area, ink, outline, vertical_edges
+from measure import area, ink, outline, pieces, spans_at_y, vertical_edges
 from project import ADVANCE, BOLD_SFD, OVERLAP, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
 from sfd_files import differences
 
@@ -46,6 +46,10 @@ LIFTED_FURTHER = ("uni21EA",)
 # along its shaft, away from the outer head, until the white between them is Fira Code Bold's
 # (make_bold.HEADS_APART). It moves no further than the pen's width past what the pen grows it.
 HEADS_FURTHER = ("greater.twohead", "less.twohead")
+# How heavy | and ¦ are against I's stem, each across its middle: from Fira Code Bold's 0.896,
+# the least of the reference bolds, to Monaspace Radon Bold's 1.112, the most (Intel One Mono's
+# 0.903, Maple Mono's 1.000, Monaspace Neon's 1.003).
+BAR_TO_STEM = (0.896, 1.112)
 
 
 class GeneratorTest(unittest.TestCase):
@@ -189,6 +193,39 @@ class BoldTest(unittest.TestCase):
     def test_bolder_glyphs_grow_no_wider_than_the_pen(self):
         self.assertEqual(self.outgrown(0), {})
 
+    def test_bars_are_as_heavy_against_the_stems_as_the_reference_bolds(self):
+        # The regular draws | lighter than its stems, and a pen that grows every stroke alike
+        # would leave the bold || thin beside I|l.
+        def weights(name):
+            """Each piece's stroke across its middle."""
+            found = []
+            for piece in pieces(ink(self.bold, name)):
+                _, y0, _, y1 = piece.boundingBox()
+                [(x0, x1)] = spans_at_y(piece, (y0 + y1) / 2)
+                found.append(x1 - x0)
+            return found
+        [stem] = weights("I")
+        low, high = BAR_TO_STEM
+        for name in ("bar", "brokenbar"):
+            with self.subTest(glyph=name):
+                for weight in weights(name):
+                    self.assertGreaterEqual(weight / stem, low)
+                    self.assertLessEqual(weight / stem, high)
+
+    def test_bitcoin_ticks_keep_the_regulars_white(self):
+        # |'s pen grows ₿'s ticks toward each other, which would all but join them; they stand
+        # apart as in the regular, so ₿ keeps two ticks at 12 px.
+        def whites(font):
+            _, foot, _, top = font["B"].boundingBox()
+            _, y0, _, y1 = font["uni20BF"].boundingBox()
+            found = []
+            for y in ((top + y1) / 2, (y0 + foot) / 2):
+                (_, a), (b, _) = spans_at_y(font["uni20BF"].foreground, y)
+                found.append(b - a)
+            return found
+        for bold, regular in zip(whites(self.bold), whites(self.regular), strict=True):
+            self.assertGreaterEqual(bold, regular - ROUNDING)
+
     def test_symbols_keep_their_side_room(self):
         # Each glyph but the letters and figures keeps the room from the cell's sides the
         # regular gives it, down to SYMBOL_SIDE, so two side by side keep twice that between
@@ -268,8 +305,8 @@ class BoldTest(unittest.TestCase):
         # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
         # move, out of the line box's top, into the cell, or clear of a part or a letter the
         # pen grew it into, by no more than the pen grew the two toward each other, and a unit
-        # of rounding: the pen's width across, and up or down, the part's pen's reach and a
-        # full pen's (make_bold.reach()).
+        # of rounding: the wider of the part's pen and the full pen across (|'s is wider), and
+        # up or down, the part's pen's reach and a full pen's (make_bold.reach()).
         pens = make_bold.pens(self.regular)
 
         def listed(glyph):
@@ -277,10 +314,12 @@ class BoldTest(unittest.TestCase):
 
         def moved_too_far(glyph, found, expected):
             for (part, m), (_, e) in zip(found, expected, strict=True):
-                up = make_bold.reach(make_bold.pen_of(part, pens))[1] + PEN[1] / 2
+                pen = make_bold.pen_of(part, pens)
+                up = make_bold.reach(pen)[1] + PEN[1] / 2
                 if (glyph, part) in MOVED_FURTHER:
                     up = PEN[0]
-                if abs(m[4] - e[4]) > PEN[0] + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:
+                across = max(pen[0], PEN[0])
+                if abs(m[4] - e[4]) > across + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:
                     return True
             return False
         wrong = {}

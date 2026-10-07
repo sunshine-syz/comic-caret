@@ -518,6 +518,14 @@ what it does to them:
 - `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. The full pen would
   close ẞ's white between stem and diagonal to 56, under Maple Mono Bold's 65, and the small
   4's counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.136).
+- `BAR_WEIGHT` and `TICKED`: `|` grows by a pen wide enough to bring it to 125 across, as
+  heavy as the bold `l`. The regular draws `|` at 77, lighter than its stems (`I` 94), and the
+  pen would leave it at 111, 0.85 of the bold `I`, under every reference bold's 0.896 (Fira
+  Code) to 1.112 (Monaspace Radon); `||` read thin beside `I|l`. ¦ grows by the same pen, and
+  so do ₿'s ticks past its B, so they stay as heavy as `|`. Grown in place, the ticks would
+  come 4 apart, so each moves away from the other by as far as the pen grows it and keeps the
+  regular's 52; each runs 60 down into the B, so it still meets the bowl. ‖ and the tightened
+  `||` `|||` are references to `|`.
 - `OUTWARD`: © ®'s ring grows outward only, by the small pen's whole width, so it stays as
   heavy as its letter and the letter keeps its room; grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©.
@@ -539,10 +547,10 @@ what it does to them:
   and ĳ, one outline, keeps its dots 14 lower than i j's.
 - `DOUBLES`: both copies of “ ” „ ″ ‖ ‼ move apart, each as far, so the mark stays on the
   cell's middle and keeps the regular's white between its copies.
-- `TIGHT`: each glyph of a tightened pair moves back out by half the pen's width, as far as
+- `TIGHT`: each glyph of a tightened pair moves back out by half its pen's width, as far as
   the pen grew it toward its partner, so the pair keeps the regular's white. Unmoved, `&&`
   would merge into one shape and `??` keep 9; `++`'s bars keep their overlap. A three's outer
-  glyph moves back the pen's whole width, as its unmoved middle glyph grows toward it too.
+  glyph moves back its pen's whole width, as its unmoved middle glyph grows toward it too.
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
   reference bolds' 38; it keeps 39.
