@@ -250,6 +250,12 @@ class OperatorTest(unittest.TestCase):
         x0, _, x1, _ = layer.boundingBox()
         (_, low), (high, _) = measure.spans_at_x(layer, (x0 + x1) / 2)
         self.assertGreaterEqual(high - low, self.broken_bar_gap)
+        # Each piece is |'s stroke, as heavy, across its middle.
+        [(s0, s1)] = measure.spans_at_y(self.font["bar"].foreground, (b0 + b1) / 2)
+        for piece in measure.pieces(layer):
+            _, p0, _, p1 = piece.boundingBox()
+            [(a, b)] = measure.spans_at_y(piece, (p0 + p1) / 2)
+            self.assertAlmostEqual(b - a, s1 - s0, delta=weight_tolerance(self.font))
 
     def test_partial_stands_no_taller_than_six(self):
         # Its hook tops out at 6's height or under, as in both references that have ∂.
