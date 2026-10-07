@@ -18,11 +18,13 @@ import dataclasses
 import datetime
 import html
 import pathlib
+import re
 import struct
 import subprocess
 import sys
 import tempfile
 
+from bump_version import sfd_version
 from project import BOLD_SFD, ITALIC_SFD, ROOT, SFD, font_file, reference_fonts
 
 BUILT = font_file("Regular", "ttf")
@@ -106,7 +108,11 @@ def resolve(parser, rev, sfd):
 def build_at(commit, directory, sfd_path):
     """The TTF built from `sfd_path` (relative to the repo) at `commit`, written into `directory`."""
     sfd, ttf = directory / "before.sfd", directory / "before.ttf"
-    sfd.write_bytes(git("cat-file", "blob", f"{commit}:{sfd_path}", text=False).stdout)
+    blob = git("cat-file", "blob", f"{commit}:{sfd_path}", text=False).stdout
+    # An SFD from before 2.1 holds an X.Y.Z version, which font_version() can't read; a proof
+    # shows no version, so it takes today's.
+    sfd.write_bytes(re.sub(rb"^Version: .*$", f"Version: {sfd_version(SFD)}".encode(), blob,
+                           count=1, flags=re.MULTILINE))
     generate = ROOT / "tools" / "generate.py"
     result = subprocess.run(["fontforge", "-quiet", "-script", str(generate), str(sfd), str(ttf)],
                             check=False, capture_output=True, text=True)

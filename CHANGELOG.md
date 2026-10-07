@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.2 (unreleased)
+## 2.1 (unreleased)
 
 - `~>` stays as typed. fish's prompt ends with it in the home directory, so every prompt line there showed a wave arrow. `~~>` and longer waves still draw an arrow, and so do `<~` and `<~>`.
 - `<>` stays as typed. A React fragment opens with it, so `<>` showed a diamond while its `</>` showed as typed. Java's `new List<>()` and SQL's `a <> b` show as typed too.

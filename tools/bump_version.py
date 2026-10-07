@@ -1,13 +1,13 @@
 """Set the font's version in the SFD and CHANGELOG.md together, and check a release tag.
 
-    python3 tools/bump_version.py X.Y.Z               # start the next version
-    python3 tools/bump_version.py --release           # date the changelog's unreleased head
-    python3 tools/bump_version.py --check-tag vX.Y.Z  # refuse a tag that isn't that release
+    python3 tools/bump_version.py X.Y               # start the next version
+    python3 tools/bump_version.py --release         # date the changelog's unreleased head
+    python3 tools/bump_version.py --check-tag vX.Y  # refuse a tag that isn't that release
 
 The SFDs' Version: always heads CHANGELOG.md (tests/test_metadata.py checks the pair); the
 italic and the bold are written too, so a bump never leaves them behind the regular they are
 derived from. A version is "unreleased" there until --release gives it its month, as in
-"## 1.0.0 (2026-09)". The font files carry X.Y.Z as X.YZZ (font_version).
+"## 2.1 (2026-10)". The font files carry X.Y as X.Y00 (font_version).
 """
 import argparse
 import datetime
@@ -20,8 +20,8 @@ from project import ROOT, STYLES
 
 CHANGELOG = ROOT / "CHANGELOG.md"
 SFDS = tuple(STYLES.values())
-# One digit of Y and two of Z, so that X.YZZ, the form the font files carry, names one version.
-VERSION = re.compile(r"\d+\.\d\.\d\d?")
+# One digit of Y, so that X.Y00, the form the font files carry, names one version.
+VERSION = re.compile(r"\d+\.\d")
 HEADING = re.compile(r"^## (\S+) \((.+)\)$", re.MULTILINE)
 FIRST_HEADING = re.compile(r"^## .*$", re.MULTILINE)
 VALID_HEADING = re.compile(rf"## ({VERSION.pattern}) \((unreleased|\d{{4}}-(?:0[1-9]|1[0-2]))\)")
@@ -54,7 +54,7 @@ def newest(text, changelog):
     valid = VALID_HEADING.fullmatch(first.group())
     if valid is None:
         raise VersionError(f"{changelog.name}'s first heading, {first.group()!r}, is not "
-                           f"'## X.Y.Z (unreleased)' or '## X.Y.Z (YYYY-MM)'")
+                           f"'## X.Y (unreleased)' or '## X.Y (YYYY-MM)'")
     return valid.group(1), valid.group(2), first
 
 
@@ -71,14 +71,14 @@ def ordered(version):
 
 
 def font_version(version):
-    """X.Y.Z as the font files carry it, X.YZZ: 2.0.1 ships as 2.001.
+    """X.Y as the font files carry it, X.Y00: 2.1 ships as 2.100.
 
-    head.fontRevision holds one decimal number, and Font Bakery reads name ID 5 as one too;
-    from "2.0.1" FontForge derives 2.0, so fontconfig took 2.0.1 for 2.0.0. Intel One Mono
+    head.fontRevision holds one decimal number, and Font Bakery reads name ID 5 as one too.
+    2.1 stays above 2.001, which 2.0.1, the last X.Y.Z release, shipped as. Intel One Mono
     ships its 1.4.0 the same way, as 1.400.
     """
-    major, minor, patch = ordered(version)
-    return f"{major}.{minor}{patch:02d}"
+    major, minor = ordered(version)
+    return f"{major}.{minor}00"
 
 
 def start(version, sfds=SFDS, changelog=CHANGELOG):
@@ -87,7 +87,7 @@ def start(version, sfds=SFDS, changelog=CHANGELOG):
     An unreleased head is renamed, keeping its entries; after a release, a new head goes on top.
     """
     if not VERSION.fullmatch(version):
-        raise VersionError(f"{version!r} is not X.Y.Z with Y below 10 and Z below 100")
+        raise VersionError(f"{version!r} is not X.Y with Y below 10")
     text = changelog.read_text(encoding="utf-8")
     _, month, head = newest(text, changelog)
     released = [v for v, m, _ in headings(text) if m != UNRELEASED]
@@ -136,7 +136,7 @@ def main(argv=None, sfds=SFDS, changelog=CHANGELOG):
     """Returns the exit code; the files are parameters so tests can use copies."""
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     action = parser.add_mutually_exclusive_group(required=True)
-    action.add_argument("version", nargs="?", help="start this version, X.Y.Z")
+    action.add_argument("version", nargs="?", help="start this version, X.Y")
     action.add_argument("--release", action="store_true",
                         help="date the changelog's unreleased head with this month")
     action.add_argument("--check-tag", metavar="TAG",

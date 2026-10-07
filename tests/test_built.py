@@ -311,7 +311,7 @@ class BuiltFontTest(unittest.TestCase):
                                  expected)
 
     def test_head_carries_the_version_of_the_names(self):
-        # fontconfig reads the version here, so 2.0.1 must not read as 2.0, the same as 2.0.0.
+        # fontconfig reads the version here, so head must carry name ID 5's X.Y00.
         # 1/0x10000 is the step of the 16.16 number.
         for font in self.fonts:
             with self.subTest(font=font.name):

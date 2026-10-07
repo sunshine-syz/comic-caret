@@ -21,7 +21,7 @@ python3 tools/proof_sheet.py OUTDIR     # review sheet: ours next to the referen
 python3 tools/compare_glyphs.py 'TEXT'  # our glyph positions next to the reference fonts
 tools/render_sample.sh OUTDIR           # ligature sample images, calt on and off
 python3 tools/render_specimen.py        # the README's images in docs/images/ (committed)
-python3 tools/bump_version.py X.Y.Z     # start the next version: every SFD's Version: and CHANGELOG head
+python3 tools/bump_version.py X.Y       # start the next version: every SFD's Version: and CHANGELOG head
 ```
 
 `proof_sheet.py` takes `--text=TEXT` (repeatable) and `--features` to proof other glyphs,
@@ -39,15 +39,15 @@ hb-shape fonts/ComicCaret-Regular.ttf --text='->'            # --text: a leading
 
 ## Releasing
 
-The version being worked on heads `CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y.Z`
-starts the next one, setting every SFD's `Version:` and the heading together. The fonts carry
-it as the decimal X.YZZ (`tools/generate.py`; 2.0.1 ships as 2.001), so Y stays below 10 and Z
-below 100.
+Versions are X.Y; releases up to 2.0.1 were X.Y.Z. The version being worked on heads
+`CHANGELOG.md` as "unreleased"; `tools/bump_version.py X.Y` starts the next one, setting every
+SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y00
+(`tools/generate.py`; 2.1 ships as 2.100, above 2.0.1's 2.001), so Y stays below 10.
 
 1. `python3 tools/bump_version.py --release` gives the heading this month.
 2. Commit, run `./build.sh --release`, then the checks above; the tests also check the Nerd
    Fonts builds it made, which they skip otherwise.
-3. `python3 tools/bump_version.py --check-tag vX.Y.Z` refuses a tag that isn't that release.
+3. `python3 tools/bump_version.py --check-tag vX.Y` refuses a tag that isn't that release.
    Tag the commit and attach both zips from `dist/` to a GitHub release.
 
 ## The SFD
