@@ -18,6 +18,11 @@ from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
+# The points of the angles built from < and >: glyph -> the sides they point to, and the lowest
+# row of the angle, above the bar of <= >=, which lies below the axis.
+POINTS = {"greater_equal.liga": (("right",), AXIS), "less_equal.liga": (("left",), AXIS),
+          "less_greater.liga": (("left", "right"), None),
+          "greater.arrow": (("right",), None), "less.arrow": (("left",), None)}
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
 # it: 289.6 in its 1200-unit cell, scaled to ours. The bold's is make_bold's HEAD_WHITE, Fira
 # Code Bold's.
@@ -57,6 +62,20 @@ def one_layer(contour):
     layer = fontforge.layer()
     layer += contour
     return layer
+
+
+def corners(contour):
+    """The turn in degrees at each on-curve point of the contour, from the point before it to
+    the point after it, handles included: 0 where the outline runs on smoothly."""
+    points = list(contour)
+    turns = []
+    for k, point in enumerate(points):
+        if point.on_curve:
+            before, after = points[k - 1], points[(k + 1) % len(points)]
+            ax, ay = point.x - before.x, point.y - before.y
+            bx, by = after.x - point.x, after.y - point.y
+            turns.append(math.degrees(math.atan2(ax * by - ay * bx, ax * bx + ay * by)))
+    return turns
 
 
 class GeneratorTest(unittest.TestCase):
@@ -210,6 +229,66 @@ class OrEqualTest(unittest.TestCase):
 
 class BoldOrEqualTest(OrEqualTest):
     sfd, white = BOLD_SFD, BOLD_OR_EQUAL_WHITE
+
+
+class PointTest(unittest.TestCase):
+    sfd = SFD
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def bend(self, glyph, side, lowest=None):
+        """The most the glyph's outer edge on `side` bends outward from one row to the next,
+        within 40 rows of its point, from `lowest` up."""
+        layer = self.font[glyph].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        outer = {}
+        for y in range(math.ceil(max(y0, lowest or y0)), math.floor(y1)):
+            if spans := spans_at_y(layer, y):
+                outer[y] = spans[-1][1] if side == "right" else -spans[0][0]
+        point = max(outer, key=outer.get)
+        ys = [y for y in sorted(outer) if abs(y - point) <= 40]
+        return round(max(outer[a] + outer[c] - 2 * outer[b]
+                         for a, b, c in zip(ys, ys[1:], ys[2:], strict=False)), 6)
+
+    def test_points_stay_round(self):
+        # A point turns as one round stroke end, as < and > do, so across it the outer edge
+        # bends outward no more than theirs. Halves of an angle turned apart, each with its
+        # half of the end, leave a ledge where they meet. Outline points rounded to whole
+        # units bend the edge outward by up to a unit.
+        allowed = max(ROUNDING, self.bend("greater", "right"), self.bend("less", "left"))
+        for glyph, (sides, lowest) in POINTS.items():
+            for side in sides:
+                with self.subTest(glyph=glyph, side=side):
+                    self.assertLessEqual(self.bend(glyph, side, lowest), allowed)
+
+
+class BoldPointTest(PointTest):
+    sfd = BOLD_SFD
+
+
+class EasedTest(unittest.TestCase):
+    """eased(), which turns the arms of <= >= <> apart about their point."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(SFD))
+
+    def test_turning_keeps_every_corner(self):
+        # An on-curve point turns with its handles, so a smooth point stays smooth.
+        layer = self.font["greater"].foreground
+        drawn = [corners(contour) for contour in layer]
+        turned = add_ligatures.eased(layer, "greater", math.radians(5))
+        for before, contour in zip(drawn, turned, strict=True):
+            for corner, now in zip(before, corners(contour), strict=True):
+                self.assertAlmostEqual(corner, now, places=6)
+
+    def test_turning_leaves_its_input_as_it_was(self):
+        layer = self.font["greater"].foreground
+        drawn = [(point.x, point.y) for contour in layer for point in contour]
+        add_ligatures.eased(layer, "greater", math.radians(5))
+        self.assertEqual([(point.x, point.y) for contour in layer for point in contour], drawn)
 
 
 class GlyphShapeTest(unittest.TestCase):

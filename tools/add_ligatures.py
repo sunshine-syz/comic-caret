@@ -70,6 +70,11 @@ SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arm
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
 ARM_SPAN = (200, 370)  # along an arm from the point: straight, clear of the join and cap
 HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_halves)
+# A flatter arm's turn eases in between these distances from the point of < or >: none within
+# 60, which takes in the round point (55 from its tip), so the two arms keep it as drawn; all of
+# it from 160, well short of the arm's end cap (430 away), so the cap stands at the height
+# reaching() gave it.
+POINT_EASE = (60, 160)
 
 # != !==: the / at 83 %, centred on the bars: 726 tall, between Maple Mono's 662 and Fira
 # Code's 786, with a stroke (70) near the bars' (75).
@@ -386,6 +391,34 @@ def not_equal(font, cells):
     return geo.union(bars, slash)
 
 
+def eased(layer, name, angle):
+    """`layer` turned by `angle` about the point of < or >, the turn easing in from none near
+    the point to all of it further out (POINT_EASE), so the two halves of an angle, turned
+    apart, keep the round point they share as drawn. A handle turns with its on-curve point,
+    so the outline stays smooth where it was."""
+    tip, (near, far) = TIP[name], POINT_EASE
+
+    def turn_of(point):
+        t = min(1.0, max(0.0, (math.hypot(point.x - tip, point.y - AXIS) - near) / (far - near)))
+        return angle * t * t * (3 - 2 * t)  # smoothstep: no kink where the ease ends
+
+    out = fontforge.layer()
+    for contour in layer.dup():  # a contour's points are its own: moving one moves it there
+        points = list(contour)
+        # A handle belongs to the on-curve point before it, or else to the one after it.
+        turns = [turn_of(point if point.on_curve else points[k - 1] if points[k - 1].on_curve
+                         else points[(k + 1) % len(points)]) for k, point in enumerate(points)]
+        moved = fontforge.contour()
+        for point, turn in zip(points, turns, strict=True):
+            dx, dy = point.x - tip, point.y - AXIS
+            point.x = tip + dx * math.cos(turn) - dy * math.sin(turn)
+            point.y = AXIS + dx * math.sin(turn) + dy * math.cos(turn)
+            moved += point
+        moved.closed = contour.closed
+        out += moved
+    return out
+
+
 def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
     """< or > with each arm turned flatter about the point, so its end cap's centre moves out
     by `width_gain`, and lengthened until its ink reaches the height it had."""
@@ -397,9 +430,9 @@ def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
         dx, dy = end_x - tip, end_y - AXIS
         old_direction = math.atan2(dy, dx)
         new_direction = math.atan2(dy, dx + OUTWARD[name] * width_gain)
-        # Lay the arm along +x from the point, lengthen it, then turn it into place.
+        # Lay the arm along +x from the point, lengthen it, lay it back, then turn it into place.
         flat = reaching(turned(half, name, -old_direction), name, new_direction, goal)
-        arms.append(turned(flat, name, new_direction))
+        arms.append(eased(turned(flat, name, old_direction), name, new_direction - old_direction))
     return geo.union(*arms)
 
 
