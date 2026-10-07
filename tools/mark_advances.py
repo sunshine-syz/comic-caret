@@ -16,29 +16,7 @@ import struct
 import fontforge
 
 from project import ZERO_WIDTH
-from sfnt import read_tables, write_tables
-
-HHEA_METRICS = 34                  # offset of hhea.numberOfHMetrics
-MAXP_GLYPHS = 4                    # offset of maxp.numGlyphs
-
-
-def metrics(hmtx, count, long_count):
-    """[(advance, left side bearing)] of every glyph: the first `long_count` give both, and
-    the rest repeat the last advance."""
-    pairs = [struct.unpack_from(">Hh", hmtx, 4 * i) for i in range(long_count)]
-    bearings = struct.unpack_from(f">{count - long_count}h", hmtx, 4 * long_count)
-    return pairs + [(pairs[-1][0], bearing) for bearing in bearings]
-
-
-def packed(pairs):
-    """hmtx for `pairs`, with the run of equal advances at the end stored once, and its
-    numberOfHMetrics."""
-    long_count = len(pairs)
-    while long_count > 1 and pairs[long_count - 1][0] == pairs[long_count - 2][0]:
-        long_count -= 1
-    hmtx = b"".join(struct.pack(">Hh", *pair) for pair in pairs[:long_count])
-    hmtx += b"".join(struct.pack(">h", bearing) for _, bearing in pairs[long_count:])
-    return hmtx, long_count
+from sfnt import HHEA_METRICS, MAXP_GLYPHS, metrics, packed, read_tables, write_tables
 
 
 def zero_mark_advances(path):

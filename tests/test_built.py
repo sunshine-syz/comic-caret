@@ -95,6 +95,36 @@ for middle, pieces in seamed.items():
                 off.setdefault(name, []).append(size)
 print(json.dumps(off))
 """
+# Prints {glyph: [glyf box, its points' box, hmtx side bearing]} for each glyph whose box or
+# side bearing is not its points', and the head table's box and hhea's extents when they are
+# not theirs.
+BOXES = """
+import json, sys
+from fontTools.ttLib import TTFont
+
+font = TTFont(sys.argv[1])
+glyf, hmtx, head, hhea = font["glyf"], font["hmtx"], font["head"], font["hhea"]
+off, boxes = {}, []
+for name in font.getGlyphOrder():
+    glyph = glyf[name]
+    if glyph.numberOfContours == 0:
+        continue
+    found = [glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax]
+    glyph.recalcBounds(glyf)
+    box = [glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax]
+    boxes.append(box)
+    if found != box or hmtx[name][1] != box[0]:
+        off[name] = [found, box, hmtx[name][1]]
+union = [min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes),
+         max(b[3] for b in boxes)]
+if [head.xMin, head.yMin, head.xMax, head.yMax] != union:
+    off["head"] = [[head.xMin, head.yMin, head.xMax, head.yMax], union]
+extents = [hhea.minLeftSideBearing, hhea.minRightSideBearing, hhea.xMaxExtent]
+hhea.recalc(font)  # from the boxes recalculated above
+if extents != [hhea.minLeftSideBearing, hhea.minRightSideBearing, hhea.xMaxExtent]:
+    off["hhea"] = [extents, [hhea.minLeftSideBearing, hhea.minRightSideBearing, hhea.xMaxExtent]]
+print(json.dumps(off))
+"""
 # Prints {glyph: {size: contrast}} for = and the pieces of == under native hinting at 8 to 16
 # px: how much lighter than the lighter bar the lightest pixel row between the bars is, from 0,
 # one grey band, to 1.
@@ -424,6 +454,34 @@ class LigatureSeamTest(unittest.TestCase):
                 for size, contrast in contrasts.items():
                     with self.subTest(ext=ext, glyph=glyph, size=size):
                         self.assertGreaterEqual(contrast, floors[int(size)])
+
+
+class GlyphBoxTest(unittest.TestCase):
+    """In the TTF each glyph's box is its points' box, as tools that recompute it find it: the
+    Nerd Fonts patcher does, so a box FontForge wrote a unit off gave the two builds different
+    extents (hb-shape --show-extents). Skips without uvx."""
+
+    style = "Regular"
+
+    @classmethod
+    def setUpClass(cls):
+        if shutil.which("uvx") is None:
+            raise unittest.SkipTest("uvx is not installed")
+        require_current_build((cls.style,))
+
+    def test_boxes_are_their_points_boxes(self):
+        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
+                   BOXES, str(font_file(self.style, "ttf"))]
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        self.assertEqual(json.loads(result.stdout), {})
+
+
+class ItalicGlyphBoxTest(GlyphBoxTest):
+    style = "Italic"
+
+
+class BoldGlyphBoxTest(GlyphBoxTest):
+    style = "Bold"
 
 
 class ItalicLigatureSeamTest(LigatureSeamTest):

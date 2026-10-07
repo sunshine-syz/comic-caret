@@ -16,12 +16,20 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from bump_version import font_version
 from mark_advances import zero_mark_advances
 from project import is_alphanumeric
-from sfnt import read_tables, write_tables
+from sfnt import HHEA_METRICS, MAXP_GLYPHS, metrics, packed, read_tables, write_tables
 
 CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
 CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset
 MAC_ROMAN = (1, 0)                   # the platform and encoding of the subtable to drop
 HEAD_MODIFIED = 28                   # offset of head.modified
+HEAD_BOX = 36                        # offset of head.xMin, then yMin, xMax and yMax
+HEAD_LOCA_FORMAT = 50                # offset of head.indexToLocFormat
+HHEA_BEARINGS = 12                   # offset of hhea.minLeftSideBearing, minRight..., xMaxExtent
+BOX = struct.Struct(">hhhh")         # a box: xMin, yMin, xMax, yMax
+# glyf's point flags, and its component flags.
+ON_X_SHORT, ON_Y_SHORT, REPEAT, X_SAME, Y_SAME = 0x02, 0x04, 0x08, 0x10, 0x20
+ARGS_ARE_WORDS, ARGS_ARE_OFFSETS, MORE_COMPONENTS = 0x0001, 0x0002, 0x0020
+SCALED = 0x00C8                      # a scale, an x and y scale, or a 2 x 2 matrix
 MAC_EPOCH = 2082844800               # seconds from 1904-01-01, where head's dates count, to 1970
 # Pinned so the TTF's hints change only when we bump it on purpose.
 TTFAUTOHINT = ["uvx", "--with", "ttfautohint-py==0.6.1", "python", "-m", "ttfautohint"]
@@ -163,6 +171,98 @@ def finish_tables(path, modified):
     path.write_bytes(write_tables(version, search, out))
 
 
+def points_box(glyf, start):
+    """The box of the points of the simple glyph at `start` in glyf."""
+    contours = struct.unpack_from(">h", glyf, start)[0]
+    offset = start + 2 + BOX.size
+    count = struct.unpack_from(f">{contours}H", glyf, offset)[-1] + 1
+    offset += 2 * contours
+    offset += 2 + struct.unpack_from(">H", glyf, offset)[0]  # past the instructions
+    flags = []
+    while len(flags) < count:
+        flag = glyf[offset]
+        repeat = glyf[offset + 1] if flag & REPEAT else 0
+        offset += 2 if flag & REPEAT else 1
+        flags += [flag] * (1 + repeat)
+    axes = []
+    for short, same in ((ON_X_SHORT, X_SAME), (ON_Y_SHORT, Y_SAME)):
+        value, values = 0, []
+        for flag in flags:
+            if flag & short:
+                value += glyf[offset] if flag & same else -glyf[offset]
+                offset += 1
+            elif not flag & same:
+                value += struct.unpack_from(">h", glyf, offset)[0]
+                offset += 2
+            values.append(value)
+        axes.append(values)
+    xs, ys = axes
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def components(glyf, start):
+    """[(glyph index, dx, dy)] of the composite glyph at `start` in glyf, whose components are
+    simple glyphs placed by offsets alone (flatten_nested_references,
+    decompose_transformed_references)."""
+    offset, found = start + 2 + BOX.size, []
+    while True:
+        flags, index = struct.unpack_from(">HH", glyf, offset)
+        words = flags & ARGS_ARE_WORDS
+        dx, dy = struct.unpack_from(">hh" if words else ">bb", glyf, offset + 4)
+        offset += 8 if words else 6
+        assert flags & ARGS_ARE_OFFSETS and not flags & SCALED, f"component flags {flags:#x}"
+        found.append((index, dx, dy))
+        if not flags & MORE_COMPONENTS:
+            return found
+
+
+def fit_boxes_to_points(path):
+    """Rewrite the TTF at `path` so each glyph's box, its left side bearing, the font's box and
+    hhea's extents are those of its points.
+
+    FontForge writes the box of a glyph's cubic outline, which can lie a unit outside the
+    quadratic points it writes for it: V's foot at -13 for points at -12. Tools that read the
+    points, as the Nerd Fonts patcher does, then give the glyph other extents than ours.
+    """
+    version, search, in_file = read_tables(path.read_bytes())
+    order = [tag for tag, _ in in_file]
+    tables = dict(in_file)
+    count = struct.unpack_from(">H", tables[b"maxp"], MAXP_GLYPHS)[0]
+    long_loca = struct.unpack_from(">h", tables[b"head"], HEAD_LOCA_FORMAT)[0]
+    loca = struct.unpack_from(f">{count + 1}{'L' if long_loca else 'H'}", tables[b"loca"])
+    starts = [offset if long_loca else 2 * offset for offset in loca]
+    glyf = bytearray(tables[b"glyf"])
+    drawn = [gid for gid in range(count) if starts[gid] < starts[gid + 1]]
+    simple = {gid: struct.unpack_from(">h", glyf, starts[gid])[0] >= 0 for gid in drawn}
+    boxes = {gid: points_box(glyf, starts[gid]) for gid in drawn if simple[gid]}
+    for gid in (gid for gid in drawn if not simple[gid]):
+        placed = [(x0 + dx, y0 + dy, x1 + dx, y1 + dy)
+                  for index, dx, dy in components(glyf, starts[gid])
+                  for x0, y0, x1, y1 in [boxes[index]]]
+        boxes[gid] = (min(b[0] for b in placed), min(b[1] for b in placed),
+                      max(b[2] for b in placed), max(b[3] for b in placed))
+    long_count = struct.unpack_from(">H", tables[b"hhea"], HHEA_METRICS)[0]
+    pairs = metrics(tables[b"hmtx"], count, long_count)
+    for gid, box in boxes.items():
+        BOX.pack_into(glyf, starts[gid] + 2, *box)
+        pairs[gid] = (pairs[gid][0], box[0])
+    tables[b"glyf"] = bytes(glyf)
+    tables[b"hmtx"], long_count = packed(pairs)
+    head = bytearray(tables[b"head"])
+    BOX.pack_into(head, HEAD_BOX, min(b[0] for b in boxes.values()),
+                  min(b[1] for b in boxes.values()), max(b[2] for b in boxes.values()),
+                  max(b[3] for b in boxes.values()))
+    tables[b"head"] = bytes(head)
+    hhea = bytearray(tables[b"hhea"])
+    # xMaxExtent is the largest left side bearing plus ink width, and each bearing is xMin.
+    struct.pack_into(">hhh", hhea, HHEA_BEARINGS, min(box[0] for box in boxes.values()),
+                     min(pairs[gid][0] - box[2] for gid, box in boxes.items()),
+                     max(box[2] for box in boxes.values()))
+    struct.pack_into(">H", hhea, HHEA_METRICS, long_count)
+    tables[b"hhea"] = bytes(hhea)
+    path.write_bytes(write_tables(version, search, [(tag, tables[tag]) for tag in order]))
+
+
 def autohint(path):
     """Give the TTF at `path` ttfautohint's hints.
 
@@ -208,6 +308,8 @@ def main(source, output):
     finish_tables(path, modified)
     if output.endswith(".ttf"):
         zero_mark_advances(path)
+        # Last, so hhea's extents count the marks' zero advances, as FontForge's do.
+        fit_boxes_to_points(path)
 
 
 if __name__ == "__main__":

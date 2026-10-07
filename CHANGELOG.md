@@ -17,6 +17,7 @@
 - The dashed vertical lines `╎` `┆` `┊` `╏` `┇` `┋` end in half a dash at the top and the bottom of the line, and run on into the next line. Where lines stand further apart than the font's own 1.25 em, as 1.5 em, a longer dash marks where two lines meet; a long gap broke the dashes there. At 1.25 em they keep their rhythm. Terminals that draw box drawing themselves, such as Ghostty and kitty, draw them as before.
 - `<` and `>` stand in the middle of the cell, as `≤` `≥` do and as in Fira Code and Maple Mono, so `a < b` lines up with `a ≤ b`. Each stood 6.5 units toward its point. The ligatures built on them, as `->` `=>` `->>` `~>` `<<` `<!--`, follow. `→` and `⇒` are `←` and `⇐` mirrored, so the two heads of `<->` and `<==>` stand level: `→` reached 4 units higher than `←`.
 - The points of `<=` `>=` and the corners of `<>` turn as round as the point of `>`. Each showed a short flat with a small step on either side, at large sizes.
+- In the TTF, each glyph's box is the box of its points. `V`, `∄`, `⏵` and `⏺` had one a unit too large, so tools that measure the points, as the Nerd Fonts patcher does, gave them other extents than ours.
 
 ## 2.0.1 (2026-10)
 
