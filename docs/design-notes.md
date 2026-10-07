@@ -92,10 +92,14 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
   semicolon, brackets and letter widths; read it before changing them.
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
-  1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
-  exactly. The solid Powerline separators run `CELL_REACH` (36) into the segment they end, as
-  far as the Nerd Fonts patcher's round ones, so a grid that rounds the cell to whole pixels
-  leaves no light column at their flat side; the thin ones fill the cell exactly.
+  1.5 em line height), horizontals −10…610. Ink that fills the cell runs `CELL_REACH` (36)
+  into the next cell, as far as the Nerd Fonts patcher's round separators, so a grid that
+  rounds the cell or the line to whole pixels leaves no light row or column: each edge of a
+  block element on the cell's side or the line box, and the flat side of a solid Powerline
+  separator. Fira Code and Maple Mono keep blocks exact, and their stacked blocks show those
+  lines; Monaspace overlaps 5 units. A block beside an empty cell paints a sliver of
+  0.036 em into it, 0.6 px at 16 px. The shades stay within the cell, so their pattern tiles;
+  so do the thin separators, which part two segments of one colour and leave no seam to cover.
 - Braille's dots stand on an even grid: columns every half cell, rows every quarter of the
   line box, so a graph's dots stand as far apart across cells and lines as inside one. Graphs
   in btop, Rich and UnicodePlots come first; Braille text reads looser than in Maple Mono,

@@ -71,9 +71,15 @@ BLANK = {"space", "uni00A0", "uni00AD", "uni2009", "uni202F", "uni2800",
 
 
 def is_box_drawing(glyph):
-    # Box-drawing lines overlap their neighbours on purpose so they join. Block elements fill
-    # the cell and the line box exactly, so the rules for every glyph hold for them.
     return 0x2500 <= glyph.unicode <= 0x257F
+
+
+def joins_its_neighbours(glyph):
+    # Box-drawing lines and block elements overlap their neighbours on purpose so they join.
+    # Their own rules: test_box_drawing_strokes_reach_the_next_cell, and for the blocks
+    # test_consistency.BlockElementTest. The shades ░ ▒ ▓ stay within the cell, so their
+    # pattern tiles.
+    return 0x2500 <= glyph.unicode <= 0x259F and glyph.unicode not in range(0x2591, 0x2594)
 
 
 class SanityTest(unittest.TestCase):
@@ -133,19 +139,20 @@ class SanityTest(unittest.TestCase):
         for glyph in self.visible:
             x0, _, x1, _ = self.box(glyph)
             reach = max(-x0, x1 - ADVANCE) - self.rounding
-            if not is_box_drawing(glyph) and reach > self.outside_cell.get(glyph.glyphname, 0):
+            allowed = self.outside_cell.get(glyph.glyphname, 0)
+            if not joins_its_neighbours(glyph) and reach > allowed:
                 outside[glyph.glyphname] = reach
         self.assertEqual(outside, {})
 
     def test_nothing_hangs_below_the_line(self):
         below = [g.glyphname for g in self.glyphs
-                 if not is_box_drawing(g) and g.boundingBox()[1] < LINE_BOTTOM]
+                 if not joins_its_neighbours(g) and g.boundingBox()[1] < LINE_BOTTOM]
         self.assertEqual(below, [])
 
     def test_nothing_rises_above_the_line(self):
-        # Terminals clip glyphs to the line box, so ink above it is cut off.
+        # Many terminals clip glyphs to the line box, so ink above it is cut off.
         above = [g.glyphname for g in self.glyphs
-                 if not is_box_drawing(g) and g.boundingBox()[3] > LINE_TOP]
+                 if not joins_its_neighbours(g) and g.boundingBox()[3] > LINE_TOP]
         self.assertEqual(above, [])
 
     def test_unencoded_glyphs_are_used(self):

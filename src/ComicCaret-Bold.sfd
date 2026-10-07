@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791339007
+ModificationTime: 1791339192
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -23275,18 +23275,18 @@ StartChar: uni2580
 Encoding: 9600 9600 793
 Width: 600
 Flags: W
-HStem: 275 625<0 600>
-VStem: 0 600<275 900>
+HStem: 275 661<-36 636>
+VStem: -36 672<275 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 275 m 1
- 0 900 l 1
- 600 900 l 1
- 600 275 l 1
- 0 275 l 1
+-36 275 m 1
+ -36 936 l 1
+ 636 936 l 1
+ 636 275 l 1
+ -36 275 l 1
 EndSplineSet
 EndChar
 
@@ -23294,17 +23294,17 @@ StartChar: uni2581
 Encoding: 9601 9601 794
 Width: 600
 Flags: W
-HStem: -350 156<0 600>
+HStem: -386 192<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 -194 l 1
- 600 -194 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 -194 l 1
+ 636 -194 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23312,17 +23312,17 @@ StartChar: uni2582
 Encoding: 9602 9602 795
 Width: 600
 Flags: W
-HStem: -350 313<0 600>
+HStem: -386 349<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 -37 l 1
- 600 -37 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 -37 l 1
+ 636 -37 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23330,17 +23330,17 @@ StartChar: uni2583
 Encoding: 9603 9603 796
 Width: 600
 Flags: W
-HStem: -350 469<0 600>
+HStem: -386 505<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 119 l 1
- 600 119 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 119 l 1
+ 636 119 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23348,30 +23348,30 @@ StartChar: uni2584
 Encoding: 9604 9604 797
 Width: 600
 Flags: W
-HStem: -350 625<0 600>
-VStem: 0 600<-350 275>
+HStem: -386 661<-36 636>
+VStem: -36 672<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
-Refer: 793 9600 N 1 0 0 1 0 -625 2
+Refer: 793 9600 N 1 0 0 1 0 -661 2
 EndChar
 
 StartChar: uni2585
 Encoding: 9605 9605 798
 Width: 600
 Flags: W
-VStem: 0 600<-350 431>
+VStem: -36 672<-386 431>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 431 l 1
- 600 431 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 431 l 1
+ 636 431 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23379,17 +23379,17 @@ StartChar: uni2586
 Encoding: 9606 9606 799
 Width: 600
 Flags: W
-VStem: 0 600<-350 588>
+VStem: -36 672<-386 588>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 638 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 588 l 1
- 600 588 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 588 l 1
+ 636 588 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23397,17 +23397,17 @@ StartChar: uni2587
 Encoding: 9607 9607 800
 Width: 600
 Flags: W
-VStem: 0 600<-350 744>
+VStem: -36 672<-386 744>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 794 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 744 l 1
- 600 744 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 744 l 1
+ 636 744 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23415,17 +23415,17 @@ StartChar: uni2588
 Encoding: 9608 9608 801
 Width: 600
 Flags: W
-VStem: 0 600<-350 900>
+VStem: -36 672<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 600 900 l 1
- 600 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 636 936 l 1
+ 636 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23433,17 +23433,17 @@ StartChar: uni2589
 Encoding: 9609 9609 802
 Width: 600
 Flags: W
-VStem: 0 525<-350 900>
+VStem: -36 561<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 525 900 l 1
- 525 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 525 936 l 1
+ 525 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23451,17 +23451,17 @@ StartChar: uni258A
 Encoding: 9610 9610 803
 Width: 600
 Flags: W
-VStem: 0 450<-350 900>
+VStem: -36 486<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 450 900 l 1
- 450 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 450 936 l 1
+ 450 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23469,17 +23469,17 @@ StartChar: uni258B
 Encoding: 9611 9611 804
 Width: 600
 Flags: W
-VStem: 0 375<-350 900>
+VStem: -36 411<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 375 900 l 1
- 375 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 375 936 l 1
+ 375 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23487,17 +23487,17 @@ StartChar: uni258C
 Encoding: 9612 9612 805
 Width: 600
 Flags: W
-VStem: 0 300<-350 900>
+VStem: -36 336<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 300 900 l 1
- 300 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 300 936 l 1
+ 300 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23505,17 +23505,17 @@ StartChar: uni258D
 Encoding: 9613 9613 806
 Width: 600
 Flags: W
-VStem: 0 225<-350 900>
+VStem: -36 261<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 225 900 l 1
- 225 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 225 936 l 1
+ 225 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23523,17 +23523,17 @@ StartChar: uni258E
 Encoding: 9614 9614 807
 Width: 600
 Flags: W
-VStem: 0 150<-350 900>
+VStem: -36 186<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 150 900 l 1
- 150 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 150 936 l 1
+ 150 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23541,17 +23541,17 @@ StartChar: uni258F
 Encoding: 9615 9615 808
 Width: 600
 Flags: W
-VStem: 0 75<-350 900>
+VStem: -36 111<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 900 l 1
- 75 900 l 1
- 75 -350 l 1
- 0 -350 l 1
+-36 -386 m 1
+ -36 936 l 1
+ 75 936 l 1
+ 75 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -23559,12 +23559,12 @@ StartChar: uni2590
 Encoding: 9616 9616 809
 Width: 600
 Flags: W
-VStem: 300 300<-350 900>
+VStem: 300 336<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
-Refer: 805 9612 N 1 0 0 1 300 0 2
+Refer: 805 9612 N 1 0 0 1 336 0 2
 EndChar
 
 StartChar: uni2591
@@ -24575,41 +24575,41 @@ StartChar: uni2594
 Encoding: 9620 9620 813
 Width: 600
 Flags: W
-HStem: 744 156<0 600>
+HStem: 744 192<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
-Refer: 794 9601 N 1 0 0 1 0 1094 2
+Refer: 794 9601 N 1 0 0 1 0 1130 2
 EndChar
 
 StartChar: uni2595
 Encoding: 9621 9621 814
 Width: 600
 Flags: W
-VStem: 525 75<-350 900>
+VStem: 525 111<-386 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
-Refer: 808 9615 N 1 0 0 1 525 0 2
+Refer: 808 9615 N 1 0 0 1 561 0 2
 EndChar
 
 StartChar: uni2596
 Encoding: 9622 9622 815
 Width: 600
 Flags: W
-VStem: 0 300<-350 275>
+VStem: -36 336<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
- 0 275 l 1
+-36 -386 m 1
+ -36 275 l 1
  300 275 l 1
- 300 -350 l 1
- 0 -350 l 1
+ 300 -386 l 1
+ -36 -386 l 1
 EndSplineSet
 EndChar
 
@@ -24617,43 +24617,43 @@ StartChar: uni2597
 Encoding: 9623 9623 816
 Width: 600
 Flags: W
-VStem: 300 300<-350 275>
+VStem: 300 336<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 530 basechar 0
 LayerCount: 2
 Fore
-Refer: 815 9622 N 1 0 0 1 300 0 2
+Refer: 815 9622 N 1 0 0 1 336 0 2
 EndChar
 
 StartChar: uni2598
 Encoding: 9624 9624 817
 Width: 600
 Flags: W
-VStem: 0 300<275 900>
+VStem: -36 336<275 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
-Refer: 815 9622 N 1 0 0 1 0 625 2
+Refer: 815 9622 N 1 0 0 1 0 661 2
 EndChar
 
 StartChar: uni2599
 Encoding: 9625 9625 818
 Width: 600
 Flags: W
-VStem: 0 600<-350 275> 0 300<275 900>
+VStem: -36 672<-386 275> -36 336<275 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1x80
- 0 900 l 1
- 300 900 l 1
+-36 -386 m 1x80
+ -36 936 l 1
+ 300 936 l 1
  300 275 l 1x40
- 600 275 l 1
- 600 -350 l 1
- 0 -350 l 1x80
+ 636 275 l 1
+ 636 -386 l 1
+ -36 -386 l 1x80
 EndSplineSet
 EndChar
 
@@ -24661,21 +24661,21 @@ StartChar: uni259A
 Encoding: 9626 9626 819
 Width: 600
 Flags: W
-VStem: 0 300<276 900> 300 300<-350 275>
+VStem: -36 336<276 936> 300 336<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 275 m 1x80
- 0 900 l 1
- 300 900 l 1
+-36 275 m 1x80
+ -36 936 l 1
+ 300 936 l 1
  300 276 l 1x80
- 600 276 l 1
- 600 -350 l 1
- 300 -350 l 1
+ 636 276 l 1
+ 636 -386 l 1
+ 300 -386 l 1
  300 275 l 1x40
- 0 275 l 1x80
+ -36 275 l 1x80
 EndSplineSet
 EndChar
 
@@ -24683,19 +24683,19 @@ StartChar: uni259B
 Encoding: 9627 9627 820
 Width: 600
 Flags: W
-VStem: 0 600<275 900> 0 300<-350 275>
+VStem: -36 672<275 936> -36 336<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1x40
- 0 900 l 1
- 600 900 l 1
- 600 275 l 1x80
+-36 -386 m 1x40
+ -36 936 l 1
+ 636 936 l 1
+ 636 275 l 1x80
  300 275 l 1
- 300 -350 l 1
- 0 -350 l 1x40
+ 300 -386 l 1
+ -36 -386 l 1x40
 EndSplineSet
 EndChar
 
@@ -24703,19 +24703,19 @@ StartChar: uni259C
 Encoding: 9628 9628 821
 Width: 600
 Flags: W
-VStem: 0 600<275 900> 300 300<-350 275>
+VStem: -36 672<275 936> 300 336<-386 275>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 275 m 1x80
- 0 900 l 1
- 600 900 l 1x80
- 600 -350 l 1
- 300 -350 l 1
+-36 275 m 1x80
+ -36 936 l 1
+ 636 936 l 1x80
+ 636 -386 l 1
+ 300 -386 l 1
  300 275 l 1x40
- 0 275 l 1x80
+ -36 275 l 1x80
 EndSplineSet
 EndChar
 
@@ -24723,33 +24723,33 @@ StartChar: uni259D
 Encoding: 9629 9629 822
 Width: 600
 Flags: W
-VStem: 300 300<275 900>
+VStem: 300 336<275 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
-Refer: 815 9622 N 1 0 0 1 300 625 2
+Refer: 815 9622 N 1 0 0 1 336 661 2
 EndChar
 
 StartChar: uni259E
 Encoding: 9630 9630 823
 Width: 600
 Flags: W
-VStem: 0 300<-350 275> 300 300<276 900>
+VStem: -36 336<-386 275> 300 336<276 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1x80
- 0 276 l 1x80
+-36 -386 m 1x80
+ -36 276 l 1x80
  300 276 l 1
- 300 900 l 1
- 600 900 l 1
- 600 275 l 1x40
+ 300 936 l 1
+ 636 936 l 1
+ 636 275 l 1x40
  300 275 l 1
- 300 -350 l 1
- 0 -350 l 1x80
+ 300 -386 l 1
+ -36 -386 l 1x80
 EndSplineSet
 EndChar
 
@@ -24757,19 +24757,19 @@ StartChar: uni259F
 Encoding: 9631 9631 824
 Width: 600
 Flags: W
-VStem: 0 600<-350 275> 300 300<275 900>
+VStem: -36 672<-386 275> 300 336<275 936>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 950 basechar 0
+AnchorPoint: "top" 300 986 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1x80
- 0 275 l 1x80
+-36 -386 m 1x80
+ -36 275 l 1x80
  300 275 l 1
- 300 900 l 1
- 600 900 l 1x40
- 600 -350 l 1
- 0 -350 l 1x80
+ 300 936 l 1
+ 636 936 l 1x40
+ 636 -386 l 1
+ -36 -386 l 1x80
 EndSplineSet
 EndChar
 

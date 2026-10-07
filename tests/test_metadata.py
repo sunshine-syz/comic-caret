@@ -61,7 +61,8 @@ class MetadataTest(unittest.TestCase):
                      if lang == "English (US)"}
 
     def test_the_line_box_is_the_one_the_tools_draw_to(self):
-        # Box drawing, block elements and the Powerline separators fill LINE_BOTTOM..LINE_TOP.
+        # Box drawing, block elements and the Powerline separators are drawn to
+        # LINE_BOTTOM..LINE_TOP.
         self.assertEqual((self.font.hhea_ascent, self.font.hhea_descent),
                          (LINE_TOP, LINE_BOTTOM))
         self.assertEqual((self.font.os2_typoascent, self.font.os2_typodescent),

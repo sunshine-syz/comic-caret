@@ -31,6 +31,7 @@ from project import (
     ADVANCE,
     AXIS,
     BOLD_SFD,
+    CELL_REACH,
     MARK_CLEARANCE,
     ROUNDING,
     SFD,
@@ -593,10 +594,19 @@ class BlockElementTest(unittest.TestCase):
         return measure.ink(self.font, self.font[code].glyphname)
 
     def test_blocks_fill_the_part_of_the_cell_their_names_give(self):
-        # The cell's width and the line box, split exactly, so bars and graphs line up and
-        # neighbouring blocks meet without a seam.
+        # The cell's width and the line box, split exactly, so bars and graphs line up; and
+        # each edge on the cell's side or the line box runs CELL_REACH past it, so a grid that
+        # rounds the cell up to whole pixels shows no light row or column between
+        # neighbouring blocks.
         height = self.top - self.bottom
         middle = (ADVANCE / 2, self.bottom + height / 2)
+
+        def reaching(box):
+            x0, y0, x1, y1 = box
+            return (x0 - CELL_REACH if x0 == 0 else x0,
+                    y0 - CELL_REACH if y0 == self.bottom else y0,
+                    x1 + CELL_REACH if x1 == ADVANCE else x1,
+                    y1 + CELL_REACH if y1 == self.top else y1)
         wrong = {}
         for code in BLOCK_ELEMENTS:
             name = unicodedata.name(chr(code))
@@ -610,8 +620,15 @@ class BlockElementTest(unittest.TestCase):
                     for column, x in (("LEFT", ADVANCE / 4), ("RIGHT", 3 * ADVANCE / 4)):
                         if any(a <= x <= b for a, b in measure.spans_at_y(ink, y)):
                             inked.add(f"{row} {column}")
-                if inked != named:
-                    wrong[chr(code)] = sorted(inked)
+                rows, columns = {q.split()[0] for q in named}, {q.split()[1] for q in named}
+                want = reaching((0 if "LEFT" in columns else ADVANCE / 2,
+                                 self.bottom if "LOWER" in rows else middle[1],
+                                 ADVANCE if "RIGHT" in columns else ADVANCE / 2,
+                                 self.top if "UPPER" in rows else middle[1]))
+                got = ink.boundingBox()
+                off = any(abs(a - b) > BLOCK_TOLERANCE for a, b in zip(got, want))
+                if inked != named or off:
+                    wrong[chr(code)] = (sorted(inked), got)
                 continue
             if name == "FULL BLOCK":
                 want = (0, self.bottom, ADVANCE, self.top)
@@ -622,6 +639,7 @@ class BlockElementTest(unittest.TestCase):
                         "RIGHT": (ADVANCE - width, self.bottom, ADVANCE, self.top),
                         "LOWER": (0, self.bottom, ADVANCE, self.bottom + tall),
                         "UPPER": (0, self.top - tall, ADVANCE, self.top)}[side]
+            want = reaching(want)
             got = ink.boundingBox()
             if len(ink) != 1 or any(abs(a - b) > BLOCK_TOLERANCE for a, b in zip(got, want)):
                 wrong[chr(code)] = (len(ink), got)

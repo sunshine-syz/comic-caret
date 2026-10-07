@@ -22,6 +22,7 @@ import lig_geometry as geo
 from project import (
     ADVANCE,
     AXIS,
+    CELL_REACH,
     LINE_BOTTOM,
     LINE_TOP,
     OVERLAP,
@@ -39,6 +40,8 @@ LINE_HEIGHT = LINE_TOP - LINE_BOTTOM
 REACH = (1500 - LINE_HEIGHT) // 2 + OVERLAP
 LEFT, RIGHT = -OVERLAP, ADVANCE + OVERLAP
 BOTTOM, TOP = LINE_BOTTOM - REACH, LINE_TOP + REACH
+BLOCK_LEFT, BLOCK_RIGHT = -CELL_REACH, ADVANCE + CELL_REACH
+BLOCK_BOTTOM, BLOCK_TOP = LINE_BOTTOM - CELL_REACH, LINE_TOP + CELL_REACH
 
 MIDDLE_X = ADVANCE // 2  # the centre of the vertical strokes
 MIDDLE_Y = AXIS          # the centre of the horizontal strokes, level with - and →
@@ -333,7 +336,8 @@ def quadrants(names):
     for name in names:
         row, column = name.split()
         ink.add((columns[column], rows[row]))
-    return pixels((0, eighth_x(4), ADVANCE), (LINE_BOTTOM, eighth_y(4), LINE_TOP), ink)
+    return pixels((BLOCK_LEFT, eighth_x(4), BLOCK_RIGHT), (BLOCK_BOTTOM, eighth_y(4), BLOCK_TOP),
+                  ink)
 
 
 def shade(pattern):
@@ -346,19 +350,22 @@ def shade(pattern):
 
 
 def block_element(name):
-    """The outline of a Block Elements character from its name."""
+    """The outline of a Block Elements character from its name. Its edges on the cell's sides
+    and the line box run past them (BLOCK_LEFT ... BLOCK_TOP), so a grid that rounds the cell up
+    to whole pixels leaves no light row or column between blocks; a shade's pattern stays
+    within the cell, so it tiles."""
     if name.endswith(" SHADE"):
         return shade(SHADES[name.split()[0]])
     if name.startswith("QUADRANT "):
         return quadrants(name.removeprefix("QUADRANT ").split(" AND "))
     if name == "FULL BLOCK":
-        return union([(0, LINE_BOTTOM, ADVANCE, LINE_TOP)])
+        return union([(BLOCK_LEFT, BLOCK_BOTTOM, BLOCK_RIGHT, BLOCK_TOP)])
     side, fraction = name.removesuffix(" BLOCK").split(" ", 1)
     n = EIGHTHS[fraction]
-    return union([{"UPPER": (0, eighth_y(8 - n), ADVANCE, LINE_TOP),
-                   "LOWER": (0, LINE_BOTTOM, ADVANCE, eighth_y(n)),
-                   "LEFT": (0, LINE_BOTTOM, eighth_x(n), LINE_TOP),
-                   "RIGHT": (eighth_x(8 - n), LINE_BOTTOM, ADVANCE, LINE_TOP)}[side]])
+    return union([{"UPPER": (BLOCK_LEFT, eighth_y(8 - n), BLOCK_RIGHT, BLOCK_TOP),
+                   "LOWER": (BLOCK_LEFT, BLOCK_BOTTOM, BLOCK_RIGHT, eighth_y(n)),
+                   "LEFT": (BLOCK_LEFT, BLOCK_BOTTOM, eighth_x(n), BLOCK_TOP),
+                   "RIGHT": (eighth_x(8 - n), BLOCK_BOTTOM, BLOCK_RIGHT, BLOCK_TOP)}[side]])
 
 
 def outline(code):
