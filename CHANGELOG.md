@@ -11,6 +11,7 @@
 - `¦` is `|` broken in two, in every style: each piece is as heavy as `|` and has its round ends. Its pieces were a quarter heavier than `|`.
 - `|` stands inside the brackets and is centred on them, as in every reference. Its foot hung 30 units below `(`, `[` and `{`, as in `[a|b]` and `{|x| x}`. `¦` and `‖` follow.
 - The leg of `₹` ends level with the leg of `R`, in every style. It ended 42 units below the baseline, so at 20 to 24 px its foot showed a pixel under the figures, as in `₹1,250`. The leg keeps its slope and its weight.
+- The solid Powerline separators `` and `` run a little into the segment they end, as the Nerd Fonts patcher's round separators do. Where a terminal rounds the cell to whole pixels, a light column showed between a segment and its separator, as at 13 and 16 px.
 
 ## 2.0.1 (2026-10)
 

@@ -2,8 +2,9 @@
 
 Usage: python3 tools/add_powerline.py [SFD]
 
-The separators fill the cell and the line box exactly, as the block elements do, so a prompt's
-coloured segments meet them without a seam; the thin ones are the box drawing's light stroke.
+The separators fill the line box, so a prompt's coloured segments meet them without a seam. The
+solid ones run past their flat side into the segment's cell, so a grid that rounds the cell up
+to whole pixels leaves no light column there; the thin ones are the box drawing's light stroke.
 The branch, line-number and padlock symbols are built from that stroke, round dots and the
 font's own L and N. The script owns the seven glyphs and redraws them in place, so running it
 again changes nothing but ModificationTime. The Nerd Fonts patcher keeps them because build.sh
@@ -19,7 +20,7 @@ import psMat
 
 import lig_geometry as geo
 from add_box_drawing import LIGHT
-from project import ADVANCE, LINE_BOTTOM, LINE_TOP, SFD, save_checked, validation_errors
+from project import ADVANCE, CELL_REACH, LINE_BOTTOM, LINE_TOP, SFD, save_checked, validation_errors
 
 BRANCH, LINE_NUMBER, PADLOCK = 0xE0A0, 0xE0A1, 0xE0A2
 RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT_THIN = 0xE0B0, 0xE0B1, 0xE0B2, 0xE0B3
@@ -69,8 +70,9 @@ def rounded_rect(x0, y0, x1, y1, r):
 
 def solid_separator():
     """: a triangle from the cell's left edge to a point on its right edge, filling the line
-    box, so the segment it ends meets it without a seam."""
-    return geo.polygon([(0, LINE_BOTTOM), (0, LINE_TOP), (ADVANCE, MIDDLE)])
+    box. Its flat side runs on CELL_REACH into the cell before it, the segment it ends."""
+    return geo.polygon([(-CELL_REACH, LINE_BOTTOM), (-CELL_REACH, LINE_TOP), (0, LINE_TOP),
+                        (ADVANCE, MIDDLE), (0, LINE_BOTTOM)])
 
 
 def thin_separator():

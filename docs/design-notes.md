@@ -93,7 +93,9 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   semicolon, brackets and letter widths; read it before changing them.
 - Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
   1.5 em line height), horizontals −10…610. Block elements fill the cell and the line box
-  exactly, and the Powerline separators do the same.
+  exactly. The solid Powerline separators run `CELL_REACH` (36) into the segment they end, as
+  far as the Nerd Fonts patcher's round ones, so a grid that rounds the cell to whole pixels
+  leaves no light column at their flat side; the thin ones fill the cell exactly.
 - Braille's dots stand on an even grid: columns every half cell, rows every quarter of the
   line box, so a graph's dots stand as far apart across cells and lines as inside one. Graphs
   in btop, Rich and UnicodePlots come first; Braille text reads looser than in Maple Mono,

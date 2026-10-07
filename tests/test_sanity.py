@@ -22,6 +22,7 @@ from measure import ink
 from project import (
     ADVANCE,
     BOLD_SFD,
+    CELL_REACH,
     ITALIC_SFD,
     LINE_BOTTOM,
     LINE_TOP,
@@ -50,8 +51,10 @@ DCARON_OVERHANG = round(104 * ADVANCE / 614) + WOBBLE
 TONOS_OVERHANG = round(245 * ADVANCE / 1200)
 TONOS_CAPITALS = ("Epsilontonos", "Etatonos", "Iotatonos", "Omicrontonos", "Upsilontonos",
                   "Omegatonos")
+# The solid Powerline separators run CELL_REACH into the cell of the segment they end.
 INK_OUTSIDE_CELL = {"dcaron": DCARON_OVERHANG, "uni23AF": OVERLAP,
-                    **dict.fromkeys(TONOS_CAPITALS, TONOS_OVERHANG)}
+                    **dict.fromkeys(TONOS_CAPITALS, TONOS_OVERHANG),
+                    **dict.fromkeys(("uniE0B0", "uniE0B2"), CELL_REACH)}
 # The bold's tonos moves left, clear of the heavier capital, as far as the furthest reference
 # bold's goes: Fira Code Bold's Ύ, 425 of its 1200 cell, at our advance (Maple Mono Bold's 153).
 BOLD_TONOS_OVERHANG = round(425 * ADVANCE / 1200)

@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791338813
+ModificationTime: 1791339009
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -36352,10 +36352,12 @@ AnchorPoint: "top" 300 950 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-0 -350 m 1
+-36 -350 m 1
+ -36 900 l 1
  0 900 l 1
  600 275 l 1
  0 -350 l 1
+ -36 -350 l 1
 EndSplineSet
 EndChar
 
@@ -36387,10 +36389,12 @@ AnchorPoint: "top" 300 950 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-600 -350 m 1
+636 -350 m 1
+ 600 -350 l 1
  0 275 l 1
  600 900 l 1
- 600 -350 l 1
+ 636 900 l 1
+ 636 -350 l 1
 EndSplineSet
 EndChar
 

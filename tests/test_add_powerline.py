@@ -24,6 +24,9 @@ from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
 from sfd_files import differences
 
 GENERATOR = ROOT / "tools" / "add_powerline.py"
+# How far a solid separator runs past its flat side at least: the Nerd Fonts patcher's round
+# separators, which the Nerd build sets beside ours, reach 36 (Maple Mono NF's solid ones 40).
+SEPARATOR_REACH = 36
 
 
 class GeneratorTest(unittest.TestCase):
@@ -49,11 +52,26 @@ class SeparatorTest(unittest.TestCase):
     def setUpClass(cls):
         cls.font = fontforge.open(str(SFD))
 
-    def test_separators_fill_the_cell_and_the_line_box(self):
-        for code in (add_powerline.RIGHT_SOLID, add_powerline.RIGHT_THIN,
-                     add_powerline.LEFT_SOLID, add_powerline.LEFT_THIN):
+    def test_thin_separators_fill_the_cell_and_the_line_box(self):
+        for code in (add_powerline.RIGHT_THIN, add_powerline.LEFT_THIN):
             with self.subTest(code=f"U+{code:04X}"):
                 self.assertEqual(self.font[code].boundingBox(), (0, LINE_BOTTOM, ADVANCE, LINE_TOP))
+
+    def test_solid_separators_run_into_the_segment_they_end(self):
+        # A grid that rounds the cell up to whole pixels leaves a light column between the
+        # segment's colour and a separator's flat side, unless the separator runs into the
+        # segment's cell. Its tip stays at the other side, and it keeps to the line box, so it
+        # paints nothing into the lines above and below.
+        for code, side in ((add_powerline.RIGHT_SOLID, 0), (add_powerline.LEFT_SOLID, ADVANCE)):
+            x0, y0, x1, y1 = self.font[code].boundingBox()
+            with self.subTest(code=f"U+{code:04X}"):
+                self.assertEqual((y0, y1), (LINE_BOTTOM, LINE_TOP))
+                reach, tip = (-x0, x1) if side == 0 else (x1 - ADVANCE, x0)
+                self.assertGreaterEqual(reach, SEPARATOR_REACH)
+                self.assertEqual(tip, ADVANCE - side)
+                # The whole cell's height stands at the cell's flat side, as at the segment's.
+                [(low, high)] = measure.spans_at_x(self.font[code].foreground, side)
+                self.assertEqual((round(low), round(high)), (LINE_BOTTOM, LINE_TOP))
 
     def test_left_separators_mirror_the_right_ones(self):
         for left, right in ((add_powerline.LEFT_SOLID, add_powerline.RIGHT_SOLID),
