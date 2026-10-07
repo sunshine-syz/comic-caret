@@ -551,6 +551,11 @@ what it does to them:
   the pen grew it toward its partner, so the pair keeps the regular's white. Unmoved, `&&`
   would merge into one shape and `??` keep 9; `++`'s bars keep their overlap. A three's outer
   glyph moves back its pen's whole width, as its unmoved middle glyph grows toward it too.
+  A glyph tightened toward an unmoved one of another kind, as `=` in `&&=` and `>>=` and `<`
+  `>` in `<$>` `<=>` `..<`, moves back only its own half: the unmoved glyph grows toward it as
+  toward any neighbour, so the bold keeps about 16 less white there (`||=` 24, by `|`'s wider
+  pen). Each operator still groups as typed, and keeping the white would take a piece of its
+  own for each glyph beside an unmoved one, as `<` `>` share theirs with `<<` `>>`.
 - `OWN_BOX`: ™'s T and M, and Θ's bar, are condensed to keep their own regular box. ™'s
   letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
   reference bolds' 38; it keeps 39.
