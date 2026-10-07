@@ -10,6 +10,7 @@
 - In the bold, `|` is as heavy as the stems of the letters beside it, as in the reference bolds. It was lighter than every letter's stem, so `||` read thin beside `I|l`. `‖`, the pulled-together `||` and `|||`, and the ticks of `₿` follow. The ticks of `₿` stand further apart, so they keep the regular's white and don't merge.
 - `¦` is `|` broken in two, in every style: each piece is as heavy as `|` and has its round ends. Its pieces were a quarter heavier than `|`.
 - `|` stands inside the brackets and is centred on them, as in every reference. Its foot hung 30 units below `(`, `[` and `{`, as in `[a|b]` and `{|x| x}`. `¦` and `‖` follow.
+- The leg of `₹` ends level with the leg of `R`, in every style. It ended 42 units below the baseline, so at 20 to 24 px its foot showed a pixel under the figures, as in `₹1,250`. The leg keeps its slope and its weight.
 
 ## 2.0.1 (2026-10)
 

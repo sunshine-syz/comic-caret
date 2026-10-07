@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791331139
+ModificationTime: 1791338813
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -36741,7 +36741,7 @@ StartChar: uni20B9
 Encoding: 8377 8377 1067
 Width: 600
 Flags: W
-HStem: 229 84<93.3318 155 264 389> 434 80<136.331 461.675> 592 76<243.162 583.714>
+HStem: -18 21G<327.5 345.5> 229 84<93.3318 155 264 389> 434 80<136.331 461.675> 592 76<243.162 583.714>
 VStem: 462 84<340.92 434.755>
 AnchorPoint: "bottom" 243 0 basechar 0
 AnchorPoint: "top" 395 718 basechar 0
@@ -36772,11 +36772,11 @@ SplineSet
  357 234 l 1
  346 234 334 233 321 233 c 0
  301 233 282 232 264 232 c 1
- 397 27 l 2
- 400 22 402 15 402 8 c 0
- 402 5 402 3 401 0 c 0
- 396 -23 373 -42 350 -42 c 0
- 337 -42 327 -36 321 -27 c 2
+ 381 51 l 2
+ 384 46 386 39 386 32 c 0
+ 386 29 386 27 385 24 c 0
+ 380 1 357 -18 334 -18 c 0
+ 321 -18 311 -12 305 -3 c 2
  155 229 l 1
  153 229 l 1
  154 230 l 1

@@ -893,6 +893,12 @@ class CurrencyTest(unittest.TestCase):
                     self.assertGreaterEqual(y1 - y0, low)
                     self.assertLessEqual(y1 - y0, high)
 
+    def test_rupee_leg_ends_no_lower_than_R(self):
+        # The references' ₹ end at 0 to -9 and R's leg at -18; one lower shows a pixel under
+        # the figures in ₹1,250 at 20 to 24 px.
+        self.assertGreaterEqual(self.font[ord("₹")].boundingBox()[1],
+                                self.font["R"].boundingBox()[1] - ROUNDING)
+
     def test_rupee_bars_are_level(self):
         # Both bars run at one height across the left half, before the bowl and the leg join.
         x, *_ = BARS["₹"]
