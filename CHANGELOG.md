@@ -19,6 +19,7 @@
 - The points of `<=` `>=` and the corners of `<>` turn as round as the point of `>`. Each showed a short flat with a small step on either side, at large sizes.
 - In the TTF, each glyph's box is the box of its points. `V`, `∄`, `⏵` and `⏺` had one a unit too large, so tools that measure the points, as the Nerd Fonts patcher does, gave them other extents than ours.
 - `₱` `₦` `℃` `℉` `№` and `⌥` are as wide as the narrowest reference font that draws them, as the letters became in 2.0.0. They stood 40 to 64 units narrower. The bars of `₱` and `₦` run further out, as `₩`'s do, and so do the bars of `⌥`. The rings of `℃` and `℉` move left, and the C's ends and the F's arms run on. The N of `№` is wider. In the bold, the bars of `₱` keep their weight to their ends, as those of `₦` and `₩` do, and `⌥` keeps the regular's width, as in Fira Code Bold.
+- In the bold, the caron of `ď` keeps clear of an `l` after it, as in `ďl`; it ran into the `l`. It keeps the regular's width, so it stands steeper, in `ľ` and `Ľ` too. The slash of `‰` is as heavy as the slash of `%`; it was a little lighter. `‣` grows with the text, as `•` does; it stayed as light as the regular's.
 
 ## 2.0.1 (2026-10)
 

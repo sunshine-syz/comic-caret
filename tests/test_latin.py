@@ -16,6 +16,7 @@ import unicodedata
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
@@ -23,7 +24,7 @@ import make_bold
 import measure
 import sfnt
 from helpers import require_current_build
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE, font_file
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE, font_file
 
 TTF = font_file("Regular", "ttf")
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
@@ -180,6 +181,15 @@ class LookalikeTest(unittest.TestCase):
             layer.transform(matrix)
             ends[name] = layer.boundingBox()[2]
         self.assertGreater(ends["periodcentered"], ends["l"])
+
+    def test_d_caron_clears_the_l_after_it(self):
+        # ď's caron runs on into the next cell (test_sanity.py), where l's flag stands; it keeps
+        # as far from it as two symbols side by side keep, SYMBOL_SIDE each. Grown by the pen
+        # alone, the bold's would run into the flag, as Intel One Mono Bold's and Fira Code
+        # Bold's do.
+        l = measure.ink(self.font, "l")
+        l.transform(psMat.translate(ADVANCE, 0))
+        self.assertGreaterEqual(measure.gap(measure.ink(self.font, "dcaron"), l), 2 * SYMBOL_SIDE)
 
     def test_zero_slash_stays_inside(self):
         ring = max(self.font["zero"].foreground, key=lambda c: c.boundingBox()[3])

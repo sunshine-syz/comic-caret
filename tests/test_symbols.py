@@ -864,6 +864,7 @@ class CurrencyTest(unittest.TestCase):
     em dash, both references, and ₿ is B with two ticks of |'s stroke through it."""
     sfd = SFD
     cent_reach = CENT_REACH
+    bullet_grown = False  # whether ‣ is ▸ grown, as its own outline
 
     @classmethod
     def setUpClass(cls):
@@ -988,6 +989,14 @@ class CurrencyTest(unittest.TestCase):
     def test_triangular_bullet_is_the_small_triangle(self):
         # Maple Mono, the only reference with ‣, draws it 258 wide at our em, which is our ▸.
         glyph = self.font[ord("‣")]
+        if self.bullet_grown:
+            x0, y0, x1, y1 = glyph.boundingBox()
+            t0, s0, t1, s1 = self.font[ord("▸")].boundingBox()
+            self.assertFalse(glyph.references)
+            self.assertTrue(x0 < t0 and y0 < s0 and x1 > t1 and y1 > s1)
+            self.assertAlmostEqual((x0 + x1) / 2, (t0 + t1) / 2, delta=ROUNDING)
+            self.assertAlmostEqual((y0 + y1) / 2, (s0 + s1) / 2, delta=ROUNDING)
+            return
         self.assertEqual(len(glyph.foreground), 0)
         [(name, matrix, *_)] = glyph.references
         self.assertEqual(name, self.font[ord("▸")].glyphname)
@@ -1058,6 +1067,9 @@ class BoldKeyHintTest(KeyHintTest):
 class BoldCurrencyTest(CurrencyTest):
     sfd = BOLD_SFD
     cent_reach = BOLD_CENT_REACH
+    # Known exception: ‣ is ▸'s outline grown by the pen (make_bold.unlinked_parts()), a text
+    # bullet on a shared shape, as Maple Mono Bold's ‣ grows and its ▸ stays.
+    bullet_grown = True
 
 
 if __name__ == "__main__":

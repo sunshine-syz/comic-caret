@@ -530,11 +530,14 @@ in `build/cache/reference/bold/`:
   enough, so every stem still grows by the full pen. A composite whose part would pass its
   bound moves its references in toward the cell's centre instead.
 - **Composites** keep their references, so an accented letter follows its base; a glyph with an
-  outline and references has only its outline grown. Two kinds of part are unlinked first. A
-  shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the italic. A
-  bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its own outline,
-  since the reference would turn or scale the pen too. A left glyph the regular draws as its
-  right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one mirrored, so the two stay exact mirrors.
+  outline and references has only its outline grown. Three kinds of part are unlinked first.
+  A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
+  italic. A bolder glyph's shared part (‣ on ▸) grows as its own outline: ‣ is a text bullet,
+  which grows with •, as Maple Mono Bold's ‣ does while its ▸ stays; ◦ stays with the shapes,
+  as Maple Mono Bold's does. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on
+  ⇧) grows as its own outline, since the reference would turn or scale the pen too. A left
+  glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one mirrored,
+  so the two stay exact mirrors.
   An accent the pen grows out of the line box moves down into it (ĥ's circumflex). A mark the
   pen grows within `MARK_CLEARANCE` of its letter rises clear, as far on every letter where it
   stands as high, so a row of them stays level.
@@ -586,10 +589,14 @@ what it does to them:
   toward any neighbour, so the bold keeps about 16 less white there (`||=` 24, by `|`'s wider
   pen). Each operator still groups as typed, and keeping the white would take a piece of its
   own for each glyph beside an unmoved one, as `<` `>` share theirs with `<<` `>>`.
-- `OWN_BOX`: ™'s T and M, Θ's bar and ⌥ are condensed to keep their own regular box. ™'s
-  letters, 23 apart, would all but touch, and Θ's bar would come 21 from its ring, under the
-  reference bolds' 38; it keeps 39. Fira Code Bold, the one reference bold with ⌥, draws it as
-  wide as its regular, 541; grown, ours would be 569.
+- `OWN_BOX`: ™'s T and M, Θ's bar, ⌥ and the caron of ď ľ Ľ are condensed to keep their own
+  regular box. ™'s letters, 23 apart, would all but touch, and Θ's bar would come 21 from its
+  ring, under the reference bolds' 38; it keeps 39. Fira Code Bold, the one reference bold with
+  ⌥, draws it as wide as its regular, 541; grown, ours would be 569. ď's caron runs on into the
+  next cell, where grown 35 wider it would run into an l's flag. It keeps 32 from it, as Maple
+  Mono Bold's keeps 29, and stands steeper and lighter: across its slant it weighs 0.81 of the
+  stem, as Maple Mono Bold's does. Intel One Mono Bold's (0.74) and Fira Code Bold's (0.75) are
+  lighter still, and run into the l.
 - `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
   ℃ ℉ № (letter and small pieces) grow on their own, and the wider is condensed away from the
   other until the white between them is the regular's. Each keeps its far end where the pen
@@ -598,7 +605,8 @@ what it does to them:
   as the small figures; the full pen would close ℃'s ring to 42 across, where the small pen
   leaves 54.
 - `SLASHES`: grown, ‰'s slash would come 27 from the zero under it, where the regular keeps
-  46. It shortens at its foot until it keeps the regular's white.
+  46. It shortens at its foot, along its length, until it keeps the regular's white; scaled
+  down instead, it would come out 3 lighter than %'s.
 - `SHRUNK`: ※'s dots, ⧉'s front square, ⌫ ⌦'s × and %'s rings shrink just enough to keep
   twice `SYMBOL_SIDE` from the piece beside them, where condensing can't part the two.
 - `OPENED`: ⎋'s ring opens wider around its arrow; the arrow would have to shrink by a third

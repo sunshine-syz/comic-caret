@@ -211,10 +211,13 @@ TIGHT = ({f"{name}.{side}": (way, 0.5) for name in TIGHT_KEEP
 # The outlines condensed to keep their own regular box, where the pen would grow them into
 # their neighbours or wider than the reference bolds draw them: ™'s T and M, 23 apart, which
 # the small pen would grow until they all but touch, so ™ stays a composite of the two; Θ's
-# bar, which would come 21 from the ring, under the reference bolds' 38, and keeps 39; and ⌥,
+# bar, which would come 21 from the ring, under the reference bolds' 38, and keeps 39; ⌥,
 # which Fira Code Bold, the one reference bold that draws it, draws as wide as its regular
-# (tests/test_legibility.py).
-OWN_BOX = ("T.small", "M.small", "Theta", "uni2325")
+# (tests/test_legibility.py); and ď ľ Ľ's caron, which in ď runs on into the next cell, where
+# grown 35 wider it would run into an l's flag. It keeps 32 from it (tests/test_latin.py), as
+# Maple Mono Bold's keeps 29, and stands steeper and lighter: across its slant it weighs 0.81
+# of the stem, as Maple Mono Bold's does (Intel One Mono Bold's 0.74, Fira Code Bold's 0.75).
+OWN_BOX = ("T.small", "M.small", "Theta", "uni2325", "caron.alt")
 
 # The glyphs the regular draws as another turned a quarter: ⇕, ⇔ turned with its shaft
 # lengthened. Turned, the pen would grow ⇕ as tall as it grows ⇔ wide, past ↑'s height; so ⇕
@@ -240,8 +243,9 @@ PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
 # piece below its foot: ‰'s, which would come 27 from the zero under it, where the regular
-# keeps 46 (Maple Mono Bold's ‰ keeps 21.5). The slash shrinks about its top end, by the fewest
-# units at its foot that keep the regular's white, so it ends higher up its slant.
+# keeps 46 (Maple Mono Bold's ‰ keeps 21.5). The slash shortens along its length, its top end
+# staying, by the fewest units that keep the regular's white, so it ends higher up its slant and
+# keeps the weight the pen gives %'s.
 SLASHES = ("perthousand",)
 
 # Of those, the ones whose pieces but the tallest the regular draws as light as the small
@@ -444,15 +448,17 @@ def mirror_pairs(font, classes):
 
 def unlinked_parts(glyph, classes):
     """The glyph's references the bold draws as its own outline: a shared glyph's bolder parts,
-    which keep the regular's outline; a bolder glyph's bolder parts turned a quarter (⋮ on …)
-    or scaled, which grow as its outline, since the reference would turn or scale the pen too;
-    and every part of a MERGED glyph."""
+    which keep the regular's outline; a bolder glyph's shared parts, which grow as its outline
+    (‣ on ▸, a text bullet on a shape, as Maple Mono Bold's ‣ grows and its ▸ stays); a bolder
+    glyph's bolder parts turned a quarter (⋮ on …) or scaled, which grow as its outline, since
+    the reference would turn or scale the pen too; and every part of a MERGED glyph."""
     if glyph.glyphname in MERGED:
         return [name for name, *_ in glyph.references]
     # A translation, a 180° turn or a mirror keeps the pen as it is.
-    return [name for name, matrix, *_ in glyph.references if classes[name] == BOLDER
-            and (classes[glyph.glyphname] == SHARED
-                 or tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1))]
+    return [name for name, matrix, *_ in glyph.references
+            if classes[name] != classes[glyph.glyphname]
+            or classes[name] == BOLDER
+            and tuple(round(abs(v), 4) for v in matrix[:4]) != (1, 0, 0, 1)]
 
 
 def lifted_piece(font, name, base):
@@ -612,8 +618,8 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
     """The outline's pieces (PIECES_APART) each fitted() within `bound`, by `pen`, or the ones
     but the tallest by `light` for LIGHT_PIECES; and of two side by side, the wider condensed
     away from the other, or both by half when they are as wide, until the white between their
-    boxes is the regular's. A SLASHES slash then shrinks about its top end until it keeps the
-    regular's white to the pieces below."""
+    boxes is the regular's. A SLASHES slash then shortens along its length, its top end
+    staying, until it keeps the regular's white to the pieces below."""
     parts = pieces(outline)
     boxes = [part.boundingBox() for part in parts]
     tallest = max(range(len(parts)), key=lambda k: boxes[k][3] - boxes[k][1])
@@ -650,10 +656,16 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
         wanted = gap(parts[i], geo.union(*(parts[k] for k in below)))
         rest = geo.union(*(grown[k] for k in below))
         slant = math.hypot(x1 - x0, y1 - y0)
+        # Laid along +x about its top end, where the slash's straight middle lies in the span.
+        along = geo.about(psMat.rotate(-math.atan2(y1 - y0, x1 - x0)), x1, y1)
+        span = (x1 - 0.7 * slant, x1 - 0.3 * slant)
 
         def shortened(units):
-            scale = geo.about(psMat.scale(1 - units / slant), x1, y1)
-            return fitted(name, geo.transformed(parts[i], scale), bound, scratch, pen)
+            # Shorter along its length only, so it keeps its weight and both round ends, and
+            # its top end stays.
+            flat = geo.stretch_span(geo.transformed(parts[i], along), *span, -units)
+            back = psMat.compose(psMat.translate(units, 0), psMat.inverse(along))
+            return fitted(name, geo.transformed(flat, back), bound, scratch, pen)
         # The least shortening that clears: every longer one clears too.
         if (units := least(lambda n: gap(shortened(n), rest) >= wanted, 2 * PEN[0])) is None:
             sys.exit(f"{name}: its slash can't shorten clear of the pieces below it")

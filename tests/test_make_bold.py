@@ -3,6 +3,7 @@ nothing else.
 
 Run: python3 -m unittest discover tests
 """
+import math
 import pathlib
 import re
 import subprocess
@@ -119,11 +120,12 @@ class BoldTest(unittest.TestCase):
         self.assertEqual(moved, {})
 
     def test_bolder_glyphs_have_more_ink(self):
+        # Parts included: a bolder glyph built on a shared one (‣ on ▸) grows too.
         thinner = {}
         for name in self.of_class(BOLDER):
-            if not len(self.regular[name].foreground):
+            found, regular = (area(ink(font, name)) for font in (self.bold, self.regular))
+            if not regular:
                 continue
-            found, regular = (area(font[name].foreground) for font in (self.bold, self.regular))
             if found <= regular:
                 thinner[name] = (round(found), round(regular))
         self.assertEqual(thinner, {})
@@ -225,6 +227,25 @@ class BoldTest(unittest.TestCase):
             return found
         for bold, regular in zip(whites(self.bold), whites(self.regular), strict=True):
             self.assertGreaterEqual(bold, regular - ROUNDING)
+
+    def test_per_mille_and_percent_slashes_grow_by_the_pen(self):
+        # ‰'s slash shortens until it clears the zero under it (make_bold.SLASHES). Shortened
+        # along its length, it keeps its weight, so the pen grows it as it grows %'s: square to
+        # its slant, by the reach both ways of the pen turned with it.
+        def weight(font, name):
+            """The slash's stroke square to its slant at its middle, and the slant."""
+            slash = max(pieces(ink(font, name)),
+                        key=lambda piece: piece.boundingBox()[3] - piece.boundingBox()[1])
+            _, y0, _, y1 = slash.boundingBox()
+            [low], [middle], [high] = (spans_at_y(slash, y0 + t * (y1 - y0))
+                                       for t in (0.3, 0.5, 0.7))
+            slant = math.atan2(0.4 * (y1 - y0), (sum(high) - sum(low)) / 2)
+            return (middle[1] - middle[0]) * math.sin(slant), slant
+        for name in ("percent", "perthousand"):
+            with self.subTest(glyph=name):
+                (bold, slant), (regular, _) = weight(self.bold, name), weight(self.regular, name)
+                pen = 2 * make_bold.reach((*PEN, slant))[1]
+                self.assertAlmostEqual(bold - regular, pen, delta=ROUNDING)
 
     def test_symbols_keep_their_side_room(self):
         # Each glyph but the letters and figures keeps the room from the cell's sides the
