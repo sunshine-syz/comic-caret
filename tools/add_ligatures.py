@@ -113,10 +113,6 @@ BAR_SPAN = (0, 600)    # heights of |'s straight part, clear of its round ends
 
 COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 
-# <>: each half's angle widened by this, so the diamond is as wide as the references' at the
-# same x-height: 1.70 x-heights, between Maple Mono's 1.67 and Fira Code's 1.76.
-DIAMOND_WIDTH_GAIN = 35
-
 # The side bearing each glyph keeps toward its partner once moved, so the white between a pair
 # stays when the cell or the glyph's width changes. & keeps 45 of white in &&, Maple Mono's
 # (Fira Code joins its two), and ? 107 between the hooks of ??, Maple Mono's (Fira Code 104).
@@ -140,8 +136,8 @@ JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap,
 # 8 to 35 px.
 HEAD_PITCH = 369
 
-# ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
-# upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
+# The > and < heads of a wave arrow (~~> <~): the wave ends here in the head's cell, where its
+# crest (or trough) lies inside the upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
 WAVE_END = 411
 SPECK = 90  # the stem weight: a hole no wider than a stroke reads as a blot, not a counter
 
@@ -419,9 +415,9 @@ def eased(layer, name, angle):
     return out
 
 
-def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
+def flatter_angle(font, name):
     """< or > with each arm turned flatter about the point, so its end cap's centre moves out
-    by `width_gain`, and lengthened until its ink reaches the height it had."""
+    by ANGLE_WIDTH_GAIN, and lengthened until its ink reaches the height it had."""
     tip = TIP[name]
     _, bottom, _, top = font[name].boundingBox()
     arms = []
@@ -429,7 +425,7 @@ def flatter_angle(font, name, width_gain=ANGLE_WIDTH_GAIN):
                                           strict=True):
         dx, dy = end_x - tip, end_y - AXIS
         old_direction = math.atan2(dy, dx)
-        new_direction = math.atan2(dy, dx + OUTWARD[name] * width_gain)
+        new_direction = math.atan2(dy, dx + OUTWARD[name] * ANGLE_WIDTH_GAIN)
         # Lay the arm along +x from the point, lengthen it, lay it back, then turn it into place.
         flat = reaching(turned(half, name, -old_direction), name, new_direction, goal)
         arms.append(eased(turned(flat, name, old_direction), name, new_direction - old_direction))
@@ -557,17 +553,6 @@ def end_centre(angle, above):
     return ax + reach * math.cos(direction), ay + reach * math.sin(direction)
 
 
-def diamond(font):
-    """<> as ◇: < and > widened by DIAMOND_WIDTH_GAIN and moved together until their arm ends
-    meet on the boundary between the two cells, so each corner turns as one round stroke end."""
-    halves = []
-    for name in ("less", "greater"):
-        angle = flatter_angle(font, name, DIAMOND_WIDTH_GAIN)
-        middle = sum(end_centre(angle, above)[0] for above in (True, False)) / 2
-        halves.append(geo.transformed(angle, psMat.translate(-middle, 0)))
-    return geo.union(*halves)
-
-
 def tail(font, name):
     """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
@@ -601,8 +586,9 @@ def two_heads(font, name):
 
 
 def wave_arrows(font):
-    """~> and <~: the head's cell carries on the ~ run, from the crest or trough the cell
-    before ends on, and the wave's next turn runs into an arm, which hides its cut end.
+    """The > and < heads of a wave arrow (~~> <~): the head's cell carries on the ~ run, from
+    the crest or trough the cell before ends on, and the wave's next turn runs into an arm,
+    which hides its cut end.
 
     The wave's turn before that brushes the other arm and shuts in a speck of white near the
     point, which is filled.
@@ -653,7 +639,6 @@ def build(font):
     for side, sign in (("tight_r2", 2), ("tight_l2", -2)):
         for name in THREE_ENDS[side]:
             glyphs[f"{name}.{side}"] = [(name, sign * tight_shift(font, name), 0)]
-    glyphs["less_greater.liga"] = diamond(font)
     glyphs["less_bar_greater.liga"] = pipes(font)
     for name in ("greater", "less"):
         glyphs[f"{name}.dtail"] = tail(font, name)

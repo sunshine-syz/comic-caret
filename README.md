@@ -97,21 +97,22 @@ own cell, so columns line up and the cursor moves one character at a time.
 </p>
 
 - Arrows of any length: `->` `<-` `<->` `=>` `<==` `<==>` `--->` `<====>`, with two heads
-  (`->>` `<<-`) or a wave (`~>` `<~` `~~>`), and `>=>` `<=<` with a tail
+  (`->>` `<<-`) or a wave (`~~>` `<~` `<~>`), and `>=>` `<=<` with a tail
 - Continuous lines: `==` `##` `~~` of any length, and `---` `___` from three characters on
 - `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centered on the `=`
-- `|>` `<|` `<|>` as triangles, `<>` as a diamond, and `<!--` with an arrowhead like `-->`'s
+- `|>` `<|` `<|>` as triangles, and `<!--` with an arrowhead like `-->`'s
 - Pulled together: `::` `..` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` `?.` `?:`, and
   `<<<` `>>>` `|||` `&&&` `>>=` `<<=` `=<<` `<$>` `<*>` `<=>` `..=` `..<`
 
 Sequences that run into other operators stay as separate characters, for example `->>>`,
 `<<<-`, `==<`, `<<==` or `https://`. So do two `-` or `_`, as in `--help`, `i--` and
-`__init__`; `~>` before a version, as in `~> 1.0`; `..` in a path or a Python import, as in
-`../`, `cd ..` and `from .. import`; and pairs beside a name where they are no operator, as in
-`src/*`, `*/5` and `Vec<Vec<u8>>`. An Erlang or Elixir binary, as in `<<1, 2>>`, stays plain
-too, and so do heredocs and here-strings: `cat <<EOF`, `<<<"$x"`, PHP's `<<<EOT`, and
-`<<-EOF`, `<<-'EOF'`, `<<-"EOF"` and `<<-\EOF`; with a space, `<<- EOF` draws the two-headed
-arrow, since that is how R writes `x <<- y`.
+`__init__`; `~>`, as at the end of fish's prompt and in Ruby's `~> 1.0`; `<>`, which opens a
+React fragment; `..` in a path or a Python import, as in `../`, `cd ..` and `from .. import`;
+and pairs beside a name where they are no operator, as in `src/*`, `*/5` and `Vec<Vec<u8>>`.
+An Erlang or Elixir binary, as in `<<1, 2>>`, stays plain too, and so do heredocs and
+here-strings: `cat <<EOF`, `<<<"$x"`, PHP's `<<<EOT`, and `<<-EOF`, `<<-'EOF'`, `<<-"EOF"`
+and `<<-\EOF`; with a space, `<<- EOF` draws the two-headed arrow, since that is how R writes
+`x <<- y`.
 
 The ligatures use the `calt` (contextual alternates) OpenType feature:
 

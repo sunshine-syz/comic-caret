@@ -21,7 +21,7 @@ languagesystem latn dflt;
   less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail
   less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r
   exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga
-  greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga less_greater.liga
+  greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
@@ -98,7 +98,6 @@ lookup lig_greater_equal { sub equal by greater_equal.liga; } lig_greater_equal;
 lookup lig_bar_greater { sub greater by bar_greater.liga; } lig_bar_greater;
 lookup lig_less_bar { sub bar by less_bar.liga; } lig_less_bar;
 lookup lig_less_bar_greater { sub greater by less_bar_greater.liga; } lig_less_bar_greater;
-lookup lig_less_greater { sub greater by less_greater.liga; } lig_less_greater;
 lookup lig_tight_r {
   sub [colon period ampersand plus slash asterisk less greater question bar equal]
    by [colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
@@ -309,7 +308,9 @@ feature calt {
   #    before a ~ run, or a > after one, is a wave arrow's head, the < only when no operator
   #    comes before it and the > only when none follows it; a < head ends high. A run whose
   #    > is no head has no < head either: <~>= is plain, as ~>= is, and <~~>= keeps only the
-  #    ~~ run of ~~>=.
+  #    ~~ run of ~~>=. A lone ~ is no run, so ~> stays plain: it ends fish's prompt in the home
+  #    directory, and before a version, as in Ruby's and Terraform's "~> 4.0", it means "at
+  #    least, within".
   lookup lig_runs {
     sub [underscore.sta underscore.mid] underscore' lookup lig_mid underscore;
     sub [underscore.sta underscore.mid] underscore' lookup lig_end;
@@ -326,12 +327,8 @@ feature calt {
     sub [asciitilde.sta asciitilde.mid.low less.warrow] asciitilde' lookup lig_end;
     sub asciitilde.mid asciitilde' lookup lig_mid_low [asciitilde greater];
     sub asciitilde.mid asciitilde' lookup lig_end_low;
-    ignore sub asciitilde' greater @Op;
-    # Before a version, as in Ruby's and Terraform's "~> 4.0", ~> means "at least, within".
-    ignore sub asciitilde' greater @Digit;
-    ignore sub asciitilde' greater space @Digit;
-    sub asciitilde' lookup lig_sta [asciitilde greater];
-    sub [asciitilde.sta asciitilde.mid.low] greater' lookup lig_warrow;
+    sub asciitilde' lookup lig_sta asciitilde;
+    sub asciitilde.mid.low greater' lookup lig_warrow;
     sub asciitilde.mid greater' lookup lig_warrow_low;
   } lig_runs;
 
@@ -362,7 +359,7 @@ feature calt {
     sub underscore.sta' lookup lig_plain underscore.end' lookup lig_plain;
   } lig_two_plain;
 
-  # 5. Pipes, and <> as a diamond.
+  # 5. Pipes. <> stays as typed: a React fragment opens with it.
   lookup lig_pipes {
     ignore sub @Op less' bar greater;
     ignore sub less' bar greater @Op;
@@ -382,15 +379,6 @@ feature calt {
     ignore sub bar' bar @Op;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
-
-  # <> stays a diamond: Java's diamond operator is named for it, and in SQL's a <> b the shape
-  # stands for nothing else.
-  lookup lig_diamond {
-    ignore sub @Op less' greater;
-    sub less' lookup lig_spacer greater' lookup lig_less_greater @Prefix @OperandStart;
-    ignore sub less' greater @Op;
-    sub less' lookup lig_spacer greater' lookup lig_less_greater;
-  } lig_diamond;
 
   # 6. Tightened threes and >>>=, their outer glyphs moved in and the middle ones left in place,
   #    then tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a

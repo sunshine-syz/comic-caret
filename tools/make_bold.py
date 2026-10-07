@@ -491,7 +491,7 @@ def offset(outline, overlap, pen):
 def notches_filled(layer, outline):
     """The grown `layer` with each hole that lies in none of the counters of `outline`, the one
     it grew from, filled. The pen opens no white, so such a hole is a notch whose mouth the pen
-    shut (the ~> head's)."""
+    shut (a wave arrow's > head's)."""
     def solid(contour):
         found = fontforge.layer()
         found += contour

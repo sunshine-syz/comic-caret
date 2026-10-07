@@ -153,8 +153,6 @@ LIGATED = {
     "f>=>g": ["f", "greater.dtail", "equal.mid", "greater.darrow", "g"],
     "<=<": ["less.darrow", "equal.mid", "less.dtail"],
     # Wave arrows: a > head starts high or low, after whichever the run ends on
-    "~>": ["asciitilde.sta", "greater.warrow"],
-    "a ~> b": ["a", "space", "asciitilde.sta", "greater.warrow", "space", "b"],
     "~~>": ["asciitilde.sta", "asciitilde.mid", "greater.warrow.low"],
     "~~~>": ["asciitilde.sta", "asciitilde.mid", "asciitilde.mid.low", "greater.warrow"],
     "<~": ["less.warrow", "asciitilde.end"],
@@ -203,14 +201,11 @@ LIGATED = {
               "asciitilde.end.low"],
     "~~strike~~": ["asciitilde.sta", "asciitilde.end", "s", "t", "r", "i", "k", "e",
                    "asciitilde.sta", "asciitilde.end"],
-    # Pipes, <> and tightened pairs
+    # Pipes and tightened pairs
     "|>": ["LIG", "bar_greater.liga"],
     "<|": ["LIG", "less_bar.liga"],
     "<|>": ["LIG", "LIG", "less_bar_greater.liga"],
     "a <|> b": ["a", "space", "LIG", "LIG", "less_bar_greater.liga", "space", "b"],
-    "<>": ["LIG", "less_greater.liga"],
-    "new List<>()": ["n", "e", "w", "space", "L", "i", "s", "t", "LIG", "less_greater.liga",
-                     "parenleft", "parenright"],
     "||": ["bar.tight_r", "bar.tight_l"],
     "a || b": ["a", "space", "bar.tight_r", "bar.tight_l", "space", "b"],
     "::": ["colon.tight_r", "colon.tight_l"],
@@ -323,7 +318,6 @@ LIGATED = {
     "x:=-1": ["x", "colon.eq", "equal", "hyphen", "one"],
     "x<=-1": ["x", "LIG", "less_equal.liga", "hyphen", "one"],
     "x>=-1": ["x", "LIG", "greater_equal.liga", "hyphen", "one"],
-    "a<>-1": ["a", "LIG", "less_greater.liga", "hyphen", "one"],
     "a||!b": ["a", "bar.tight_r", "bar.tight_l", "exclam", "b"],
     "a&&!b": ["a", "ampersand.tight_r", "ampersand.tight_l", "exclam", "b"],
     "a&&!(b)": ["a", "ampersand.tight_r", "ampersand.tight_l", "exclam", "parenleft", "b",
@@ -351,10 +345,13 @@ PLAIN = [
     # ! or : before a longer = run, and fixed ligatures touching another operator
     "!===", ":==", "!=!", "!=>", "=!=", "::=",
     "<=-", "=<=", "<>=", "<<>>", "<|>>", "<||>", "-<>",
-    # One- and two-headed wave arrows followed by another operator, and Ruby's <<~ heredoc
+    # ~ then > before another operator, a two-headed wave arrow too, and Ruby's <<~ heredoc
     "~>>", "~>=", "<~>>", "<~>=", "<<~", "=~", "!~",
-    # ~> before a version: Ruby's and Terraform's "at least, within"
-    "~> 1.0", "~>1.0",
+    # A lone ~>: it ends fish's prompt in the home directory, and before a version it is
+    # Ruby's and Terraform's "at least, within"
+    "~>", "a ~> b", "~> ls", "~> 1.0", "~>1.0",
+    # <>: a React fragment opens with it, and Java's and SQL's read as typed too
+    "<>", "return (<>", "<><A />", "new List<>()", "a <> b", "a<>-1",
     # <!-- without its -- run
     "<!-",
     # Lone run characters

@@ -18,17 +18,14 @@ from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
 
 PIPES = {"bar_greater.liga": "greater", "less_bar.liga": "less"}
 TRIANGLES = [*PIPES, "less_bar_greater.liga"]  # <|> is both pipes' heads on one bar
-# The points of the angles built from < and >: glyph -> the sides they point to, and the lowest
+# The points of the angles built from < and >: glyph -> the side it points to, and the lowest
 # row of the angle, above the bar of <= >=, which lies below the axis.
-POINTS = {"greater_equal.liga": (("right",), AXIS), "less_equal.liga": (("left",), AXIS),
-          "less_greater.liga": (("left", "right"), None),
-          "greater.arrow": (("right",), None), "less.arrow": (("left",), None)}
+POINTS = {"greater_equal.liga": ("right", AXIS), "less_equal.liga": ("left", AXIS),
+          "greater.arrow": ("right", None), "less.arrow": ("left", None)}
 # The shortest white between the two heads of Fira Code's ->>, the one reference that draws
 # it: 289.6 in its 1200-unit cell, scaled to ours. The bold's is make_bold's HEAD_WHITE, Fira
 # Code Bold's.
 FIRA_HEAD_GAP = 289.6 * ADVANCE / 1200
-# <>'s ink width in x-heights: Maple Mono's (920 of 550) and Fira Code's (1850 of 1053).
-DIAMOND_WIDTHS = (1.67, 1.76)
 # The angle of <= >= apart from its bar, in x-heights: Fira Code's (1156 of 1053) and Maple
 # Mono's (620 of 550).
 OR_EQUAL_ANGLES = (1.098, 1.127)
@@ -258,10 +255,9 @@ class PointTest(unittest.TestCase):
         # half of the end, leave a ledge where they meet. Outline points rounded to whole
         # units bend the edge outward by up to a unit.
         allowed = max(ROUNDING, self.bend("greater", "right"), self.bend("less", "left"))
-        for glyph, (sides, lowest) in POINTS.items():
-            for side in sides:
-                with self.subTest(glyph=glyph, side=side):
-                    self.assertLessEqual(self.bend(glyph, side, lowest), allowed)
+        for glyph, (side, lowest) in POINTS.items():
+            with self.subTest(glyph=glyph):
+                self.assertLessEqual(self.bend(glyph, side, lowest), allowed)
 
 
 class BoldPointTest(PointTest):
@@ -269,7 +265,7 @@ class BoldPointTest(PointTest):
 
 
 class EasedTest(unittest.TestCase):
-    """eased(), which turns the arms of <= >= <> apart about their point."""
+    """eased(), which turns the arms of <= >= apart about their point."""
 
     @classmethod
     def setUpClass(cls):
@@ -348,7 +344,7 @@ class GlyphShapeTest(unittest.TestCase):
         # Where stroke ends meet at a corner they turn as one round end, so the ink's top edge
         # rises to one peak and its bottom edge falls to one. Two ends side by side would leave
         # two caps with a dip between them, however shallow.
-        for glyph in [*TRIANGLES, "less_greater.liga"]:
+        for glyph in TRIANGLES:
             layer = self.font[glyph].foreground
             x0, _, x1, _ = layer.boundingBox()
             columns = [spans_at_x(layer, x) for x in range(math.ceil(x0) + 1, math.floor(x1))]
@@ -393,22 +389,6 @@ class GlyphShapeTest(unittest.TestCase):
             if edges:
                 cut[name] = edges
         self.assertEqual(cut, {})
-
-    def test_diamond_is_one_ring_centred_on_its_cells(self):
-        # <> as ◇: the halves meet at both corners around one counter, centred on the boundary
-        # between its two cells and on the axis, like < and >.
-        layer = self.font["less_greater.liga"].foreground
-        # One outline and one hole: two halves that don't meet are two outlines.
-        self.assertEqual(sorted(c.isClockwise() for c in layer), [False, True])
-        x0, y0, x1, y1 = layer.boundingBox()
-        self.assertAlmostEqual((x0 + x1) / 2, 0, delta=2)
-        self.assertAlmostEqual((y0 + y1) / 2, AXIS, delta=5)
-
-    def test_diamond_is_as_wide_as_the_references(self):
-        # In x-heights, between Maple Mono's <> (1.67) and Fira Code's (1.76).
-        x0, _, x1, _ = self.font["less_greater.liga"].boundingBox()
-        self.assertGreaterEqual((x1 - x0) / self.font.os2_xheight, DIAMOND_WIDTHS[0])
-        self.assertLessEqual((x1 - x0) / self.font.os2_xheight, DIAMOND_WIDTHS[1])
 
     def test_or_equal_angle_is_as_wide_as_the_references(self):
         # The angle apart from its bar, in x-heights, between Fira Code's and Maple Mono's,

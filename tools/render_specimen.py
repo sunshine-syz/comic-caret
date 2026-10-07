@@ -87,8 +87,8 @@ TABLE = (  # right of the terminal lines, its lines drawn muted
 # The ligatures: each group's sequences above the characters typed for them, then code that
 # uses them.
 LIGATURES = (
-    ("Arrows", ("->", "=>", "<->", "<==", "--->", "->>", ">=>", "~>", "<~")),
-    ("Compare", ("==", "!=", "!==", "<=", ">=", ":=", "<>")),
+    ("Arrows", ("->", "=>", "<->", "<==", "--->", "->>", ">=>", "~~>", "<~")),
+    ("Compare", ("==", "!=", "!==", "<=", ">=", ":=")),
     ("Lines", ("---", "===", "___", "###", "~~~")),
     ("Pipes, tags", ("|>", "<|", "<|>", "<!--", "-->")),
     ("Together", ("::", "...", "&&", "||", "//", "??", "?.", "<<", ">>=", "<$>", "..=")),

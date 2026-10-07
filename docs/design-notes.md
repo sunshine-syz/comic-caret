@@ -266,13 +266,12 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`); `ARM_ENDS` holds the centres of `>`'s round ends,
   and `<`'s are those turned. `longer_angle()` lengthens each arm until its ink reaches the
   height its caller asks: the arrowheads →'s and ←'s, so `->` reads as →, and the heads of
-  `|>` `<|` `<|>` a triangle as tall as Fira Code's, centred on the axis. The gains that
-  widen `<` `>` into other ligatures shrank as `<` `>` grew 64 wider, so the shapes keep their
-  reference sizes: `ANGLE_WIDTH_GAIN` (94) widens the angle of `<=` `>=` to 519, Fira Code's
-  1.10 x-heights (Maple Mono's is 1.13), its arms as tall as `<` `>`, and `DIAMOND_WIDTH_GAIN`
-  (35) keeps `<>` 1.70 x-heights wide, between Maple Mono's 1.67 and Fira Code's 1.76. `<=`
-  is `>=` mirrored, as in Fira Code and Maple Mono: `<` is `>` turned, so each built from its
-  own angle, the bar would hang under a different hand-drawn arm and stand the two 9 apart.
+  `|>` `<|` `<|>` a triangle as tall as Fira Code's, centred on the axis. The gain that
+  widens `<` `>` into `<=` `>=` shrank as `<` `>` grew 64 wider, so the angle keeps its
+  reference size: `ANGLE_WIDTH_GAIN` (94) widens it to 519, Fira Code's 1.10 x-heights (Maple
+  Mono's is 1.13), its arms as tall as `<` `>`. `<=` is `>=` mirrored, as in Fira Code and
+  Maple Mono: `<` is `>` turned, so each built from its own angle, the bar would hang under a
+  different hand-drawn arm and stand the two 9 apart.
 - **Seams under light hinting.** FreeType's light autohinter, the default on Linux desktops,
   hints each glyph alone, so the pieces of a ligature meet on one pixel row only where each
   piece's bar rounds the same way. Two things moved a bar a row off. A bar edge that strays
@@ -420,10 +419,9 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   typed. Three or more join into a line, and `<!--` keeps its run.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
-- **Beside a name.** `~>` before a version (Ruby's and Terraform's `~> 1.0`) stays plain, and
-  so do `/*` `/**` after a name (`src/*`), `*/` before one (cron's `*/5`) and `>>` `>>>` after
-  one (`Vec<Vec<u8>>`), unless a name or a number follows, as in a shift without spaces
-  (`x>>1`, `cin>>n`). With spaces, `a >> b` still tightens.
+- **Beside a name.** `/*` `/**` stay plain after a name (`src/*`), and so do `*/` before one
+  (cron's `*/5`) and `>>` `>>>` after one (`Vec<Vec<u8>>`), unless a name or a number follows,
+  as in a shift without spaces (`x>>1`, `cin>>n`). With spaces, `a >> b` still tightens.
 - **Binaries and heredocs.** `<<` and `<<<` before a name, a number or a quote stay plain
   unless an operand stands before them. So Erlang's and Elixir's binaries (`<<1, 2>>`,
   `<<"a">>`) open as they close, and heredocs and here-strings (`cat <<EOF`, `<<<"$x"`, PHP's
@@ -436,9 +434,12 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   `[1..]` `{ ..x }`), as in Fira Code and Maple Mono. A path stays as typed, quoted or not
   (`../..` `"$DIR/.."` `".."`), and so do Python's relative imports (`from ..models`,
   `from ... import`), which no other context tells from a range.
-- **Kept.** `<>` stays a diamond: Java's diamond operator is named for the shape, and SQL's
-  `<>` stands for nothing else. `?.` tightens after a name too, as JavaScript's `a?.b` does;
-  Rust's `x?.y`, `?` then a field, can't be told apart from it.
+- **`~>` and `<>`.** Both stay as typed. `~>` ends fish's prompt in the home directory, and
+  before a version it means "at least, within" (Ruby's and Terraform's `~> 1.0`); `~~>` and
+  longer still join. `<>` opens a React fragment, and no context tells it from Java's diamond
+  operator or SQL's `<>`.
+- **Kept.** `?.` tightens after a name too, as JavaScript's `a?.b` does; Rust's `x?.y`, `?`
+  then a field, can't be told apart from it.
 
 ## Italic
 
