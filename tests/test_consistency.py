@@ -86,7 +86,7 @@ MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\
             "⊶⊷", "‘’", "“”")
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
-MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣‘"
+MIRRORED_OUTLINES = "❮❰◀◁◂◃◄⇤↲↩⌫◣‘←⇐"
 # The arrows along the axis with a head at one end or both: one length, so a row of them reads
 # as one set, as in the references (Fira Code's → ⇤ ⇥ within 4 of each other, Maple Mono's
 # → ↦ within 10).

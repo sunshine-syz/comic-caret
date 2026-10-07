@@ -281,12 +281,12 @@ BLUNT = ("uni20A9", "uni20A6")
 # SYMBOL_SIDE of it.
 LIFTED = {"uni21EA": "uni21E7"}
 
-# The arrows with two heads, ->> <<-: the pen grows the heads toward each other, leaving 147
+# The arrows with two heads, ->> <<-: the pen grows the heads toward each other, leaving 143
 # between them, under Fira Code Bold's 155, the one reference bold that draws ->>. The inner
 # head, with the shaft it ends, moves along the shaft by the fewest whole units that keep
 # HEAD_WHITE between the two (heads_apart()); the shaft runs on under the cell before's. A
 # wider HEAD_PITCH in tools/add_ligatures.py would do it too, but would also take the regular's
-# white from 174 to 183, past 1.7.0's 173.
+# white from 171 to 184, past 1.7.0's 173.
 HEADS_APART = ("greater.twohead", "less.twohead")
 HEAD_WHITE = 309.7 * ADVANCE / 1200  # Fira Code Bold's, 309.7 of its 1200 cell
 

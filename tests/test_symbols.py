@@ -187,6 +187,15 @@ class OperatorTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
         cls.weight = weight_tolerance(cls.font)
 
+    def test_less_and_greater_stand_centred_as_their_or_equal_forms(self):
+        # As Fira Code's and Maple Mono's do, so a < b and a ≤ b line up; Intel One Mono's
+        # stand 4 toward their point.
+        for angle, or_equal in (("less", "lessequal"), ("greater", "greaterequal")):
+            with self.subTest(glyph=angle):
+                x0, _, x1, _ = self.font[angle].boundingBox()
+                e0, _, e1, _ = self.font[or_equal].boundingBox()
+                self.assertAlmostEqual((x0 + x1) / 2, (e0 + e1) / 2, delta=ROUNDING)
+
     def test_not_equal_slash_crosses_both_bars(self):
         glyph = self.font["notequal"]
         _, bottom, _, top = glyph.boundingBox()

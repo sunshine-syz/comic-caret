@@ -170,6 +170,27 @@ class BoldTwoHeadsTest(TwoHeadsTest):
     sfd, head_gap = BOLD_SFD, HEAD_WHITE
 
 
+class TwoWayHeadsTest(unittest.TestCase):
+    """<-> <==>: a head each way, standing level; one taller than the other reads as a slip."""
+    sfd = SFD
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_two_way_heads_stand_level(self):
+        for left, right in (("less.arrow", "greater.arrow"), ("less.darrow", "greater.darrow")):
+            with self.subTest(heads=(left, right)):
+                _, l0, _, l1 = self.font[left].boundingBox()
+                _, r0, _, r1 = self.font[right].boundingBox()
+                self.assertAlmostEqual(l0, r0, delta=ROUNDING)
+                self.assertAlmostEqual(l1, r1, delta=ROUNDING)
+
+
+class BoldTwoWayHeadsTest(TwoWayHeadsTest):
+    sfd = BOLD_SFD
+
+
 class OrEqualTest(unittest.TestCase):
     """<= >=: the bar stands clear of the lower arm, by at least the narrower reference's."""
     sfd, white = SFD, OR_EQUAL_WHITE

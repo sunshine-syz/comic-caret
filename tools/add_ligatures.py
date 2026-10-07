@@ -64,7 +64,7 @@ CREST_PROFILE, TROUGH_PROFILE = (292, 378), (161, 246)
 TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it swaps the two
 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.
-TIP = {"greater": 519, "less": ADVANCE - 519}
+TIP = {"greater": 513, "less": ADVANCE - 513}
 OUTWARD = {"greater": -1, "less": 1}
 SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
@@ -83,7 +83,7 @@ ANGLE_WIDTH_GAIN = 94
 # The centres of the round ends of >'s arms, upper then lower, as end_centre() measures them.
 # The hand-drawn arms differ, so each has its own. < is > turned 180° about the middle of the
 # cell on the axis, so its ends are these turned.
-GREATER_ENDS = ((150, 490), (153, 63))
+GREATER_ENDS = ((144, 490), (147, 63))
 ARM_ENDS = {"greater": GREATER_ENDS,
             "less": tuple((ADVANCE - x, 2 * AXIS - y) for x, y in reversed(GREATER_ENDS))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps
@@ -127,11 +127,13 @@ THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "question", "less", "
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one. The white
-# between the two, 174, goes with the heads' size, not the cell's: more than Fira Code's (145
+# between the two, 171, goes with the heads' size, not the cell's: more than Fira Code's (145
 # at our cell), the one reference that draws ->>. The inner head's crotch then lies inside its
-# cell, clear of the shaft's cut end at the cell's edge; a pitch from about 388 to 429 brings
-# the crotch onto that end, which then shows in it.
-HEAD_PITCH = 375
+# cell, clear of the shaft's cut end at the cell's edge; a pitch from 382 to 423 brings the
+# crotch onto that end, which then shows in it. At 375 the inner head stands 6 nearer the
+# cell's edge, and FreeType's hinting sets the piece's bar a pixel row off the next piece's at
+# 8 to 35 px.
+HEAD_PITCH = 369
 
 # ~> <~: the wave ends here in the head's cell, where its crest (or trough) lies inside the
 # upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
