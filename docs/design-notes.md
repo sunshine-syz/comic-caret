@@ -476,15 +476,22 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   longer still join. `<>` opens a React fragment, and no context tells it from Java's diamond
   operator or SQL's `<>`.
 - **Prompts.** `>>`, `>>>` and `...` stay as typed at a run's start before a space, as in
-  Python's prompts `>>> ` and `... ` and an email quote's `>> `. The REPL redraws its line with
-  the cursor at column 0, and Ghostty shapes the cursor's cell alone, so the prompt jumped
-  between a tightened `>>>` and `>` beside a tightened `>>` at each keystroke. Maple Mono never
-  joins `>>` or `>>>`. After a space (`a >>> 2`, an indented doctest), an opening bracket or a
-  comma (Haskell's sections `(>> m)` `(>>> g)`, `f(a, ... )`), with nothing after, as an editor
-  shapes a lone token, or before a name or a bracket (`...rest`), they still tighten, and `...`
-  after a name too (`wait... what`). OpenType can't match a run's start, so the rules name what
-  may stand before instead (`@NotLineStart`). A name is ASCII there, so after an accented
-  letter, as in `café... `, `...` stays as typed too.
+  Python's prompts `>>> ` and `... ` and an email quote's `>> ` at a line's start. The REPL
+  redraws its line with the cursor at column 0, and Ghostty shapes the cursor's cell alone. So
+  at each keystroke `>>> ` jumped between a tightened `>>>` and `>` beside a tightened `>>`, and
+  `... ` between a tightened `...` and as typed. Maple Mono joins `>>` and `>>>` only after
+  another character, so its prompt stays as typed too. They still tighten after a space
+  (`a >>> 2`, an indented doctest) or an opening bracket (Haskell's sections `(>> m)`
+  `(>>> g)`, `[... ]`), and `...` after a name too (`wait... what`). The rule leaves them alone
+  with nothing after, as an editor shapes a lone token, and before a name or a bracket
+  (`...rest`). OpenType can't match a run's start, so the rules list what may stand before
+  instead (`@SpaceOrOpen`). After any other character they stay as typed: an accented letter,
+  `α`, `ж`, `”`, `}`, `;` or a tab. Ghostty also starts a run at the cell after the cursor, so
+  with the cursor just before a spaced sequence, as on the space of `a >> b` or the `t` of
+  `wait... what`, it shows as typed until the cursor moves off. Every rule that reads the
+  character before loses it beside the cursor, as the `>>` that closes generics (`Vec<u8>>`)
+  tightens there; the prompt flickered at every keystroke only because the REPL puts the
+  cursor at column 0.
 - **Kept.** `?.` tightens after a name too, as JavaScript's `a?.b` does; Rust's `x?.y`, `?`
   then a field, can't be told apart from it.
 

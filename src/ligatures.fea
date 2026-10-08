@@ -69,8 +69,8 @@ languagesystem latn dflt;
 @TagName = [A - Z a - z zero one two three four five six seven eight nine];
 # What comes before the > that closes a tag: <p> <h1> <br/> alt="x" alt='x'.
 @TagEnd = [@TagName slash quotedbl quotesingle];
-# What stands before >> >>> ... inside a line, never at a prompt: a >> b (>> m) f(a, ... ).
-@NotLineStart = [space parenleft bracketleft braceleft comma];
+# What stands before >> >>> ... inside a line, never at a prompt: a >> b (>> m) [... ].
+@SpaceOrOpen = [space parenleft bracketleft braceleft];
 
 # Single substitutions, called from the chain rules below.
 lookup lig_sta {
@@ -432,7 +432,7 @@ feature calt {
     # shapes the cursor's cell alone drew the prompt in pieces there, so it flickered. After a
     # space or an opening bracket, or with no space after, as an editor shapes a lone token,
     # they still tighten, and ... does after a name too (wait... what).
-    sub [@NotLineStart @Operand] period' lookup lig_tight_r2 period period' lookup lig_tight_l2
+    sub [@SpaceOrOpen @Operand] period' lookup lig_tight_r2 period period' lookup lig_tight_l2
       space;
     ignore sub period' period period space;
     sub period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
@@ -463,7 +463,7 @@ feature calt {
     sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
     ignore sub @Operand greater' greater greater;
     # A prompt, as ... above; after a name the rule above already keeps it as typed.
-    sub @NotLineStart greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 space;
+    sub @SpaceOrOpen greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 space;
     ignore sub greater' greater greater space;
     sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2;
     sub greater' lookup lig_tight_r2 greater equal' lookup lig_tight_l;
@@ -519,8 +519,8 @@ feature calt {
     ignore sub greater' greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r greater' lookup lig_tight_l @Word;
     ignore sub @Operand greater' greater;
-    # A prompt or an email quote, as ... above.
-    sub @NotLineStart greater' lookup lig_tight_r greater' lookup lig_tight_l space;
+    # A prompt, or an email quote at a line's start, as ... above.
+    sub @SpaceOrOpen greater' lookup lig_tight_r greater' lookup lig_tight_l space;
     ignore sub greater' greater space;
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;

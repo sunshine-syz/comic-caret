@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791479964
+ModificationTime: 1791480904
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -195,7 +195,7 @@ ChainSub2: coverage "lig_tight contextual 89" 0 0 0 1
  2 1 1
   Coverage: 7 greater
   Coverage: 7 greater
-  BCoverage: 43 space parenleft bracketleft braceleft comma
+  BCoverage: 37 space parenleft bracketleft braceleft
   FCoverage: 5 space
  2
   SeqLookup: 0 "lig_tight_r"
@@ -589,7 +589,7 @@ ChainSub2: coverage "lig_tight contextual 39" 0 0 0 1
   Coverage: 7 greater
   Coverage: 7 greater
   Coverage: 7 greater
-  BCoverage: 43 space parenleft bracketleft braceleft comma
+  BCoverage: 37 space parenleft bracketleft braceleft
   FCoverage: 5 space
  2
   SeqLookup: 0 "lig_tight_r2"
@@ -807,7 +807,7 @@ ChainSub2: coverage "lig_tight contextual 13" 0 0 0 1
   Coverage: 6 period
   Coverage: 6 period
   Coverage: 6 period
-  BCoverage: 253 space parenleft bracketleft braceleft comma A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenright bracketright quotedbl quotesingle
+  BCoverage: 247 space parenleft bracketleft braceleft A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine underscore parenright bracketright quotedbl quotesingle
   FCoverage: 5 space
  2
   SeqLookup: 0 "lig_tight_r2"

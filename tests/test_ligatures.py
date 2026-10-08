@@ -215,7 +215,6 @@ LIGATED = {
     "<<": ["less.tight_r", "less.tight_l"],
     ">>": ["greater.tight_r", "greater.tight_l"],
     "a >> b": ["a", "space", "greater.tight_r", "greater.tight_l", "space", "b"],
-    "x >> 1": ["x", "space", "greater.tight_r", "greater.tight_l", "space", "one"],
     # A shift without spaces: a name or a number follows, which never follows closing generics
     "cin>>n": ["c", "i", "n", "greater.tight_r", "greater.tight_l", "n"],
     "x>>1": ["x", "greater.tight_r", "greater.tight_l", "one"],
@@ -274,12 +273,12 @@ LIGATED = {
     "a >>> 2": ["a", "space", "greater.tight_r2", "greater", "greater.tight_l2", "space", "two"],
     "    >>> f()": ["space", "space", "space", "space", "greater.tight_r2", "greater",
                     "greater.tight_l2", "space", "f", "parenleft", "parenright"],
-    # After an opening bracket or a comma: Haskell's sections, an argument
+    # After an opening bracket: Haskell's sections, a placeholder
     "(>> m)": ["parenleft", "greater.tight_r", "greater.tight_l", "space", "m", "parenright"],
     "(>>> g)": ["parenleft", "greater.tight_r2", "greater", "greater.tight_l2", "space", "g",
                 "parenright"],
-    "f(a, ... )": ["f", "parenleft", "a", "comma", "space", "period.tight_r2", "period",
-                   "period.tight_l2", "space", "parenright"],
+    "[... ]": ["bracketleft", "period.tight_r2", "period", "period.tight_l2", "space",
+               "bracketright"],
     ">>=": ["greater.tight_r2", "greater", "equal.tight_l"],
     "m >>= f": ["m", "space", "greater.tight_r2", "greater", "equal.tight_l", "space", "f"],
     "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
@@ -320,6 +319,9 @@ LIGATED = {
     # ... after the > of a placeholder
     "<FILE>...": ["less", "F", "I", "L", "E", "greater", "period.tight_r2", "period",
                   "period.tight_l2"],
+    "cmd <FILE>... [-v]": ["c", "m", "d", "space", "less", "F", "I", "L", "E", "greater",
+                           "period.tight_r2", "period", "period.tight_l2", "space",
+                           "bracketleft", "hyphen", "v", "bracketright"],
     # A ligature before a sign or a not on an operand, as x==-1 joins as a run
     "x!=-1": ["x", "LIG", "exclam_equal.liga", "hyphen", "one"],
     "x!==-1": ["x", "LIG", "LIG", "exclam_equal_equal.liga", "hyphen", "one"],
@@ -358,9 +360,9 @@ PLAIN = [
     # A lone ~>: it ends fish's prompt in the home directory, and before a version it is
     # Ruby's and Terraform's "at least, within"
     "~>", "a ~> b", "~> ls", "~> 1.0", "~>1.0",
-    # >> >>> ... at a line's start before a space: Python's prompts and an email quote. A
-    # terminal that shapes the cursor's cell alone would draw a joined prompt in pieces.
-    ">>> import torch", ">>> ", ">> import", "... pass", "... ", ">> quoted",
+    # >> >>> ... at a line's start before a space: Python's prompts, an email quote, and the
+    # .. of a prompt drawn in pieces at the cursor
+    ">>> import torch", ">>> ", ">> import", "... pass", "... ", ".. pass", ">> quoted",
     # <>: a React fragment opens with it, and Java's and SQL's read as typed too
     "<>", "return (<>", "<><A />", "new List<>()", "a <> b", "a<>-1",
     # <!-- without its -- run
@@ -481,6 +483,16 @@ class LigatureShapingTest(unittest.TestCase):
                 with self.subTest(font=font.name, text=text):
                     advances = [advance for _, advance in shape(font, text)]
                     self.assertEqual(advances, [ADVANCE] * len(text))
+
+    def test_a_prompt_drawn_in_pieces_at_the_cursor_looks_as_it_does_whole(self):
+        # Python's REPL redraws its line with the cursor at column 0 at each keystroke, and a
+        # terminal that shapes the cursor's cell as its own run (Ghostty's default) draws the
+        # prompt's first character apart from the rest; the prompt must not change.
+        for font in FONTS:
+            for first, rest in ((">", ">> x"), (".", ".. x")):
+                with self.subTest(font=font.name, text=first + rest):
+                    self.assertEqual(names(font, first + rest),
+                                     names(font, first) + names(font, rest))
 
     def test_turning_calt_off_turns_every_ligature_off(self):
         for font in FONTS:
