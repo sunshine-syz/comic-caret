@@ -404,10 +404,13 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   ends at 849, 51 under the line box's top (900). A round ring 222 wide is 61 taller. It fits
   only with 10 left above the apex and its top at 900, and the bold pen then takes the bold Å
   past the line box.
-- **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306.
-  Monaspace gives them no share of a wider cell (the table above).
+- **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,
+  and ⁺ ⁻ ⁼ ₊ ₋ ₌ (208–218) against Fira Code's 233–235. Monaspace gives them no share of a
+  wider cell (the table above).
 - **■ □.** They are 502 against Fira Code's 540. They follow ☐, Intel One Mono's 502, so the
   boxes stay one size.
+- **▮ ▯.** They are 264 against Fira Code's 285, the one reference with them: ☐'s height
+  times Fira Code's width over height (`add_shapes.NARROW`), so they follow ☐ as ■ □ do.
 - **The italic ↦ ⁄.** They slant past the cell, ↦ to −5..579 and ⁄ to −47..664, as Maple Mono
   Italic's do (−53..565 and −73..642).
 
