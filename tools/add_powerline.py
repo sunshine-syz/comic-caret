@@ -62,7 +62,7 @@ LINE_NUMBER_INSET = 50
 # Mono's size, 500 wide and 862 tall, to Fira Code's 598 by 829. Its body is 500 by 500, to
 # Fira Code's 598 by 481, and its parts are compared as shares of the body.
 BODY = (ADVANCE // 2 - 250, -72, ADVANCE // 2 + 250, 428)  # x0, y0, x1, y1
-CORNER = 55  # 0.11 of the body's width, under Maple Mono's 0.12 and Fira Code's 0.19
+CORNER = 60  # Maple Mono's 60, 0.12 of the body's width; Fira Code's is 0.19
 # The radius of the shackle's outer edge, half its width: Maple Mono's 180, Fira Code's 141.
 # The shackle spans 0.72 of the body's width, as Maple Mono's (Fira Code's 0.47). Its top is
 # Maple Mono's 790 (Fira Code's 776).
@@ -76,8 +76,8 @@ SHACKLE_LEGS = 70
 # Mono's 200 (0.40). Fira Code draws its keyhole in ink inside an outlined body.
 KEYHOLE_Y, KEYHOLE_RADIUS = 248, 75
 # The slot is 70 wide, 0.14 of the body's width, between Fira Code's 0.13 and Maple Mono's 0.18
-# (76 and 89 wide). Its foot at 0.30 of the body's height stands above theirs, 0.26 and 0.23.
-SLOT_WIDTH, SLOT_BOTTOM = 70, 78
+# (76 and 89 wide). Its foot is Fira Code's, at 0.26 of the body's height; Maple Mono's is 0.23.
+SLOT_WIDTH, SLOT_BOTTOM = 70, 58
 
 
 def rounded_rect(x0, y0, x1, y1, r):
