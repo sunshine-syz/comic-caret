@@ -479,11 +479,12 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   Python's prompts `>>> ` and `... ` and an email quote's `>> `. The REPL redraws its line with
   the cursor at column 0, and Ghostty shapes the cursor's cell alone, so the prompt jumped
   between a tightened `>>>` and `>` beside a tightened `>>` at each keystroke. Maple Mono never
-  joins `>>` or `>>>`. After a space (`a >>> 2`, an indented doctest), with nothing after, as an
-  editor shapes a lone token, or before a name or a bracket (`...rest`), they still tighten,
-  and `...` after a name too (`wait... what`). OpenType can't match a run's start, so the
-  rules name what may stand before instead: after `(` or an accented letter, as in `(>> m)` and
-  `café... `, they stay as typed too.
+  joins `>>` or `>>>`. After a space (`a >>> 2`, an indented doctest), an opening bracket or a
+  comma (Haskell's sections `(>> m)` `(>>> g)`, `f(a, ... )`), with nothing after, as an editor
+  shapes a lone token, or before a name or a bracket (`...rest`), they still tighten, and `...`
+  after a name too (`wait... what`). OpenType can't match a run's start, so the rules name what
+  may stand before instead (`@NotLineStart`). A name is ASCII there, so after an accented
+  letter, as in `café... `, `...` stays as typed too.
 - **Kept.** `?.` tightens after a name too, as JavaScript's `a?.b` does; Rust's `x?.y`, `?`
   then a field, can't be told apart from it.
 

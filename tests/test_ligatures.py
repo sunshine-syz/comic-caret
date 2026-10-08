@@ -274,6 +274,12 @@ LIGATED = {
     "a >>> 2": ["a", "space", "greater.tight_r2", "greater", "greater.tight_l2", "space", "two"],
     "    >>> f()": ["space", "space", "space", "space", "greater.tight_r2", "greater",
                     "greater.tight_l2", "space", "f", "parenleft", "parenright"],
+    # After an opening bracket or a comma: Haskell's sections, an argument
+    "(>> m)": ["parenleft", "greater.tight_r", "greater.tight_l", "space", "m", "parenright"],
+    "(>>> g)": ["parenleft", "greater.tight_r2", "greater", "greater.tight_l2", "space", "g",
+                "parenright"],
+    "f(a, ... )": ["f", "parenleft", "a", "comma", "space", "period.tight_r2", "period",
+                   "period.tight_l2", "space", "parenright"],
     ">>=": ["greater.tight_r2", "greater", "equal.tight_l"],
     "m >>= f": ["m", "space", "greater.tight_r2", "greater", "equal.tight_l", "space", "f"],
     "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
