@@ -482,16 +482,16 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   `... ` between a tightened `...` and as typed. Maple Mono joins `>>` and `>>>` only after
   another character, so its prompt stays as typed too. They still tighten after a space
   (`a >>> 2`, an indented doctest) or an opening bracket (Haskell's sections `(>> m)`
-  `(>>> g)`, `[... ]`), and `...` after a name too (`wait... what`). The rule leaves them alone
-  with nothing after, as an editor shapes a lone token, and before a name or a bracket
-  (`...rest`). OpenType can't match a run's start, so the rules list what may stand before
-  instead (`@SpaceOrOpen`). After any other character they stay as typed: an accented letter,
-  `α`, `ж`, `”`, `}`, `;` or a tab. Ghostty also starts a run at the cell after the cursor, so
-  with the cursor just before a spaced sequence, as on the space of `a >> b` or the `t` of
-  `wait... what`, it shows as typed until the cursor moves off. Every rule that reads the
-  character before loses it beside the cursor, as the `>>` that closes generics (`Vec<u8>>`)
-  tightens there; the prompt flickered at every keystroke only because the REPL puts the
-  cursor at column 0.
+  `(>>> g)`, `[... ]`), and `...` after a name, a closing bracket or a straight quote too
+  (`wait... what`, `f()... x`). The rule leaves them alone with nothing after, as an editor
+  shapes a lone token, and before a name or a bracket (`...rest`). OpenType can't match a run's
+  start, so the rules list what may stand before instead (`@SpaceOrOpen`, and `@Operand` for
+  `...`). After any other character they stay as typed: an accented letter, `α`, `”`, `}` or
+  `;`. Ghostty also starts a run at the cell after the cursor, so with the cursor just before a
+  spaced sequence, as on the space of `a >> b` or the `t` of `wait... what`, it shows as typed
+  until the cursor moves off. Every rule that reads the character before loses it beside the
+  cursor, as the `>>` that closes generics (`Vec<u8>>`) tightens there; the prompt flickered at
+  every keystroke only because the REPL puts the cursor at column 0.
 - **Kept.** `?.` tightens after a name too, as JavaScript's `a?.b` does; Rust's `x?.y`, `?`
   then a field, can't be told apart from it.
 
