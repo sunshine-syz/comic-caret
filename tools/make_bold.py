@@ -131,11 +131,13 @@ LIGHT_PARTS = ("slash.fraction", "bar.ordinal", "circle.copyright")
 # test allows.
 ROUND = ("bar.ordinal", "uni21EA")
 
-# The glyphs whose white the full pen closes under the reference bolds', and the share of
-# their pen's width they grow by instead (tests/test_latin.py): ẞ, whose white between the
-# stem and the diagonal would close to 56, under Maple Mono Bold's 65; and the small 4, whose
-# counter would close to 0.128 of its height, under Maple Mono Bold's ¼ (0.136). Their stems
-# grow 10.5 and 3.7 less than the others'.
+# The glyphs that grow by a share of their pen's width, which keeps more of their white, and
+# that share (tests/test_latin.py holds the white over the reference bolds'). Grown as build()
+# grows them and measured as the test measures them, share by share in hundredths: ẞ's white
+# between the stem and the diagonal is 78 at 0.7, over Maple Mono Bold's 64, as at every share
+# up to the full pen's 67.5; the small 4's counter is 0.139 of its height from 0.79 to 0.87,
+# over Maple Mono Bold's ¼ (0.136), and closes to 0.134 at 0.88 and 0.128 at the full pen.
+# Their stems grow 10.5 and 3.7 less than the others'.
 NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
 
 # How heavy the bold draws |, across its middle. The regular draws it lighter than its stems,
@@ -154,8 +156,9 @@ TICKED = {"uni20BF": "B"}
 TICK_ROOT = 60
 
 # The strokes the regular draws as another stroke turned, and the turn, anticlockwise: the
-# tonos is the acute turned 25° steeper (docs/design-notes.md). The pen turns with it, so the
-# bold tonos is the bold acute turned. The level pen would grow the steeper stroke heavier.
+# tonos is the acute turned 25° steeper, as tests/test_make_bold.py holds the regular's drawing.
+# The pen turns with it, so the bold tonos is the bold acute turned. The level pen would grow
+# the steeper stroke heavier.
 TURNED = {"tonos": math.radians(25)}
 
 # The rings that grow outward only, by twice their pen, so they thicken by its whole width as
@@ -238,7 +241,11 @@ MERGED = ("Theta", "uni2204")
 # between them is the regular's. Each keeps its far end where the pen grows it, or at the side
 # room where the pen would grow it past (‰'s zeros), so ‰ stays at least as wide as % and
 # centred: ⇥ ↹'s bar keeps the full pen, and the white twice SYMBOL_SIDE (pieces_apart());
-# ℃'s ring stays before its C (tests/test_symbols.py).
+# ℃'s ring stays before its C (tests/test_symbols.py). A glyph the list misses fails a test:
+# test_bolder_glyphs_keep_their_pieces_and_counters (tests/test_make_bold.py) where the pen
+# joins its pieces (⇥ ↹ №), else a rule on its pieces or its slash in tests/test_symbols.py or
+# tests/test_make_bold.py (‰ ℃ ℉). Naming the glyphs keeps the choice between PIECES_APART,
+# SHRUNK and OPENED explicit: each gives way in its own way.
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
 # Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
@@ -333,15 +340,24 @@ def classify(font):
     return project.classify(font, {".notdef": SHARED}, encoded_class, unused_class)
 
 
+def middle_stroke(layer, name):
+    """The width of the one stroke across the middle of the layer's box: glyph `name`'s stem,
+    which a pen is measured from."""
+    _, y0, _, y1 = layer.boundingBox()
+    spans = spans_at_y(layer, (y0 + y1) / 2)
+    if len(spans) != 1:
+        sys.exit(f"{name}: {len(spans)} strokes cross its middle, where its pen is measured "
+                 "from one")
+    [(x0, x1)] = spans
+    return x1 - x0
+
+
 def small_pen(font):
     """PEN scaled by how much lighter the regular draws its small parts than its letters: the
     stem of one.small over the stem of one, each at mid-height. A bold superscript is then as
     much bolder as a bold letter."""
     def stem(name):
-        layer = font[name].foreground
-        _, y0, _, y1 = layer.boundingBox()
-        [(x0, x1)] = spans_at_y(layer, (y0 + y1) / 2)
-        return x1 - x0
+        return middle_stroke(font[name].foreground, name)
     ratio = stem("one.small") / stem("one")
     return tuple(size * ratio for size in PEN)
 
@@ -358,10 +374,8 @@ def pens(font):
         return 2 * area(layer) / length(layer)
     for heavy, light in HEAVY.items():
         found[heavy] = tuple(size * weight(heavy) / weight(light) for size in PEN)
-    bar = ink(font, "bar")
-    _, y0, _, y1 = bar.boundingBox()
-    [(x0, x1)] = spans_at_y(bar, (y0 + y1) / 2)
-    found["bar"] = found["brokenbar"] = (BAR_WEIGHT - (x1 - x0), PEN[1])
+    found["bar"] = found["brokenbar"] = (BAR_WEIGHT - middle_stroke(ink(font, "bar"), "bar"),
+                                         PEN[1])
     return found
 
 
@@ -513,10 +527,10 @@ def with_counters(layer, outline):
     return out
 
 
-def raised(outline, rise):
-    """The outline with the bar above its counter moved up by `rise` along its stems (RAISED):
-    the stems' straight part beside the counter lengthened by `rise`, and above the bar
-    shortened as much, so their ends stay where they are."""
+def raised(name, outline, rise):
+    """The outline of glyph `name` with the bar above its counter moved up by `rise` along its
+    stems (RAISED): the stems' straight part beside the counter lengthened by `rise`, and above
+    the bar shortened as much, so their ends stay where they are."""
     upright = (0, 1, 1, 0, 0, 0)  # swaps x and y, so stretch_span() stretches up and down
 
     def stretched(layer, y0, y1, dy):
@@ -528,8 +542,11 @@ def raised(outline, rise):
     [bar_top] = [top for bottom, top in spans_at_x(outline, (x0 + x1) / 2)
                  if bottom > (y0 + y1) / 2]
     top = outline.boundingBox()[3]
+    # The stems give up `rise` from the bar halfway to their tops, short of their round ends;
+    # where that half is no longer than `rise`, the bar would pass the ends.
+    if rise >= (top - bar_top) / 2:
+        sys.exit(f"{name}: its stems above the bar are too short to give up {rise}")
     out = stretched(outline, y0 + third, y1 - third, rise)
-    # Halfway up from the bar, short of the stems' round ends.
     return stretched(out, bar_top + rise, (bar_top + top) / 2 + rise, -rise)
 
 
@@ -784,10 +801,10 @@ def placed(font, glyph):
     return [geo.transformed(ink(font, name), matrix) for name, matrix, *_ in glyph.references]
 
 
-def reposition(glyph, offset):
-    """Place each of the glyph's references at the offset offset(index, name, (dx, dy))
+def reposition(glyph, place):
+    """Place each of the glyph's references at the offset place(index, name, (dx, dy))
     returns."""
-    refs = [(name, (*matrix[:4], *offset(i, name, matrix[4:])))
+    refs = [(name, (*matrix[:4], *place(i, name, matrix[4:])))
             for i, (name, matrix, *_) in enumerate(glyph.references)]
     glyph.references = tuple(reversed(refs))  # FontForge writes references in reverse order
 
@@ -844,11 +861,11 @@ def clearance(mine, rest, way, wanted):
 
 
 def shifted(moves):
-    """The offset for reposition() that moves each part named in `moves` by its (dx, dy)."""
-    def offset(_, name, at):
+    """The place for reposition() that moves each part named in `moves` by its (dx, dy)."""
+    def place(_, name, at):
         dx, dy = moves.get(name, (0, 0))
         return at[0] + dx, at[1] + dy
-    return offset
+    return place
 
 
 def parted(font, glyph, part):
@@ -1061,7 +1078,7 @@ def build(font):
         else:
             outline, parts = merged.get(name, (glyph.foreground, []))
             if name in RAISED:
-                outline = raised(outline, PEN[1])
+                outline = raised(name, outline, PEN[1])
             grown = [fitted(name, layer, box, scratch, pen, held=held)
                      for layer, box in [(outline, own.get(name, bound)),
                                         *((part, bound) for part in parts)] if len(layer)]

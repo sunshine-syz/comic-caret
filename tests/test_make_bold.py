@@ -12,6 +12,7 @@ import tempfile
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 # the tests' shared SFD comparison
@@ -20,7 +21,7 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
-from measure import area, ink, outline, pieces, spans_at_y, vertical_edges
+from measure import area, ink, length, outline, pieces, spans_at_y, vertical_edges
 from project import ADVANCE, BOLD_SFD, OVERLAP, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
 from sfd_files import differences
 
@@ -80,6 +81,26 @@ class GeneratorTest(unittest.TestCase):
         font.createChar(-1, "mystery").width = ADVANCE
         with self.assertRaisesRegex(SystemExit, "mystery"):
             make_bold.classify(font)
+
+    def test_tonos_is_the_acute_turned(self):
+        # The bold turns the tonos's pen by TURNED's angle, so it grows the tonos as the bold
+        # acute turned only while the regular draws the tonos as the acute turned by as much.
+        font = fontforge.open(str(SFD))
+        acute, tonos = font["acute"].foreground.dup(), font["tonos"].foreground.dup()
+        x0, y0, x1, y1 = acute.boundingBox()
+        acute.transform(geo.about(psMat.rotate(make_bold.TURNED["tonos"]),
+                                  (x0 + x1) / 2, (y0 + y1) / 2))
+        for layer in (acute, tonos):
+            layer.addExtrema("all")  # so the box reaches the curves, not their control points
+        (a0, b0, a1, b1), (t0, u0, t1, u1) = acute.boundingBox(), tonos.boundingBox()
+        # The tonos is the turned acute on whole units: rounding moves each point at most half a
+        # unit each way, so each side of the box at most half a unit, and the width and height
+        # within ROUNDING. They tell the angle.
+        self.assertAlmostEqual(t1 - t0, a1 - a0, delta=ROUNDING)
+        self.assertAlmostEqual(u1 - u0, b1 - b0, delta=ROUNDING)
+        # Turning keeps the area, which tells the stroke. Rounding moves the edge at most half a
+        # unit's diagonal, so the area within that times the outline's length.
+        self.assertAlmostEqual(area(tonos), area(acute), delta=length(acute) * math.sqrt(0.5))
 
 
 class BoldTest(unittest.TestCase):
