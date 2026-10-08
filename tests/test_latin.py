@@ -534,8 +534,9 @@ def bold_stems():
     width = (stem(bold, "one") - stem(regular, "one")) * share
     height = (thickness(bold) - thickness(regular)) * share
     bar = 2 * make_bold.reach((width, height, math.radians(60)))[1]
-    # One's bold stem and the bold hyphen are on whole units, each within ROUNDING of what the
-    # pen grew them to; scaled by the share, the pen read here, and each weight, is within this.
+    # The regular's stems and hyphen are exact, as drawn. The bold one's stem and the bold
+    # hyphen each sit up to ROUNDING off what the pen grew them to, so the pen read here, and
+    # each weight from it, is up to ROUNDING times the share off.
     off = ROUNDING * share
     return ((SMALL_STEM[0] + width, SMALL_STEM[1] + off),
             (SIGN_STEM[0] + width, SIGN_STEM[1] + off),

@@ -307,7 +307,8 @@ class BoldTest(unittest.TestCase):
 
     def test_small_parts_are_as_much_bolder_as_the_letters(self):
         # So a bold superscript stands against a bold letter as the regular's do: one.small's
-        # stem keeps its share of one's, each across its middle.
+        # stem keeps its share of one's, each across its middle, and minus.small's stroke grows
+        # by that share of what the hyphen's grows, up and down.
         def share(font):
             small, stem = (make_bold.middle_stroke(font[name].foreground, name)
                            for name in ("one.small", "one"))
@@ -316,6 +317,15 @@ class BoldTest(unittest.TestCase):
         # Rounding puts each bold stem within ROUNDING of its width; one stem wider and the
         # other narrower moves the share by up to this.
         self.assertAlmostEqual(bold, regular, delta=ROUNDING * (1 + regular) / (stem - ROUNDING))
+
+        def grown(name):
+            (_, y0, _, y1), (_, b0, _, b1) = (font[name].boundingBox()
+                                              for font in (self.bold, self.regular))
+            return (y1 - y0) - (b1 - b0)
+        # Each bold stroke is within ROUNDING of what the pen grew it to: minus.small's, and the
+        # hyphen's, which the share scales.
+        self.assertAlmostEqual(grown("minus.small"), grown("hyphen") * regular,
+                               delta=ROUNDING * (1 + regular))
 
     def test_apart_parts_keep_the_regulars_gap(self):
         # Each part APART names moves clear of the rest by at least the regular's gap, which

@@ -57,7 +57,7 @@ LETTER_GAP = 100
 BODY = (ADVANCE // 2 - 180, -80, ADVANCE // 2 + 180, 320)  # x0, y0, x1, y1
 CORNER = 40  # 0.11 of the body's width, under Maple Mono's 0.12 and Fira Code's 0.19
 # Of the shackle's outer edge: between Fira Code's 141 and Maple Mono's 180. Across, the shackle
-# spans 0.89 of the narrower body's width, to their 0.47 and 0.72. Only its round top shows; the
+# spans 0.89 of our body's width, to their 0.47 and 0.72. Only its round top shows; the
 # references' legs rise 224 and 208 above the body first.
 SHACKLE_RADIUS = 160
 # How far the shackle's legs run into the body. Any depth past 5, where their outer edges cross
