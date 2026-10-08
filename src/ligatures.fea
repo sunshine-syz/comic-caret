@@ -172,8 +172,8 @@ feature calt {
   #    and the -- runs on; it may follow the > that ends a tag or an arrow (</p><!--
   #    --><!--). An arrow's head stays before a tag, as in --><p>, and so does <!--, as in
   #    <!--<div>-->. Though >- is otherwise an inward head, a run or arrow may start right
-  #    after a short tag (<code>--help, </p>--->, <br/>--); after any other > that may end a
-  #    tag, as in <a href="x">-->, only --> may, which keeps a>--b plain.
+  #    after a short tag or a /> (<code>--help, </p>--->, <br />--); after any other > that
+  #    may end a tag, as in <a href="x">-->, only --> may, which keeps a>--b plain.
   lookup lig_hyphen_build {
     sub [greater greater.arrow] less' lookup lig_comment exclam' lookup lig_comment hyphen
       hyphen;
@@ -188,9 +188,10 @@ feature calt {
     sub less' lookup lig_arrow hyphen;
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_mid [hyphen greater];
     sub [less.arrow less.shaft hyphen.sta hyphen.mid] hyphen' lookup lig_end;
-    # A short tag opens (<p>), closes (</p>) or closes itself (<br/>). The rules cover names of
-    # up to 10 letters and digits, enough for HTML's longest (blockquote, figcaption); a longer
-    # name or one with a hyphen joins only as -->.
+    # A short tag opens (<p>) or closes (</p>). The rules cover names of up to 10 letters and
+    # digits, enough for HTML's longest (blockquote, figcaption); a longer name or one with a
+    # hyphen joins only as -->. A tag that closes itself ends in />, whatever it holds (<br/>,
+    # <br />, <img src="x" />), and little else puts /> before a -.
     sub less @TagName greater hyphen' lookup lig_sta [hyphen greater];
     sub less @TagName @TagName greater hyphen' lookup lig_sta [hyphen greater];
     sub less @TagName @TagName @TagName greater hyphen' lookup lig_sta [hyphen greater];
@@ -225,23 +226,7 @@ feature calt {
       @TagName greater hyphen' lookup lig_sta [hyphen greater];
     sub less slash @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName
       @TagName @TagName greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName slash greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName slash greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName slash greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName slash greater
-      hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName slash greater
-      hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName @TagName slash greater
-      hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName @TagName @TagName slash greater
-      hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName slash
-      greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName
-      slash greater hyphen' lookup lig_sta [hyphen greater];
-    sub less @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName @TagName
-      @TagName slash greater hyphen' lookup lig_sta [hyphen greater];
+    sub slash greater hyphen' lookup lig_sta [hyphen greater];
     sub @TagEnd greater hyphen' lookup lig_sta hyphen greater;
     ignore sub @HyphenRun hyphen';
     sub hyphen' lookup lig_sta [hyphen greater];

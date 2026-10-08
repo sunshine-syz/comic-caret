@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1791434062
+ModificationTime: 1791435540
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -89,7 +89,7 @@ Lookup: 6 0 0 "lig_not_equal" { "lig_not_equal contextual 0"  "lig_not_equal con
 Lookup: 6 0 0 "lig_colon_equal" { "lig_colon_equal contextual 0"  "lig_colon_equal contextual 1"  "lig_colon_equal contextual 2"  "lig_colon_equal contextual 3"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_triple_equal" { "lig_triple_equal contextual 0"  "lig_triple_equal contextual 1"  "lig_triple_equal contextual 2"  "lig_triple_equal contextual 3"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_fish" { "lig_fish contextual 0"  "lig_fish contextual 1"  "lig_fish contextual 2"  "lig_fish contextual 3"  "lig_fish contextual 4"  "lig_fish contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
-Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  "lig_hyphen_build contextual 7"  "lig_hyphen_build contextual 8"  "lig_hyphen_build contextual 9"  "lig_hyphen_build contextual 10"  "lig_hyphen_build contextual 11"  "lig_hyphen_build contextual 12"  "lig_hyphen_build contextual 13"  "lig_hyphen_build contextual 14"  "lig_hyphen_build contextual 15"  "lig_hyphen_build contextual 16"  "lig_hyphen_build contextual 17"  "lig_hyphen_build contextual 18"  "lig_hyphen_build contextual 19"  "lig_hyphen_build contextual 20"  "lig_hyphen_build contextual 21"  "lig_hyphen_build contextual 22"  "lig_hyphen_build contextual 23"  "lig_hyphen_build contextual 24"  "lig_hyphen_build contextual 25"  "lig_hyphen_build contextual 26"  "lig_hyphen_build contextual 27"  "lig_hyphen_build contextual 28"  "lig_hyphen_build contextual 29"  "lig_hyphen_build contextual 30"  "lig_hyphen_build contextual 31"  "lig_hyphen_build contextual 32"  "lig_hyphen_build contextual 33"  "lig_hyphen_build contextual 34"  "lig_hyphen_build contextual 35"  "lig_hyphen_build contextual 36"  "lig_hyphen_build contextual 37"  "lig_hyphen_build contextual 38"  "lig_hyphen_build contextual 39"  "lig_hyphen_build contextual 40"  "lig_hyphen_build contextual 41"  "lig_hyphen_build contextual 42"  "lig_hyphen_build contextual 43"  "lig_hyphen_build contextual 44"  "lig_hyphen_build contextual 45"  "lig_hyphen_build contextual 46"  "lig_hyphen_build contextual 47"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
+Lookup: 6 0 0 "lig_hyphen_build" { "lig_hyphen_build contextual 0"  "lig_hyphen_build contextual 1"  "lig_hyphen_build contextual 2"  "lig_hyphen_build contextual 3"  "lig_hyphen_build contextual 4"  "lig_hyphen_build contextual 5"  "lig_hyphen_build contextual 6"  "lig_hyphen_build contextual 7"  "lig_hyphen_build contextual 8"  "lig_hyphen_build contextual 9"  "lig_hyphen_build contextual 10"  "lig_hyphen_build contextual 11"  "lig_hyphen_build contextual 12"  "lig_hyphen_build contextual 13"  "lig_hyphen_build contextual 14"  "lig_hyphen_build contextual 15"  "lig_hyphen_build contextual 16"  "lig_hyphen_build contextual 17"  "lig_hyphen_build contextual 18"  "lig_hyphen_build contextual 19"  "lig_hyphen_build contextual 20"  "lig_hyphen_build contextual 21"  "lig_hyphen_build contextual 22"  "lig_hyphen_build contextual 23"  "lig_hyphen_build contextual 24"  "lig_hyphen_build contextual 25"  "lig_hyphen_build contextual 26"  "lig_hyphen_build contextual 27"  "lig_hyphen_build contextual 28"  "lig_hyphen_build contextual 29"  "lig_hyphen_build contextual 30"  "lig_hyphen_build contextual 31"  "lig_hyphen_build contextual 32"  "lig_hyphen_build contextual 33"  "lig_hyphen_build contextual 34"  "lig_hyphen_build contextual 35"  "lig_hyphen_build contextual 36"  "lig_hyphen_build contextual 37"  "lig_hyphen_build contextual 38"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_hyphen_unwind" { "lig_hyphen_unwind contextual 0"  "lig_hyphen_unwind contextual 1"  "lig_hyphen_unwind contextual 2"  "lig_hyphen_unwind contextual 3"  "lig_hyphen_unwind contextual 4"  "lig_hyphen_unwind contextual 5"  "lig_hyphen_unwind contextual 6"  "lig_hyphen_unwind contextual 7"  "lig_hyphen_unwind contextual 8"  "lig_hyphen_unwind contextual 9"  "lig_hyphen_unwind contextual 10"  "lig_hyphen_unwind contextual 11"  "lig_hyphen_unwind contextual 12"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 6 0 0 "lig_equal_build" { "lig_equal_build contextual 0"  "lig_equal_build contextual 1"  "lig_equal_build contextual 2"  "lig_equal_build contextual 3"  "lig_equal_build contextual 4"  "lig_equal_build contextual 5"  "lig_equal_build contextual 6"  "lig_equal_build contextual 7"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
 Lookup: 8 0 0 "lig_equal_unwind" { "lig_equal_unwind contextual 0"  "lig_equal_unwind contextual 1"  "lig_equal_unwind contextual 2"  "lig_equal_unwind contextual 3"  "lig_equal_unwind contextual 4"  "lig_equal_unwind contextual 5"  } ['calt' ('latn' <'dflt' > 'DFLT' <'dflt' > ) ]
@@ -1456,21 +1456,21 @@ ReverseChain2: revcov "lig_hyphen_unwind contextual 0" 0 0 0 1
   FCoverage: 19 hyphen less greater
   Replace: 7 greater
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 47" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 38" 0 0 0 1
  1 1 0
   Coverage: 7 greater
   BCoverage: 21 hyphen.sta hyphen.mid
  1
   SeqLookup: 0 "lig_arrow"
 EndFPST
-ChainSub2: glyph "lig_hyphen_build contextual 46" 0 0 0 1
+ChainSub2: glyph "lig_hyphen_build contextual 37" 0 0 0 1
  String: 7 greater
  BString: 13 greater.shaft
  FString: 0 
  1
   SeqLookup: 0 "lig_twohead"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 45" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 36" 0 0 0 1
  1 1 1
   Coverage: 7 greater
   BCoverage: 21 hyphen.sta hyphen.mid
@@ -1478,20 +1478,20 @@ ChainSub2: coverage "lig_hyphen_build contextual 45" 0 0 0 1
  1
   SeqLookup: 0 "lig_shaft"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 44" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 35" 0 0 0 1
  1 0 1
   Coverage: 6 hyphen
   FCoverage: 14 hyphen greater
  1
   SeqLookup: 0 "lig_sta"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 43" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 34" 0 0 0 1
  1 1 0
   Coverage: 6 hyphen
   BCoverage: 131 hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow less.twohead greater.twohead less.shaft greater.shaft
  0
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 42" 0 0 0 1
+ChainSub2: coverage "lig_hyphen_build contextual 33" 0 0 0 1
  1 2 2
   Coverage: 6 hyphen
   BCoverage: 7 greater
@@ -1501,157 +1501,11 @@ ChainSub2: coverage "lig_hyphen_build contextual 42" 0 0 0 1
  1
   SeqLookup: 0 "lig_sta"
 EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 41" 0 0 0 1
- 1 13 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 40" 0 0 0 1
- 1 12 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 39" 0 0 0 1
- 1 11 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 38" 0 0 0 1
- 1 10 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 37" 0 0 0 1
- 1 9 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 36" 0 0 0 1
- 1 8 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 35" 0 0 0 1
- 1 7 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 34" 0 0 0 1
- 1 6 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
-ChainSub2: coverage "lig_hyphen_build contextual 33" 0 0 0 1
- 1 5 1
-  Coverage: 6 hyphen
-  BCoverage: 7 greater
-  BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
-  FCoverage: 14 hyphen greater
- 1
-  SeqLookup: 0 "lig_sta"
-EndFPST
 ChainSub2: coverage "lig_hyphen_build contextual 32" 0 0 0 1
- 1 4 1
+ 1 2 1
   Coverage: 6 hyphen
   BCoverage: 7 greater
   BCoverage: 5 slash
-  BCoverage: 153 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z zero one two three four five six seven eight nine
-  BCoverage: 4 less
   FCoverage: 14 hyphen greater
  1
   SeqLookup: 0 "lig_sta"

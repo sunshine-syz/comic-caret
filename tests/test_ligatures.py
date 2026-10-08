@@ -410,18 +410,22 @@ class LigatureShapingTest(unittest.TestCase):
                         self.assertEqual(names(font, text),
                                          plain + names(font, run) + ["greater", "equal"])
 
-    def test_a_run_right_after_a_short_tag_joins_as_it_does_alone(self):
-        # >- is otherwise an inward head. A short tag opens, closes or closes itself. The rules
-        # cover names of up to 10 letters and digits, enough for HTML's longest (blockquote,
-        # figcaption): one name of each length.
+    def test_a_run_right_after_a_short_or_self_closing_tag_joins_as_it_does_alone(self):
+        # >- is otherwise an inward head. A short tag opens or closes; the rules cover names of
+        # up to 10 letters and digits, enough for HTML's longest (blockquote, figcaption): one
+        # name of each length. A tag that closes itself may hold anything before its />.
         elements = ["a", "h1", "div", "code", "table", "button", "article", "fieldset",
                     "plaintext", "blockquote"]
+        self_closing = ['<img src="x"/>', "<img alt='x' />", "<Foo bar={1} />",
+                        "<custom-element />"]
         for font in FONTS:
             run = names(font, "---")
-            for element in elements:
-                for tag in (f"<{element}>", f"</{element}>", f"<{element}/>"):
-                    with self.subTest(font=font.name, tag=tag):
-                        self.assertEqual(names(font, tag + "---"), names(font, tag) + run)
+            tags = [tag for element in elements
+                    for tag in (f"<{element}>", f"</{element}>", f"<{element}/>",
+                                f"<{element} />")]
+            for tag in tags + self_closing:
+                with self.subTest(font=font.name, tag=tag):
+                    self.assertEqual(names(font, tag + "---"), names(font, tag) + run)
 
     def test_a_comment_closes_after_a_tag_ending_in_any_character_a_tag_can_end_in(self):
         # A tag's last character before > is a letter or digit, a slash, or a closing quote.

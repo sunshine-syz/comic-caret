@@ -429,6 +429,14 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
 - **Two `-` or `_`.** A run of exactly two stays as typed: an option (`--help`), a decrement
   (`i--`), an SQL or Lua comment and a Python dunder name (`__init__`) show the characters
   typed. Three or more join into a line, and `<!--` keeps its run.
+- **After a tag.** `>-` is otherwise an inward head, so a run or arrow starts after a `>` only
+  where the look-back reads a tag: a short one (`<li>---`, `</p>-->`), a name of up to ten
+  letters and digits, or any that closes itself, which ends in `/>` whatever it holds
+  (`<br />---`, `<img src="x"/>---`). After any other `>`, only `-->` joins, which keeps
+  `a>---b` plain. A few non-tags still read as tags: `x<y>---z` and `<1>---` join, as text may
+  run into a tag (`Hi<br>---`) and a name may hold digits (`<h1>`), Haskell's `</>` right
+  before `->` draws an arrow (`x</>->y`), and `<=<a>---` stays plain, as `<=<` joins first.
+  None turns up in real code, so the rules don't single them out.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
 - **Beside a name.** `/*` `/**` stay plain after a name (`src/*`), and so do `*/` before one
