@@ -70,14 +70,21 @@ TRIGRAM_PITCH = 189  # the bars span 84% of ○'s height, as Fira Code's span it
 TRIGRAM_INSET = 55   # from the cell's sides; Fira Code's bars keep 14% of the cell
 BROKEN_GAP = 90      # between a broken line's halves: 18% of the line, under Fira Code's 23%
 SIX_STAR = 0x2736
+# No reference draws ✷ ✸ ✹ ✺, so their inner radii and SPOKE are as drawn. Against ✶'s ink, ✷
+# carries 1.06 times as much, ✸ (the heavy one) 1.20, ✹ 1.24 and ✺ 1.14.
 STARS = {0x2737: (8, 0.60), 0x2738: (8, 0.74), 0x2739: (12, 0.72)}  # (points, inner radius over the outer)
 ASTERISK_STAR, SPOKES, SPOKE = 0x273A, 8, 50  # ✺: sixteen points as eight spokes
 TIP = 20  # the stars' tips are rounded as ✶'s are, by pushing a smaller polygon out this far
 ORIGINAL_OF, IMAGE_OF = 0x22B6, 0x22B7
-SMALL_ROUND = 200  # ⊶ ⊷'s ○ and ● across; their centres 300 apart, the link between them
+# ⊶ ⊷'s ○ and ● across. Their centres stand on the cell's quarters, 300 apart, so the pair
+# spans ☐'s width, as the stars do.
+SMALL_ROUND = 200
 SHOGI_WHITE, SHOGI_BLACK = 0x2616, 0x2617
+# No reference draws ☖ ☗; kept as drawn. On ☐'s width the roof meets at 122° and the sides lean
+# in 3°.
 SHOGI_SHOULDER, SHOGI_TAPER = 140, 20  # the shoulders this far below the apex, the base narrower
 BLACK_PARALLELOGRAM, WHITE_PARALLELOGRAM = 0x25B0, 0x25B1
+# No reference draws ▰ ▱; kept as drawn: 0.6 of ☐'s height, leaning 17°.
 PARALLELOGRAM_HEIGHT, SLANT = 300, 90  # on the math axis, leaning right
 DOUBLE_EXCLAMATION, EXCLAMATION_OFFSET = 0x203C, 123  # the dots 94 apart: Maple Mono's are 93
 
@@ -179,7 +186,8 @@ def square_cuts(font):
         out[SQUARE_QUARTERS[code]] = geo.cleanup(geo.trim(shrunk, **cut))
         out[code] = Ref((f"uni{BOX:04X}", psMat.identity()), (SQUARE_QUARTERS[code], psMat.identity()))
     # ■ cut along its diagonal from the top right to the bottom left, by a triangle that
-    # reaches well past it.
+    # reaches well past it. ■ is square, so the triangle's long side runs corner to corner
+    # whatever `far` is; `far` only keeps the other two sides off ■'s outline.
     far = 200
     corner = geo.polygon([(x1 + far, y1 + far), (x1 + far, y0 - far), (x0 - far, y0 - far)])
     lower_right = geo.cleanup(geo.clip(square, corner))
@@ -286,7 +294,7 @@ def joined_rounds(font):
     scale = SMALL_ROUND / (rx1 - rx0)
     small_ring = weighted(font, ORIGINAL_OF, geo.transformed(ring, psMat.scale(scale)), 6)
     small_disc = geo.transformed(disc, psMat.scale(scale))
-    left, right = CX - 150, CX + 150
+    left, right = CX - 150, CX + 150  # the cell's quarters
     link = geo.line((left + SMALL_ROUND / 2 - 10, AXIS), (right - SMALL_ROUND / 2 + 10, AXIS), THIN)
     return {ORIGINAL_OF: geo.cleanup(geo.union(geo.centred(small_ring, left, AXIS), link,
                                                geo.centred(small_disc, right, AXIS))),

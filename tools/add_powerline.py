@@ -27,25 +27,47 @@ RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT_THIN = 0xE0B0, 0xE0B1, 0xE0B2, 0xE0B3
 CODES = (BRANCH, LINE_NUMBER, PADLOCK, RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT_THIN)
 
 MIDDLE = (LINE_BOTTOM + LINE_TOP) // 2  # the separators' tip: the middle of the line box
-INSET = 50  # how far the symbols keep inside the line box, top and bottom
+
+# The measurements below are Fira Code's and Maple Mono's, scaled to our cell and cap height.
+
+# How far the branch and the line number keep inside the line box, top and bottom. Fira Code's
+# branch fills it; Maple Mono's branch and line number keep 25 to 45 inside.
+INSET = 50
 
 # The branch: a trunk with a dot at each end, and a branch curving off it up to a third dot.
+# The references draw no dots: a stroke from the bottom bends right into an arrow, beside a
+# stub at the top left. Our two strokes stand 270 apart, Fira Code's 350 and Maple Mono's 280.
 TRUNK_X, BRANCH_X = ADVANCE // 2 - 135, ADVANCE // 2 + 135
-DOT = 80  # the dots' radius
+DOT = 80  # the dots' radius: 160 across, a little more than the period's 152 by 145
 TRUNK_BOTTOM, TRUNK_TOP = LINE_BOTTOM + INSET + DOT, LINE_TOP - INSET - DOT  # dot centres
+# The third dot's top, at 680, lies between the arrow tips: Fira Code's 663, Maple Mono's 714.
 BRANCH_DOT_Y = 600
-FORK_Y = 150  # where the branch leaves the trunk
+# Where the branch's centre line leaves the trunk. Its ink parts from the trunk's at 189, higher
+# than where Fira Code's stroke (-38) and Maple Mono's (110) bend off.
+FORK_Y = 150
 
-# The line-number symbol: L over N, the font's own letters made small.
+# The line-number symbol: L over N, the font's own letters made small. Fira Code's letters are
+# 0.58 of its own and Maple Mono's 0.80; theirs stand 56 and 52 apart.
 LETTER_SCALE = 0.75
 LETTER_GAP = 100
 
-# The padlock: a rounded body with a keyhole, under a shackle of the light stroke.
+# The padlock: a rounded body with a keyhole, under a shackle of the light stroke. It stands
+# 560 tall to the references' 828 and 862, so its parts are compared as shares of its body:
+# 360 by 400, to Fira Code's 598 by 481 and Maple Mono's 500 by 500.
 BODY = (ADVANCE // 2 - 180, -80, ADVANCE // 2 + 180, 320)  # x0, y0, x1, y1
-CORNER = 40
-SHACKLE_RADIUS = 160  # of its outer edge; the shackle's legs run into the body
+CORNER = 40  # 0.11 of the body's width, under Maple Mono's 0.12 and Fira Code's 0.19
+# Of the shackle's outer edge: between Fira Code's 141 and Maple Mono's 180. Across, the shackle
+# spans 0.89 of the narrower body's width, to their 0.47 and 0.72. Only its round top shows; the
+# references' legs rise 224 and 208 above the body first.
+SHACKLE_RADIUS = 160
+# How far the shackle's legs run into the body. Any depth past 5, where their outer edges cross
+# the body's rounded corners, draws the same padlock.
 SHACKLE_LEGS = 70
+# The keyhole's centre at 0.64 of the body's height, between Fira Code's 0.60 and Maple Mono's
+# 0.67. It is 0.25 of the body's width across, as Fira Code's (Maple Mono's 0.40).
 KEYHOLE_Y, KEYHOLE_RADIUS = 175, 45
+# The slot is 0.14 of the body's width, between Fira Code's 0.13 and Maple Mono's 0.18. Its foot
+# at 0.30 of the body's height stands above theirs, 0.26 and 0.23.
 SLOT_WIDTH, SLOT_BOTTOM = 50, 40
 
 

@@ -35,6 +35,10 @@ OR_EQUAL_WHITE, BOLD_OR_EQUAL_WHITE = 106, 85
 # |> <|'s ink in x-heights, tall then wide: Fira Code's is 1603 by 1306 of 1053 (1.52, 1.240),
 # JetBrains Mono's 835 by 685 of 550 (1.52, 1.245).
 PIPE_HEIGHT, PIPE_WIDTHS = 1.52, (1.240, 1.245)
+# A straight upright or level edge this long is a stroke cut flat. The cut is as long as the
+# stroke is wide, 70 or more (the slash of !=), and the generated glyphs' other straight bits
+# run 3 at most.
+CUT_EDGE = 20
 
 
 def widths_at(layer, y):
@@ -337,7 +341,7 @@ class GlyphShapeTest(unittest.TestCase):
         for pipe in TRIANGLES:
             with self.subTest(pipe=pipe):
                 edges = horizontal_edges(self.font[pipe].foreground)
-                flat = [e for e in edges if e[2] - e[1] >= 20]
+                flat = [e for e in edges if e[2] - e[1] >= CUT_EDGE]
                 self.assertEqual(flat, [])
 
     def test_corners_are_one_round_end(self):
@@ -382,10 +386,10 @@ class GlyphShapeTest(unittest.TestCase):
             if not GENERATED.fullmatch(name):
                 continue
             edges = [e for e in vertical_edges(glyph.foreground)
-                     if e[2] - e[1] >= 20 and e[0] not in seams]
+                     if e[2] - e[1] >= CUT_EDGE and e[0] not in seams]
             if not name.startswith(("underscore.", "numbersign.")):
                 edges += [e for e in horizontal_edges(glyph.foreground)
-                          if e[2] - e[1] >= 20 and e[0] not in levelled]
+                          if e[2] - e[1] >= CUT_EDGE and e[0] not in levelled]
             if edges:
                 cut[name] = edges
         self.assertEqual(cut, {})
