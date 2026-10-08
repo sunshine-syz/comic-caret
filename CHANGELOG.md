@@ -1,5 +1,7 @@
 # Changelog
 
+## 2.2 (unreleased)
+
 ## 2.1 (2026-10)
 
 - `~>` stays as typed. fish's prompt ends with it in the home directory, so every prompt line there showed a wave arrow. `~~>` and longer waves still draw an arrow, and so do `<~` and `<~>`.
