@@ -2,6 +2,8 @@
 
 ## 2.2 (unreleased)
 
+- `∫` `∏` `√` `¬` are as wide as the narrowest reference font that draws them, as the letters became in 2.0.0. They stood 10 to 25 units narrower. The hooks of `∫` and the tick of `√` run further, and the bar of `¬` is longer. The bar of `∏` runs past its stems, as in Fira Code and Maple Mono.
+
 ## 2.1 (2026-10)
 
 - `~>` stays as typed. fish's prompt ends with it in the home directory, so every prompt line there showed a wave arrow. `~~>` and longer waves still draw an arrow, and so do `<~` and `<~>`.
