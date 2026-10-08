@@ -100,12 +100,12 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
   and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 139 past the
   line box: the font's furthest ink. The win ascent and descent are the line box, as in Fira
-  Code, JetBrains Mono, Intel One Mono and Cascadia Code, so GDI apps space lines 1.25 em
-  apart and clip the overlap; set to that ink (1039/489), they spaced lines 1.53 em apart.
-  They clip the top of two marks stacked on a capital too (Ấ and Ǜ, which HarfBuzz builds
-  from a letter and a mark, reach 1026), as with Fira Code and Maple Mono, whose win ascent
-  is their line box as well (61 and 127 units past it). The Nerd Fonts builds take the same
-  values.
+  Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space lines 1.25 em apart
+  and clip the overlap; set to that ink (1039/489), they spaced lines 1.53 em apart. They
+  clip the top of two marks stacked on a capital too (Ấ and Ǜ, which HarfBuzz builds from a
+  letter and a mark, reach 1026 and 1016), as with Fira Code and Maple Mono, whose win ascent
+  is their line box as well and whose own stacked marks reach 61 and 127 units past it. The
+  Nerd Fonts builds take the same values.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.25 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
@@ -233,6 +233,14 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   letter's strokes run on, the C's top and foot and the F's arms: 569 and 566, against Maple
   Mono's 579 and 565. №'s N widens 40, its diagonal flatter, to Fira Code's 556, and ⌥'s three
   bars run out to Fira Code's 541.
+- **Math signs, arrows and shapes.** ∫ ∏ √ ¬ take the narrowest reference's width. ∫'s hooks
+  run 15 further each (450), √'s tick 12 (503) and ¬'s bar 20 (370). ∏'s stems move in 15 and
+  its bar runs 26 past them, as in Fira Code and Maple Mono (521). ↰ ↱ ↲ ↳ take Fira Code's
+  520: the shaft runs 44 further. ↵ ↩ ↪ take the same 44, so the return arrows stay one width.
+  ◇ ◆ (540), ▲ ▼ (541) and ◊ (466) take Fira Code's widths, and ▸ ▹ ◂ ◃ Maple Mono's (310).
+  Each corner moves out whole, so the edges stay straight. ▲ ▼ are ▶ ◀ turned, so ▶ ◀ grow as
+  tall (541). ∴'s lower dots move out 9 each (470), so the bold ∴ is Fira Code Bold's 504. ✗ ✘
+  take Maple Mono's 538 and 550, the one reference that draws them.
 - **Symbols.** `-` lengthens at its middle, to 365. Each arm of `<` `>` turns flatter about the
   centre of the point's round end and lengthens until its end is back at its height, so `<` `>`
   (425) keep their height within a unit. ≤ ≥'s angle widens by 62 the same way, to 446, and the
@@ -432,18 +440,18 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   letters and digits, or any that closes itself, which ends in `/>` whatever it holds
   (`<br />---`, `<img src="x"/>---`). After any other `>`, only `-->` joins, which keeps
   `a>---b` plain. A few non-tags still read as tags: `x<y>---z` and `<1>---` join, as text may
-  run into a tag (`Hi<br>---`) and a name may hold digits (`<h1>`), Haskell's `</>` right
-  before `->` draws an arrow (`x</>->y`), and `<=<a>---` stays plain, as `<=<` joins first.
-  None turns up in real code, so the rules don't single them out.
+  run into a tag (`Hi<br>---`) and a name may hold digits (`<h1>`), and Haskell's `</>` right
+  before `->` draws an arrow (`x</>->y`). One tag goes the other way: `<=<a>---` stays plain,
+  as `<=<` joins first. None turns up in real code, so the rules don't single them out.
 - **Marks.** A combining mark after a ligature's last character keeps the ligature from
   forming, so the mark sits on a plain character, which has the anchors the ligatures'
   glyphs lack. Giving those glyphs anchors would make `tools/add_marks.py` place them, but
   `tools/add_ligatures.py` draws them again after it runs.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
-- **`<=` as an assignment.** `<=` draws `≤` also where Verilog and VHDL assign with it
+- **`<=` as an assignment.** `<=` draws `⩽` also where Verilog and VHDL assign with it
   (`q <= d`): no context tells the assignment from the comparison. Fira Code and Maple Mono
-  draw `≤` there too and offer `⇐` as an opt-in (`cv20`, `cv63`); Intel One Mono draws no
+  draw `⩽` there too and offer `⇐` as an opt-in (`cv20`, `cv63`); Intel One Mono draws no
   ligatures unless asked (`ss01`). Comic Caret has no opt-in for it yet; with `calt` off, `<=`
   shows as typed.
 - **Beside a name.** `/*` `/**` stay plain after a name (`src/*`), and so do `*/` before one
@@ -494,7 +502,7 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   them: ☐ ☑ ☒ stay upright because ours are squares of the hyphen's stroke like □ ■, and the
   spinner frames ◰ ◱ ◲ ◳ are built on ☐; the white arrows ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟ and the tab keys ↹ ⇥ ⇤
   stay upright because they are key hints that read beside ⌘ ⌥ ⌃, which Maple Mono lacks.
-  • ‣ ∙ stay too, as ◉ ⊙ and ▸ are built on them, and ℹ, which stands beside ⚠.
+  • ∙ stay too, as ◉ ⊙ are built on them; so do ‣, ▸'s triangle, and ℹ, which stands beside ⚠.
 - **Dots** shear with the letters, as Maple Mono's and Monaspace's do; round dots that only
   move with the slant looked the same at 14 px and would need a special case.
 - **Cursive letters**: only f. The regular's single-storey g already reads as an italic
@@ -527,8 +535,8 @@ are in `build/cache/reference/bold/`.
     51–59%.
   - That is a step of 13.5 points from the regular's 44.0%. Maple Mono's step, the smallest
     reference step, is 14.
-  - There the counters at our x-height, `n` 172, `o` 199 and `e` 109, are each at or above the
-    narrowest reference bold's.
+  - In the 550 cell, the counters at our x-height, `n` 172, `o` 199 and `e` 109, are each at
+    or above the narrowest reference bold's.
 - **An offset, not `changeWeight()`.** The offset grows every edge alike, so `-` stays centred
   on the math axis.
   - The ligature pieces grow by the same pen as the `-` `=` `<` `>` `~` `|` they continue, so
@@ -546,6 +554,8 @@ are in `build/cache/reference/bold/`.
   glyphs as their regulars draw them.
   - Box Drawing, Block Elements and the geometric shapes meet their neighbours across the
     cell.
+  - ◦ stays with the shapes, as Maple Mono Bold's does. ‣ is a text bullet, not a shape, so it
+    grows with •, as Maple Mono Bold's ‣ does while its ▸ stays.
   - The Powerline symbols fill the line box.
   - Braille's dots draw graphs and spinners.
   - Every frame of a spinner stays, so the spinner turns in one place and does not pulse. Only
@@ -572,11 +582,11 @@ are in `build/cache/reference/bold/`.
   an outline and references has only its outline grown. Three kinds of part are unlinked
   first.
   - A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
-    italic. A bolder glyph's shared part grows as its own outline.
-  - ‣ is a text bullet, which grows with •, as Maple Mono Bold's ‣ does while its ▸ stays. ◦
-    stays with the shapes, as Maple Mono Bold's does.
+    italic.
+  - A bolder glyph's shared part grows as its own outline.
   - A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its own
     outline, since the reference would turn or scale the pen too.
+- **Mirrors and marks.** The pen alone would break three things the regular keeps.
   - A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one
     mirrored, so the two stay exact mirrors.
   - An accent the pen grows out of the line box moves down into it (ĥ's circumflex).
@@ -586,9 +596,9 @@ are in `build/cache/reference/bold/`.
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:
 
-- `TURNED`: the tonos, the acute turned 25° steeper, grows by the pen turned with it. So it
-  stays the bold acute turned. `test_tonos_is_the_acute_turned` (`tests/test_make_bold.py`)
-  holds this.
+- `TURNED`: the tonos, the acute turned 25° steeper, grows by the pen turned with it.
+  `test_tonos_is_the_acute_turned` (`tests/test_make_bold.py`) holds the regular's tonos to
+  the acute turned 25°. So the bold tonos stays the bold acute turned.
 - `ROUND`: ª º's bar and ⇪'s bar, drawn as heavy as the stems beside them, grow as much up and
   down as across. The level pen would leave them 21 lighter than the bold stems.
 - `NARROW`: the small 4 grows by 0.83 of the pen's width. The full pen would close its counter
