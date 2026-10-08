@@ -316,6 +316,16 @@ WIDTHS = {
     "↱": (520, 540),  # Fira Code, Maple Mono
     "↲": (520, 540),  # Fira Code, Maple Mono
     "↳": (520, 540),  # Fira Code, Maple Mono
+    "◇": (540, 620),  # Fira Code, Maple Mono
+    "◆": (540, 620),  # Fira Code, Maple Mono
+    "▲": (540, 620),  # Fira Code, Maple Mono
+    "▼": (540, 620),  # Fira Code, Maple Mono
+    "◊": (466, 480),  # Fira Code, Maple Mono
+    "∴": (457, 570),  # Fira Code, Maple Mono
+    "▸": (310, 310),  # Maple Mono; Fira Code has none
+    "▹": (310, 310),  # Maple Mono; Fira Code has none
+    "◂": (310, 310),  # Maple Mono; Fira Code has none
+    "◃": (310, 310),  # Maple Mono; Fira Code has none
     # Intel One Mono has none of these letters.
     "π": (530, 552),  # Maple Mono, Fira Code
     "γ": (489, 514),  # Maple Mono, Fira Code
@@ -410,6 +420,16 @@ BOLD_WIDTHS = {
     "↱": (520, 575),  # Fira Code, Maple Mono
     "↲": (520, 575),  # Fira Code, Maple Mono
     "↳": (520, 575),  # Fira Code, Maple Mono
+    "◇": (540, 620),  # Fira Code, Maple Mono
+    "◆": (540, 620),  # Fira Code, Maple Mono
+    "▲": (526, 620),  # Monaspace Neon, Maple Mono
+    "▼": (526, 620),  # Monaspace Neon, Maple Mono
+    "◊": (427, 521),  # Monaspace Neon, Fira Code
+    "∴": (504, 598),  # Fira Code, Maple Mono
+    "▸": (258, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "▹": (297, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "◂": (258, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "◃": (297, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
     # Intel One Mono has none of these letters.
     "π": (562, 573),  # Maple Mono, Monaspace Radon
     "γ": (503, 570),  # Maple Mono, Fira Code

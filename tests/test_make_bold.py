@@ -120,7 +120,7 @@ class BoldTest(unittest.TestCase):
         self.assertEqual(moved, {})
 
     def test_bolder_glyphs_have_more_ink(self):
-        # Parts included: a bolder glyph built on a shared one (‣ on ▸) grows too.
+        # Parts included: a bolder glyph built on a shared one grows too.
         thinner = {}
         for name in self.of_class(BOLDER):
             found, regular = (area(ink(font, name)) for font in (self.bold, self.regular))

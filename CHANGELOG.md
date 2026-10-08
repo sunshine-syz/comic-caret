@@ -4,6 +4,7 @@
 
 - `∫` `∏` `√` `¬` are as wide as the narrowest reference font that draws them, as the letters became in 2.0.0. They stood 10 to 25 units narrower. The hooks of `∫` and the tick of `√` run further, and the bar of `¬` is longer. The bar of `∏` runs past its stems, as in Fira Code and Maple Mono.
 - `↰` `↱` `↲` `↳` are as wide as Fira Code's, the narrowest reference's: their shafts run 44 units further. `↵` `↩` `↪` follow, so the return arrows stay one width. The hook of `↩` and `↪` turns as one even stroke: its shaft and arm ran into the loop with small notches, and the loop was heavier than the shaft.
+- `◇` `◆` `▲` `▼` `◊` are as wide as Fira Code's, the narrowest reference's, and `▸` `▹` `◂` `◃` as wide as Maple Mono's. Each corner moves out whole and the edges between stay straight, so an outlined shape keeps its stroke. `▶` `▷` `◀` `◁` are taller, as `▲` `△` `▼` `▽` are wider, being them turned; `⏵` stays as tall as `⏸` `⏺`, so it is a little narrower. `▴` `▵` `▾` `▿` are taller, as `▸` `▹` are wider; `‣` keeps its size, near Maple Mono's. The lower dots of `∴` stand further apart, so the bold `∴` is as wide as Fira Code Bold's.
 
 ## 2.1 (2026-10)
 

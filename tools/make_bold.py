@@ -448,9 +448,8 @@ def mirror_pairs(font, classes):
 
 def unlinked_parts(glyph, classes):
     """The glyph's references the bold draws as its own outline: a shared glyph's bolder parts,
-    which keep the regular's outline; a bolder glyph's shared parts, which grow as its outline
-    (‣ on ▸, a text bullet on a shape, as Maple Mono Bold's ‣ grows and its ▸ stays); a bolder
-    glyph's bolder parts turned a quarter (⋮ on …) or scaled, which grow as its outline, since
+    which keep the regular's outline; a bolder glyph's shared parts, which grow as its outline;
+    a bolder glyph's bolder parts turned a quarter (⋮ on …) or scaled, which grow as its outline, since
     the reference would turn or scale the pen too; and every part of a MERGED glyph."""
     if glyph.glyphname in MERGED:
         return [name for name, *_ in glyph.references]

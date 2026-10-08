@@ -864,7 +864,7 @@ class CurrencyTest(unittest.TestCase):
     em dash, both references, and ₿ is B with two ticks of |'s stroke through it."""
     sfd = SFD
     cent_reach = CENT_REACH
-    bullet_grown = False  # whether ‣ is ▸ grown, as its own outline
+    bullet_grown = False  # whether the pen grows ‣ past ▸
 
     @classmethod
     def setUpClass(cls):
@@ -987,20 +987,21 @@ class CurrencyTest(unittest.TestCase):
                 self.assertEqual(matrix, psMat.identity())
 
     def test_triangular_bullet_is_the_small_triangle(self):
-        # Maple Mono, the only reference with ‣, draws it 258 wide at our em, which is our ▸.
+        # ‣ is ▸'s triangle at a text bullet's size: as tall as ▸, on its middle, and no wider.
+        # ▸ is Maple Mono's ▸, 310 wide; Maple Mono, the only reference with ‣, draws it 258.
+        # The bold grows ‣ with the text, as Maple Mono Bold does, while ▸ stays.
         glyph = self.font[ord("‣")]
+        x0, y0, x1, y1 = glyph.boundingBox()
+        t0, s0, t1, s1 = self.font[ord("▸")].boundingBox()
+        self.assertFalse(glyph.references)
+        self.assertAlmostEqual((x0 + x1) / 2, (t0 + t1) / 2, delta=ROUNDING)
+        self.assertAlmostEqual((y0 + y1) / 2, (s0 + s1) / 2, delta=ROUNDING)
         if self.bullet_grown:
-            x0, y0, x1, y1 = glyph.boundingBox()
-            t0, s0, t1, s1 = self.font[ord("▸")].boundingBox()
-            self.assertFalse(glyph.references)
-            self.assertTrue(x0 < t0 and y0 < s0 and x1 > t1 and y1 > s1)
-            self.assertAlmostEqual((x0 + x1) / 2, (t0 + t1) / 2, delta=ROUNDING)
-            self.assertAlmostEqual((y0 + y1) / 2, (s0 + s1) / 2, delta=ROUNDING)
+            self.assertTrue(y0 < s0 and y1 > s1)
             return
-        self.assertEqual(len(glyph.foreground), 0)
-        [(name, matrix, *_)] = glyph.references
-        self.assertEqual(name, self.font[ord("▸")].glyphname)
-        self.assertEqual(matrix, psMat.identity())
+        self.assertAlmostEqual(y0, s0, delta=ROUNDING)
+        self.assertAlmostEqual(y1, s1, delta=ROUNDING)
+        self.assertLess(x1 - x0, t1 - t0)
 
 
 class BoldCoverageTest(CoverageTest):
@@ -1067,8 +1068,8 @@ class BoldKeyHintTest(KeyHintTest):
 class BoldCurrencyTest(CurrencyTest):
     sfd = BOLD_SFD
     cent_reach = BOLD_CENT_REACH
-    # Known exception: ‣ is ▸'s outline grown by the pen (make_bold.unlinked_parts()), a text
-    # bullet on a shared shape, as Maple Mono Bold's ‣ grows and its ▸ stays.
+    # Known exception: the pen grows ‣, a text bullet, while ▸ stays with the shapes, as Maple
+    # Mono Bold's ‣ grows and its ▸ stays.
     bullet_grown = True
 
 

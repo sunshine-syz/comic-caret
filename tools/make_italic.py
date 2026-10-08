@@ -60,7 +60,7 @@ UPRIGHT_BLOCKS = (range(0x2300, 0x2400), range(0x2500, 0x27C0), range(0x2800, 0x
 # piece, which must join it) and ⍽, ␣'s sibling.
 SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
 # Outside them, what is a picture: the spinner frames ∙ ⊙ ⊶ ⊷ (and ⊙ is built on ∙), • and
-# ‣, which are the dot of ◉ and ▸ itself, ℹ, which stands beside ⚠, and the white arrows
+# ‣, which are the dot of ◉ and ▸'s triangle, ℹ, which stands beside ⚠, and the white arrows
 # ⇧ ⇪ ⇦ ⇨ ⇩ ⇞ ⇟ and the tab keys ↹ ⇥ ⇤, key hints that read with ⌘ ⌥ ⌃ (Maple Mono slants
 # them, and has no ⌘). ↵ ↩ are arrows and slant.
 UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟↹⇥⇤")

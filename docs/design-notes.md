@@ -26,9 +26,11 @@ them. The exceptions:
   `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
   right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned
   to match.
-- ▹ is ▷ at 0.61 thinned to a 41 outline, since at the full stroke its counter fills in at
-  16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. Its size keeps the white across its middle, 168, above Maple
-  Mono's, the only reference's, whose lighter 37 outline leaves 159 at our cap height.
+- ▹ is a 41 outline, lighter than ▷'s, since at the full stroke its counter fills in at
+  16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. It is 310 wide, Maple Mono's, the only reference's, and the
+  white across its middle, 199, stays above Maple Mono's, whose lighter 37 outline leaves 159
+  at our cap height. ‣, a text bullet beside •, is ▸'s triangle 278 wide, near Maple Mono's
+  ‣ (258).
 - ▫ (☐ at 0.52) and ◦ (a ring of ○'s shape, 250 across) are scaled so their rings come out
   about 41 too.
 - ⧉'s squares are the hyphen's stroke at 0.79, so the one behind keeps clear of the one in
@@ -533,9 +535,9 @@ in `build/cache/reference/bold/`:
 - **Composites** keep their references, so an accented letter follows its base; a glyph with an
   outline and references has only its outline grown. Three kinds of part are unlinked first.
   A shared glyph's bolder part (∙ on the period) keeps the regular's outline, as in the
-  italic. A bolder glyph's shared part (‣ on ▸) grows as its own outline: ‣ is a text bullet,
-  which grows with •, as Maple Mono Bold's ‣ does while its ▸ stays; ◦ stays with the shapes,
-  as Maple Mono Bold's does. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on
+  italic, and a bolder glyph's shared part grows as its own outline. ‣ is a text bullet, which
+  grows with •, as Maple Mono Bold's ‣ does while its ▸ stays; ◦ stays with the shapes, as
+  Maple Mono Bold's does. A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on
   ⇧) grows as its own outline, since the reference would turn or scale the pen too. A left
   glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one mirrored,
   so the two stay exact mirrors.
