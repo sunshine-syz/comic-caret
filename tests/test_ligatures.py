@@ -203,6 +203,10 @@ LIGATED = {
     "::": ["colon.tight_r", "colon.tight_l"],
     "a::b": ["a", "colon.tight_r", "colon.tight_l", "b"],
     "...": ["period.tight_r2", "period", "period.tight_l2"],
+    # ... before a space after a name, as in prose, and before a name, as a spread
+    "wait... what": ["w", "a", "i", "t", "period.tight_r2", "period", "period.tight_l2",
+                     "space", "w", "h", "a", "t"],
+    "...rest": ["period.tight_r2", "period", "period.tight_l2", "r", "e", "s", "t"],
     "&&": ["ampersand.tight_r", "ampersand.tight_l"],
     "++": ["plus.tight_r", "plus.tight_l"],
     "//": ["slash.tight_r", "slash.tight_l"],
@@ -211,6 +215,7 @@ LIGATED = {
     "<<": ["less.tight_r", "less.tight_l"],
     ">>": ["greater.tight_r", "greater.tight_l"],
     "a >> b": ["a", "space", "greater.tight_r", "greater.tight_l", "space", "b"],
+    "x >> 1": ["x", "space", "greater.tight_r", "greater.tight_l", "space", "one"],
     # A shift without spaces: a name or a number follows, which never follows closing generics
     "cin>>n": ["c", "i", "n", "greater.tight_r", "greater.tight_l", "n"],
     "x>>1": ["x", "greater.tight_r", "greater.tight_l", "one"],
@@ -264,6 +269,11 @@ LIGATED = {
     "&&&": ["ampersand.tight_r2", "ampersand", "ampersand.tight_l2"],
     "<<<": ["less.tight_r2", "less", "less.tight_l2"],
     ">>>": ["greater.tight_r2", "greater", "greater.tight_l2"],
+    # Before a space after a space, as an operator or a doctest's prompt, unlike at a line's
+    # start
+    "a >>> 2": ["a", "space", "greater.tight_r2", "greater", "greater.tight_l2", "space", "two"],
+    "    >>> f()": ["space", "space", "space", "space", "greater.tight_r2", "greater",
+                    "greater.tight_l2", "space", "f", "parenleft", "parenright"],
     ">>=": ["greater.tight_r2", "greater", "equal.tight_l"],
     "m >>= f": ["m", "space", "greater.tight_r2", "greater", "equal.tight_l", "space", "f"],
     "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
@@ -342,6 +352,9 @@ PLAIN = [
     # A lone ~>: it ends fish's prompt in the home directory, and before a version it is
     # Ruby's and Terraform's "at least, within"
     "~>", "a ~> b", "~> ls", "~> 1.0", "~>1.0",
+    # >> >>> ... at a line's start before a space: Python's prompts and an email quote. A
+    # terminal that shapes the cursor's cell alone would draw a joined prompt in pieces.
+    ">>> import torch", ">>> ", ">> import", "... pass", "... ", ">> quoted",
     # <>: a React fragment opens with it, and Java's and SQL's read as typed too
     "<>", "return (<>", "<><A />", "new List<>()", "a <> b", "a<>-1",
     # <!-- without its -- run

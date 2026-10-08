@@ -425,6 +425,13 @@ feature calt {
     ignore sub period' period period @OpOrMark;
     sub greater period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period period;
+    # A prompt stays as typed: ... >>> >> with nothing before them in the run and a space
+    # after. Python's REPL redraws its line with the cursor at column 0, and a terminal that
+    # shapes the cursor's cell alone drew the prompt in pieces there, so it flickered. After a
+    # space, or with no space after, as an editor shapes a lone token, they still tighten, and
+    # ... does after a name too (wait... what).
+    sub [space @Operand] period' lookup lig_tight_r2 period period' lookup lig_tight_l2 space;
+    ignore sub period' period period space;
     sub period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period [equal less];
     ignore sub period' period [equal less] @OpOrMark;
@@ -452,6 +459,9 @@ feature calt {
     ignore sub greater' greater [greater equal] @OpOrMark;
     sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
     ignore sub @Operand greater' greater greater;
+    # A prompt, as ... above; after a name the rule above already keeps it as typed.
+    sub space greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 space;
+    ignore sub greater' greater greater space;
     sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2;
     sub greater' lookup lig_tight_r2 greater equal' lookup lig_tight_l;
     ignore sub @Op equal' less less;
@@ -506,6 +516,9 @@ feature calt {
     ignore sub greater' greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r greater' lookup lig_tight_l @Word;
     ignore sub @Operand greater' greater;
+    # A prompt or an email quote, as ... above.
+    sub space greater' lookup lig_tight_r greater' lookup lig_tight_l space;
+    ignore sub greater' greater space;
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;
     sub question' lookup lig_tight_r question' lookup lig_tight_l @Prefix @OperandStart;

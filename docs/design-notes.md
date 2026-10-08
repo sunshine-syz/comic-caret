@@ -475,6 +475,15 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   before a version it means "at least, within" (Ruby's and Terraform's `~> 1.0`); `~~>` and
   longer still join. `<>` opens a React fragment, and no context tells it from Java's diamond
   operator or SQL's `<>`.
+- **Prompts.** `>>`, `>>>` and `...` stay as typed at a run's start before a space, as in
+  Python's prompts `>>> ` and `... ` and an email quote's `>> `. The REPL redraws its line with
+  the cursor at column 0, and Ghostty shapes the cursor's cell alone, so the prompt jumped
+  between a tightened `>>>` and `>` beside a tightened `>>` at each keystroke. Maple Mono never
+  joins `>>` or `>>>`. After a space (`a >>> 2`, an indented doctest), with nothing after, as an
+  editor shapes a lone token, or before a name or a bracket (`...rest`), they still tighten,
+  and `...` after a name too (`wait... what`). OpenType can't match a run's start, so the
+  rules name what may stand before instead: after `(` or an accented letter, as in `(>> m)` and
+  `café... `, they stay as typed too.
 - **Kept.** `?.` tightens after a name too, as JavaScript's `a?.b` does; Rust's `x?.y`, `?`
   then a field, can't be told apart from it.
 
