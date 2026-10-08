@@ -393,8 +393,6 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
 - **đ and ₫.** đ is 503, 7 under Fira Code's 510, and the bold đ 539, 1 under Monaspace Neon
   Bold's 540. ₫ is 505, 10 under Maple Mono's 515. ₫ holds đ, and in the bold a letter that a
   symbol holds stays within the symbol's `SYMBOL_SIDE`: the bold đ's bar ends at 585.
-- **The bold ẞ.** It is 473, 10 under Maple Mono Bold's 483. `NARROW` grows it by 0.7 of the
-  pen to keep the white between its stem and diagonal. The regular is 449, over the floor.
 - **ŀ.** It is 462 against Fira Code's 562. The references end the dot 104 (Maple Mono), 118
   (Fira Code) and 148 (Intel One Mono) past their `l`, into the next cell, and their bolds
   65–135. Ours ends 18 past and stays in the cell. `tests/test_latin.py` holds the dot past the
@@ -579,9 +577,9 @@ what it does to them:
   stays the bold acute turned.
 - `ROUND`: ª º's bar and ⇪'s bar, drawn as heavy as the stems beside them, grow as much up and
   down as across. The level pen would leave them 21 lighter than the bold stems.
-- `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. The full pen would
-  close ẞ's white between stem and diagonal to 56, under Maple Mono Bold's 65, and the small
-  4's counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.136).
+- `NARROW`: the small 4 grows by 0.83 of the pen's width. The full pen would close its counter
+  to 0.128 of its height, under Maple Mono Bold's ¼ (0.136). Every share from 0.79 to 0.87
+  keeps 0.139, and 0.83 is the middle of that range.
 - `BAR_WEIGHT` and `TICKED`: `|` grows by a pen wide enough to bring it to 125 across, as
   heavy as the bold `l`. The regular draws `|` at 77, lighter than its stems (`I` 94), and the
   pen would leave it at 111, 0.85 of the bold `I`, under every reference bold's 0.896 (Fira

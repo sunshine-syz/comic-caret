@@ -10,6 +10,7 @@
 - `↰` `↱` `↲` `↳` are as wide as Fira Code's, the narrowest reference's: their shafts run 44 units further. `↵` `↩` `↪` follow, so the return arrows stay one width. The hook of `↩` and `↪` turns as one even stroke: its shaft and arm ran into the loop with small notches, and the loop was heavier than the shaft.
 - `◇` `◆` `▲` `▼` `◊` are as wide as Fira Code's, the narrowest reference's, and `▸` `▹` `◂` `◃` as wide as Maple Mono's. Each corner moves out whole and the edges between stay straight, so an outlined shape keeps its stroke. `▶` `▷` `◀` `◁` are taller, as `▲` `△` `▼` `▽` are wider, being them turned; `⏵` stays as tall as `⏸` `⏺`, so it is a little narrower. `▴` `▵` `▾` `▿` are taller, as `▸` `▹` are wider; `‣` keeps its size, near Maple Mono's. The lower dots of `∴` stand further apart, so the bold `∴` is as wide as Fira Code Bold's.
 - `✗` and `✘` are as wide as Maple Mono's, the one reference that draws them. Their arms reach further out and keep their weight; their tops stay as far under `X`'s. In the bold they stop at the room at the cell's sides.
+- In the bold, the stems of `ẞ` grow as much as the other capitals', so they are as heavy as those of `ß`. They were about 10 units lighter, and `ẞ` was narrower than the narrowest reference bold.
 
 ## 2.1 (2026-10)
 

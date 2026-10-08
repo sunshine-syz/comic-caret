@@ -132,13 +132,10 @@ LIGHT_PARTS = ("slash.fraction", "bar.ordinal", "circle.copyright")
 ROUND = ("bar.ordinal", "uni21EA")
 
 # The glyphs that grow by a share of their pen's width, which keeps more of their white, and
-# that share (tests/test_latin.py holds the white over the reference bolds'). Grown as build()
-# grows them and measured as the test measures them, share by share in hundredths: ẞ's white
-# between the stem and the diagonal is 78 at 0.7, over Maple Mono Bold's 64, as at every share
-# up to the full pen's 67.5; the small 4's counter is 0.139 of its height from 0.79 to 0.87,
-# over Maple Mono Bold's ¼ (0.136), and closes to 0.134 at 0.88 and 0.128 at the full pen.
-# Their stems grow 10.5 and 3.7 less than the others'.
-NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
+# that share: the small 4, whose counter the full pen closes to 0.128 of its height, under
+# Maple Mono Bold's ¼ (0.136, tests/test_latin.py). Every share from 0.79 to 0.87 keeps 0.139,
+# and 0.88 closes it to 0.134; 0.83 sits in the middle of that range.
+NARROW = {"four.small": 0.83}
 
 # How heavy the bold draws |, across its middle. The regular draws it lighter than its stems,
 # 77 where I is 94, and the pen would grow it to 111, 0.85 of the bold I, under every reference
@@ -156,9 +153,9 @@ TICKED = {"uni20BF": "B"}
 TICK_ROOT = 60
 
 # The strokes the regular draws as another stroke turned, and the turn, anticlockwise: the
-# tonos is the acute turned 25° steeper, as tests/test_make_bold.py holds the regular's drawing.
-# The pen turns with it, so the bold tonos is the bold acute turned. The level pen would grow
-# the steeper stroke heavier.
+# tonos is the acute turned 25° steeper, as test_tonos_is_the_acute_turned
+# (tests/test_make_bold.py) holds. The pen turns with it, so the bold tonos is the bold acute
+# turned. The level pen would grow the steeper stroke heavier.
 TURNED = {"tonos": math.radians(25)}
 
 # The rings that grow outward only, by twice their pen, so they thicken by its whole width as
@@ -341,8 +338,8 @@ def classify(font):
 
 
 def middle_stroke(layer, name):
-    """The width of the one stroke across the middle of the layer's box: glyph `name`'s stem,
-    which a pen is measured from."""
+    """The width of the one stroke across the middle of the layer's box, glyph `name`'s stem or
+    bar, which a pen is measured from."""
     _, y0, _, y1 = layer.boundingBox()
     spans = spans_at_y(layer, (y0 + y1) / 2)
     if len(spans) != 1:
