@@ -20,6 +20,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
+import project
 import sfnt
 from bump_version import font_version, sfd_version
 from helpers import NerdBuilds, require_current_build
@@ -165,11 +166,8 @@ GENERATE = ROOT / "tools" / "generate.py"
 
 def shaped(font, text):
     """hb-shape's JSON glyphs for `text`, ligatures off, with their extents."""
-    result = subprocess.run(
-        ["hb-shape", "--output-format=json", "--show-extents", "--features=-calt",
-         "--preserve-default-ignorables", str(font), f"--text={text}"],
-        capture_output=True, text=True, check=True)
-    return json.loads(result.stdout)
+    return project.shaped(font, text, "--show-extents", "--features=-calt",
+                          "--preserve-default-ignorables")
 
 
 def shape(font, text):
@@ -409,7 +407,7 @@ class GenerateDateTest(unittest.TestCase):
     def test_both_formats_carry_the_build_time(self):
         epoch = 1700000000
         with tempfile.TemporaryDirectory() as tmp:
-            for ext in ("otf", "ttf"):
+            for ext in FORMATS:
                 out = pathlib.Path(tmp) / f"ComicCaret-Regular.{ext}"
                 result = subprocess.run(
                     ["fontforge", "-quiet", "-script", str(GENERATE), str(SFD), str(out)],
@@ -683,7 +681,7 @@ class ReleaseZipTest(unittest.TestCase):
 
     @staticmethod
     def fonts(prefix):
-        return {f"{prefix}-{style}.{ext}" for style in STYLES for ext in ("otf", "ttf")}
+        return {f"{prefix}-{style}.{ext}" for style in STYLES for ext in FORMATS}
 
     def test_the_plain_zip_holds_the_fonts_and_the_license(self):
         with zipfile.ZipFile(self.plain) as zf:

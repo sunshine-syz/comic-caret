@@ -20,7 +20,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from add_ligatures import GENERATED
 from helpers import NerdBuilds, require_current_build
-from project import SFD, STYLES, font_file
+from project import FORMATS, SFD, STYLES, font_file
 
 # Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
 # with --skip-network: its version check asks PyPI for a newer Font Bakery and its name check
@@ -31,7 +31,7 @@ FONTBAKERY = "fontbakery==1.1.0"
 EXCLUDE_NEWER = "2026-09-30"
 # Font Bakery's statuses that report nothing wrong.
 QUIET = {"PASS", "SKIP", "INFO", "DEBUG"}
-FONTS = {ext: [font_file(style, ext) for style in STYLES] for ext in ("ttf", "otf")}
+FONTS = {ext: [font_file(style, ext) for style in STYLES] for ext in FORMATS}
 # How a message names its glyphs, by message code; other messages name none.
 GLYPH_NAMES = {
     "contour-count": r"Glyph name: (\S+)",
@@ -171,7 +171,7 @@ class NerdFontBakeryTest(NerdBuilds, unittest.TestCase):
         cls.known = known_nerd()
 
     def test_fonts_have_only_the_known_problems(self):
-        for ext in ("ttf", "otf"):
+        for ext in FORMATS:
             fonts = [font for font in self.fonts
                      if font.name.startswith("ComicCaretNerdFont-") and font.suffix == f".{ext}"]
             with self.subTest(format=ext):

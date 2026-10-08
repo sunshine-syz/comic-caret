@@ -17,6 +17,8 @@ WINDOWS_ENGLISH = (3, 1, 0x409)      # platform, encoding and language of the na
 
 
 def checksum(data):
+    """The sum of `data` as big-endian 32-bit words, modulo 2^32, with zeros padding the last
+    word: an sfnt table's checksum (OpenType spec, "Table Directory", calculation of checksums)."""
     padded = data + b"\0" * (-len(data) % 4)
     return sum(struct.unpack(f">{len(padded) // 4}L", padded)) & 0xFFFFFFFF
 

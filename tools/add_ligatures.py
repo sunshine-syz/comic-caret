@@ -539,7 +539,7 @@ def pipes(font):
 def end_centre(angle, above):
     """(x, y): the centre of the round end of the arm of `angle` above or below the axis, half
     a stroke back from the arm's far end along its middle line. ARM_ENDS holds them for < and
-    > as drawn."""
+    > as drawn, rounded to whole units: it misses these centres by 0.5 at most."""
     _, y0, _, y1 = angle.boundingBox()
     rise = (y1 if above else y0) - AXIS
     (ax, ay), (bx, by) = (middle_at(angle, AXIS + k * rise) for k in (0.3, 0.65))

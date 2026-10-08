@@ -25,7 +25,7 @@ import sys
 import tempfile
 
 from bump_version import sfd_version
-from project import BOLD_SFD, ITALIC_SFD, ROOT, SFD, font_file, reference_fonts
+from project import ROOT, SFD, STYLES, font_file, reference_fonts
 
 BUILT = font_file("Regular", "ttf")
 BUILT_ITALIC = font_file("Italic", "ttf")
@@ -225,7 +225,7 @@ def main():
     missing = [str(path) for path in paths if not path.exists()]
     if missing:
         parser.error(f"no such font: {', '.join(missing)}")
-    sfd = {"Italic": ITALIC_SFD, "Bold": BOLD_SFD}.get(args.style, SFD)
+    sfd = STYLES[args.style or "Regular"]
     before = resolve(parser, args.before, sfd) if args.before else None
     blocks = [(text, text, None) for text in args.text] if args.text else BLOCKS
     if args.features is not None:

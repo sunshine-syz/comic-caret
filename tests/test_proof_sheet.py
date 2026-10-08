@@ -13,10 +13,10 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import proof_sheet
-from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
+from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD, font_file
 
 SCRIPT = ROOT / "tools" / "proof_sheet.py"
-TTF, OTF = (ROOT / "fonts" / f"ComicCaret-Regular.{ext}" for ext in ("ttf", "otf"))
+TTF, OTF = font_file("Regular", "ttf"), font_file("Regular", "otf")
 # Its own units per em and line box, unlike ours; absent until placed by hand (CLAUDE.md).
 FIRA = ROOT / "build" / "cache" / "reference" / "FiraCode-Regular.ttf"
 MARGIN = 4  # px: the blank border the script asks hb-view for
@@ -97,6 +97,7 @@ class ProofSheetTest(unittest.TestCase):
     def test_bold_and_italic_exclude_each_other(self):
         result = run("unused", "--bold", "--italic")
         self.assertEqual(result.returncode, 2)
+        self.assertIn("not allowed with", result.stderr)
 
     def test_names_the_commit_it_was_rendered_at(self):
         _, page = self.sheet(TTF, "--text=a")

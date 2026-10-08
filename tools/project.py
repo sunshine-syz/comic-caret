@@ -1,5 +1,6 @@
 """Paths and font-wide facts that the tools and tests share."""
 import collections
+import json
 import os
 import pathlib
 import subprocess
@@ -94,6 +95,15 @@ def reference_fonts(style="Regular"):
 
 
 FORMATS = ("otf", "ttf")
+
+
+def shaped(font, text, *options):
+    """hb-shape's JSON glyphs for `text`, shaped with the extra hb-shape `options`."""
+    result = subprocess.run(
+        ["hb-shape", "--output-format=json", *options,
+         str(font), f"--text={text}"],  # --text= form: a leading '-' would read as an option
+        capture_output=True, text=True, check=True)
+    return json.loads(result.stdout)
 
 
 def newest_sfd():

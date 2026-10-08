@@ -9,6 +9,10 @@ import fontforge
 
 import lig_geometry as geo
 
+# Drawn points sit on whole units, so two ends on one line differ by 0; under half a unit
+# only lets a rounding wobble through, and a slant of one unit is not an edge.
+EDGE_TOLERANCE = 0.5
+
 
 def spans_at_y(layer, y):
     """(x0, x1) of each stroke a horizontal line at y crosses, left to right."""
@@ -35,13 +39,13 @@ def _straight_segments(layer):
 def vertical_edges(layer):
     """(x, y0, y1) of each straight upright edge: where a stroke is cut flat across."""
     return [(a.x, min(a.y, b.y), max(a.y, b.y))
-            for a, b in _straight_segments(layer) if abs(a.x - b.x) < 0.5]
+            for a, b in _straight_segments(layer) if abs(a.x - b.x) < EDGE_TOLERANCE]
 
 
 def horizontal_edges(layer):
     """(y, x0, x1) of each straight level edge."""
     return [(a.y, min(a.x, b.x), max(a.x, b.x))
-            for a, b in _straight_segments(layer) if abs(a.y - b.y) < 0.5]
+            for a, b in _straight_segments(layer) if abs(a.y - b.y) < EDGE_TOLERANCE]
 
 
 def counter(layer, y):

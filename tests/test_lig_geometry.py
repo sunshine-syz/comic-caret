@@ -170,12 +170,23 @@ class ShapeTest(unittest.TestCase):
                 [contour] = geo.polygon(points)
                 self.assertTrue(contour.isClockwise())
 
-    def test_a_stroke_is_one_clockwise_outline_whichever_way_it_runs(self):
+    def test_a_line_is_one_round_ended_outline_whichever_way_it_runs(self):
         for p0, p1 in (((0, 0), (100, 0)), ((100, 0), (0, 0))):
             with self.subTest(start=p0):
                 [contour] = geo.line(p0, p1, 40)
                 self.assertTrue(contour.isClockwise())
                 self.assertEqual(box(geo.line(p0, p1, 40)), (-20, -20, 120, 20))
+
+    def test_a_stroke_that_crosses_itself_runs_clockwise_throughout(self):
+        # FontForge strokes this path with one contour counter-clockwise, which removeOverlap
+        # would take for a hole; stroked() must turn it.
+        path = fontforge.contour()
+        path.moveTo(20, 0)
+        for point in ((180, 180), (0, 120), (180, 100)):
+            path.lineTo(*point)
+        contours = list(geo.stroked(path, 40))
+        self.assertGreater(len(contours), 1)
+        self.assertTrue(all(contour.isClockwise() for contour in contours))
 
     def test_a_circle_is_round_and_clockwise(self):
         [contour] = geo.circle(50, 50, 40)

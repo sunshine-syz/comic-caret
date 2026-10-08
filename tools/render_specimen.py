@@ -9,11 +9,11 @@ They follow the viewer's light or dark color scheme, in GitHub's colors.
 """
 import argparse
 import functools
-import json
 import re
 import subprocess
 import sys
 
+import project
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, font_file, stale_build
 
 FORMAT = "ttf"  # the images are drawn from the TTFs
@@ -120,7 +120,7 @@ def harfbuzz(tool, text, features, *options, font=FONT):
 
 def shape(text, features, font=FONT):
     """hb-shape's glyphs for one line: dicts with the glyph name "g" and cluster "cl"."""
-    return json.loads(harfbuzz("hb-shape", text, features, "--output-format=json", font=font))
+    return project.shaped(font, text, f"--features={features}")
 
 
 @functools.cache

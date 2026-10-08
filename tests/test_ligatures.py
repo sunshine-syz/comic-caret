@@ -3,10 +3,8 @@
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
 import itertools
-import json
 import pathlib
 import re
-import subprocess
 import sys
 import unittest
 
@@ -29,6 +27,7 @@ from project import (
     STYLES,
     SYMBOL_SIDE,
     font_file,
+    shaped,
     style_of,
 )
 
@@ -37,23 +36,15 @@ FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
 REGULAR = font_file("Regular", "ttf")
 
 
-def hb_shape(font, text, *options):
-    result = subprocess.run(
-        ["hb-shape", "--output-format=json", *options,
-         str(font), f"--text={text}"],  # --text= form: a leading '-' would read as an option
-        capture_output=True, text=True, check=True)
-    return json.loads(result.stdout)
-
-
 def shape(font, text, calt=True):
     """[(glyph name, advance)] for `text` shaped with `font`."""
-    glyphs = hb_shape(font, text, f"--features={'+' if calt else '-'}calt")
+    glyphs = shaped(font, text, f"--features={'+' if calt else '-'}calt")
     return [(g["g"], g["ax"]) for g in glyphs]
 
 
 def extents(font, text):
     """[(glyph name, x bearing, y bearing, width, height)] for `text` shaped with `font`."""
-    glyphs = hb_shape(font, text, "--show-extents")
+    glyphs = shaped(font, text, "--show-extents")
     return [(g["g"], g["xb"], g["yb"], g["w"], g["h"]) for g in glyphs]
 
 
@@ -408,7 +399,7 @@ class LigatureShapingTest(unittest.TestCase):
             for text, mark in zip(texts, itertools.cycle(chr(code) for code in MARKS)):
                 text += mark
                 with self.subTest(font=font.name, text=ascii(text)):
-                    glyphs = hb_shape(font, text, "--show-extents")
+                    glyphs = shaped(font, text, "--show-extents")
                     pen = sum(g["ax"] for g in glyphs[:-1])
                     middle = pen + glyphs[-1]["dx"] + glyphs[-1]["xb"] + glyphs[-1]["w"] / 2
                     self.assertTrue(pen - ADVANCE <= middle <= pen, (pen, middle))

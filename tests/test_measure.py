@@ -168,7 +168,7 @@ class EdgeTest(unittest.TestCase):
         self.assertEqual(sorted(measure.vertical_edges(layer)), [(0, 0, 50), (100, 0, 50)])
         self.assertEqual(sorted(measure.horizontal_edges(layer)), [(0, 0, 100), (50, 0, 100)])
 
-    def test_curves_and_slants_are_not_edges(self):
+    def test_slants_are_not_edges(self):
         slanted = fontforge.contour()
         slanted.moveTo(0, 0)
         slanted.lineTo(40, 100)
@@ -178,6 +178,21 @@ class EdgeTest(unittest.TestCase):
         layer += slanted
         self.assertEqual(measure.vertical_edges(layer), [])
         self.assertEqual(measure.horizontal_edges(layer), [(100, 40, 100)])
+
+    def test_a_curve_is_not_an_edge_though_its_ends_line_up(self):
+        # A D: flat top, bottom and back, and a bulge on the right whose two ends both lie on
+        # x = 100, so its chord is upright. Worked by hand from the points: the back is the
+        # only upright straight segment; the top and the bottom are the only level ones.
+        letter = fontforge.contour()
+        letter.moveTo(0, 0)
+        letter.lineTo(100, 0)
+        letter.cubicTo((140, 0), (140, 100), (100, 100))
+        letter.lineTo(0, 100)
+        letter.closed = True
+        layer = fontforge.layer()
+        layer += letter
+        self.assertEqual(measure.vertical_edges(layer), [(0, 0, 100)])
+        self.assertEqual(sorted(measure.horizontal_edges(layer)), [(0, 0, 100), (100, 0, 100)])
 
 
 if __name__ == "__main__":
