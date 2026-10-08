@@ -227,7 +227,7 @@ class CounterTest(unittest.TestCase):
             lower = chr(self.font[name].unicode).islower()
             height = self.font.os2_xheight if lower else cap_height
             for share, floor in floors:
-                y = round(share * height)  # the whole unit the floors were measured at
+                y = share * height
                 with self.subTest(glyph=name, y=y):
                     self.assertGreaterEqual(
                         round(measure.counter(self.font[name].foreground, y)), floor)

@@ -21,8 +21,28 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from make_bold import BOLDER, PEN, SHARED
-from measure import area, ink, length, outline, pieces, spans_at_y, vertical_edges
-from project import ADVANCE, BOLD_SFD, OVERLAP, ROOT, ROUNDING, SFD, SYMBOL_SIDE, is_alphanumeric
+from measure import (
+    area,
+    covered,
+    gap,
+    ink,
+    length,
+    outline,
+    pieces,
+    spans_at_y,
+    vertical_edges,
+)
+from project import (
+    ADVANCE,
+    BOLD_SFD,
+    LINE_TOP,
+    OVERLAP,
+    ROOT,
+    ROUNDING,
+    SFD,
+    SYMBOL_SIDE,
+    is_alphanumeric,
+)
 from sfd_files import differences
 
 THREE_END = re.compile(r".+\.tight_[lr]2")  # the outer glyph of a tightened three
@@ -40,9 +60,10 @@ MOVED_FURTHER = {("dieresistonos", "dieresis")}
 # 10-16, ₦'s to 20-22. They keep their pieces.
 SHUT_COUNTERS = ("uni20A6", "uni20A9")
 # Known exception to how far an outline may grow up: ⇪'s ⇧, the bold ⇧ lifted clear of its bar
-# (make_bold.LIFTED), which grows round, as heavy as ⇧'s shaft walls. It rises by no more than
-# the pens grew the two toward each other, the round bar's reach up and ⇧'s down, past what
-# the pen grows ⇧ itself.
+# (make_bold.LIFTED), which grows round, as heavy as ⇧'s shaft walls. Past what the pen grows ⇧
+# itself, it rises by no more than it needs to keep twice SYMBOL_SIDE from the bar: the
+# regular's white between the two, less what the pens grow them toward each other, the round
+# bar's reach up and ⇧'s down.
 LIFTED_FURTHER = ("uni21EA",)
 # Known exception to how far an outline may grow across: ->> <<-'s inner head, which moves
 # along its shaft, away from the outer head, until the white between them is Fira Code Bold's
@@ -101,6 +122,47 @@ class GeneratorTest(unittest.TestCase):
         # Turning keeps the area, which tells the stroke. Rounding moves the edge at most half a
         # unit's diagonal, so the area within that times the outline's length.
         self.assertAlmostEqual(area(tonos), area(acute), delta=length(acute) * math.sqrt(0.5))
+
+    def test_middle_stroke_exits_on_two_strokes(self):
+        # A pen is measured from one stem; of two, it can't tell which.
+        layer = geo.union(geo.rect(100, 0, 190, 500), geo.rect(410, 0, 500, 500))
+        with self.assertRaisesRegex(SystemExit, "twin"):
+            make_bold.middle_stroke(layer, "twin")
+
+    def test_raised_exits_past_its_stems(self):
+        # An H with its counter closed below and its stems 210 above the bar: rising by half
+        # that, the bar would pass the stems' round ends. The bars end inside the stems, as
+        # removeOverlap() mishandles edges that coincide.
+        layer = geo.union(geo.rect(100, 0, 190, 700), geo.rect(410, 0, 500, 700),
+                          geo.rect(150, 20, 450, 90), geo.rect(150, 400, 450, 490))
+        with self.assertRaisesRegex(SystemExit, "ladder"):
+            make_bold.raised("ladder", layer, (700 - 490) / 2)
+
+    @staticmethod
+    def composite(base_top, mark_rise):
+        """A font with one composite: a box `base_top` tall and a mark raised `mark_rise`."""
+        font = fontforge.font()
+        for name, layer in (("base", geo.rect(100, 0, 500, base_top)),
+                            ("mark", geo.rect(250, 0, 350, 100))):
+            glyph = font.createChar(-1, name)
+            glyph.foreground, glyph.width = layer, ADVANCE
+        glyph = font.createChar(-1, "composite")
+        glyph.width = ADVANCE
+        glyph.addReference("base")
+        glyph.addReference("mark", psMat.translate(0, mark_rise))
+        return font, glyph
+
+    def test_lower_into_line_takes_a_mark_down_by_its_excess(self):
+        font, glyph = self.composite(500, LINE_TOP - 63)  # the mark's top 37 past LINE_TOP
+        make_bold.lower_into_line(font, glyph)
+        places = {name: tuple(matrix[4:]) for name, matrix, *_ in glyph.references}
+        self.assertEqual(places, {"base": (0, 0), "mark": (0, LINE_TOP - 100)})
+
+    def test_lower_into_line_exits_when_the_base_passes(self):
+        # Only the parts above the base move, so no move brings the base back in.
+        font, glyph = self.composite(LINE_TOP + 50, LINE_TOP + 100)
+        with self.assertRaisesRegex(SystemExit, "composite"):
+            make_bold.lower_into_line(font, glyph)
 
 
 class BoldTest(unittest.TestCase):
@@ -171,6 +233,9 @@ class BoldTest(unittest.TestCase):
         inner head along its shaft (HEADS_FURTHER). Covers a trim or an overlap removal that
         failed and left its box, and a condensed outline, which takes in each side by at most
         the pen it then grows by."""
+        # make_bold's own pens: test_small_parts_are_as_much_bolder_as_the_letters,
+        # test_bars_are_as_heavy_against_the_stems_as_the_reference_bolds and the heavy marks'
+        # tests in tests/test_symbols.py hold them to the fonts.
         pens = make_bold.pens(self.regular)
         found = {}
         for name in self.of_class(BOLDER):
@@ -180,8 +245,13 @@ class BoldTest(unittest.TestCase):
             pen = make_bold.pen_of(name, pens)
             limits = [make_bold.reach(pen)[axis] + ROUNDING] * 2  # one side, then the other
             if axis == 1 and name in LIFTED_FURTHER:
+                base = make_bold.LIFTED[name]
+                rise, rest = make_bold.lifted_piece(self.regular, name, base)
+                white = gap(geo.moved(self.regular[base].foreground, 0, rise), rest)
                 level = make_bold.reach((*PEN, 0))[1]
-                limits[1] = 2 * level + make_bold.reach(pen)[1] + ROUNDING
+                toward = make_bold.reach(pen)[1] + level
+                needed = max(0, 2 * SYMBOL_SIDE - (white - toward))
+                limits[1] = level + needed + ROUNDING
             if axis == 0 and name in HEADS_FURTHER:
                 shaft = 0 if regular.boundingBox()[0] < 0 else 1  # the side it runs on into
                 limits[shaft] += PEN[0]
@@ -234,6 +304,27 @@ class BoldTest(unittest.TestCase):
                 for weight in weights(name):
                     self.assertGreaterEqual(weight / stem, low)
                     self.assertLessEqual(weight / stem, high)
+
+    def test_small_parts_are_as_much_bolder_as_the_letters(self):
+        # So a bold superscript stands against a bold letter as the regular's do: one.small's
+        # stem keeps its share of one's, each across its middle.
+        def share(font):
+            small, stem = (make_bold.middle_stroke(font[name].foreground, name)
+                           for name in ("one.small", "one"))
+            return small / stem, stem
+        (bold, stem), (regular, _) = share(self.bold), share(self.regular)
+        # Rounding puts each bold stem within ROUNDING of its width; one stem wider and the
+        # other narrower moves the share by up to this.
+        self.assertAlmostEqual(bold, regular, delta=ROUNDING * (1 + regular) / (stem - ROUNDING))
+
+    def test_apart_parts_keep_the_regulars_gap(self):
+        # Each part APART names moves clear of the rest by at least the regular's gap, which
+        # the pen grew the two into; the outlines' rounding may take a unit of it.
+        for name, (part, _) in make_bold.APART.items():
+            with self.subTest(glyph=name):
+                bold, regular = (gap(*make_bold.parted(font, font[name], part))
+                                 for font in (self.bold, self.regular))
+                self.assertGreaterEqual(bold, regular - ROUNDING)
 
     def test_bitcoin_ticks_keep_the_regulars_white(self):
         # |'s pen grows ₿'s ticks toward each other, which would all but join them; they stand
@@ -343,36 +434,62 @@ class BoldTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_references_and_lookups_carry_over(self):
-        # Every glyph keeps the regular's references but those the bold draws as its outline
-        # (make_bold.unlinked_parts()), each turned and scaled as in the regular. A part may
-        # move, out of the line box's top, into the cell, or clear of a part or a letter the
-        # pen grew it into, by no more than the pen grew the two toward each other, and a unit
-        # of rounding: the wider of the part's pen and the full pen across (|'s is wider), and
-        # up or down, the part's pen's reach and a full pen's (make_bold.reach()).
+        # Each reference of the bold is one of the regular's, turned and scaled as there, and
+        # a part's references with one matrix are all kept or all drawn. A kept part grows, or
+        # not, as its own glyph does, so it is of the glyph's class; and a bolder glyph keeps it
+        # only moved, turned 180° or mirrored, as a quarter turn or a scale would turn or scale
+        # the pen. A dropped part is drawn into the glyph's own outline, which covers its
+        # regular ink.
+        #
+        # A part may move, out of the line box's top, into the cell, or clear of a part or a
+        # letter the pen grew it into, by no more than the pens grew the two toward each other,
+        # and a unit of rounding. Across, a part grows toward its neighbour by half its own pen
+        # and the neighbour toward it by half the neighbour's: a full pen, or in a TIGHT or
+        # DOUBLES glyph the part's own pen, as the neighbour is a copy of the part. Up or down,
+        # the part's pen's reach and a full pen's (make_bold.reach()).
         pens = make_bold.pens(self.regular)
 
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
 
-        def moved_too_far(glyph, found, expected):
-            for (part, m), (_, e) in zip(found, expected, strict=True):
+        def moved_too_far(glyph, found, kept):
+            # Sorted by name and matrix, a DOUBLES mark's copies pair left with left: spread()
+            # moves them apart, never past each other.
+            for (part, m), (_, e) in zip(found, kept, strict=True):
                 pen = make_bold.pen_of(part, pens)
                 up = make_bold.reach(pen)[1] + PEN[1] / 2
                 if (glyph, part) in MOVED_FURTHER:
                     up = PEN[0]
-                across = max(pen[0], PEN[0])
+                copies = glyph in make_bold.TIGHT or glyph in make_bold.DOUBLES
+                across = pen[0] if copies else (pen[0] + PEN[0]) / 2
                 if abs(m[4] - e[4]) > across + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:
                     return True
             return False
+
+        def keeps_the_pen(glyph, part, matrix):
+            # A shared glyph doesn't grow, so its parts may turn or scale.
+            return self.classes[part] == self.classes[glyph] and (
+                self.classes[glyph] != BOLDER
+                or tuple(round(abs(v), 4) for v in matrix[:4]) == (1, 0, 0, 1))
+
+        def undrawn(glyph, part, matrix):
+            # Rounding moves the outline's edge at most half a unit's diagonal, so it may leave
+            # that much of the part's ink, times the part's outline's length, uncovered.
+            layer = geo.transformed(ink(self.regular, part), matrix)
+            missed = (1 - covered(layer, self.bold[glyph].foreground)) * area(layer)
+            return missed > length(layer) * math.sqrt(0.5)
         wrong = {}
         for glyph in self.regular.glyphs():
             name = glyph.glyphname
-            unlinked = make_bold.unlinked_parts(glyph, self.classes)
-            expected = [ref for ref in listed(glyph) if ref[0] not in unlinked]
             found = listed(self.bold[name])
-            if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in expected]
-                    or moved_too_far(name, found, expected)):
-                wrong[name] = (found, expected)
+            in_bold = {(part, m[:4]) for part, m in found}
+            kept = [(part, m) for part, m in listed(glyph) if (part, m[:4]) in in_bold]
+            dropped = [(part, m) for part, m in listed(glyph) if (part, m[:4]) not in in_bold]
+            if ([(part, m[:4]) for part, m in found] != [(part, m[:4]) for part, m in kept]
+                    or moved_too_far(name, found, kept)
+                    or not all(keeps_the_pen(name, part, m) for part, m in kept)
+                    or any(undrawn(name, part, m) for part, m in dropped)):
+                wrong[name] = (found, listed(glyph))
         self.assertEqual(wrong, {})
         for kind in ("gsub_lookups", "gpos_lookups"):
             self.assertEqual(getattr(self.bold, kind), getattr(self.regular, kind))

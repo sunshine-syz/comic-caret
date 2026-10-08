@@ -255,9 +255,10 @@ class LookalikeTest(unittest.TestCase):
         self.assertEqual(len(crossing), 1)
         # The rising stroke alone, just under the bar: below the bar's bottom, half a stroke in
         # from its left end.
-        [bar_bottom] = [y0 for y0, y1 in measure.spans_at_x(layer, crossing[0][0] + self.stroke / 2)
-                        if y0 < 540 < y1]
-        rising = measure.spans_at_y(layer, bar_bottom - 1)[-1]
+        bottoms = [y0 for y0, y1 in measure.spans_at_x(layer, crossing[0][0] + self.stroke / 2)
+                   if y0 < 540 < y1]
+        self.assertEqual(len(bottoms), 1, "no ink at 540 half a stroke in from the bar's left end")
+        rising = measure.spans_at_y(layer, bottoms[0] - 1)[-1]
         self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
 
     def test_per_mille_rings_and_slash_stay_apart(self):
@@ -516,13 +517,29 @@ class FigureTest(unittest.TestCase):
 
 def bold_stems():
     """SMALL_STEM, SIGN_STEM and the fraction bar's weight for the bold: the regular's weights
-    grown by the pen the bold grows the small parts by (make_bold.small_pen()). The pen grows an
-    upright stem by its width, and the leaning bar by its reach normal to the bar: turned by
-    the bar's lean, so the bar lies level, its reach up and down."""
-    width, height = make_bold.small_pen(fontforge.open(str(SFD)))
+    grown by the pen the bold grows the small parts by, read from the fonts: what the bold
+    adds to one's stem across and to the hyphen's stroke up and down, scaled by one.small's
+    stem over one's in the regular (tests/test_make_bold.py holds the bold to that share). The
+    pen grows an upright stem by its width, and the leaning bar by its reach normal to the bar:
+    turned by the bar's lean, so the bar lies level, its reach up and down."""
+    regular, bold = fontforge.open(str(SFD)), fontforge.open(str(BOLD_SFD))
+
+    def stem(font, name):
+        return make_bold.middle_stroke(font[name].foreground, name)
+
+    def thickness(font):
+        _, y0, _, y1 = font["hyphen"].boundingBox()
+        return y1 - y0
+    share = stem(regular, "one.small") / stem(regular, "one")
+    width = (stem(bold, "one") - stem(regular, "one")) * share
+    height = (thickness(bold) - thickness(regular)) * share
     bar = 2 * make_bold.reach((width, height, math.radians(60)))[1]
-    return ((SMALL_STEM[0] + width, SMALL_STEM[1]), (SIGN_STEM[0] + width, SIGN_STEM[1]),
-            (SMALL_STEM[0] + bar, SMALL_STEM[1]))
+    # One's bold stem and the bold hyphen are on whole units, each within ROUNDING of what the
+    # pen grew them to; scaled by the share, the pen read here, and each weight, is within this.
+    off = ROUNDING * share
+    return ((SMALL_STEM[0] + width, SMALL_STEM[1] + off),
+            (SIGN_STEM[0] + width, SIGN_STEM[1] + off),
+            (SMALL_STEM[0] + bar, SMALL_STEM[1] + off))
 
 
 class BoldLookalikeTest(LookalikeTest):
