@@ -443,6 +443,11 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   `tools/add_ligatures.py` draws them again after it runs.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
+- **`<=` as an assignment.** `<=` draws `≤` also where Verilog and VHDL assign with it
+  (`q <= d`): no context tells the assignment from the comparison. Fira Code and Maple Mono
+  draw `≤` there too and offer `⇐` as an opt-in (`cv20`, `cv63`); Intel One Mono draws no
+  ligatures unless asked (`ss01`). Comic Caret has no opt-in for it yet; with `calt` off, `<=`
+  shows as typed.
 - **Beside a name.** `/*` `/**` stay plain after a name (`src/*`), and so do `*/` before one
   (cron's `*/5`) and `>>` `>>>` after one (`Vec<Vec<u8>>`), unless a name or a number follows,
   as in a shift without spaces (`x>>1`, `cin>>n`). With spaces, `a >> b` still tightens.
