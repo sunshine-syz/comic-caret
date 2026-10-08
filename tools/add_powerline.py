@@ -30,45 +30,54 @@ MIDDLE = (LINE_BOTTOM + LINE_TOP) // 2  # the separators' tip: the middle of the
 
 # The measurements below are Fira Code's and Maple Mono's, scaled to our cell and cap height.
 
-# How far the branch and the line number keep inside the line box, top and bottom. Fira Code's
-# branch fills it; Maple Mono's branch and line number keep 25 to 45 inside.
-INSET = 50
-
 # The branch: a trunk with a dot at each end, and a branch curving off it up to a third dot.
 # The references draw no dots: a stroke from the bottom bends right into an arrow, beside a
-# stub at the top left. Our two strokes stand 270 apart, Fira Code's 350 and Maple Mono's 280.
-TRUNK_X, BRANCH_X = ADVANCE // 2 - 135, ADVANCE // 2 + 135
+# stub at the top left. Our two strokes stand 300 apart, Fira Code's 350 and Maple Mono's 280.
+TRUNK_X, BRANCH_X = ADVANCE // 2 - 150, ADVANCE // 2 + 150
+# How far the branch keeps inside the line box, top and bottom. Fira Code's fills it; Maple
+# Mono's keeps 27 below and 45 above.
+BRANCH_INSET = 30
 DOT = 80  # the dots' radius: 160 across, a little more than the period's 152 by 145
-TRUNK_BOTTOM, TRUNK_TOP = LINE_BOTTOM + INSET + DOT, LINE_TOP - INSET - DOT  # dot centres
+TRUNK_BOTTOM = LINE_BOTTOM + BRANCH_INSET + DOT  # the trunk's dots' centres
+TRUNK_TOP = LINE_TOP - BRANCH_INSET - DOT
 # The third dot's top, at 680, lies between the arrow tips: Fira Code's 663, Maple Mono's 714.
 BRANCH_DOT_Y = 600
-# Where the branch's centre line leaves the trunk. Its ink parts from the trunk's at 189, higher
-# than where Fira Code's stroke (-38) and Maple Mono's (110) bend off.
-FORK_Y = 150
+# Where the branch's centre line leaves the trunk. Its ink parts from the trunk's at 110, where
+# Maple Mono's stroke bends off (107); Fira Code's bends off lower, at -38.
+FORK_Y = 70
+# The fork's two handles stand upright, so the branch leaves the trunk and meets the third dot
+# upright. Each is this share of the fork's rise, so the S keeps its shape wherever it forks.
+FORK_HANDLE = 300 / 370
 
-# The line-number symbol: L over N, the font's own letters made small. Fira Code's letters are
-# 0.58 of its own and Maple Mono's 0.80; theirs stand 56 and 52 apart.
-LETTER_SCALE = 0.75
-LETTER_GAP = 100
+# The line-number symbol: L over N, the font's own letters made small. Ours are 0.79 of our
+# letters and stand 54 apart; Fira Code's are 0.58 of its own and Maple Mono's 0.80, and
+# theirs stand 56 and 52 apart.
+LETTER_SCALE = 0.79
+LETTER_GAP = 54
+# How far N's foot stands above the line box's bottom: Fira Code's 243, Maple Mono's 38. L's
+# top then stands 83 under the line box's top: Fira Code's 89, Maple Mono's 25.
+LINE_NUMBER_INSET = 50
 
-# The padlock: a rounded body with a keyhole, under a shackle of the light stroke. It stands
-# 560 tall to the references' 828 and 862, so its parts are compared as shares of its body:
-# 360 by 400, to Fira Code's 598 by 481 and Maple Mono's 500 by 500.
-BODY = (ADVANCE // 2 - 180, -80, ADVANCE // 2 + 180, 320)  # x0, y0, x1, y1
-CORNER = 40  # 0.11 of the body's width, under Maple Mono's 0.12 and Fira Code's 0.19
-# Of the shackle's outer edge: between Fira Code's 141 and Maple Mono's 180. Across, the shackle
-# spans 0.89 of our body's width, to their 0.47 and 0.72. Only its round top shows; the
-# references' legs rise 224 and 208 above the body first.
-SHACKLE_RADIUS = 160
-# How far the shackle's legs run into the body. Any depth past 5, where their outer edges cross
-# the body's rounded corners, draws the same padlock.
+# The padlock: a rounded body with a keyhole, under a shackle of the light stroke. It is Maple
+# Mono's size, 500 wide and 862 tall, to Fira Code's 598 by 829. Its body is 500 by 500, to
+# Fira Code's 598 by 481, and its parts are compared as shares of the body.
+BODY = (ADVANCE // 2 - 250, -72, ADVANCE // 2 + 250, 428)  # x0, y0, x1, y1
+CORNER = 55  # 0.11 of the body's width, under Maple Mono's 0.12 and Fira Code's 0.19
+# The radius of the shackle's outer edge, half its width: Maple Mono's 180, Fira Code's 141.
+# The shackle spans 0.72 of the body's width, as Maple Mono's (Fira Code's 0.47). Its top is
+# Maple Mono's 790 (Fira Code's 776).
+SHACKLE_RADIUS, SHACKLE_TOP = 180, 790
+# The legs rise straight from the body to the half circle's centre, 182 above the body; the
+# references' rise 224 and 208 under flatter arcs. This is how far they run on into the body,
+# out of sight, so the two join as one outline.
 SHACKLE_LEGS = 70
 # The keyhole's centre at 0.64 of the body's height, between Fira Code's 0.60 and Maple Mono's
-# 0.67. It is 0.25 of the body's width across, as Fira Code's (Maple Mono's 0.40).
-KEYHOLE_Y, KEYHOLE_RADIUS = 175, 45
-# The slot is 0.14 of the body's width, between Fira Code's 0.13 and Maple Mono's 0.18. Its foot
-# at 0.30 of the body's height stands above theirs, 0.26 and 0.23.
-SLOT_WIDTH, SLOT_BOTTOM = 50, 40
+# 0.67. It is 150 across, 0.30 of the body's width, between Fira Code's 148 (0.25) and Maple
+# Mono's 200 (0.40). Fira Code draws its keyhole in ink inside an outlined body.
+KEYHOLE_Y, KEYHOLE_RADIUS = 248, 75
+# The slot is 70 wide, 0.14 of the body's width, between Fira Code's 0.13 and Maple Mono's 0.18
+# (76 and 89 wide). Its foot at 0.30 of the body's height stands above theirs, 0.26 and 0.23.
+SLOT_WIDTH, SLOT_BOTTOM = 70, 78
 
 
 def rounded_rect(x0, y0, x1, y1, r):
@@ -111,10 +120,11 @@ def thin_separator():
 def branch():
     """: a trunk between two dots, and a branch that leaves it and bends up into a third."""
     trunk = geo.rect(TRUNK_X - LIGHT // 2, TRUNK_BOTTOM, TRUNK_X + LIGHT // 2, TRUNK_TOP)
+    end_y = BRANCH_DOT_Y - DOT
+    handle = FORK_HANDLE * (end_y - FORK_Y)
     fork = fontforge.contour()
     fork.moveTo(TRUNK_X, FORK_Y)
-    fork.cubicTo((TRUNK_X, FORK_Y + 300), (BRANCH_X, BRANCH_DOT_Y - 380),
-                 (BRANCH_X, BRANCH_DOT_Y - DOT))
+    fork.cubicTo((TRUNK_X, FORK_Y + handle), (BRANCH_X, end_y - handle), (BRANCH_X, end_y))
     dots = (geo.circle(TRUNK_X, TRUNK_TOP, DOT), geo.circle(TRUNK_X, TRUNK_BOTTOM, DOT),
             geo.circle(BRANCH_X, BRANCH_DOT_Y, DOT))
     return geo.cleanup(geo.union(trunk, geo.stroked(fork, LIGHT), *dots))
@@ -128,8 +138,9 @@ def letter(font, name, scale, bottom):
 
 
 def line_number(font):
-    """: L over N, each the letter at LETTER_SCALE, N on the line box's bottom inset."""
-    below = letter(font, "N", LETTER_SCALE, LINE_BOTTOM + INSET)
+    """: L over N, each the letter at LETTER_SCALE, N's foot LINE_NUMBER_INSET above the line
+    box's bottom."""
+    below = letter(font, "N", LETTER_SCALE, LINE_BOTTOM + LINE_NUMBER_INSET)
     above = letter(font, "L", LETTER_SCALE, below.boundingBox()[3] + LETTER_GAP)
     out = fontforge.layer()
     out += below.dup()
@@ -138,13 +149,20 @@ def line_number(font):
 
 
 def padlock():
-    """: a rounded body with a keyhole, and a shackle whose legs run into the body."""
+    """: a rounded body with a keyhole, under a shackle whose legs rise from inside the body
+    and turn over a half circle."""
     x0, y0, x1, y1 = BODY
     cx = ADVANCE / 2
-    ring = geo.circle(cx, y1, SHACKLE_RADIUS)
-    ring += geo.holes(geo.circle(cx, y1, SHACKLE_RADIUS - LIGHT))[0]
-    shackle = geo.trim(ring, y0=y1 - SHACKLE_LEGS)
-    solid = geo.union(rounded_rect(x0, y0, x1, y1, CORNER), shackle)
+    # The shackle's centre line, LIGHT / 2 inside its outer edge.
+    r, cy = SHACKLE_RADIUS - LIGHT / 2, SHACKLE_TOP - SHACKLE_RADIUS
+    k = geo.KAPPA * r
+    shackle = fontforge.contour()
+    shackle.moveTo(cx - r, y1 - SHACKLE_LEGS)
+    shackle.lineTo(cx - r, cy)
+    shackle.cubicTo((cx - r, cy + k), (cx - k, cy + r), (cx, cy + r))
+    shackle.cubicTo((cx + k, cy + r), (cx + r, cy + k), (cx + r, cy))
+    shackle.lineTo(cx + r, y1 - SHACKLE_LEGS)
+    solid = geo.union(rounded_rect(x0, y0, x1, y1, CORNER), geo.stroked(shackle, LIGHT))
     keyhole = geo.union(geo.circle(cx, KEYHOLE_Y, KEYHOLE_RADIUS),
                         geo.rect(cx - SLOT_WIDTH / 2, SLOT_BOTTOM, cx + SLOT_WIDTH / 2, KEYHOLE_Y))
     solid += geo.holes(keyhole)

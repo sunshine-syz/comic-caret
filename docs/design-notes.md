@@ -558,7 +558,8 @@ are in `build/cache/reference/bold/`.
     cell.
   - ◦ stays with the shapes, as Maple Mono Bold's does. ‣ is a text bullet, not a shape, so it
     grows with •, as Maple Mono Bold's ‣ does while its ▸ stays.
-  - The Powerline symbols fill the line box.
+  - The Powerline separators fill the line box. The branch, line number and padlock stay with
+    them, as Maple Mono Bold's branch and padlock do.
   - Braille's dots draw graphs and spinners.
   - Every frame of a spinner stays, so the spinner turns in one place and does not pulse. Only
     ‼ grows, as it is two `!`.
