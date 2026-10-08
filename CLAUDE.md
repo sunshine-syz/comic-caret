@@ -103,8 +103,9 @@ lookups' order. Then `tools/make_bold.py` and `tools/make_italic.py`, which rewr
 bold and italic SFDs from the regular; `tests/test_make_bold.py` and
 `tests/test_make_italic.py` fail while they are out of date. A new glyph grows in the bold
 unless its block or character is listed as shared in `make_bold.py`; a picture that meets its
-neighbours across the cell, fills the line box or is a spinner frame goes in the shared set.
-It slants in the italic unless it is listed as upright in `make_italic.py`; a picture, such as
+neighbours across the cell, fills the line box, is a spinner frame or is a status picture
+(⏵ ⏸ ⏺, ☐ ☑ ☒) goes in the shared set. It slants in the italic unless it is listed as upright
+in `make_italic.py`; a picture, such as
 a shape or a status mark, goes in the upright set. Then `./build.sh` and
 `tools/render_specimen.py`: `tests/test_render_specimen.py` fails while the README's images in
 `docs/images/` are out of date.
