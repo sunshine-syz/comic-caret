@@ -16,6 +16,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 from add_ligatures import GENERATED, TIGHT_KEEP
+from add_marks import MARKS
 from helpers import NerdBuilds, require_current_build
 from measure import gap, ink, spans_at_x, vertical_edges
 from project import (
@@ -395,6 +396,33 @@ class LigatureShapingTest(unittest.TestCase):
         for font in FONTS:
             for text in PLAIN:
                 with self.subTest(font=font.name, text=text):
+                    self.assertEqual(names(font, text), names(font, text, calt=False))
+
+    def test_a_mark_after_a_ligature_lands_on_the_glyph_before_it(self):
+        # Its middle over that glyph's cell, as tests/test_built.py checks for every glyph with
+        # calt off: a mark after a glyph without anchors would land on the next cell. Each text
+        # takes the next of the font's marks, so every mark follows some ligature. Not after a
+        # letter, which may compose with the mark.
+        texts = [text for text in LIGATED if not text[-1].isalpha()]
+        for font in FONTS:
+            for text, mark in zip(texts, itertools.cycle(chr(code) for code in MARKS)):
+                text += mark
+                with self.subTest(font=font.name, text=ascii(text)):
+                    glyphs = hb_shape(font, text, "--show-extents")
+                    pen = sum(g["ax"] for g in glyphs[:-1])
+                    middle = pen + glyphs[-1]["dx"] + glyphs[-1]["xb"] + glyphs[-1]["w"] / 2
+                    self.assertTrue(pen - ADVANCE <= middle <= pen, (pen, middle))
+
+    def test_a_mark_keeps_the_ligature_it_follows_from_forming(self):
+        # One of each kind: fixed ligatures, a pair, a three, - and = runs and arrows, which
+        # their unwinds take back, _ # ~ runs and a wave arrow (lig_runs_unwind), and <!--.
+        texts = ["!=\u0302", "===\u0301", "<=\u0301", "|>\u0301", "::\u0301", "...\u0301",
+                 "0..\u0301", "->\u0301", "--->\u0301", "->>\u0301", "<-\u0301", "==>\u0303",
+                 "<==\u0301", "___\u0301", "###\u0327", "~~~\u0301", "~~>\u0301", "<~~\u0301",
+                 "<!--\u0301"]
+        for font in FONTS:
+            for text in texts:
+                with self.subTest(font=font.name, text=ascii(text)):
                     self.assertEqual(names(font, text), names(font, text, calt=False))
 
     def test_a_wave_run_whose_greater_is_no_head_has_no_heads(self):

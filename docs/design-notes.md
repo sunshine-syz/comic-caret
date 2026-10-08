@@ -437,6 +437,10 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   run into a tag (`Hi<br>---`) and a name may hold digits (`<h1>`), Haskell's `</>` right
   before `->` draws an arrow (`x</>->y`), and `<=<a>---` stays plain, as `<=<` joins first.
   None turns up in real code, so the rules don't single them out.
+- **Marks.** A combining mark after a ligature's last character keeps the ligature from
+  forming, so the mark sits on a plain character, which has the anchors the ligatures'
+  glyphs lack. Giving those glyphs anchors would make `tools/add_marks.py` place them, but
+  `tools/add_ligatures.py` draws them again after it runs.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
 - **Beside a name.** `/*` `/**` stay plain after a name (`src/*`), and so do `*/` before one

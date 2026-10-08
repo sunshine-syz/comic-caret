@@ -30,6 +30,15 @@ languagesystem latn dflt;
   greater.tight_r2 bar.tight_r2 slash.tight_l2 period.tight_l2 ampersand.tight_l2 less.tight_l2
   greater.tight_l2 bar.tight_l2];
 
+# The combining marks tools/add_marks.py makes. Nothing joins into a character that carries
+# one: the ligatures' glyphs have no mark anchors (add_marks.py anchors the encoded glyphs), so
+# a mark after one would land a cell to the right. Only a mark after a sequence counts: one
+# before it sits on the character before it.
+@Mark = [gravecomb acutecomb uni0302 tildecomb uni0304 uni0306 uni0307 uni0308 uni030A uni030B
+  uni030C uni0326 uni0327 uni0328];
+# What a fixed ligature, a pair or a three may not stand before.
+@OpOrMark = [@Op @Mark];
+
 # The glyphs of one arrow-and-run family; a run or arrow never starts right after one.
 @HyphenRun = [hyphen less greater hyphen.sta hyphen.mid hyphen.end less.arrow greater.arrow
   less.twohead greater.twohead less.shaft greater.shaft];
@@ -122,23 +131,24 @@ lookup lig_tight_l2 {
 feature calt {
 
   # 1. != !== := come first, so their = never join a run. Like every fixed ligature, they
-  #    need a non-operator on both sides, which also keeps !=== and :== plain.
+  #    need a non-operator on both sides and no mark after them, which also keeps !=== and
+  #    :== plain.
   lookup lig_not_equal {
     ignore sub @Op exclam' equal equal;
     sub exclam' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_exclam_equal_equal
       @Prefix @OperandStart;
-    ignore sub exclam' equal equal @Op;
+    ignore sub exclam' equal equal @OpOrMark;
     sub exclam' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_exclam_equal_equal;
     ignore sub @Op exclam' equal;
     sub exclam' lookup lig_spacer equal' lookup lig_exclam_equal @Prefix @OperandStart;
-    ignore sub exclam' equal @Op;
+    ignore sub exclam' equal @OpOrMark;
     sub exclam' lookup lig_spacer equal' lookup lig_exclam_equal;
   } lig_not_equal;
 
   lookup lig_colon_equal {
     ignore sub @Op colon' equal;
     sub colon' lookup lig_colon_eq equal @Prefix @OperandStart;
-    ignore sub colon' equal @Op;
+    ignore sub colon' equal @OpOrMark;
     sub colon' lookup lig_colon_eq equal;
   } lig_colon_equal;
 
@@ -148,7 +158,7 @@ feature calt {
   # stay one line.
   lookup lig_triple_equal {
     ignore sub [equal exclam colon less greater] equal' equal equal;
-    ignore sub equal' equal equal [equal less greater];
+    ignore sub equal' equal equal [equal less greater @Mark];
     ignore sub [plus bar] equal' equal equal [plus bar];
     sub equal' lookup lig_spacer equal' lookup lig_spacer equal' lookup lig_equal_equal_equal;
   } lig_triple_equal;
@@ -156,10 +166,10 @@ feature calt {
   # >=> <=< as a double arrow with a tail: the second > or < is its head, the first its tail.
   lookup lig_fish {
     ignore sub @Op greater' equal greater;
-    ignore sub greater' equal greater @Op;
+    ignore sub greater' equal greater @OpOrMark;
     sub greater' lookup lig_dtail equal' lookup lig_mid greater' lookup lig_darrow;
     ignore sub @Op less' equal less;
-    ignore sub less' equal less @Op;
+    ignore sub less' equal less @OpOrMark;
     sub less' lookup lig_darrow equal' lookup lig_mid less' lookup lig_dtail;
   } lig_fish;
 
@@ -175,6 +185,7 @@ feature calt {
   #    after a short tag or a /> (<code>--help, </p>--->, <br />--); after any other > that
   #    may end a tag, as in <a href="x">-->, only --> may, which keeps a>--b plain.
   lookup lig_hyphen_build {
+    ignore sub [hyphen greater]' @Mark;  # the unwind takes back the run before it
     sub [greater greater.arrow] less' lookup lig_comment exclam' lookup lig_comment hyphen
       hyphen;
     ignore sub @Op less' exclam hyphen hyphen;
@@ -257,6 +268,7 @@ feature calt {
   # plain, so !=== and :== show no join. <=> is no arrow but C++'s, PHP's, Ruby's and Perl's
   # comparison: it tightens as a three (6.); <==> is an arrow.
   lookup lig_equal_build {
+    ignore sub [equal greater]' @Mark;  # the unwind takes back the run before it
     ignore sub @EqualRun less' equal;
     ignore sub less' equal greater;
     sub less' lookup lig_darrow equal [equal greater];
@@ -280,22 +292,22 @@ feature calt {
   lookup lig_or_equal {
     ignore sub @Op less' equal;
     sub less' lookup lig_spacer equal' lookup lig_less_equal @Prefix @OperandStart;
-    ignore sub less' equal @Op;
+    ignore sub less' equal @OpOrMark;
     sub less' lookup lig_spacer equal' lookup lig_less_equal;
     ignore sub @Op greater' equal;
     sub greater' lookup lig_spacer equal' lookup lig_greater_equal @Prefix @OperandStart;
-    ignore sub greater' equal @Op;
+    ignore sub greater' equal @OpOrMark;
     sub greater' lookup lig_spacer equal' lookup lig_greater_equal;
   } lig_or_equal;
 
-  # 4. Runs of _ # ~, whatever their neighbours. ~ pieces alternate: after one that ends
-  #    high (.sta, .mid.low) comes one that starts high (.mid, .end), and the reverse. A <
-  #    before a ~ run, or a > after one, is a wave arrow's head, the < only when no operator
-  #    comes before it and the > only when none follows it; a < head ends high. A run whose
-  #    > is no head has no < head either: <~>= is plain, as ~>= is, and <~~>= keeps only the
-  #    ~~ run of ~~>=. A lone ~ is no run, so ~> stays plain: it ends fish's prompt in the home
-  #    directory, and before a version, as in Ruby's and Terraform's "~> 4.0", it means "at
-  #    least, within".
+  # 4. Runs of _ # ~, whatever their neighbours but a mark after them (lig_runs_unwind). ~
+  #    pieces alternate: after one that ends high (.sta, .mid.low) comes one that starts high
+  #    (.mid, .end), and the reverse. A < before a ~ run, or a > after one, is a wave arrow's
+  #    head, the < only when no operator comes before it and the > only when none follows it;
+  #    a < head ends high. A run whose > is no head has no < head either: <~>= is plain, as
+  #    ~>= is, and <~~>= keeps only the ~~ run of ~~>=. A lone ~ is no run, so ~> stays plain:
+  #    it ends fish's prompt in the home directory, and before a version, as in Ruby's and
+  #    Terraform's "~> 4.0", it means "at least, within".
   lookup lig_runs {
     sub [underscore.sta underscore.mid] underscore' lookup lig_mid underscore;
     sub [underscore.sta underscore.mid] underscore' lookup lig_end;
@@ -336,6 +348,26 @@ feature calt {
     sub asciitilde' lookup lig_sta asciitilde;
   } lig_wave_rebuild;
 
+  # A run or wave arrow of _ # ~ whose last character carries a mark goes back to plain glyphs,
+  # as the - and = ones do in their unwinds. Otherwise a run piece stands before a plain glyph
+  # of its run only as a ~ run's end before a > that is no head (~~>=), which these leave.
+  lookup lig_runs_unwind {
+    rsub [underscore.end]' @Mark by underscore;
+    rsub [underscore.mid]' [underscore] by underscore;
+    rsub [underscore.sta]' [underscore] by underscore;
+    rsub [numbersign.end]' @Mark by numbersign;
+    rsub [numbersign.mid]' [numbersign] by numbersign;
+    rsub [numbersign.sta]' [numbersign] by numbersign;
+    rsub [asciitilde.end]' @Mark by asciitilde;
+    rsub [asciitilde.end.low]' @Mark by asciitilde;
+    rsub [greater.warrow]' @Mark by greater;
+    rsub [greater.warrow.low]' @Mark by greater;
+    rsub [asciitilde.mid]' [asciitilde greater] by asciitilde;
+    rsub [asciitilde.mid.low]' [asciitilde greater] by asciitilde;
+    rsub [asciitilde.sta]' [asciitilde] by asciitilde;
+    rsub [less.warrow]' [asciitilde] by less;
+  } lig_runs_unwind;
+
   # A run of exactly two - or _ goes back to two characters, so --help, i--, -- comments and
   # __init__ count as typed; three or more join, and <!-- keeps its run.
   lookup lig_two_plain {
@@ -347,21 +379,21 @@ feature calt {
   # 5. Pipes. <> stays as typed: a React fragment opens with it.
   lookup lig_pipes {
     ignore sub @Op less' bar greater;
-    ignore sub less' bar greater @Op;
+    ignore sub less' bar greater @OpOrMark;
     sub less' lookup lig_spacer bar' lookup lig_spacer greater' lookup lig_less_bar_greater;
     ignore sub @Op bar' greater;
-    ignore sub bar' greater @Op;
+    ignore sub bar' greater @OpOrMark;
     sub bar' lookup lig_spacer greater' lookup lig_bar_greater;
     ignore sub @Op less' bar;
-    ignore sub less' bar @Op;
+    ignore sub less' bar @OpOrMark;
     sub less' lookup lig_spacer bar' lookup lig_less_bar;
     ignore sub @Op bar' bar [bar equal];
-    ignore sub bar' bar [bar equal] @Op;
+    ignore sub bar' bar [bar equal] @OpOrMark;
     sub bar' lookup lig_tight_r2 bar bar' lookup lig_tight_l2;
     sub bar' lookup lig_tight_r2 bar equal' lookup lig_tight_l;
     ignore sub @Op bar' bar;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l @Prefix @OperandStart;
-    ignore sub bar' bar @Op;
+    ignore sub bar' bar @OpOrMark;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
 
@@ -381,31 +413,31 @@ feature calt {
   lookup lig_tight {
     ignore sub @Op slash' slash slash;
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2 [exclam less];
-    ignore sub slash' slash slash @Op;
+    ignore sub slash' slash slash @OpOrMark;
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2;
     ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l asterisk' lookup lig_tight_l
       [exclam less];
-    ignore sub slash' asterisk asterisk @Op;
+    ignore sub slash' asterisk asterisk @OpOrMark;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l asterisk' lookup lig_tight_l;
     ignore sub f r o m space period' period;  # Python's relative imports: from ..x, from ...x
-    ignore sub period' period period @Op;
+    ignore sub period' period period @OpOrMark;
     sub greater period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period period;
     sub period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
     ignore sub @Op period' period [equal less];
-    ignore sub period' period [equal less] @Op;
+    ignore sub period' period [equal less] @OpOrMark;
     sub period' lookup lig_tight_r2 period [equal less]' lookup lig_tight_l;
     ignore sub @Op ampersand' ampersand [ampersand equal];
-    ignore sub ampersand' ampersand [ampersand equal] @Op;
+    ignore sub ampersand' ampersand [ampersand equal] @OpOrMark;
     sub ampersand' lookup lig_tight_r2 ampersand ampersand' lookup lig_tight_l2;
     sub ampersand' lookup lig_tight_r2 ampersand equal' lookup lig_tight_l;
     ignore sub @Op question' question equal;
-    ignore sub question' question equal @Op;
+    ignore sub question' question equal @OpOrMark;
     sub question' lookup lig_tight_r2 question equal' lookup lig_tight_l;
     ignore sub @Op less' less [less equal];
-    ignore sub less' less [less equal] @Op;
+    ignore sub less' less [less equal] @OpOrMark;
     # A here-string and PHP's heredoc open as typed, as << does before a name or a quote:
     # <<<"$x" <<<EOT.
     sub @Operand less' lookup lig_tight_r2 less less' lookup lig_tight_l2
@@ -414,23 +446,23 @@ feature calt {
     sub less' lookup lig_tight_r2 less less' lookup lig_tight_l2;
     sub less' lookup lig_tight_r2 less equal' lookup lig_tight_l;
     ignore sub @Op greater' greater greater equal;
-    ignore sub greater' greater greater equal @Op;
+    ignore sub greater' greater greater equal @OpOrMark;
     sub greater' lookup lig_tight_r greater greater equal' lookup lig_tight_l;
     ignore sub @Op greater' greater [greater equal];
-    ignore sub greater' greater [greater equal] @Op;
+    ignore sub greater' greater [greater equal] @OpOrMark;
     sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
     ignore sub @Operand greater' greater greater;
     sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2;
     sub greater' lookup lig_tight_r2 greater equal' lookup lig_tight_l;
     ignore sub @Op equal' less less;
-    ignore sub equal' less less @Op;
+    ignore sub equal' less less @OpOrMark;
     sub equal' lookup lig_tight_r less less' lookup lig_tight_l2;
     ignore sub @Op less' [dollar asterisk equal] greater;
-    ignore sub less' [dollar asterisk equal] greater @Op;
+    ignore sub less' [dollar asterisk equal] greater @OpOrMark;
     sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
     # .. in a path (../.. "$DIR/..") and the tail of a longer run (....x +...x) stay as typed.
     # A quote after a name closes a string, as in 'a'..'z'; any other opens one, as in "..".
-    ignore sub period' period [slash backslash];
+    ignore sub period' period [slash backslash @Mark];
     ignore sub [@Op backslash] period' period;
     sub @Word [quotedbl quotesingle] period' lookup lig_tight_r period' lookup lig_tight_l;
     ignore sub [quotedbl quotesingle] period' period;
@@ -441,50 +473,50 @@ feature calt {
     ignore sub @Op colon' colon;
     # Before a turbofish, a glob, a destructor or a negative step: a::<T> std::* ::~T [::-1].
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l [less asterisk hyphen asciitilde];
-    ignore sub colon' colon @Op;
+    ignore sub colon' colon @OpOrMark;
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
     ignore sub @Op ampersand' ampersand;
     sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l @Prefix @OperandStart;
-    ignore sub ampersand' ampersand @Op;
+    ignore sub ampersand' ampersand @OpOrMark;
     sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l;
     ignore sub @Op plus' plus;
-    ignore sub plus' plus @Op;
+    ignore sub plus' plus @OpOrMark;
     sub plus' lookup lig_tight_r plus' lookup lig_tight_l;
     ignore sub @Op slash' slash;
     sub slash' lookup lig_tight_r slash' lookup lig_tight_l [exclam less];
-    ignore sub slash' slash @Op;
+    ignore sub slash' slash @OpOrMark;
     sub slash' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Word slash' asterisk;
     ignore sub @Op slash' asterisk;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l [exclam less];
-    ignore sub slash' asterisk @Op;
+    ignore sub slash' asterisk @OpOrMark;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l;
     ignore sub @Op asterisk' slash;
-    ignore sub asterisk' slash @Op;
+    ignore sub asterisk' slash @OpOrMark;
     ignore sub asterisk' slash @Word;
     sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Op less' less;
-    ignore sub less' less @Op;
+    ignore sub less' less @OpOrMark;
     # An Erlang or Elixir binary opens as typed, as it closes (<<1>> <<"a">>), and so does a
     # heredoc, as <<-EOF does (cat <<EOF). A shift without spaces still tightens: x<<1.
     sub @Operand less' lookup lig_tight_r less' lookup lig_tight_l [@Word quotedbl quotesingle];
     ignore sub less' less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r less' lookup lig_tight_l;
     ignore sub @Op greater' greater;
-    ignore sub greater' greater @Op;
+    ignore sub greater' greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r greater' lookup lig_tight_l @Word;
     ignore sub @Operand greater' greater;
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;
     sub question' lookup lig_tight_r question' lookup lig_tight_l @Prefix @OperandStart;
-    ignore sub question' question @Op;
+    ignore sub question' question @OpOrMark;
     sub question' lookup lig_tight_r question' lookup lig_tight_l;
     # ?. tightens after a name too, as JavaScript's optional chaining a?.b does; Rust's x?.y,
     # ? then a field, can't be told apart from it.
     ignore sub @Op question' [period colon];
     ignore sub @PropertyEnd question' colon;
     sub question' lookup lig_tight_r [period colon]' lookup lig_tight_l @Prefix @OperandStart;
-    ignore sub question' [period colon] @Op;
+    ignore sub question' [period colon] @OpOrMark;
     sub question' lookup lig_tight_r [period colon]' lookup lig_tight_l;
   } lig_tight;
 
