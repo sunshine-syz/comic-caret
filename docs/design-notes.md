@@ -559,7 +559,9 @@ are in `build/cache/reference/bold/`.
   - ◦ stays with the shapes, as Maple Mono Bold's does. ‣ is a text bullet, not a shape, so it
     grows with •, as Maple Mono Bold's ‣ does while its ▸ stays.
   - The Powerline separators fill the line box. The branch, line number and padlock stay with
-    them, as Maple Mono Bold's branch and padlock do.
+    them. Monaspace Neon and Radon Bold keep all three as their regulars draw them, Maple Mono
+    Bold its branch and padlock, and Intel One Mono Bold its padlock; Fira Code Bold grows all
+    three.
   - Braille's dots draw graphs and spinners.
   - Every frame of a spinner stays, so the spinner turns in one place and does not pulse. Only
     ‼ grows, as it is two `!`.
@@ -605,10 +607,10 @@ what it does to them:
 - `ROUND`: ª º's bar and ⇪'s bar, drawn as heavy as the stems beside them, grow as much up and
   down as across. The level pen would leave them 21 lighter than the bold stems.
 - `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. ẞ: the full pen keeps
-  its white between stem and diagonal at 67.5, over Maple Mono Bold's 64, but made it 485 wide
-  with a stem as heavy as ß's; 0.7 was chosen by proof. The small 4: the full pen would close
-  its counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.136). Every share from 0.79
-  to 0.87 keeps 0.139, and 0.83 is the middle of that range.
+  its white between stem and diagonal at 67.5, over Maple Mono Bold's 64, and makes it 485 wide
+  with a stem as heavy as ß's; a proof chose 0.7, which leaves it 473. The small 4: the full pen
+  would close its counter to 0.128 of its height, under Maple Mono Bold's ¼ (0.136). Every share
+  from 0.79 to 0.87 keeps 0.139, and 0.83 is the middle of that range.
 - `BAR_WEIGHT` and `TICKED`: `|` grows by a pen wide enough to bring it to 125 across, as
   heavy as the bold `l`.
   - The regular draws `|` at 77, lighter than its stems (`I` 94). The pen would leave it at

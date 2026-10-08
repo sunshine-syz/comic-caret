@@ -28,55 +28,66 @@ CODES = (BRANCH, LINE_NUMBER, PADLOCK, RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT
 
 MIDDLE = (LINE_BOTTOM + LINE_TOP) // 2  # the separators' tip: the middle of the line box
 
-# The measurements below are Fira Code's and Maple Mono's, scaled to our cell and cap height.
+# The measurements below are Fira Code's, Maple Mono's and Intel One Mono's, scaled to our cell
+# and cap height.
 
 # The branch: a trunk with a dot at each end, and a branch curving off it up to a third dot.
 # The references draw no dots: a stroke from the bottom bends right into an arrow, beside a
-# stub at the top left. Our two strokes stand 300 apart, Fira Code's 350 and Maple Mono's 280.
+# stub at the top left. Our two strokes stand 300 apart, Fira Code's 350, Intel One Mono's 316
+# and Maple Mono's 280.
 TRUNK_X, BRANCH_X = ADVANCE // 2 - 150, ADVANCE // 2 + 150
 # How far the branch keeps inside the line box, top and bottom. Fira Code's fills it; Maple
-# Mono's keeps 27 below and 45 above.
+# Mono's keeps 27 below and 45 above, and Intel One Mono's 71 above but runs 71 past the bottom.
 BRANCH_INSET = 30
 DOT = 80  # the dots' radius: 160 across, a little more than the period's 152 by 145
 TRUNK_BOTTOM = LINE_BOTTOM + BRANCH_INSET + DOT  # the trunk's dots' centres
 TRUNK_TOP = LINE_TOP - BRANCH_INSET - DOT
-# The third dot's top, at 680, lies between the arrow tips: Fira Code's 663, Maple Mono's 714.
+# The third dot's top, at 680, lies between the arrow tips: Fira Code's 663, Maple Mono's 714
+# and Intel One Mono's 752.
 BRANCH_DOT_Y = 600
 # Where the branch's centre line leaves the trunk. Its ink parts from the trunk's at 110, where
-# Maple Mono's stroke bends off (107); Fira Code's bends off lower, at -38.
+# Maple Mono's stroke bends off (107); Fira Code's and Intel One Mono's bend off lower, at -38
+# and -114.
 FORK_Y = 70
 # The fork's two handles stand upright, so the branch leaves the trunk and meets the third dot
-# upright. Each is this share of the fork's rise, so the S keeps its shape wherever it forks.
+# upright. Each is this share of the fork's rise, so the S keeps its shape wherever it forks:
+# the share of 2.1's branch (handles of 300 on a rise of 370), which the proof kept.
 FORK_HANDLE = 300 / 370
 
 # The line-number symbol: L over N, the font's own letters made small. Ours are 0.79 of our
-# letters and stand 54 apart; Fira Code's are 0.58 of its own and Maple Mono's 0.80, and
-# theirs stand 56 and 52 apart.
+# letters and stand 54 apart; Fira Code's are 0.58 of its own, Intel One Mono's 0.66 and Maple
+# Mono's 0.80, and theirs stand 56, 103 and 52 apart.
 LETTER_SCALE = 0.79
 LETTER_GAP = 54
-# How far N's foot stands above the line box's bottom: Fira Code's 243, Maple Mono's 38. L's
-# top then stands 83 under the line box's top: Fira Code's 89, Maple Mono's 25.
+# How far N's foot stands above the line box's bottom: Fira Code's 243, Intel One Mono's 130,
+# Maple Mono's 38. L's top then stands 83 under the line box's top: Fira Code's 89, Intel One
+# Mono's 288, Maple Mono's 25.
 LINE_NUMBER_INSET = 50
 
 # The padlock: a rounded body with a keyhole, under a shackle of the light stroke. It is Maple
-# Mono's size, 500 wide and 862 tall, to Fira Code's 598 by 829. Its body is 500 by 500, to
-# Fira Code's 598 by 481, and its parts are compared as shares of the body.
+# Mono's size, 500 wide and 862 tall, to Fira Code's 598 by 829 and Intel One Mono's 463 by
+# 690. Its body is 500 by 500, to Fira Code's 598 by 481 and Intel One Mono's 463 by 441, and
+# its parts are compared as shares of the body.
 BODY = (ADVANCE // 2 - 250, -72, ADVANCE // 2 + 250, 428)  # x0, y0, x1, y1
-CORNER = 60  # Maple Mono's 60, 0.12 of the body's width; Fira Code's is 0.19
-# The radius of the shackle's outer edge, half its width: Maple Mono's 180, Fira Code's 141.
-# The shackle spans 0.72 of the body's width, as Maple Mono's (Fira Code's 0.47). Its top is
-# Maple Mono's 790 (Fira Code's 776).
+CORNER = 60  # Maple Mono's 60, 0.12 of the body's width; Fira Code's 0.19, Intel One Mono's 0.23
+# The radius of the shackle's outer edge, half its width: Maple Mono's 180, Fira Code's 141,
+# Intel One Mono's 120. The shackle spans 0.72 of the body's width, as Maple Mono's (Fira
+# Code's 0.47, Intel One Mono's 0.52). Its top is Maple Mono's 790 (Fira Code's 776, Intel One
+# Mono's 683).
 SHACKLE_RADIUS, SHACKLE_TOP = 180, 790
-# The legs rise straight from the body to the half circle's centre, 182 above the body; the
-# references' rise 224 and 208 under flatter arcs. This is how far they run on into the body,
-# out of sight, so the two join as one outline.
+# The legs rise straight from the body to the half circle's centre, 182 above the body, between
+# Intel One Mono's 138 and Fira Code's 224 (Maple Mono's 208); theirs rise under flatter arcs.
+# This is how far they run on into the body, out of sight, so the two join as one outline.
 SHACKLE_LEGS = 70
-# The keyhole's centre at 0.64 of the body's height, between Fira Code's 0.60 and Maple Mono's
-# 0.67. It is 150 across, 0.30 of the body's width, between Fira Code's 148 (0.25) and Maple
-# Mono's 200 (0.40). Fira Code draws its keyhole in ink inside an outlined body.
+# The keyhole's centre at 0.64 of the body's height, as Intel One Mono's, between Fira Code's
+# 0.60 and Maple Mono's 0.67. It is 150 across, 0.30 of the body's width: Fira Code's is 148
+# (0.25), Intel One Mono's 119 (0.26) and Maple Mono's 200 (0.40). Fira Code draws its keyhole
+# in ink inside an outlined body.
 KEYHOLE_Y, KEYHOLE_RADIUS = 248, 75
-# The slot is 70 wide, 0.14 of the body's width, between Fira Code's 0.13 and Maple Mono's 0.18
-# (76 and 89 wide). Its foot is Fira Code's, at 0.26 of the body's height; Maple Mono's is 0.23.
+# The slot is 70 wide, 0.14 of the body's width: Fira Code's is 76 (0.13), Intel One Mono's 51
+# (0.11) and Maple Mono's 89 (0.18). A counter is no narrower than the narrowest reference's,
+# and the slot keeps that rule only through Intel One Mono's. Its foot is Fira Code's, at 0.26
+# of the body's height; Maple Mono's is at 0.23 and Intel One Mono's at 0.25.
 SLOT_WIDTH, SLOT_BOTTOM = 70, 58
 
 

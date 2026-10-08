@@ -133,10 +133,10 @@ ROUND = ("bar.ordinal", "uni21EA")
 
 # The glyphs that grow by a share of their pen's width, which keeps more of their white, and
 # that share. ẞ: the full pen keeps its white between stem and diagonal at 67.5, over Maple
-# Mono Bold's floor (64, tests/test_latin.py); 0.7 of the pen was chosen by proof over it,
-# which made ẞ 485 wide. The small 4: the full pen closes its counter to 0.128 of its height,
-# under Maple Mono Bold's ¼ (0.136, tests/test_latin.py). Every share from 0.79 to 0.87 keeps
-# 0.139, and 0.88 closes it to 0.134; 0.83 sits in the middle of that range.
+# Mono Bold's floor (64, tests/test_latin.py). A proof chose 0.7 over the full pen, which made
+# ẞ 485 wide; 0.7 leaves it 473. The small 4: the full pen closes its counter to 0.128 of its
+# height, under Maple Mono Bold's ¼ (0.136, tests/test_latin.py). Every share from 0.79 to
+# 0.87 keeps 0.139, and 0.88 closes it to 0.134; 0.83 sits in the middle of that range.
 NARROW = {"uni1E9E": 0.7, "four.small": 0.83}
 
 # How heavy the bold draws |, across its middle. The regular draws it lighter than its stems,
