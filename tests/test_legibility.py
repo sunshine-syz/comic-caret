@@ -326,6 +326,8 @@ WIDTHS = {
     "▹": (310, 310),  # Maple Mono; Fira Code has none
     "◂": (310, 310),  # Maple Mono; Fira Code has none
     "◃": (310, 310),  # Maple Mono; Fira Code has none
+    "✗": (538, 538),  # Maple Mono; Fira Code has none
+    "✘": (550, 550),  # Maple Mono; Fira Code has none
     # Intel One Mono has none of these letters.
     "π": (530, 552),  # Maple Mono, Fira Code
     "γ": (489, 514),  # Maple Mono, Fira Code
@@ -430,6 +432,10 @@ BOLD_WIDTHS = {
     "▹": (297, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
     "◂": (258, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
     "◃": (297, 310),  # Monaspace Neon, Maple Mono; Fira Code has none
+    "✗": (416, 564),  # Monaspace Neon, Maple Mono; Fira Code has none
+    # Known exception: no row for ✘. The bold grows the heavy marks, which the reference
+    # bolds draw as their regulars do (docs/design-notes.md), so it passes Maple Mono
+    # Bold's 550; the side room holds it to 570.
     # Intel One Mono has none of these letters.
     "π": (562, 573),  # Maple Mono, Monaspace Radon
     "γ": (503, 570),  # Maple Mono, Fira Code

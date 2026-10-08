@@ -41,8 +41,9 @@ them. The exceptions:
 ## Heavy marks and shapes
 
 - Heavy marks (✔ ✘ ✖) are their light glyph (✓ ✗ ✕) pushed out 23 on every side,
-  then squeezed at the ends to at most 510 wide; ⏸'s bars are `|` pushed out 40, to
-  weigh as much as ⏵ ⏺.
+  then squeezed at the ends to at most 510 wide; ✗'s and ✘'s arms then run out to Maple
+  Mono's 538 and 550, turning flatter and keeping their weight. ⏸'s bars are `|` pushed out
+  40, to weigh as much as ⏵ ⏺.
 - ❯ ❮ are no heavy `>` but the tall angle ornament that every coding font drawing them
   (JetBrains Mono, Cascadia Code, Maple Mono, DejaVu Sans Mono, Menlo, Iosevka) draws: `>`
   with its arms lengthened and each turned 25° steeper, pushed out 23, standing on the
