@@ -99,7 +99,13 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   run 5). At 10, which the ligatures' lines keep, as Fira Code's and Maple Mono's do, a grid
   that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
   and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 139 past the
-  line box: the font's furthest ink, which sets its win ascent and descent (1039/489).
+  line box: the font's furthest ink. The win ascent and descent are the line box, as in Fira
+  Code, JetBrains Mono, Intel One Mono and Cascadia Code, so GDI apps space lines 1.25 em
+  apart and clip the overlap; set to that ink (1039/489), they spaced lines 1.53 em apart.
+  They clip the top of two marks stacked on a capital too (Ấ and Ǜ, which HarfBuzz builds
+  from a letter and a mark, reach 1026), as with Fira Code and Maple Mono, whose win ascent
+  is their line box as well (61 and 127 units past it). The Nerd Fonts builds take the same
+  values.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.25 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a

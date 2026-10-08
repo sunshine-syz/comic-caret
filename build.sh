@@ -170,6 +170,9 @@ if [[ -n $nerd_variants ]]; then
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }
     done
   done
+  # The patcher's save brings back the Mac names and cmap subtable that generate.py drops, and
+  # its unique ID leaves out our version.
+  python3 tools/nerd_tables.py "$NERD_OUT"/*.otf "$NERD_OUT"/*.ttf
   # FontForge, which the patcher saves with, gives the TTFs' combining marks a cell's advance.
   # Not in the Mono variant, where the patcher gives every glyph one advance on purpose.
   for font in "$NERD_OUT"/*.ttf; do

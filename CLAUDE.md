@@ -64,16 +64,17 @@ SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y
   are 0 wide with their ink over the cell, where terminals that don't shape text draw them,
   and the blank zero-width format characters (`project.ZERO_WIDTH`).
 - Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`; the bold's are
-  675 and 480), hhea = typo = 900/−350 (1.25 em) with `USE_TYPO_METRICS`.
+  675 and 480), hhea = typo = win = 900/−350 (1.25 em) with `USE_TYPO_METRICS`; the win
+  ascent and descent are set, not offsets from the ink, so GDI apps space lines alike.
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
 - The OTF carries the SFD's hints; `tools/generate.py` hints letter composites again and adds
   a ghost hint where a letter's top or foot lies in a zone without a hint edge. The TTF gets
   ttfautohint's, which replace any TrueType instructions the SFD holds, so the SFD holds none.
-- Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, Win
-  ascent/descent, the shipped names and version, `sfntRevision`. `LangName` holds only name IDs
-  8–14: maker, designer, description, URLs and license.
+- Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, the shipped
+  names and version, `sfntRevision`. `LangName` holds only name IDs 8–14: maker, designer,
+  description, URLs and license.
 - The copyright holders appear in the SFD `Copyright:` field and in `LICENSE.md`, and the SFD
   `Version:` heads `CHANGELOG.md`; `tests/test_metadata.py` keeps each pair in sync.
 - SFD diffs are noisy: saves rewrite `ModificationTime` and hints, and deleting a glyph

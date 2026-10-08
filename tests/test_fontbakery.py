@@ -19,7 +19,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from add_ligatures import GENERATED
-from helpers import require_current_build
+from helpers import NerdBuilds, require_current_build
 from project import SFD, STYLES, font_file
 
 # Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
@@ -89,11 +89,17 @@ def known():
     # FontForge derives the italic's caret slope from its angle in hundredths, 100/21, which
     # is 11.86°, where the check wants 1000/213: 0.14° on a text cursor.
     caret_slope = ("WARN", "opentype/caret_slope", "caretslope-mismatch", frozenset())
+    # The win ascent and descent are the line box, as in Fira Code, JetBrains Mono, Intel One
+    # Mono and Cascadia Code, so GDI apps space lines 1.25 em apart, as every other app does.
+    # The check wants them to hold the furthest ink: the box drawing's overlap and ╱ ╲ ╳ reach
+    # 139 past the line box, which would space GDI's lines 1.53 em apart. GDI clips the overlap.
+    win = {("FAIL", "family/win_ascent_and_descent", code, frozenset())
+           for code in ("ascent", "descent")}
     contours = frozenset({"uni20B9", "uni20B1", "uni25CC", "uni254E", "uni2506", "uni250A",
                           "uni254F", "uni2507", "uni250B"})
     return {
         "ttf": {
-            soft_hyphen, no_stat, caret_slope,
+            soft_hyphen, no_stat, caret_slope, *win,
             # tools/mark_advances.py gives the combining marks, which sit mid glyph order, a
             # zero advance, so the run of equal advances the spec lets hmtx drop can only
             # start after the last mark.
@@ -117,13 +123,26 @@ def known():
              frozenset({"nonmarkingreturn"})),
         },
         "otf": {
-            soft_hyphen, no_stat, caret_slope,
+            soft_hyphen, no_stat, caret_slope, *win,
             # A Font Bakery bug: the monospace check reads the glyf table, which CFF has not.
             ("ERROR", "opentype/monospace", "failed-check", frozenset()),
             # CFF has no components, so the glyphs only built into others go unreached.
             ("WARN", "unreachable_glyphs", "unreachable-glyphs", unencoded_components()),
         },
     }
+
+
+def known_nerd():
+    """known(), and the problems the Nerd Fonts patcher's icons bring, which the patcher owns."""
+    # Its 10,600 icons are named by their set and name, as cod-account, with a hyphen the
+    # naming rules don't allow; they make the font 2.4 MB.
+    icons = {("FAIL", "valid_glyphnames", "found-invalid-names", frozenset()),
+             ("WARN", "file_size", "large-font", frozenset())}
+    plain = known()
+    return {"ttf": plain["ttf"] | icons
+            # 177 icons, as iec-toggle_power, repeat a segment in their TrueType outlines.
+            | {("WARN", "overlapping_path_segments", "overlapping-path-segments", frozenset())},
+            "otf": plain["otf"] | icons}
 
 
 class FontBakeryTest(unittest.TestCase):
@@ -137,6 +156,27 @@ class FontBakeryTest(unittest.TestCase):
     def test_fonts_have_only_the_known_problems(self):
         for ext, fonts in FONTS.items():
             with self.subTest(format=ext):
+                self.assertEqual(findings(run_fontbakery(fonts)), self.known[ext])
+
+
+class NerdFontBakeryTest(NerdBuilds, unittest.TestCase):
+    """The default Nerd Fonts variant, the one a release ships, finds only the plain fonts'
+    known problems and its icons'."""
+
+    @classmethod
+    def setUpClass(cls):
+        if shutil.which("uvx") is None:
+            raise unittest.SkipTest("uvx is not installed")
+        super().setUpClass()
+        cls.known = known_nerd()
+
+    def test_fonts_have_only_the_known_problems(self):
+        for ext in ("ttf", "otf"):
+            fonts = [font for font in self.fonts
+                     if font.name.startswith("ComicCaretNerdFont-") and font.suffix == f".{ext}"]
+            with self.subTest(format=ext):
+                if not fonts:
+                    self.skipTest("no default Nerd Fonts build")  # as from --nerd=mono
                 self.assertEqual(findings(run_fontbakery(fonts)), self.known[ext])
 
 

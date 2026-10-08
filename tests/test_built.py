@@ -28,6 +28,8 @@ from project import (
     ADVANCE,
     AXIS,
     FORMATS,
+    LINE_BOTTOM,
+    LINE_TOP,
     ROOT,
     SFD,
     STYLES,
@@ -151,8 +153,9 @@ for name in json.loads(sys.argv[2]):
 print(json.dumps(contrast))
 """
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
-WINDOWS_ENGLISH = (3, 1, 0x409)  # platform, encoding and language of the names apps read
-MAC_ROMAN = (1, 0)  # platform and encoding of a cmap subtable
+HHEA_LINE = 4  # offset of hhea.ascender, then descender and lineGap
+OS2_LINE = 68  # offset of OS/2.sTypoAscender, then sTypoDescender, sTypoLineGap, usWinAscent
+#                and usWinDescent
 HEAD_REVISION = 4  # offset of head.fontRevision, a 16.16 fixed-point number
 HEAD_MODIFIED = 28  # offset of head.modified
 HEAD_MAC_STYLE = 44  # offset of head.macStyle; bit 0 is bold
@@ -196,15 +199,26 @@ def advances(font):
 
 def english_names(font):
     """{name ID: text} of the font file's Windows English (US) name records."""
-    table = sfnt.tables(font)[b"name"]
-    _, count, strings = struct.unpack_from(">3H", table)
-    names = {}
-    for i in range(count):
-        *key, name_id, length, offset = struct.unpack_from(">6H", table, 6 + 12 * i)
-        if tuple(key) == WINDOWS_ENGLISH:
-            start = strings + offset
-            names[name_id] = table[start:start + length].decode("utf-16-be")
-    return names
+    return {name_id: text.decode("utf-16-be")
+            for *key, name_id, text in sfnt.names(sfnt.tables(font)[b"name"])
+            if tuple(key) == sfnt.WINDOWS_ENGLISH}
+
+
+def line_boxes(font):
+    """The font file's line box as each platform reads it: hhea's ascender, descender and line
+    gap (macOS, FreeType), OS/2's typo ones (DirectWrite, with USE_TYPO_METRICS) and its win
+    ascent and descent (GDI), the descents counted down."""
+    tables = sfnt.tables(font)
+    ascent, descent, gap = struct.unpack_from(">3h", tables[b"hhea"], HHEA_LINE)
+    typo_ascent, typo_descent, typo_gap, win_ascent, win_descent = struct.unpack_from(
+        ">3h2H", tables[b"OS/2"], OS2_LINE)
+    return {"hhea": (ascent, descent, gap), "typo": (typo_ascent, typo_descent, typo_gap),
+            "win": (win_ascent, -win_descent, 0)}
+
+
+def name_platforms(font):
+    """{platform ID} of the font file's name records."""
+    return {platform for platform, *_ in sfnt.names(sfnt.tables(font)[b"name"])}
 
 
 def cmap_encodings(font):
@@ -331,12 +345,18 @@ class BuiltFontTest(unittest.TestCase):
                     for font in self.fonts)
         self.assertEqual(otf, ttf)
 
+    def test_every_platform_reads_one_line_box(self):
+        # So a terminal, a GDI app and a browser space lines alike, 1.25 em apart.
+        for font in self.fonts:
+            with self.subTest(font=font.name):
+                self.assertEqual(set(line_boxes(font).values()), {(LINE_TOP, LINE_BOTTOM, 0)})
+
     def test_cmap_has_no_mac_roman_subtable(self):
         # Every current platform reads the Unicode subtables; the Mac Roman one only repeats
         # 256 of their characters in an old encoding.
         for font in self.fonts:
             with self.subTest(font=font.name):
-                self.assertNotIn(MAC_ROMAN, cmap_encodings(font))
+                self.assertNotIn(sfnt.MAC_ROMAN, cmap_encodings(font))
 
     def test_hint_masks_name_only_the_glyphs_stems(self):
         # A CFF hint mask has a bit for each of the glyph's stems; one set past them is
@@ -603,6 +623,32 @@ class NerdFontTest(NerdBuilds, unittest.TestCase):
                 advance = ADVANCE if "NerdFontMono-" in nerd.name else 0
                 self.assertEqual({name: widths[name] for name in marks},
                                  dict.fromkeys(marks, advance))
+
+    def test_patched_fonts_keep_our_line_box(self):
+        for nerd in self.fonts:
+            with self.subTest(font=nerd.name):
+                self.assertEqual(set(line_boxes(nerd).values()), {(LINE_TOP, LINE_BOTTOM, 0)})
+
+    def test_patched_fonts_keep_our_tables(self):
+        # The patcher saves through FontForge, which brings back the Mac name records and the
+        # Mac Roman cmap subtable; tools/nerd_tables.py drops them again, as generate.py does.
+        for nerd in self.fonts:
+            with self.subTest(font=nerd.name):
+                self.assertNotIn(sfnt.MAC, name_platforms(nerd))
+                self.assertNotIn(sfnt.MAC_ROMAN, cmap_encodings(nerd))
+
+    def test_patched_fonts_name_their_release(self):
+        # As the plain fonts' unique ID does; the patcher's names only its own version, so
+        # every release of a style would share one.
+        releases = {}
+        for style, path in STYLES.items():
+            sfd = fontforge.open(str(path))
+            releases[style] = f"{font_version(sfd.version)};{sfd.os2_vendor}"
+            sfd.close()
+        for nerd in self.fonts:
+            with self.subTest(font=nerd.name):
+                names = english_names(nerd)
+                self.assertEqual(names[3], f"{releases[style_of(nerd)]};{names[6]}")
 
     def test_patched_fonts_keep_our_glyphs(self):
         text = "".join(chr(code) for code in [*range(0x2500, 0x25A0), *range(0x2800, 0x2900),

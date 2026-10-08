@@ -16,11 +16,16 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from bump_version import font_version
 from mark_advances import zero_mark_advances
 from project import is_alphanumeric
-from sfnt import HHEA_METRICS, MAXP_GLYPHS, metrics, packed, read_tables, write_tables
+from sfnt import (
+    HHEA_METRICS,
+    MAXP_GLYPHS,
+    metrics,
+    packed,
+    read_tables,
+    without_mac_roman,
+    write_tables,
+)
 
-CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
-CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset
-MAC_ROMAN = (1, 0)                   # the platform and encoding of the subtable to drop
 HEAD_MODIFIED = 28                   # offset of head.modified
 HEAD_BOX = 36                        # offset of head.xMin, then yMin, xMax and yMax
 HEAD_LOCA_FORMAT = 50                # offset of head.indexToLocFormat
@@ -127,29 +132,6 @@ def overlap(a, b):
     """Whether the spans of the hints `a` and `b`, as (position, width), overlap."""
     (a0, a1), (b0, b1) = sorted((a[0], sum(a))), sorted((b[0], sum(b)))
     return a0 < b1 and b0 < a1
-
-
-def without_mac_roman(cmap):
-    """`cmap` without its Mac Roman subtable.
-
-    FontForge writes one whatever the flags. It maps 256 characters in an old Mac encoding,
-    and every current platform reads the Unicode subtables instead.
-    """
-    version, count = CMAP_HEADER.unpack_from(cmap)
-    records = [CMAP_RECORD.unpack_from(cmap, CMAP_HEADER.size + i * CMAP_RECORD.size)
-               for i in range(count)]
-    # Records can share a subtable, and each subtable runs to the start of the next.
-    starts = sorted({offset for *_, offset in records})
-    ends = dict(zip(starts, [*starts[1:], len(cmap)]))
-    kept = [record for record in records if record[:2] != MAC_ROMAN]
-    moved, subtables = {}, b""
-    for start in sorted({offset for *_, offset in kept}):
-        moved[start] = CMAP_HEADER.size + len(kept) * CMAP_RECORD.size + len(subtables)
-        subtables += cmap[start:ends[start]]
-    return (CMAP_HEADER.pack(version, len(kept))
-            + b"".join(CMAP_RECORD.pack(platform, encoding, moved[offset])
-                       for platform, encoding, offset in kept)
-            + subtables)
 
 
 def finish_tables(path, modified):

@@ -7,6 +7,13 @@ CHECKSUM_MAGIC = 0xB1B0AFBA
 HEAD_ADJUSTMENT = 8                # offset of head.checkSumAdjustment
 HHEA_METRICS = 34                  # offset of hhea.numberOfHMetrics
 MAXP_GLYPHS = 4                    # offset of maxp.numGlyphs
+CMAP_HEADER = struct.Struct(">HH")   # version and subtable count
+CMAP_RECORD = struct.Struct(">HHL")  # platform, encoding and subtable offset
+MAC_ROMAN = (1, 0)                   # the platform and encoding of the Mac Roman subtable
+NAME_HEADER = struct.Struct(">HHH")  # format, record count and the strings' offset
+NAME_RECORD = struct.Struct(">6H")   # platform, encoding, language, name ID, length, offset
+MAC = 1                              # the Macintosh platform ID
+WINDOWS_ENGLISH = (3, 1, 0x409)      # platform, encoding and language of the names apps read
 
 
 def checksum(data):
@@ -67,3 +74,50 @@ def packed(pairs):
     hmtx = b"".join(struct.pack(">Hh", *pair) for pair in pairs[:long_count])
     hmtx += b"".join(struct.pack(">h", bearing) for _, bearing in pairs[long_count:])
     return hmtx, long_count
+
+
+def without_mac_roman(cmap):
+    """`cmap` without its Mac Roman subtable.
+
+    FontForge writes one whatever the flags. It maps 256 characters in an old Mac encoding,
+    and every current platform reads the Unicode subtables instead.
+    """
+    version, count = CMAP_HEADER.unpack_from(cmap)
+    records = [CMAP_RECORD.unpack_from(cmap, CMAP_HEADER.size + i * CMAP_RECORD.size)
+               for i in range(count)]
+    # Records can share a subtable, and each subtable runs to the start of the next.
+    starts = sorted({offset for *_, offset in records})
+    ends = dict(zip(starts, [*starts[1:], len(cmap)]))
+    kept = [record for record in records if record[:2] != MAC_ROMAN]
+    moved, subtables = {}, b""
+    for start in sorted({offset for *_, offset in kept}):
+        moved[start] = CMAP_HEADER.size + len(kept) * CMAP_RECORD.size + len(subtables)
+        subtables += cmap[start:ends[start]]
+    return (CMAP_HEADER.pack(version, len(kept))
+            + b"".join(CMAP_RECORD.pack(platform, encoding, moved[offset])
+                       for platform, encoding, offset in kept)
+            + subtables)
+
+
+def names(table):
+    """[(platform, encoding, language, name ID, string bytes)] of a format 0 name table."""
+    table_format, count, strings = NAME_HEADER.unpack_from(table)
+    assert table_format == 0, f"name table format {table_format}"
+    records = []
+    for i in range(count):
+        *key, length, offset = NAME_RECORD.unpack_from(
+            table, NAME_HEADER.size + i * NAME_RECORD.size)
+        records.append((*key, table[strings + offset:strings + offset + length]))
+    return records
+
+
+def name_table(records):
+    """The format 0 name table holding `records`, as names() gives them, sorted as the spec
+    asks."""
+    records = sorted(records, key=lambda record: record[:4])
+    heads, strings = [], b""
+    for *key, text in records:
+        heads.append(NAME_RECORD.pack(*key, len(text), len(strings)))
+        strings += text
+    return (NAME_HEADER.pack(0, len(records), NAME_HEADER.size + len(records) * NAME_RECORD.size)
+            + b"".join(heads) + strings)
