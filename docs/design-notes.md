@@ -385,9 +385,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   `+++`, whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
   (`tests/test_ligatures.py`). A three's middle glyph stays in place, so an outer glyph
   beside a copy of itself moves twice a pair's shift (`THREE_ENDS`), and `...` `///` `<<<`
-  `|||` keep their pair's white, and `+++` its pair's overlap; `>>>=`, four glyphs, keeps a pair's shifts. `/**` opens as
-  `/*` does, its second asterisk moved with the first, so its asterisks keep a plain `**`'s
-  white. So a doc comment opens as tightly as a plain one.
+  `|||` keep their pair's white, and `+++` its pair's overlap; `>>>=`, four glyphs, keeps a
+  pair's shifts. `/**` opens as `/*` does, its second asterisk moved with the first, so its
+  asterisks keep a plain `**`'s white. So a doc comment opens as tightly as a plain one.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
   have 25 more room on each side. So the pen no longer pushes @ # ∞ « » Æ œ K ✔ ➜ past their
   side room, and `fitted()` keeps them at full width, where 1.7.0 condensed them.

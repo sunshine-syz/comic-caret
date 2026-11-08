@@ -322,6 +322,7 @@ LIGATED = {
     "??=": ["question.tight_r2", "question", "equal.tight_l"],
     "x ??= 1": ["x", "space", "question.tight_r2", "question", "equal.tight_l", "space", "one"],
     # Python's floor-division assignment
+    "//=": ["slash.tight_r2", "slash", "equal.tight_l"],
     "a//=b": ["a", "slash.tight_r2", "slash", "equal.tight_l", "b"],
     "n //= 2": ["n", "space", "slash.tight_r2", "slash", "equal.tight_l", "space", "two"],
     ">>>=": ["greater.tight_r", "greater", "greater", "equal.tight_l"],
@@ -400,6 +401,8 @@ PLAIN = [
     "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
     "?..", "??.", "**", "a**b", "/**/", "++++", "+++=", "<+>=", "!!!", "!!=", "!!:p", "a&&!!b",
     ";;;", ";;;;", ";;&",
+    # An assignment three before a sign, as x&&=-1 is
+    "x//=-1",
     # A sign or a not that no operand follows
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
     # .. in a path, quoted or not, and Python's relative imports
