@@ -153,20 +153,20 @@ LIGATED = {
     # A run whose > is no head has no < head either, however long: ~~ is drawn as in ~~>=
     "<~~>=": ["less", "asciitilde.sta", "asciitilde.end", "greater", "equal"],
     # HTML comments
-    "<!--": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"],
-    "<!-- x -->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "space", "x",
+    "<!--": ["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end"],
+    "<!-- x -->": (["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end", "space", "x",
                     "space"] + hyphens(3, right="greater.arrow")),
-    "</p><!--": ["less", "slash", "p", "greater", "less.comment", "exclam.tight_r", "hyphen.sta",
+    "</p><!--": ["less", "slash", "p", "greater", "less.comment", "exclam.comment", "hyphen.sta",
                  "hyphen.end"],
     "--><!--": (hyphens(3, right="greater.arrow")
-                + ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end"]),
+                + ["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end"]),
     # A commented-out element: the opener keeps its ligature before the tag, and the arrow
     # closes after it
-    "<!--<": ["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end", "less"],
-    "<!--<div>-->": (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end",
+    "<!--<": ["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end", "less"],
+    "<!--<div>-->": (["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end",
                       "less", "d", "i", "v", "greater"] + hyphens(3, right="greater.arrow")),
     # After any other tag only --> joins, and a>--b is plain
-    '<!--<p id="x">-->': (["less.comment", "exclam.tight_r", "hyphen.sta", "hyphen.end",
+    '<!--<p id="x">-->': (["less.comment", "exclam.comment", "hyphen.sta", "hyphen.end",
                            "less", "p", "space", "i", "d", "equal", "quotedbl", "x", "quotedbl",
                            "greater"] + hyphens(3, right="greater.arrow")),
     # != !== :=
@@ -209,6 +209,22 @@ LIGATED = {
     "...rest": ["period.tight_r2", "period", "period.tight_l2", "r", "e", "s", "t"],
     "&&": ["ampersand.tight_r", "ampersand.tight_l"],
     "++": ["plus.tight_r", "plus.tight_l"],
+    # A statement's ; is no operator: x++; keeps its pair
+    "x++;": ["x", "plus.tight_r", "plus.tight_l", "semicolon"],
+    # and ;; after another operator stays as typed, as every pair does
+    "i++;;": ["i", "plus.tight_r", "plus.tight_l", "semicolon", "semicolon"],
+    # Haskell's index, Kotlin's not-null assertion, the shell's last command, a double not
+    "!!": ["exclam.tight_r", "exclam.tight_l"],
+    "xs !! 2": ["x", "s", "space", "exclam.tight_r", "exclam.tight_l", "space", "two"],
+    "x!!": ["x", "exclam.tight_r", "exclam.tight_l"],
+    "x!!.y": ["x", "exclam.tight_r", "exclam.tight_l", "period", "y"],
+    "sudo !!": ["s", "u", "d", "o", "space", "exclam.tight_r", "exclam.tight_l"],
+    "!!x": ["exclam.tight_r", "exclam.tight_l", "x"],
+    # The shell's and OCaml's ;;, and C's endless loop
+    ";;": ["semicolon.tight_r", "semicolon.tight_l"],
+    "x ;;": ["x", "space", "semicolon.tight_r", "semicolon.tight_l"],
+    "for(;;)": ["f", "o", "r", "parenleft", "semicolon.tight_r", "semicolon.tight_l",
+                "parenright"],
     "//": ["slash.tight_r", "slash.tight_l"],
     "/*": ["slash.tight_r", "asterisk.tight_l"],
     "*/": ["asterisk.tight_r", "slash.tight_l"],
@@ -266,6 +282,10 @@ LIGATED = {
     "///": ["slash.tight_r2", "slash", "slash.tight_l2"],
     "/**": ["slash.tight_r", "asterisk.tight_l", "asterisk.tight_l"],
     "&&&": ["ampersand.tight_r2", "ampersand", "ampersand.tight_l2"],
+    # +++ joins its bars as ++ does: a diff's header, C's a++ + b
+    "+++": ["plus.tight_r2", "plus", "plus.tight_l2"],
+    "+++ b/f": ["plus.tight_r2", "plus", "plus.tight_l2", "space", "b", "slash", "f"],
+    "a+++b": ["a", "plus.tight_r2", "plus", "plus.tight_l2", "b"],
     "<<<": ["less.tight_r2", "less", "less.tight_l2"],
     ">>>": ["greater.tight_r2", "greater", "greater.tight_l2"],
     # Before a space after a space, as an operator or a doctest's prompt, unlike at a line's
@@ -292,6 +312,8 @@ LIGATED = {
     "<=>": ["less.tight_r", "equal", "greater.tight_l"],
     "a <=> b": ["a", "space", "less.tight_r", "equal", "greater.tight_l", "space", "b"],
     "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
+    "<+>": ["less.tight_r", "plus", "greater.tight_l"],
+    "a <+> b": ["a", "space", "less.tight_r", "plus", "greater.tight_l", "space", "b"],
     "0..=9": ["zero", "period.tight_r2", "period", "equal.tight_l", "nine"],
     "0..<n": ["zero", "period.tight_r2", "period", "less.tight_l", "n"],
     # An assignment that closes a tightened pair, as <<= and >>= do
@@ -376,7 +398,8 @@ PLAIN = [
     "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", "///=", ">>>>=", ":::", ">....",
     ">::=",
     "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
-    "?..", "??.", "**", "a**b", "/**/",
+    "?..", "??.", "**", "a**b", "/**/", "++++", "+++=", "<+>=", "!!!", "!!=", "!!:p", "a&&!!b",
+    ";;;", ";;;;", ";;&",
     # A sign or a not that no operand follows
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
     # .. in a path, quoted or not, and Python's relative imports
@@ -554,7 +577,9 @@ class TightPairTest(unittest.TestCase):
     sfd = SFD
     # A glyph moved in by a pair (name.tight_r, name.tight_l) or a three (name.tight_r2, ...).
     TIGHT = re.compile(rf"({'|'.join(TIGHT_KEEP)})\.tight_[lr]2?")
-    JOINED = frozenset({("plus.tight_r", "plus.tight_l")})  # ++'s bars join, as Fira Code's do
+    # ++'s and +++'s bars join, as Fira Code's and Maple Mono's do
+    JOINED = frozenset({("plus.tight_r", "plus.tight_l"), ("plus.tight_r2", "plus"),
+                        ("plus", "plus.tight_l2")})
     # >>>= moves only its outer glyphs, so its middle two keep a plain >>'s white.
     UNEVEN = frozenset({">>>=", "y >>>= 1"})
 

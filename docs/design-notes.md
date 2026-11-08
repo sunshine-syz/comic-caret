@@ -379,11 +379,13 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   between the pair is the sum of the two kept side bearings, so it stays when the cell grows or
   the glyph widens; a shift stated as a number would let the white grow 50 with the cell and
   shrink as `&` `+` `<` `>` `?` widen. `&&` keeps 46 of white, about Maple Mono's 45 (Fira
-  Code joins its two); much less, and the two read as touching at 12–16 px. No pair but `++`,
-  whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
+  Code joins its two); much less, and the two read as touching at 12–16 px. `!!` keeps 226,
+  Fira Code's (Maple Mono 287). `;` moves as far as `:`, so the dots of `;;` line up with
+  those of `::` and keep 214 (Maple Mono 189, Fira Code 238). No pair or three but `++`
+  `+++`, whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
   (`tests/test_ligatures.py`). A three's middle glyph stays in place, so an outer glyph
   beside a copy of itself moves twice a pair's shift (`THREE_ENDS`), and `...` `///` `<<<`
-  `|||` keep their pair's white; `>>>=`, four glyphs, keeps a pair's shifts. `/**` opens as
+  `|||` keep their pair's white, and `+++` its pair's overlap; `>>>=`, four glyphs, keeps a pair's shifts. `/**` opens as
   `/*` does, its second asterisk moved with the first, so its asterisks keep a plain `**`'s
   white. So a doc comment opens as tightly as a plain one.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
@@ -451,6 +453,13 @@ The rules live in `src/ligatures.fea`; these are the choices behind them.
   `tools/add_ligatures.py` draws them again after it runs.
 - **`<=>`.** C++'s, PHP's, Ruby's and Perl's comparison is no arrow, so it tightens as a three,
   as `<$>` does. `<==>` is still an arrow.
+- **`<+>`.** It takes `<*>`'s brackets, as Maple Mono's does, so they keep 210 of white to the
+  `+`, past the references' 152–161, as `<*>` keeps 174 against their 92–116. Brackets of its
+  own would be two more pieces for one sequence.
+- **`!!` and `;;`.** Fira Code and Maple Mono join them beside other operators too (`x=!!y`,
+  `;;&`); here they stay as typed there, as every pair does, except `!!` before Kotlin's `.`
+  (`x!!.y`). `;` is no operator in `@Op`, so `x++;` keeps its pair. `;;;` stays as typed, as
+  in Fira Code; Maple Mono joins it.
 - **`<=` as an assignment.** `<=` draws `⩽` also where Verilog and VHDL assign with it
   (`q <= d`): no context tells the assignment from the comparison. Fira Code and Maple Mono
   draw `⩽` there too and offer `⇐` as an opt-in (`cv20`, `cv63`); Intel One Mono draws no

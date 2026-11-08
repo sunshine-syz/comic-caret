@@ -90,7 +90,7 @@ class GeneratorTest(unittest.TestCase):
 
 
 class MeasurementTest(unittest.TestCase):
-    """The generator's constants are measurements of - = _ # ~ < > | : and fail here once one
+    """The generator's constants are measurements of - = _ # ~ < > | : ; and fail here once one
     of those glyphs is redrawn. Without this, the generator would cut and snap the new
     outlines at the old places, and every other check would pass."""
 
@@ -109,11 +109,25 @@ class MeasurementTest(unittest.TestCase):
             x0, _, x1, _ = self.font[name].boundingBox()
             # Recomputed here, not through tight_shift: this checks the generator's output.
             shift = round((x0 + ADVANCE - x1) / 2 - keep)
-            for suffix, sign in (("tight_r", 1), ("tight_l", -1)):
+            # A three's outer glyph moves twice a pair's shift, so the three keeps its pair's
+            # white, and +++ its pair's overlap.
+            for suffix, sign in (("tight_r", 1), ("tight_l", -1), ("tight_r2", 2),
+                                 ("tight_l2", -2)):
+                if suffix.endswith("2") and name not in add_ligatures.THREE_ENDS[suffix]:
+                    continue
                 with self.subTest(glyph=f"{name}.{suffix}"):
                     [(base, matrix, *_)] = self.font[f"{name}.{suffix}"].references
                     self.assertEqual(base, name)
                     self.assertEqual(matrix[4], sign * shift)
+
+    def test_semicolon_moves_as_far_as_the_colon(self):
+        # TIGHT_KEEP's ; is measured so the dots of ;; line up with those of ::. A redrawn
+        # comma tail changes ;'s box, and with it the shift.
+        for suffix in ("tight_r", "tight_l"):
+            with self.subTest(glyph=f"semicolon.{suffix}"):
+                [(_, semicolon, *_)] = self.font[f"semicolon.{suffix}"].references
+                [(_, colon, *_)] = self.font[f"colon.{suffix}"].references
+                self.assertEqual(semicolon[4], colon[4])
 
     def test_run_bars_meet_their_profiles_at_the_cuts(self):
         for name, bars in add_ligatures.RUNS.items():
@@ -467,7 +481,7 @@ class GlyphShapeTest(unittest.TestCase):
         arrow = self.font["less.comment"].foreground
         _, _, end, _ = arrow.boundingBox()
         self.assertAlmostEqual(spans_at_y(arrow, AXIS)[-1][1], end, delta=1)
-        x0, _, x1, _ = ink(self.font, "exclam.tight_r").boundingBox()
+        x0, _, x1, _ = ink(self.font, "exclam.comment").boundingBox()
         start = self.font["hyphen.sta"].boundingBox()[0] + ADVANCE
         self.assertAlmostEqual(x0 - (end - ADVANCE), start - x1, delta=2)
 

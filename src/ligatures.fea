@@ -19,16 +19,18 @@ languagesystem latn dflt;
   asciitilde.sta asciitilde.mid asciitilde.end asciitilde.mid.low asciitilde.end.low
   less.arrow greater.arrow less.darrow greater.darrow
   less.warrow greater.warrow greater.warrow.low less.dtail greater.dtail
-  less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.tight_r
+  less.twohead greater.twohead less.shaft greater.shaft less.comment exclam.comment
   exclam_equal.liga exclam_equal_equal.liga equal_equal_equal.liga less_equal.liga
   greater_equal.liga bar_greater.liga less_bar.liga less_bar_greater.liga
   colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
+  exclam.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
   asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
-  slash.tight_r2 period.tight_r2 ampersand.tight_r2 question.tight_r2 less.tight_r2
-  greater.tight_r2 bar.tight_r2 slash.tight_l2 period.tight_l2 ampersand.tight_l2 less.tight_l2
-  greater.tight_l2 bar.tight_l2];
+  exclam.tight_l
+  slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2 question.tight_r2
+  less.tight_r2 greater.tight_r2 bar.tight_r2 slash.tight_l2 period.tight_l2 ampersand.tight_l2
+  plus.tight_l2 less.tight_l2 greater.tight_l2 bar.tight_l2];
 
 # The combining marks tools/add_marks.py makes. Nothing joins into a character that carries
 # one: the ligatures' glyphs have no mark anchors (add_marks.py anchors the encoded glyphs), so
@@ -94,7 +96,7 @@ lookup lig_warrow_low { sub greater by greater.warrow.low; } lig_warrow_low;
 lookup lig_dtail { sub [less greater] by [less.dtail greater.dtail]; } lig_dtail;
 lookup lig_twohead { sub [less greater] by [less.twohead greater.twohead]; } lig_twohead;
 lookup lig_shaft { sub [less greater] by [less.shaft greater.shaft]; } lig_shaft;
-lookup lig_comment { sub [less exclam] by [less.comment exclam.tight_r]; } lig_comment;
+lookup lig_comment { sub [less exclam] by [less.comment exclam.comment]; } lig_comment;
 lookup lig_spacer { sub [exclam less greater bar equal] by LIG; } lig_spacer;
 lookup lig_plain {
   sub [hyphen.sta hyphen.end underscore.sta underscore.end]
@@ -110,24 +112,28 @@ lookup lig_bar_greater { sub greater by bar_greater.liga; } lig_bar_greater;
 lookup lig_less_bar { sub bar by less_bar.liga; } lig_less_bar;
 lookup lig_less_bar_greater { sub greater by less_bar_greater.liga; } lig_less_bar_greater;
 lookup lig_tight_r {
-  sub [colon period ampersand plus slash asterisk less greater question bar equal]
+  sub [colon period ampersand plus slash asterisk less greater question bar equal exclam
+       semicolon]
    by [colon.tight_r period.tight_r ampersand.tight_r plus.tight_r slash.tight_r
-       asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r];
+       asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
+       exclam.tight_r semicolon.tight_r];
 } lig_tight_r;
 lookup lig_tight_l {
-  sub [colon period ampersand plus slash asterisk less greater question bar equal]
+  sub [colon period ampersand plus slash asterisk less greater question bar equal exclam
+       semicolon]
    by [colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l];
+       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
+       exclam.tight_l semicolon.tight_l];
 } lig_tight_l;
 lookup lig_tight_r2 {
-  sub [slash period ampersand question less greater bar]
-   by [slash.tight_r2 period.tight_r2 ampersand.tight_r2 question.tight_r2 less.tight_r2
-       greater.tight_r2 bar.tight_r2];
+  sub [slash period ampersand plus question less greater bar]
+   by [slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2 question.tight_r2
+       less.tight_r2 greater.tight_r2 bar.tight_r2];
 } lig_tight_r2;
 lookup lig_tight_l2 {
-  sub [slash period ampersand less greater bar]
-   by [slash.tight_l2 period.tight_l2 ampersand.tight_l2 less.tight_l2 greater.tight_l2
-       bar.tight_l2];
+  sub [slash period ampersand plus less greater bar]
+   by [slash.tight_l2 period.tight_l2 ampersand.tight_l2 plus.tight_l2 less.tight_l2
+       greater.tight_l2 bar.tight_l2];
 } lig_tight_l2;
 
 feature calt {
@@ -255,14 +261,14 @@ feature calt {
     rsub [greater.arrow]' [less] @TagStart by greater.arrow;
     rsub [greater.arrow]' [hyphen less greater] by greater;
     # <!-- before a tag keeps its run's end, which keeps the next rule from reverting it.
-    rsub exclam.tight_r hyphen.sta [hyphen.end]' [less] by hyphen.end;
+    rsub exclam.comment hyphen.sta [hyphen.end]' [less] by hyphen.end;
     rsub [hyphen.end]' less by hyphen;
     rsub [hyphen.mid]' [hyphen greater] by hyphen;
     rsub [hyphen.sta]' [hyphen greater] by hyphen;
     rsub [less.shaft]' [hyphen] by less;
     rsub [less.twohead]' [less] by less;
     rsub [less.arrow]' [hyphen] by less;
-    rsub [exclam.tight_r]' [hyphen] by exclam;
+    rsub [exclam.comment]' [hyphen] by exclam;
     rsub [less.comment]' [exclam] by less;
   } lig_hyphen_unwind;
 
@@ -373,7 +379,7 @@ feature calt {
   # A run of exactly two - or _ goes back to two characters, so --help, i--, -- comments and
   # __init__ count as typed; three or more join, and <!-- keeps its run.
   lookup lig_two_plain {
-    ignore sub exclam.tight_r hyphen.sta' hyphen.end;
+    ignore sub exclam.comment hyphen.sta' hyphen.end;
     sub hyphen.sta' lookup lig_plain hyphen.end' lookup lig_plain;
     sub underscore.sta' lookup lig_plain underscore.end' lookup lig_plain;
   } lig_two_plain;
@@ -444,6 +450,9 @@ feature calt {
     ignore sub ampersand' ampersand [ampersand equal] @OpOrMark;
     sub ampersand' lookup lig_tight_r2 ampersand ampersand' lookup lig_tight_l2;
     sub ampersand' lookup lig_tight_r2 ampersand equal' lookup lig_tight_l;
+    ignore sub @Op plus' plus plus;
+    ignore sub plus' plus plus @OpOrMark;
+    sub plus' lookup lig_tight_r2 plus plus' lookup lig_tight_l2;
     ignore sub @Op question' question equal;
     ignore sub question' question equal @OpOrMark;
     sub question' lookup lig_tight_r2 question equal' lookup lig_tight_l;
@@ -471,9 +480,9 @@ feature calt {
     ignore sub @Op equal' less less;
     ignore sub equal' less less @OpOrMark;
     sub equal' lookup lig_tight_r less less' lookup lig_tight_l2;
-    ignore sub @Op less' [dollar asterisk equal] greater;
-    ignore sub less' [dollar asterisk equal] greater @OpOrMark;
-    sub less' lookup lig_tight_r [dollar asterisk equal] greater' lookup lig_tight_l;
+    ignore sub @Op less' [dollar asterisk equal plus] greater;
+    ignore sub less' [dollar asterisk equal plus] greater @OpOrMark;
+    sub less' lookup lig_tight_r [dollar asterisk equal plus] greater' lookup lig_tight_l;
     # .. in a path (../.. "$DIR/..") and the tail of a longer run (....x +...x) stay as typed.
     # A quote after a name closes a string, as in 'a'..'z'; any other opens one, as in "..".
     ignore sub period' period [slash backslash @Mark];
@@ -489,6 +498,15 @@ feature calt {
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l [less asterisk hyphen asciitilde];
     ignore sub colon' colon @OpOrMark;
     sub colon' lookup lig_tight_r colon' lookup lig_tight_l;
+    ignore sub @Op exclam' exclam;
+    # Kotlin's not-null assertion before a call: x!!.y
+    sub exclam' lookup lig_tight_r exclam' lookup lig_tight_l period;
+    ignore sub exclam' exclam @OpOrMark;
+    sub exclam' lookup lig_tight_r exclam' lookup lig_tight_l;
+    # ; is no operator, so x++; keeps its pair; ;; beside another ; stays as typed: ;;; ;;;;
+    ignore sub [@Op semicolon] semicolon' semicolon;
+    ignore sub semicolon' semicolon [@OpOrMark semicolon];
+    sub semicolon' lookup lig_tight_r semicolon' lookup lig_tight_l;
     ignore sub @Op ampersand' ampersand;
     sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l @Prefix @OperandStart;
     ignore sub ampersand' ampersand @OpOrMark;

@@ -6,7 +6,7 @@ Replaces every glyph and GSUB lookup an earlier run made (the glyphs GENERATED m
 lig_* lookups), and redraws ⎯ (U+23AF) as the `--` line's middle piece, so a row of them joins
 into that line; running it again changes nothing but ModificationTime. Rerun it after adding
 glyphs, since a new glyph lands after the generated ones. Its constants are measurements of
-`- = _ # ~ < > | :`; after redrawing one of those, measure again until
+`- = _ # ~ < > | : ;`; after redrawing one of those, measure again until
 tests/test_add_ligatures.py's MeasurementTest passes, then rerun it.
 """
 import argparse
@@ -116,14 +116,17 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 # The side bearing each glyph keeps toward its partner once moved, so the white between a pair
 # stays when the cell or the glyph's width changes. & keeps 45 of white in &&, Maple Mono's
 # (Fira Code joins its two), and ? 107 between the hooks of ??, Maple Mono's (Fira Code 104).
+# ! keeps 226 between the stems of !!, Fira Code's (Maple Mono 287), and ; moves as far as :,
+# so the dots of ;; line up with those of :: and keep 214 (Maple Mono 189, Fira Code 238).
 TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -41.5,
               "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 53, "bar": 131,
-              "equal": 20.5}
-# The outer glyphs of a tightened three beside a copy of themselves (/// ... &&& <<< >>> |||, and
-# ..= ??= <<= >>= =<< ||= &&= //=): the middle glyph stays in place, so each moves twice a
+              "equal": 20.5, "exclam": 113, "semicolon": 74.5}
+# The outer glyphs of a tightened three beside a copy of themselves (/// ... &&& +++ <<< >>> |||,
+# and ..= ??= <<= >>= =<< ||= &&= //=): the middle glyph stays in place, so each moves twice a
 # pair's shift and the three keeps its pair's white.
-THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "question", "less", "greater", "bar"),
-              "tight_l2": ("slash", "period", "ampersand", "less", "greater", "bar")}
+THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "less", "greater",
+                           "bar"),
+              "tight_l2": ("slash", "period", "ampersand", "plus", "less", "greater", "bar")}
 
 JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
 
@@ -647,7 +650,7 @@ def build(font):
         glyphs[f"{name}.shaft"] = [("hyphen.mid", 0, 0)]  # a > or < inside ->> <<-
     glyphs.update(wave_arrows(font))
     glyphs["less.comment"], bang = comment_open(font)
-    glyphs["exclam.tight_r"] = [("exclam", bang, 0)]
+    glyphs["exclam.comment"] = [("exclam", bang, 0)]
     return glyphs
 
 
