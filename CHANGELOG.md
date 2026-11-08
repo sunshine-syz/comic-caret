@@ -2,6 +2,8 @@
 
 ## 2.3 (unreleased)
 
+- `//=` is pulled together, as `&&=` and `||=` are. So Python's `n //= 2` reads like `a // b`, as in Maple Mono. It showed as typed.
+
 ## 2.2 (2026-10)
 
 - Windows apps that draw text with GDI, as PuTTY, mintty, gvim, the old console and Office, space lines 1.25 em apart, as every other app does. They spaced them 1.53 em apart, to hold the box drawing's overlap into the next line. They now clip that overlap, as with Fira Code, Intel One Mono and Maple Mono. They also clip nearly all of the upper mark where two marks stack on a capital, as in Ấ. The Nerd Font builds already spaced lines 1.25 em apart.

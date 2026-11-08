@@ -403,20 +403,21 @@ feature calt {
   #    then tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a
   #    pair, so the three keeps the pair's white; /** opens as /* does, its second asterisk
   #    moved with the first, so ** keeps its plain white. The longer ones come first: a pair's
-  #    ignore rules would claim them. An = may close << >> >>> && || ?? (<<= >>= >>>= &&= ||=
-  #    ??=) or open << (=<<), as in C's and JavaScript's assignments and Haskell's binds; ///
-  #    and /** open doc comments, so they tighten as // and /* do, and a comment opener tightens
-  #    before the ! or < that marks a doc comment (//! /*! ///< /**<). None tightens beside a
-  #    @Word where it is no operator there. .. tightens in a range or a slice: after a name, a
-  #    number, a closing quote or a bracket, or before a name, a number, a quote or a closing
-  #    bracket (0..n 'a'..'z' [..n] [1..] { ..x }), so a path (../, cd ..) and Python's relative
-  #    import (from .. import) stay as typed; ... also after the > of a placeholder, as in a
-  #    usage line's <FILE>....
+  #    ignore rules would claim them. An = may close << >> >>> && || ?? // (<<= >>= >>>= &&= ||=
+  #    ??= //=) or open << (=<<), as in C's, JavaScript's and Python's assignments and
+  #    Haskell's binds; /// and /** open doc comments, so they tighten as // and /* do, and a
+  #    comment opener tightens before the ! or < that marks a doc comment (//! /*! ///< /**<).
+  #    None tightens beside a @Word where it is no operator there. .. tightens in a range or a
+  #    slice: after a name, a number, a closing quote or a bracket, or before a name, a number,
+  #    a quote or a closing bracket (0..n 'a'..'z' [..n] [1..] { ..x }), so a path (../, cd ..)
+  #    and Python's relative import (from .. import) stay as typed; ... also after the > of a
+  #    placeholder, as in a usage line's <FILE>....
   lookup lig_tight {
-    ignore sub @Op slash' slash slash;
+    ignore sub @Op slash' slash [slash equal];
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2 [exclam less];
-    ignore sub slash' slash slash @OpOrMark;
+    ignore sub slash' slash [slash equal] @OpOrMark;
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2;
+    sub slash' lookup lig_tight_r2 slash equal' lookup lig_tight_l;
     ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l asterisk' lookup lig_tight_l

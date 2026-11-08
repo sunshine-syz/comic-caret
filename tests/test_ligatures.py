@@ -299,6 +299,9 @@ LIGATED = {
     "&&=": ["ampersand.tight_r2", "ampersand", "equal.tight_l"],
     "??=": ["question.tight_r2", "question", "equal.tight_l"],
     "x ??= 1": ["x", "space", "question.tight_r2", "question", "equal.tight_l", "space", "one"],
+    # Python's floor-division assignment
+    "a//=b": ["a", "slash.tight_r2", "slash", "equal.tight_l", "b"],
+    "n //= 2": ["n", "space", "slash.tight_r2", "slash", "equal.tight_l", "space", "two"],
     ">>>=": ["greater.tight_r", "greater", "greater", "equal.tight_l"],
     "y >>>= 1": ["y", "space", "greater.tight_r", "greater", "greater", "equal.tight_l", "space",
                  "one"],
@@ -370,7 +373,8 @@ PLAIN = [
     # Lone run characters
     "_", "#", "~", "a_b", "#!", "~/",
     # Pairs and threes touching another operator, and ** (the asterisks would touch)
-    "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", ">>>>=", ":::", ">....", ">::=",
+    "<<<<<<<", ">>>>>>>", "////", "/***", "|||=", "&&&=", "???=", "///=", ">>>>=", ":::", ">....",
+    ">::=",
     "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
     "?..", "??.", "**", "a**b", "/**/",
     # A sign or a not that no operand follows
