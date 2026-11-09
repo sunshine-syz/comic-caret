@@ -557,11 +557,11 @@ class LigatureSeamTest(unittest.TestCase):
     DRAWN_BARS = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
                   "greater.darrow", "less.dtail", "greater.dtail"]
     BESIDE_EQUAL = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth"]
-    # Known exceptions, by glyph, at the sizes given or at every size (None): the double
-    # arrows, which the hinter places from their heads' ends, as it placed <=<'s tail; ⇐ and ⇒
-    # also follow the pieces of => where those part from = (22-23 px in the regular, 12 in the
-    # bold).
-    off_equals_rows = dict.fromkeys(["arrowdblleft", "arrowdblright", "arrowdblboth"])
+    # Known exceptions, by format and glyph, at the sizes given or at every size (None): the
+    # TTF's double arrows, which ttfautohint places from their heads' ends where it links them
+    # to the bars (⇔ at 11-12, 16-17 and 20-21 px in the regular), and from a cause not found
+    # at 22-23 px (12 in the bold).
+    off_equals_rows = {"ttf": dict.fromkeys(["arrowdblleft", "arrowdblright", "arrowdblboth"])}
 
     def bar_edges(self, ext, glyphs):
         command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
@@ -592,7 +592,7 @@ class LigatureSeamTest(unittest.TestCase):
         for ext in FORMATS:
             edges = self.bar_edges(ext, self.BESIDE_EQUAL)
             for glyph in self.BESIDE_EQUAL:
-                known = self.off_equals_rows.get(glyph, set())
+                known = self.off_equals_rows.get(ext, {}).get(glyph, set())
                 for size, bars in edges[glyph].items():
                     if known is None or int(size) in known:
                         continue
@@ -641,7 +641,7 @@ class BoldLigatureSeamTest(LigatureSeamTest):
     white_floor = 0.71875
     # Known exception: the TTF's ≠ at 11 px, whose upper bar ttfautohint rounds a row under
     # ='s; a longer slash leaves it there, a shorter one brings the foot back into the zone.
-    off_equals_rows = {**LigatureSeamTest.off_equals_rows, "notequal": {11}}
+    off_equals_rows = {"ttf": {**LigatureSeamTest.off_equals_rows["ttf"], "notequal": {11}}}
 
 
 class GreekRowTest(unittest.TestCase):

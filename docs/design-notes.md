@@ -389,7 +389,13 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   of its zones to it and places the bars from there: ≠'s slash foot, at −18, put its bars a
   row off `=`'s at 9–12 px, so the slash runs 40 further each way, to −58 and 602, Maple
   Mono's length (Fira Code's and Intel One Mono's are shorter). The double arrows still stand
-  off `=`'s rows at some sizes, placed from their heads' ends. At 9 px the
+  off `=`'s rows at some sizes: ttfautohint places `⇔`'s bars from its heads' ends (11–12, 16–17
+  and 20–21 px in the regular), which its control file can keep out of the edges only by point
+  number, and `⇐` `⇒` `⇔` at 22–23 px (12 in the bold) and the bold `≠` at 11 for a cause not
+  found. FreeType's light hinting sets `≠` `⇐` `⇒` `⇔` off `=`'s at many sizes: its Latin style
+  covers only Latin's Unicode ranges and hints Arrows and Mathematical Operators in a fallback
+  style, which leaves their bars near their unhinted rows. Mapped from a Latin character too,
+  `≠` stood on `=`'s rows at every size; a font can't change that coverage. At 9 px the
   italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round stem ends fill only
   half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep` keeps the
   smart dropout control the SFD's own `prep` carried. ttfautohint hints a component alone and
@@ -422,7 +428,11 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   stroke: without them the bold `T` and `Œ` blurred. Rows off `H` and `x` at 8–24 px,
   native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
   5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
-  at 0 it stood a row high at 11 and 14 px.
+  at 0 it stood a row high at 11 and 14 px. FontForge's autohinter gave `⇔` a stem from each bar out
+  to its heads' ends, the upper one's top at 486, in the x-height zone; the hinter aligned it
+  there and set the bar from it, a row off `=`'s at 9, 11 and 18–24 px. `tools/generate.py`
+  leaves ≠ ⇐ ⇒ ⇔ only the stems that lie on `=`'s. Taller heads took the ends out of the zone
+  but closed the bold's bars into one band at 8 px, in both formats.
 - **`=`'s gap.** The white between `=`'s bars is 126, Intel One Mono's, between Fira Code's
   114 and Maple Mono's 135 at our cap height. At 106 the fonts' own hints merged the bars
   into one band at 8 px in every style and format (contrast 0; 0.55–0.75 at 126). Each

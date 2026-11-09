@@ -15,7 +15,7 @@ import psMat
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from bump_version import font_version
 from mark_advances import zero_mark_advances
-from project import is_alphanumeric
+from project import WOBBLE, is_alphanumeric
 from sfnt import (
     HHEA_METRICS,
     MAXP_GLYPHS,
@@ -44,6 +44,8 @@ TTFAUTOHINT = ["uvx", "--with", "ttfautohint-py==0.6.1", "python", "-m", "ttfaut
 # a Latin zone to it and places the bars from there, so ≠'s slash ends stand beyond that reach.
 TTFAUTOHINT_CONTROL = ("latn dflt @ equivalence, notequal, arrowdblleft, arrowdblright,"
                        " arrowdblboth\n")
+# The glyphs drawn with ='s bars, beside which they stand in a line.
+EQUAL_BARS = ("notequal", "arrowdblleft", "arrowdblright", "arrowdblboth")
 # How far over a glyph's lowest point the autohinter looks for the ends of its foot
 # (af_latin_metrics_init_blues in FreeType, and ttfautohint's copy of it).
 LEVEL_REACH = 5
@@ -146,6 +148,24 @@ def hint_zones(font):
         if tuple(hints) != glyph.hhints:
             glyph.hhints = hints  # from the bottom up, or FontForge drops a hint out of order
             glyph.manualHints = True  # else generating hints it again, without these
+
+
+def hint_bars_as_equal(font):
+    """Give each of EQUAL_BARS only the stems that lie on ='s, within the wobble.
+
+    FontForge's autohinter also gives ⇔ a stem from each bar out to its heads' ends, and the
+    upper one's top (486) lies in the x-height zone. The CFF hinter aligned that edge to the
+    zone and set the bar from it, a row off ='s at 9-24 px. With only ='s stems, the bars
+    round as ='s do and the heads follow them.
+    """
+    stems = font["equal"].hhints
+    for name in EQUAL_BARS:
+        glyph = font[name]
+        kept = [(y, w) for y, w in glyph.hhints
+                if any(abs(y - ey) <= WOBBLE and abs(w - ew) <= WOBBLE for ey, ew in stems)]
+        if tuple(kept) != glyph.hhints:
+            glyph.hhints = kept
+            glyph.manualHints = True  # else generating hints it again
 
 
 def level_foot(glyph):
@@ -367,6 +387,7 @@ def main(source, output):
             level_foot(font["pi"])
     else:
         hint_zones(font)
+        hint_bars_as_equal(font)
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
     # "no-mac-names" drops the platform-1 name records that nothing current reads, and
     # "no-FFTM-table" FontForge's record of when it and the font were made.
