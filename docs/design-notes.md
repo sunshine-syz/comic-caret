@@ -136,10 +136,17 @@ from ΓΒΕΖΘΟΩ and αειοπστω, Latin's from THEZOCQS and uvxzoesc. So
 479 and 668, and every Greek capital stood a row over `H` at 18–19 px. `Γ`'s bar rises to
 its stem's top, so `Γ` reads flat in both styles: in the bold, `Β`'s level top, 671, was
 Greek's only flat one, and the capitals stood a row under `H` at 8 and 24 px.
-`GreekRowTest` in `tests/test_built.py` checks the tops of the capitals and the x-height
-letters at 8–24 px, in the TTF and the OTF. The feet aren't matched yet: Greek's baseline
-zones are its own too, and in the bold TTF `ο`, `o`'s outline, stands a row under `o` at
-15–24 px under light hinting.
+Greek's feet follow Latin's the same way. Its capitals' baseline zone took its flat height
+from `Δ` `Ξ` (−2), Latin's from `E` `Z` `L` (−14), so the round capitals stood a row low at
+24 px; `Δ` `Ξ` reach `Z`'s −8. Latin's small letters take theirs from `z`'s bar (−8). Greek's
+small letters have no level foot, so the zone fell to their round feet's −25 and they stood a
+row low from 20 px (15 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
+`tools/generate.py` (`level_foot()`) cuts the curves leaving it 5 and 7 units up, joined by a
+line: the autohinter reads a foot as level when the points within 5 units of it begin and end
+on the curve. In the OTF, whose zones all letters share, `Σ` `Ω` `Φ` `Ψ` stood with their
+feet at 1, over the baseline zone, and `ξ` `δ` at 723 and 722, over the ascender zone; their
+feet reach −8 and their tops `d`'s 719. `GreekRowTest` in `tests/test_built.py` checks the
+tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
 
 ## Placement
 
@@ -407,7 +414,12 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   adds a ghost at each extreme a zone holds without an edge; `tests/test_built.py` checks the
   built OTFs. A ghost the autohinter drew across the new one's span goes: the italic `m`'s top
   ghost at −1 crossed the new one over its feet at −21 as both were hinted, and threw the
-  foot half a row below the baseline at 20 and 22 px. Rows off `H` and `x` at 8–24 px,
+  foot half a row below the baseline at 20 and 22 px. FontForge's autohinter also gives some
+  letters a stem crossing the one a zone holds, as `ε`'s upper end (357–443) beside its top
+  (411–489). The two take turns under hint masks, and the top's points handed to the end's
+  stem rounded with it: `ε` stood a row over `o` at 13 and 20–22 px. A stem that crosses a
+  zone's by half a stroke or more goes. One nearer, as at `T`'s bar, hints the same wobbly
+  stroke: without them the bold `T` and `Œ` blurred. Rows off `H` and `x` at 8–24 px,
   native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
   5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
   at 0 it stood a row high at 11 and 14 px.

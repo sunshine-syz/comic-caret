@@ -44,6 +44,9 @@ TTFAUTOHINT = ["uvx", "--with", "ttfautohint-py==0.6.1", "python", "-m", "ttfaut
 # a Latin zone to it and places the bars from there, so ≠'s slash ends stand beyond that reach.
 TTFAUTOHINT_CONTROL = ("latn dflt @ equivalence, notequal, arrowdblleft, arrowdblright,"
                        " arrowdblboth\n")
+# How far over a glyph's lowest point the autohinter looks for the ends of its foot
+# (af_latin_metrics_init_blues in FreeType, and ttfautohint's copy of it).
+LEVEL_REACH = 5
 
 
 def is_composite(glyph):
@@ -128,10 +131,82 @@ def hint_zones(font):
         # are hinted and throw the points between them past the baseline.
         hints = [hint for hint in hints
                  if hint[1] not in (-20, -21) or not any(overlap(hint, g) for g in ghosts)]
+        if letter:
+            # A stem crossing one whose edge a zone holds, by half a stroke or more, hints another
+            # stroke, as ε's upper end (357-443) beside its top (411-489). The two take turns
+            # under hint masks, and the top's points handed to the end's stem round with it, not
+            # the zone: ε's top stood a row over o's at 13 and 20-22 px. A stem less than half
+            # a stroke off hints the same wobbly stroke, as at T's bar, and keeps it sharp.
+            held = [(y, w) for y, w in hints if w not in (-20, -21)
+                    and any(low - fuzz <= edge <= high + fuzz
+                            for edge, zones in ((y + w, tops), (y, feet)) for low, high in zones)]
+            hints = [hint for hint in hints if hint[1] in (-20, -21) or hint in held or not any(
+                overlap(hint, h) and abs(hint[0] - h[0]) > h[1] / 2 for h in held)]
         hints = sorted((*hints, *ghosts), key=lambda hint: min(hint[0], sum(hint)))
         if tuple(hints) != glyph.hhints:
             glyph.hhints = hints  # from the bottom up, or FontForge drops a hint out of order
             glyph.manualHints = True  # else generating hints it again, without these
+
+
+def level_foot(glyph):
+    """Put an on-curve point where each curve leaving the glyph's lowest point rises
+    LEVEL_REACH above it, splitting the curve without changing its shape.
+
+    The autohinter, ttfautohint's and FreeType's alike, takes a foot for level when the run of
+    points within LEVEL_REACH of the lowest begins and ends on the curve, and a script's
+    baseline zone takes its height from its level feet. Latin's small letters have z's bar;
+    Greek's have none, so Greek's zone came from the round feet, half a pixel under Latin's,
+    and its small letters stood a row low from 20 px (15 in the bold). π's hook bottom is drawn
+    at z's height; read as level, it gives Greek Latin's zone.
+    """
+    layer = glyph.foreground.dup()
+    ci, low = min(((ci, i) for ci, contour in enumerate(layer)
+                   for i, point in enumerate(contour) if point.on_curve),
+                  key=lambda found: layer[found[0]][found[1]].y)
+    # Each point keeps its index, so the contour starts where it did; a new one has None.
+    points = [(point.x, point.y, point.on_curve, i) for i, point in enumerate(layer[ci])]
+    height = points[low][1] + LEVEL_REACH
+
+    def casteljau(segment, t):
+        rows = [[point[:2] for point in segment]]
+        while len(rows[-1]) > 1:
+            rows.append([(a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]))
+                         for a, b in zip(rows[-1], rows[-1][1:])])
+        return rows
+
+    def split(segment, y):
+        """The cubic `segment`, which rises from its start, cut in two where it reaches y."""
+        lo, hi = 0.0, 1.0
+        for _ in range(40):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if casteljau(segment, mid)[-1][0][1] < y else (lo, mid)
+        rows = casteljau(segment, lo)
+        return [row[0] for row in rows], [row[-1] for row in reversed(rows)]
+
+    run = points[low:] + points[:low]  # from the lowest point
+    for _ in range(2):  # one way round the contour, then the other
+        k = 0
+        while True:
+            j = next(j for j in range(k + 1, len(run)) if run[j][2])
+            if run[j][1] <= height:
+                k = j
+                continue
+            if j - k == 3 and run[k + 1][1] <= height:  # a curve whose run ends off it
+                # Cut at the height and 2 above, joined by a line: on a flat curve FontForge's
+                # quadratic control point after a single cut still lies within reach.
+                first, rest = split(run[k:j + 1], height)
+                _, last = split(rest, height + 2)
+                run[k + 1:j] = [(round(x), round(y), i in (2, 3), None)
+                                for i, (x, y) in enumerate([*first[1:], *last[:-1]])]
+            break
+        run = run[:1] + run[:0:-1]
+    start = next(i for i, point in enumerate(run) if point[3] == 0)
+    contour = fontforge.contour()
+    for x, y, on, _ in run[start:] + run[:start]:
+        contour += fontforge.point(x, y, on)
+    contour.closed = True
+    layer[ci] = contour
+    glyph.foreground = layer
 
 
 def overlap(a, b):
@@ -288,6 +363,8 @@ def main(source, output):
     if output.endswith(".ttf"):
         flatten_nested_references(font)
         decompose_transformed_references(font)
+        if "pi" in font:  # not before 1.2, which proof_sheet.py --before can build
+            level_foot(font["pi"])
     else:
         hint_zones(font)
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.

@@ -219,16 +219,18 @@ import freetype
 
 face, flag = freetype.Face(sys.argv[1]), getattr(freetype, sys.argv[2])
 
-def top(char, size):
+def ends(char, size):
     face.set_pixel_sizes(0, size)
     face.load_char(char, flag | freetype.FT_LOAD_NO_BITMAP)
-    return max(y for _, y in face.glyph.outline.points)
+    ys = [y for _, y in face.glyph.outline.points]
+    return {"foot": min(ys), "top": max(ys)}
 
 off = {}
-for greek, latin in json.loads(sys.argv[3]).items():
-    for size in range(8, 25):
-        if abs(top(greek, size) - top(latin, size)) >= 32:
-            off.setdefault(greek, []).append(size)
+for end, rows in json.loads(sys.argv[3]).items():
+    for greek, latin in rows.items():
+        for size in range(8, 25):
+            if abs(ends(greek, size)[end] - ends(latin, size)[end]) >= 32:
+                off.setdefault(f"{greek} {end}", []).append(size)
 print(json.dumps(off, ensure_ascii=False))
 """
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
@@ -643,23 +645,24 @@ class BoldLigatureSeamTest(LigatureSeamTest):
 
 
 class GreekRowTest(unittest.TestCase):
-    """Under FreeType's light and native hinting, Greek's tops stand on the Latin letters'
-    rows at text sizes. The autohinter, and ttfautohint after it, scale each script so its x-height
-    zone lands on a pixel, and snap each top to its script's zones: Greek's must be Latin's,
-    or a Greek capital stands a row over H. Up to 24 px every top within half a pixel of a
-    zone snaps to it; larger, a letter's own height shows, as Latin r's does at 36. The
-    OpenType fonts' own hints share one set of zones, so there a letter's height decides:
-    ι and τ stood under the x-height zone and a row under x. Skips without uvx."""
+    """Under FreeType's light and native hinting, Greek's tops and feet stand on the Latin
+    letters' rows at text sizes. The autohinter, and ttfautohint after it, scale each script so
+    its x-height zone lands on a pixel, and snap each top and foot to its script's zones:
+    Greek's must be Latin's, or a Greek capital stands a row over H, and a Greek foot a row
+    under it. Up to 24 px every top within half a pixel of a zone snaps to it; larger, a
+    letter's own height shows, as Latin r's does at 36. The OpenType fonts' own hints share
+    one set of zones, so there a letter's height decides: ι and τ stood under the x-height
+    zone and a row under x. Skips without uvx."""
 
     style = "Regular"
-    # Each Greek capital and x-height letter, by the Latin letter whose row it shares: H for
-    # the capitals, O for the round ones; x for the x-height letters, o for the round ones.
-    ROWS = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
-            **dict.fromkeys("γικμνπρτυχψ", "x"), **dict.fromkeys("αεηοσςφω", "o")}
-    # Known exception, by style and format, letter and size: the regular OTF's ε, whose upper
-    # end FontForge's autohinter gives a stem of its own over the top's, which rounds it up a
-    # row over o's top.
-    known = {("Regular", "otf"): {"ε": {13, 20, 21, 22}}}
+    # Each Greek letter by the Latin letter whose row its top shares: H for the capitals, O for
+    # the round ones, d for the ascenders; x for the x-height letters, o for the round ones.
+    TOPS = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
+            **dict.fromkeys("βδζθλξ", "d"), **dict.fromkeys("γικμνπρτυχψ", "x"),
+            **dict.fromkeys("αεηοσςφω", "o")}
+    # Each Greek letter that stands on the baseline: every Latin one's foot, round or flat,
+    # shares H's row at these sizes.
+    FEET = dict.fromkeys("ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω", "H")
 
     @classmethod
     def setUpClass(cls):
@@ -668,17 +671,14 @@ class GreekRowTest(unittest.TestCase):
         require_current_build((cls.style,))
 
     def test_greek_stands_on_the_latin_rows(self):
+        rows = json.dumps({"top": self.TOPS, "foot": self.FEET}, ensure_ascii=False)
         for ext in FORMATS:
-            known = self.known.get((self.style, ext), {})
             for hinting, flag in HINTING.items():
                 command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
-                           "-c", GREEK_ROWS, str(font_file(self.style, ext)), flag,
-                           json.dumps(self.ROWS, ensure_ascii=False)]
+                           "-c", GREEK_ROWS, str(font_file(self.style, ext)), flag, rows]
                 result = subprocess.run(command, capture_output=True, text=True, check=True)
                 with self.subTest(ext=ext, hinting=hinting):
-                    off = {char: sorted(set(sizes) - known.get(char, set()))
-                           for char, sizes in json.loads(result.stdout).items()}
-                    self.assertEqual({char: sizes for char, sizes in off.items() if sizes}, {})
+                    self.assertEqual(json.loads(result.stdout), {})
 
 
 class ItalicGreekRowTest(GreekRowTest):
