@@ -105,6 +105,11 @@ them. The exceptions:
   12 px: ł's reaches 111 left and 129 right (Fira Code 105 and 124), Ł's 108 and 173 (the
   references' right: 170–221). The ends move out along the bar's slant, so the bar keeps its
   weight and round ends. Ł is 526 wide, within `WIDTHS`.
+- **‹ › « ».** ‹ ›'s arms are 5° steeper than Comic Shanns drew them, turned about the tip and
+  shortened back to their height: 250 wide (the references' 223–307). « » place two of them
+  240 apart, so their white is 86 (Fira Code 80) and the bold's 59 (Fira Code Bold 54).
+  Moved apart with the old arms, the white grew by 0.6 of the move, and reached 80 only 7
+  from the bold cell's edge. Intel One Mono draws its « chevrons narrower than its ‹ too.
 
 ## Greek
 

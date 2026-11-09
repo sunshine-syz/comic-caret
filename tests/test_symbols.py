@@ -549,6 +549,9 @@ class ApartTest(unittest.TestCase):
     """Parts of a symbol keep at least twice SYMBOL_SIDE between them, so they stay apart at
     16 px."""
     sfd = SFD
+    # Fira Code's white between « »'s chevrons, the references' narrowest, x scaled to our cell
+    # (Intel One Mono 91, Maple Mono 103).
+    guillemet_white = 80
 
     @classmethod
     def setUpClass(cls):
@@ -557,6 +560,18 @@ class ApartTest(unittest.TestCase):
 
     def pieces(self, char):
         return measure.pieces(self.font[ord(char)].foreground)
+
+    def test_guillemet_chevrons_stay_apart(self):
+        # Closer, the two chevrons run into one shape at 11-16 px and « reads as <.
+        for char in "«»":
+            ink = measure.ink(self.font, self.font[ord(char)].glyphname)
+            x0, _, x1, _ = ink.boundingBox()
+            left, right = fontforge.layer(), fontforge.layer()
+            for contour in ink:
+                c0, _, c1, _ = contour.boundingBox()
+                (left if c0 + c1 < x0 + x1 else right).__iadd__(contour)
+            with self.subTest(symbol=char):
+                self.assertGreaterEqual(round(measure.gap(left, right)), self.guillemet_white)
 
     def test_pieces_keep_apart(self):
         # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
@@ -1037,6 +1052,7 @@ class BoldHeavyMarkTest(HeavyMarkTest):
 
 class BoldApartTest(ApartTest):
     sfd = BOLD_SFD
+    guillemet_white = 54  # Fira Code Bold's (Intel One Mono Bold 76, Maple Mono Bold 85)
 
 
 class BoldBuiltFromTest(BuiltFromTest):

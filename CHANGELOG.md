@@ -10,6 +10,7 @@
 - The ring of `å ů Å Ů` and `˚` is 196 units across, with a counter 112 wide. It was 161 across and closed into a dot at small sizes, so `på` read as `pȧ`.
 - In the bold, marks keep the regular's white from their letters, and a mark typed after its letter, as `o` + U+030A, lands where an accented letter puts it. The bold pen grew each mark into its letter, so the dots of `ä ö ü` merged into them, and the ring of a typed `o̊` came within 7 units of the `o`.
 - The bars of `ł` and `Ł` cross well past the stem, as far as the references' do, so `był` doesn't read as `byl` at small sizes. They passed the stem by about 60 units.
+- `« »` keep their two chevrons apart, as in the references: `‹ ›` are steeper, and `« »` set them further apart. At small sizes `«` ran into one shape.
 
 ## 2.2 (2026-10)
 
