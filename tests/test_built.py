@@ -159,6 +159,79 @@ for name in json.loads(sys.argv[2]):
         contrast[name][size] = min(max(rows[:gap]), max(rows[gap + 1:])) - rows[gap]
 print(json.dumps(contrast))
 """
+# Prints {glyph: {size: white}} for glyphs drawn with ='s bars under native hinting at 8 to 16
+# px: the share of the whitest pixel row that lies between the bars' hinted inner edges, from
+# 0, bars on touching rows, to 1. A head or slash crosses the bitmap's rows, so the bars are
+# found in the outline instead: their inner edges are the level edges that lie, unhinted,
+# within BAND units of ='s.
+BAR_GAPS = """
+import json, sys
+import freetype
+
+face = freetype.Face(sys.argv[1])
+BAND, LEVEL, LONG = 15, 6, 20  # LEVEL: the hand's wobble along a bar edge
+
+def outline(gid, flags):
+    face.load_glyph(gid, flags | freetype.FT_LOAD_NO_BITMAP)
+    return list(face.glyph.outline.points), list(face.glyph.outline.contours)
+
+def inner_edges(points, contours, lower_top, upper_foot):
+    lower, upper, start = set(), set(), 0
+    for end in contours:
+        ring = list(range(start, end + 1))
+        for a, b in zip(ring, ring[1:] + ring[:1]):
+            (xa, ya), (xb, yb) = points[a], points[b]
+            if abs(ya - yb) > LEVEL or abs(xa - xb) < LONG:
+                continue
+            for i in (a, b):
+                if lower_top - BAND <= points[i][1] <= lower_top:
+                    lower.add(i)
+                if upper_foot <= points[i][1] <= upper_foot + BAND:
+                    upper.add(i)
+        start = end + 1
+    return lower, upper
+
+points, contours = outline(face.get_name_index(b"equal"), freetype.FT_LOAD_NO_SCALE)
+bars = sorted((min(y for _, y in points[a:b + 1]), max(y for _, y in points[a:b + 1]))
+              for a, b in zip([0] + [end + 1 for end in contours[:-1]], contours))
+white = {}
+for name in json.loads(sys.argv[2]):
+    gid = face.get_name_index(name.encode())
+    lower, upper = inner_edges(*outline(gid, freetype.FT_LOAD_NO_SCALE), bars[0][1], bars[1][0])
+    white[name] = {}
+    for size in range(8, 17):
+        face.set_pixel_sizes(0, size)
+        points, _ = outline(gid, freetype.FT_LOAD_DEFAULT)
+        if not lower or not upper:  # no bars found
+            white[name][size] = -1
+            continue
+        low = max(points[i][1] for i in lower) / 64
+        high = min(points[i][1] for i in upper) / 64
+        white[name][size] = max(max(0, min(high, row + 1) - max(low, row))
+                                for row in range(int(low) - 1, int(high) + 1))
+print(json.dumps(white))
+"""
+# Prints {char: [sizes]}: the pixel sizes, 8 to 24, where the hinted top of a Greek letter in
+# sys.argv[3] lands half a pixel or more off the Latin letter sys.argv[4] names for it, under
+# the hinting the HINTING flag sys.argv[2] names.
+GREEK_ROWS = """
+import json, sys
+import freetype
+
+face, flag = freetype.Face(sys.argv[1]), getattr(freetype, sys.argv[2])
+
+def top(char, size):
+    face.set_pixel_sizes(0, size)
+    face.load_char(char, flag | freetype.FT_LOAD_NO_BITMAP)
+    return max(y for _, y in face.glyph.outline.points)
+
+off = {}
+for greek, latin in json.loads(sys.argv[3]).items():
+    for size in range(8, 25):
+        if abs(top(greek, size) - top(latin, size)) >= 32:
+            off.setdefault(greek, []).append(size)
+print(json.dumps(off, ensure_ascii=False))
+"""
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 HHEA_LINE = 4  # offset of hhea.ascender, then descender and lineGap
 OS2_LINE = 68  # offset of OS/2.sTypoAscender, then sTypoDescender, sTypoLineGap, usWinAscent
@@ -450,17 +523,13 @@ class LigatureSeamTest(unittest.TestCase):
             raise unittest.SkipTest("uvx is not installed")
         require_current_build((cls.style,))
 
-    known = frozenset()
-
     def test_pieces_meet_on_the_same_pixel_rows(self):
         for hinting, flag in HINTING.items():
             command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
                        "-c", SEAMS, str(font_file(self.style, "ttf")), json.dumps(SEAMED), flag]
             result = subprocess.run(command, capture_output=True, text=True, check=True)
             with self.subTest(hinting=hinting):
-                off = {name: sizes for name, sizes in json.loads(result.stdout).items()
-                       if name not in self.known}
-                self.assertEqual(off, {})
+                self.assertEqual(json.loads(result.stdout), {})
 
     def test_equals_keeps_two_bars_under_native_hinting(self):
         # Each font's own hints keep a white row between the bars at text sizes. The unhinted
@@ -478,6 +547,22 @@ class LigatureSeamTest(unittest.TestCase):
                 for size, contrast in contrasts.items():
                     with self.subTest(ext=ext, glyph=glyph, size=size):
                         self.assertGreaterEqual(contrast, floors[int(size)])
+
+    def test_drawn_bars_keep_a_white_row_under_native_hinting(self):
+        # The glyphs drawn with ='s bars keep the white row = keeps, to ='s floors (above).
+        # ttfautohint hinted ≠ and ⇔, outside its Latin ranges, with stem widths of their own
+        # that put their bars on touching rows at 8 px.
+        floors = {8: 0.33, **dict.fromkeys(range(9, 17), 0.64)}
+        glyphs = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
+                  "greater.darrow", "less.dtail", "greater.dtail"]
+        for ext in FORMATS:
+            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
+                       "-c", BAR_GAPS, str(font_file(self.style, ext)), json.dumps(glyphs)]
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            for glyph, whites in json.loads(result.stdout).items():
+                for size, white in whites.items():
+                    with self.subTest(ext=ext, glyph=glyph, size=size):
+                        self.assertGreaterEqual(white, floors[int(size)])
 
 
 class GlyphBoxTest(unittest.TestCase):
@@ -514,10 +599,52 @@ class ItalicLigatureSeamTest(LigatureSeamTest):
 
 class BoldLigatureSeamTest(LigatureSeamTest):
     style = "Bold"
-    # Known exception: <=<'s tail, whose bars the autohinter, and ttfautohint after it, place
-    # from another first edge than ='s at 15-36 px; reshaping its arms only moves the sizes
-    # (docs/design-notes.md).
-    known = frozenset({"less.dtail"})
+
+
+class GreekRowTest(unittest.TestCase):
+    """Under FreeType's light and native hinting, Greek stands on the Latin letters' rows at
+    text sizes. The autohinter, and ttfautohint after it, scale each script so its x-height
+    zone lands on a pixel, and snap each top to its script's zones: Greek's must be Latin's,
+    or a Greek capital stands a row over H. Up to 24 px every top within half a pixel of a
+    zone snaps to it; larger, a letter's own height shows, as Latin r's does at 36. The
+    OpenType fonts' own hints share one set of zones, so there a letter's height decides:
+    ι and τ stood under the x-height zone and a row under x. Skips without uvx."""
+
+    style = "Regular"
+    # Each Greek capital and x-height letter, by the Latin letter whose row it shares: H for
+    # the capitals, O for the round ones; x for the x-height letters, o for the round ones.
+    ROWS = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
+            **dict.fromkeys("ικνπρτυχ", "x"), **dict.fromkeys("αεοσω", "o")}
+    # Known exception: the regular OTF's ε, whose upper end FontForge's autohinter gives a stem
+    # of its own over the top's, which rounds it up a row over o's top at 13 and 20-22 px.
+    known = {("Regular", "otf"): {"ε"}}
+
+    @classmethod
+    def setUpClass(cls):
+        if shutil.which("uvx") is None:
+            raise unittest.SkipTest("uvx is not installed")
+        require_current_build((cls.style,))
+
+    def test_greek_stands_on_the_latin_rows(self):
+        for ext in FORMATS:
+            known = self.known.get((self.style, ext), set())
+            for hinting, flag in HINTING.items():
+                command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
+                           "-c", GREEK_ROWS, str(font_file(self.style, ext)), flag,
+                           json.dumps(self.ROWS, ensure_ascii=False)]
+                result = subprocess.run(command, capture_output=True, text=True, check=True)
+                with self.subTest(ext=ext, hinting=hinting):
+                    off = {char: sizes for char, sizes in json.loads(result.stdout).items()
+                           if char not in known}
+                    self.assertEqual(off, {})
+
+
+class ItalicGreekRowTest(GreekRowTest):
+    style = "Italic"
+
+
+class BoldGreekRowTest(GreekRowTest):
+    style = "Bold"
 
 
 class MarkShapingTest(unittest.TestCase):

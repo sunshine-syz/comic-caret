@@ -127,6 +127,17 @@ the acute, which grew along its slant for small sizes. Beside a capital it
 stands to the left, reaching into the cell before (all but Ά) no further than the references'
 122 (`tests/test_sanity.py` lists them).
 
+Greek's heights are Latin's, so the autohinter puts both on one pixel row. FreeType's light
+mode and ttfautohint's TTF hints give each script its own zones, from its own letters: a
+zone's flat height is the middle of its flat tops, its round height the middle of its round
+ones, and FreeType scales each script so its round x-height lands on a pixel. Greek's come
+from ΓΒΕΖΘΟΩ and αειοπστω, Latin's from THEZOCQS and uvxzoesc. So `ι` `τ` stand at `x`'s 473,
+`π` at `v`'s 471, `α` at `s`'s 485, and `Γ` `Ω` at `O`'s 671; they stood at 459, 456, 480,
+479 and 668, and every Greek capital stood a row over `H` at 18–24 px. `Γ`'s bar rises to
+its stem's top, so `Γ` reads flat in both styles: in the bold, `Β`'s level top, 671, was
+Greek's only flat one, and the capitals stood a row under `H` at 8 and 24 px.
+`GreekRowTest` in `tests/test_built.py` checks every Greek letter at 8–24 px.
+
 ## Placement
 
 - Center symmetric ink in the cell. Make turned glyphs such as ¡ ¿ 180° rotated references,
@@ -345,18 +356,23 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   heads reach 21…531 and ← ⇐ 21…527. A lower end at 15 or under, 8 or under in the bold, is
   aligned to the baseline; an upper end at 509 to the x-height; and ← reaching 529 or more
   moves the bars of `<<-` and `<=<`. Measured with freetype-py 2.5.1 (FreeType 2.13.2) at
-  8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The bold `<=<`
-  still steps at 15–17, 20–21, 26–29 and 34–36 px: the autohinter places the tail's bars from
-  another first edge than `=`'s. Lifting or lowering the arms' ends and levelling the joins
-  only moved the failing sizes; `greater.dtail` mirrored stays level but reaches 28 across and
-  11 up past the regular tail, beyond the pen.
+  8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The autohinter
+  pairs two level edges that face each other over the same columns as the two edges of one
+  stem, and places the glyph's other stems from its lowest: the ends of `<=<`'s tail stood
+  one over the other, so the bold tail's bars were placed from its arms' ends and stood a
+  pixel under `=`'s at 8, 11–12, 20–23 and 28–33 px. Lifting or lowering the ends only moved
+  those sizes. The tail's arms lean 3° about the axis (`TAIL_LEAN`), which sets the ends
+  apart across.
 - **The TTF's hints.** FontForge writes no TrueType hints, so `tools/generate.py` gives each
   TTF ttfautohint's, with its default options. Without them every renderer that runs a font's
   own hints drew the TTF unhinted: FreeType's native and monochrome modes, and Windows GDI
   (not tested). At 8–24 px under native hinting, 281 letters of the regular stood off their
   row (38 after; Fira Code 126, Maple Mono 17), `=` blurred into one grey band at 11 px (bar
   contrast 0.02, 0.93 after) and in monochrome `8` read as `B`. Light hinting is unchanged:
-  FreeType's autohinter, which ttfautohint follows, hints the TTF there either way.
+  FreeType's autohinter, which ttfautohint follows, hints the TTF there either way. One
+  control instruction puts ≡ ≠ ⇐ ⇒ ⇔ in `=`'s Latin style: ttfautohint hinted ≠ and ⇔,
+  outside its Latin ranges, in a fallback style with stem widths of its own, which put their
+  bars on touching rows at 8 px, and in the bold ≠'s at 11–12 px and ⇔'s at 9.
   `--composites` and `--fallback-script=latn` changed none of these numbers. At 9 px the
   italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round stem ends fill only
   half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep` keeps the
@@ -394,9 +410,8 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   slash keep their size. FreeType's CFF hinter moves each bar whole to the nearer pixel edge,
   so at 8 px the upper bar rounds up, off the lower one, only while its middle lies above 375.
   The ligature pieces, `equal_bars()` and ⇒ ⇐ ⇔ therefore lie on `=`'s own hint edges,
-  131–208 and 338–414; at 133–209 and 336–413 they still merged. At 8 px ≠ ⇒ ⇔ still
-  merge in the TTF, where ttfautohint fits ⇒ into 4 rows, and ⇒ in the bold OTF, whose head
-  carries a hint 18 over the upper bar.
+  131–208 and 338–414; at 133–209 and 336–413 they still merged. ≠ and ⇔ merged at 8 px in
+  the TTF until ttfautohint hinted them as Latin (above).
 - **`|>` `<|`.** `PIPE_HEIGHT` lengthens the head's arms until the triangle is 1.52
   x-heights tall, as Fira Code's and JetBrains Mono's are. Both arms are `>`'s flatter lower
   arm, the upper one mirrored about the height where `>`'s arms meet inside its point, 9 under

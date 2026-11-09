@@ -30,6 +30,10 @@ STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 # from level, and reaching as high and low as → ←. The steeper arms end nearer the point, so
 # → ← ⇒ ⇐, which carry these heads in one cell, keep a shaft.
 HEAD_TURN = math.radians(14.4)
+# <=<'s tail: the arms of < end one over the other, where the autohinter pairs the ends' level
+# edges as the two edges of one stem and places the bars from it, a pixel off ='s in the bold
+# at 8-33 px. Leaning the arms this much about the axis moves the ends apart across.
+TAIL_LEAN = math.radians(3)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -560,6 +564,10 @@ def tail(font, name):
     """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
     angle = arrowhead(font, name)
+    if name == "less":
+        angle = geo.transformed(angle, psMat.compose(
+            psMat.compose(psMat.translate(0, -AXIS), psMat.skew(-TAIL_LEAN)),
+            psMat.translate(0, AXIS)))
     parts, joins = [], []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
