@@ -159,57 +159,56 @@ for name in json.loads(sys.argv[2]):
         contrast[name][size] = min(max(rows[:gap]), max(rows[gap + 1:])) - rows[gap]
 print(json.dumps(contrast))
 """
-# Prints {glyph: {size: white}} for glyphs drawn with ='s bars under native hinting at 8 to 16
-# px: the share of the whitest pixel row that lies between the bars' hinted inner edges, from
-# 0, bars on touching rows, to 1. A head or slash crosses the bitmap's rows, so the bars are
-# found in the outline instead: their inner edges are the level edges that lie, unhinted,
-# within BAND units of ='s.
-BAR_GAPS = """
+# Prints {glyph: {size: [low, high]}} for = and the glyphs in sys.argv[3] at 8 to 24 px under
+# the hinting the flag sys.argv[2] names: the hinted heights, in px, of the lower bar's top and
+# the upper bar's foot, or null where they can't be found. A head or slash crosses the bitmap's
+# rows, so the bars are found in the outline: their inner edges are the level edges that lie,
+# unhinted, within the wobble sys.argv[4] inside ='s. FreeType's CFF hinter may close a contour
+# with a point of its own, after the contour's points, so points are matched by contour.
+BAR_EDGES = """
 import json, sys
 import freetype
 
-face = freetype.Face(sys.argv[1])
-BAND, LEVEL, LONG = 15, 6, 20  # LEVEL: the hand's wobble along a bar edge
+face, flag = freetype.Face(sys.argv[1]), getattr(freetype, sys.argv[2])
+WOBBLE = float(sys.argv[4])
 
-def outline(gid, flags):
+def contours(gid, flags):
     face.load_glyph(gid, flags | freetype.FT_LOAD_NO_BITMAP)
-    return list(face.glyph.outline.points), list(face.glyph.outline.contours)
+    points, ends = face.glyph.outline.points, face.glyph.outline.contours
+    return [points[a:b + 1] for a, b in zip([0] + [end + 1 for end in ends[:-1]], ends)]
 
-def inner_edges(points, contours, lower_top, upper_foot):
-    lower, upper, start = set(), set(), 0
-    for end in contours:
-        ring = list(range(start, end + 1))
-        for a, b in zip(ring, ring[1:] + ring[:1]):
-            (xa, ya), (xb, yb) = points[a], points[b]
-            if abs(ya - yb) > LEVEL or abs(xa - xb) < LONG:
+def level_points(rings, height, inward):
+    # A bar edge runs level within half the wobble, as level() draws the pieces, and runs
+    # across at least twice the wobble: flatter than the heads' arms and ≠'s slash.
+    found = set()
+    for c, ring in enumerate(rings):
+        for i, ((xa, ya), (xb, yb)) in enumerate(zip(ring, ring[1:] + ring[:1])):
+            if abs(ya - yb) > WOBBLE / 2 or abs(xa - xb) < 2 * WOBBLE:
                 continue
-            for i in (a, b):
-                if lower_top - BAND <= points[i][1] <= lower_top:
-                    lower.add(i)
-                if upper_foot <= points[i][1] <= upper_foot + BAND:
-                    upper.add(i)
-        start = end + 1
-    return lower, upper
+            for k, y in ((i, ya), ((i + 1) % len(ring), yb)):
+                if 0 <= (y - height) * inward <= WOBBLE:
+                    found.add((c, k))
+    return found
 
-points, contours = outline(face.get_name_index(b"equal"), freetype.FT_LOAD_NO_SCALE)
-bars = sorted((min(y for _, y in points[a:b + 1]), max(y for _, y in points[a:b + 1]))
-              for a, b in zip([0] + [end + 1 for end in contours[:-1]], contours))
-white = {}
-for name in json.loads(sys.argv[2]):
+(_, lower_top), (upper_foot, _) = sorted(
+    (min(y for _, y in ring), max(y for _, y in ring))
+    for ring in contours(face.get_name_index(b"equal"), freetype.FT_LOAD_NO_SCALE))
+edges = {}
+for name in ["equal"] + json.loads(sys.argv[3]):
     gid = face.get_name_index(name.encode())
-    lower, upper = inner_edges(*outline(gid, freetype.FT_LOAD_NO_SCALE), bars[0][1], bars[1][0])
-    white[name] = {}
-    for size in range(8, 17):
+    rings = contours(gid, freetype.FT_LOAD_NO_SCALE)
+    lower, upper = level_points(rings, lower_top, -1), level_points(rings, upper_foot, 1)
+    edges[name] = {}
+    for size in range(8, 25):
         face.set_pixel_sizes(0, size)
-        points, _ = outline(gid, freetype.FT_LOAD_DEFAULT)
-        if not lower or not upper:  # no bars found
-            white[name][size] = -1
+        hinted = contours(gid, flag)
+        if (not lower or not upper or len(hinted) != len(rings)
+                or any(len(h) < len(r) for h, r in zip(hinted, rings))):
+            edges[name][size] = None
             continue
-        low = max(points[i][1] for i in lower) / 64
-        high = min(points[i][1] for i in upper) / 64
-        white[name][size] = max(max(0, min(high, row + 1) - max(low, row))
-                                for row in range(int(low) - 1, int(high) + 1))
-print(json.dumps(white))
+        edges[name][size] = [max(hinted[c][k][1] for c, k in lower) / 64,
+                             min(hinted[c][k][1] for c, k in upper) / 64]
+print(json.dumps(edges))
 """
 # Prints {char: [sizes]}: the pixel sizes, 8 to 24, where the hinted top of a Greek letter in
 # sys.argv[3] lands half a pixel or more off the Latin letter sys.argv[4] names for it, under
@@ -548,21 +547,59 @@ class LigatureSeamTest(unittest.TestCase):
                     with self.subTest(ext=ext, glyph=glyph, size=size):
                         self.assertGreaterEqual(contrast, floors[int(size)])
 
-    def test_drawn_bars_keep_a_white_row_under_native_hinting(self):
-        # The glyphs drawn with ='s bars keep the white row = keeps, to ='s floors (above).
-        # ttfautohint hinted ≠ and ⇔, outside its Latin ranges, with stem widths of their own
-        # that put their bars on touching rows at 8 px.
-        floors = {8: 0.33, **dict.fromkeys(range(9, 17), 0.64)}
-        glyphs = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
+    # The references' lowest white row between ='s bars, measured as below at 8 to 16 px:
+    # Intel One Mono's 0.875 at 8 px. The bold's is the reference bolds' lowest, Fira Code
+    # Bold's 0.71875 at 11 px.
+    white_floor = 0.875
+    # The glyphs drawn with ='s bars, and those of them that stand alone beside =.
+    DRAWN_BARS = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
                   "greater.darrow", "less.dtail", "greater.dtail"]
+    BESIDE_EQUAL = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth"]
+    # Known exceptions, by glyph, at the sizes given or at every size (None): the double
+    # arrows, which the hinter places from their heads' ends, as it placed <=<'s tail; ⇐ and ⇒
+    # also follow the pieces of => where those part from = (22-23 px in the regular, 12 in the
+    # bold).
+    off_equals_rows = dict.fromkeys(["arrowdblleft", "arrowdblright", "arrowdblboth"])
+
+    def bar_edges(self, ext, glyphs):
+        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
+                   BAR_EDGES, str(font_file(self.style, ext)), HINTING["native"],
+                   json.dumps(glyphs), str(project.WOBBLE)]
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        return json.loads(result.stdout)
+
+    def test_drawn_bars_keep_a_white_row_under_native_hinting(self):
+        # ttfautohint hinted ≠ and ⇔, outside its Latin ranges, with stem widths of their own
+        # that put their bars on touching rows at 8 px. White: the share of the whitest pixel
+        # row that lies between the bars' hinted inner edges, from 0, touching, to 1.
         for ext in FORMATS:
-            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
-                       "-c", BAR_GAPS, str(font_file(self.style, ext)), json.dumps(glyphs)]
-            result = subprocess.run(command, capture_output=True, text=True, check=True)
-            for glyph, whites in json.loads(result.stdout).items():
-                for size, white in whites.items():
+            for glyph, sizes in self.bar_edges(ext, self.DRAWN_BARS).items():
+                for size, edges in sizes.items():
+                    if int(size) > 16:
+                        continue
                     with self.subTest(ext=ext, glyph=glyph, size=size):
-                        self.assertGreaterEqual(white, floors[int(size)])
+                        self.assertIsNotNone(edges, "no bars found")
+                        low, high = edges
+                        white = max(max(0, min(high, row + 1) - max(low, row))
+                                    for row in range(math.floor(low) - 1, math.ceil(high) + 1))
+                        self.assertGreaterEqual(white, self.white_floor)
+
+    def test_bars_beside_equals_stand_on_its_rows_under_native_hinting(self):
+        # As ≠ sits beside = in a line, its bars round to ='s rows. ttfautohint snapped ≠'s
+        # slash foot to the baseline zone and placed the bars from it, a row off = at 9-12 px.
+        for ext in FORMATS:
+            edges = self.bar_edges(ext, self.BESIDE_EQUAL)
+            for glyph in self.BESIDE_EQUAL:
+                known = self.off_equals_rows.get(glyph, set())
+                for size, bars in edges[glyph].items():
+                    if known is None or int(size) in known:
+                        continue
+                    equals = edges["equal"][size]
+                    with self.subTest(ext=ext, glyph=glyph, size=size):
+                        self.assertIsNotNone(bars, "no bars found")
+                        self.assertIsNotNone(equals, "no bars found in =")
+                        for edge, equal in zip(bars, equals):
+                            self.assertLess(abs(edge - equal), 0.5)
 
 
 class GlyphBoxTest(unittest.TestCase):
@@ -599,11 +636,15 @@ class ItalicLigatureSeamTest(LigatureSeamTest):
 
 class BoldLigatureSeamTest(LigatureSeamTest):
     style = "Bold"
+    white_floor = 0.71875
+    # Known exception: the TTF's ≠ at 11 px, whose upper bar ttfautohint rounds a row under
+    # ='s; a longer slash leaves it there, a shorter one brings the foot back into the zone.
+    off_equals_rows = {**LigatureSeamTest.off_equals_rows, "notequal": {11}}
 
 
 class GreekRowTest(unittest.TestCase):
-    """Under FreeType's light and native hinting, Greek stands on the Latin letters' rows at
-    text sizes. The autohinter, and ttfautohint after it, scale each script so its x-height
+    """Under FreeType's light and native hinting, Greek's tops stand on the Latin letters'
+    rows at text sizes. The autohinter, and ttfautohint after it, scale each script so its x-height
     zone lands on a pixel, and snap each top to its script's zones: Greek's must be Latin's,
     or a Greek capital stands a row over H. Up to 24 px every top within half a pixel of a
     zone snaps to it; larger, a letter's own height shows, as Latin r's does at 36. The
@@ -614,10 +655,11 @@ class GreekRowTest(unittest.TestCase):
     # Each Greek capital and x-height letter, by the Latin letter whose row it shares: H for
     # the capitals, O for the round ones; x for the x-height letters, o for the round ones.
     ROWS = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
-            **dict.fromkeys("ικνπρτυχ", "x"), **dict.fromkeys("αεοσω", "o")}
-    # Known exception: the regular OTF's ε, whose upper end FontForge's autohinter gives a stem
-    # of its own over the top's, which rounds it up a row over o's top at 13 and 20-22 px.
-    known = {("Regular", "otf"): {"ε"}}
+            **dict.fromkeys("γικμνπρτυχψ", "x"), **dict.fromkeys("αεηοσςφω", "o")}
+    # Known exception, by style and format, letter and size: the regular OTF's ε, whose upper
+    # end FontForge's autohinter gives a stem of its own over the top's, which rounds it up a
+    # row over o's top.
+    known = {("Regular", "otf"): {"ε": {13, 20, 21, 22}}}
 
     @classmethod
     def setUpClass(cls):
@@ -627,16 +669,16 @@ class GreekRowTest(unittest.TestCase):
 
     def test_greek_stands_on_the_latin_rows(self):
         for ext in FORMATS:
-            known = self.known.get((self.style, ext), set())
+            known = self.known.get((self.style, ext), {})
             for hinting, flag in HINTING.items():
                 command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
                            "-c", GREEK_ROWS, str(font_file(self.style, ext)), flag,
                            json.dumps(self.ROWS, ensure_ascii=False)]
                 result = subprocess.run(command, capture_output=True, text=True, check=True)
                 with self.subTest(ext=ext, hinting=hinting):
-                    off = {char: sizes for char, sizes in json.loads(result.stdout).items()
-                           if char not in known}
-                    self.assertEqual(off, {})
+                    off = {char: sorted(set(sizes) - known.get(char, set()))
+                           for char, sizes in json.loads(result.stdout).items()}
+                    self.assertEqual({char: sizes for char, sizes in off.items() if sizes}, {})
 
 
 class ItalicGreekRowTest(GreekRowTest):

@@ -39,8 +39,9 @@ MAC_EPOCH = 2082844800               # seconds from 1904-01-01, where head's dat
 # Pinned so the TTF's hints change only when we bump it on purpose.
 TTFAUTOHINT = ["uvx", "--with", "ttfautohint-py==0.6.1", "python", "-m", "ttfautohint"]
 # ttfautohint hints a glyph outside its scripts' ranges in a fallback style with stem widths of
-# its own, which put the bars of ≠ and ⇔ on touching rows at 8 px. The glyphs drawn with ='s
-# bars take ='s style, Latin.
+# its own, which put the bars of ≠ and ⇔ on touching rows at 8 px. The operators drawn with
+# level bars of ='s weight take ='s style, Latin. That style snaps an edge within 25 units of
+# a Latin zone to it and places the bars from there, so ≠'s slash ends stand beyond that reach.
 TTFAUTOHINT_CONTROL = ("latn dflt @ equivalence, notequal, arrowdblleft, arrowdblright,"
                        " arrowdblboth\n")
 
@@ -264,9 +265,11 @@ def autohint(path):
     try:
         subprocess.run([*TTFAUTOHINT, "--no-info", f"--control-file={control}", str(path),
                         str(hinted)], check=True)
+        hinted.replace(path)
     finally:
         control.unlink()
-    hinted.replace(path)
+        # A failed run leaves an empty file, which `build.sh --nerd` would patch as a font.
+        hinted.unlink(missing_ok=True)
 
 
 def main(source, output):

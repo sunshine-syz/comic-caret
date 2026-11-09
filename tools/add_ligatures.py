@@ -32,7 +32,8 @@ STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 HEAD_TURN = math.radians(14.4)
 # <=<'s tail: the arms of < end one over the other, where the autohinter pairs the ends' level
 # edges as the two edges of one stem and places the bars from it, a pixel off ='s in the bold
-# at 8-33 px. Leaning the arms this much about the axis moves the ends apart across.
+# at 8, 11-12, 20-23 and 28-33 px. Leaning the arms this much about the axis moves the ends
+# apart across. >'s tail meets = as drawn; LigatureSeamTest guards both.
 TAIL_LEAN = math.radians(3)
 
 # The names of everything this script makes, and of nothing else in the font.
@@ -565,9 +566,7 @@ def tail(font, name):
     carry on into the next cell, so the point between them stays open."""
     angle = arrowhead(font, name)
     if name == "less":
-        angle = geo.transformed(angle, psMat.compose(
-            psMat.compose(psMat.translate(0, -AXIS), psMat.skew(-TAIL_LEAN)),
-            psMat.translate(0, AXIS)))
+        angle = geo.transformed(angle, geo.about(psMat.skew(-TAIL_LEAN), 0, AXIS))
     parts, joins = [], []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile

@@ -133,10 +133,13 @@ zone's flat height is the middle of its flat tops, its round height the middle o
 ones, and FreeType scales each script so its round x-height lands on a pixel. Greek's come
 from ΓΒΕΖΘΟΩ and αειοπστω, Latin's from THEZOCQS and uvxzoesc. So `ι` `τ` stand at `x`'s 473,
 `π` at `v`'s 471, `α` at `s`'s 485, and `Γ` `Ω` at `O`'s 671; they stood at 459, 456, 480,
-479 and 668, and every Greek capital stood a row over `H` at 18–24 px. `Γ`'s bar rises to
+479 and 668, and every Greek capital stood a row over `H` at 18–19 px. `Γ`'s bar rises to
 its stem's top, so `Γ` reads flat in both styles: in the bold, `Β`'s level top, 671, was
 Greek's only flat one, and the capitals stood a row under `H` at 8 and 24 px.
-`GreekRowTest` in `tests/test_built.py` checks every Greek letter at 8–24 px.
+`GreekRowTest` in `tests/test_built.py` checks the tops of the capitals and the x-height
+letters at 8–24 px, in the TTF and the OTF. The feet aren't matched yet: Greek's baseline
+zones are its own too, and in the bold TTF `ο`, `o`'s outline, stands a row under `o` at
+15–24 px under light hinting.
 
 ## Placement
 
@@ -364,16 +367,22 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   those sizes. The tail's arms lean 3° about the axis (`TAIL_LEAN`), which sets the ends
   apart across.
 - **The TTF's hints.** FontForge writes no TrueType hints, so `tools/generate.py` gives each
-  TTF ttfautohint's, with its default options. Without them every renderer that runs a font's
-  own hints drew the TTF unhinted: FreeType's native and monochrome modes, and Windows GDI
-  (not tested). At 8–24 px under native hinting, 281 letters of the regular stood off their
-  row (38 after; Fira Code 126, Maple Mono 17), `=` blurred into one grey band at 11 px (bar
-  contrast 0.02, 0.93 after) and in monochrome `8` read as `B`. Light hinting is unchanged:
-  FreeType's autohinter, which ttfautohint follows, hints the TTF there either way. One
-  control instruction puts ≡ ≠ ⇐ ⇒ ⇔ in `=`'s Latin style: ttfautohint hinted ≠ and ⇔,
-  outside its Latin ranges, in a fallback style with stem widths of its own, which put their
-  bars on touching rows at 8 px, and in the bold ≠'s at 11–12 px and ⇔'s at 9.
-  `--composites` and `--fallback-script=latn` changed none of these numbers. At 9 px the
+  TTF ttfautohint's, with its default options and one control instruction (below). Without
+  them every renderer that runs a font's own hints drew the TTF unhinted: FreeType's native
+  and monochrome modes, and Windows GDI (not tested). At 8–24 px under native hinting, 281
+  letters of the regular stood off their row (38 after; Fira Code 126, Maple Mono 17), `=`
+  blurred into one grey band at 11 px (bar contrast 0.02, 0.93 after) and in monochrome `8`
+  read as `B`. Light hinting is unchanged: FreeType's autohinter, which ttfautohint follows,
+  hints the TTF there either way. `--composites` and `--fallback-script=latn` changed none of
+  these numbers. The control instruction puts ≡ ≠ ⇐ ⇒ ⇔, drawn with level bars of `=`'s
+  weight, in `=`'s Latin style: ttfautohint hinted ≠ and ⇔, outside its Latin ranges, in a
+  fallback style with stem widths of its own, which put their bars on touching rows at 8 px,
+  and in the bold ≠'s at 11–12 px and ⇔'s at 9. `--fallback-script=latn` parts them too, but
+  rehints every glyph no script covers. The Latin style snaps an edge within 25 units of one
+  of its zones to it and places the bars from there: ≠'s slash foot, at −18, put its bars a
+  row off `=`'s at 9–12 px, so the slash runs 40 further each way, to −58 and 602, Maple
+  Mono's length (Fira Code's and Intel One Mono's are shorter). The double arrows still stand
+  off `=`'s rows at some sizes, placed from their heads' ends. At 9 px the
   italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round stem ends fill only
   half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep` keeps the
   smart dropout control the SFD's own `prep` carried. ttfautohint hints a component alone and
