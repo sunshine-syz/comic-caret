@@ -238,7 +238,7 @@ def dashes(count, weight, orientation):
     """`count` dashes per cell, evenly spaced across cells. A row's cells take half a gap at
     each side. A column's take half a dash at the top and the bottom and run it on into the
     overlap, so lines spaced up to 1.5 em apart still meet in one dash; it stops at half a dash,
-    where at 1.25 em the next line's first gap starts."""
+    where at the font's own 1.35 em the next line's first gap starts."""
     half, gap = HALF[weight], DASH_GAP[count]
     if orientation == "HORIZONTAL":
         period = ADVANCE / count
@@ -286,7 +286,7 @@ def arc(vertical, horizontal):
 
 
 def diagonal():
-    """╱: a light stroke from corner to corner of the line box, so diagonal neighbours at 1.25
+    """╱: a light stroke from corner to corner of the line box, so diagonal neighbours at 1.35
     em line spacing continue it. It runs on into the next cells as far as ─ does, which keeps
     the stroke full width where two cells meet."""
     slope = LINE_HEIGHT / ADVANCE

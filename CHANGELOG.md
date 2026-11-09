@@ -4,6 +4,7 @@
 
 - `//=` is pulled together, as `&&=` and `||=` are. So Python's `n //= 2` reads like `a // b`, as in Maple Mono. It showed as typed. `///=` and the `//` of a comment rule such as `//=====` still show as typed.
 - `!!` and `;;` are pulled together, as `::` is: Haskell's `xs !! 2`, Kotlin's `x!!.y`, the shell's `sudo !!` and `;;`, OCaml's `;;` and C's `for (;;)`. So are `+++`, whose bars join as `++`'s do, as in a diff's `+++ b/f`, and Haskell's `<+>`, as `<*>` is. They showed as typed, where Fira Code and Maple Mono pull them together. Beside another operator, as in `!!!`, `;;;` and `+++=`, they still show as typed.
+- Lines stand 1.35 em apart in every app, GDI apps too, where they stood 1.25 em apart. The line's top rises from 900 to 1000 units above the baseline, which leaves room for larger accents on capitals and tall letters. Two marks stacked on a capital, as in `Ấ` and `Ǜ`, lose only their top 26 and 16 units where a terminal clips glyphs to the cell; they lost 126 and 116. The box drawing, block elements, Braille and Powerline separators fill the taller line. A terminal shows about 8% fewer lines at the same font size.
 - `y`'s tail ends level with the tails of `p` and `q`, 278 units below the baseline. It reached 19 units deeper.
 
 ## 2.2 (2026-10)

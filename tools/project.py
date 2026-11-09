@@ -18,7 +18,7 @@ ADVANCE = 600  # every glyph's advance width
 # The least room a symbol keeps from each cell edge: two side by side keep 30 between them,
 # open at 16 px.
 SYMBOL_SIDE = 15
-LINE_TOP, LINE_BOTTOM = 900, -350  # the line box: hhea and typo ascender and descender
+LINE_TOP, LINE_BOTTOM = 1000, -350  # the line box: hhea and typo ascender and descender
 AXIS = 269  # the math axis, the hyphen's middle: - = + and the arrows' shafts center on it
 OVERLAP = 10  # how far joining strokes (ligatures, box drawing at 1.5 em) reach into the next cell
 # How far ink that fills the cell to its edges runs into the next cell (the block elements, the

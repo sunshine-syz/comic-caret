@@ -108,7 +108,7 @@ class SanityTest(unittest.TestCase):
                          (LINE_TOP, LINE_BOTTOM, 0))
         # GDI apps (PuTTY, gvim, legacy conhost, Office) space lines by the win ascent and
         # descent, and clip each glyph to them; the references set them to the line box too.
-        # Set as offsets from the ink, they took the box drawing's overlap: a 1.53 em line.
+        # Set as offsets from the ink, they would take ╱ ╲ ╳'s overlap: a 1.65 em line.
         self.assertEqual((font.os2_winascent, font.os2_winascent_add,
                           font.os2_windescent, font.os2_windescent_add),
                          (LINE_TOP, False, -LINE_BOTTOM, False))

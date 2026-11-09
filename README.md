@@ -20,7 +20,7 @@
 ## Why Comic Caret
 
 - **Friendly, on a strict grid.** Round stroke ends and a slight wobble, but every character is
-  the same width and lines are 1.25 em apart, so columns and boxes line up.
+  the same width and lines are 1.35 em apart, so columns and boxes line up.
 - **Look-alikes look different.** `l` ends in a tail, `0` has a slash, the dots of `i` and `j`
   sit high, `:` and `;` are full size, and `( )` `[ ]` `{ }` each have their own shape. These
   choices follow Intel One Mono, which was designed with low-vision developers.

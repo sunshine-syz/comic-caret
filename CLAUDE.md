@@ -64,9 +64,9 @@ SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y
   are 0 wide with their ink over the cell, where terminals that don't shape text draw them,
   and the blank zero-width format characters (`project.ZERO_WIDTH`).
 - Metrics: em 1000, cap height 668 and x-height 473 (the tops of `H` and `x`; the bold's are
-  675 and 480), hhea = typo = win = 900/−350 (1.25 em) with `USE_TYPO_METRICS`; the win ascent
-  and descent are set, not offsets from the ink, so GDI apps space lines 1.25 em apart, as
-  other apps do.
+  675 and 480), hhea = typo = win = 1000/−350 (1.35 em) with `USE_TYPO_METRICS`; the win
+  ascent and descent are set, not offsets from the ink, so GDI apps space lines 1.35 em apart,
+  as other apps do.
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.

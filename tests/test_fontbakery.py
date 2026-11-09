@@ -90,9 +90,9 @@ def known():
     # is 11.86°, where the check wants 1000/213: 0.14° on a text cursor.
     caret_slope = ("WARN", "opentype/caret_slope", "caretslope-mismatch", frozenset())
     # The win ascent and descent are the line box, as in Fira Code, JetBrains Mono, Intel One
-    # Mono and Cascadia Code, so GDI apps space lines 1.25 em apart, as every other app does.
+    # Mono and Cascadia Code, so GDI apps space lines 1.35 em apart, as every other app does.
     # The check wants them to hold the furthest ink: the box drawing's overlap and ╱ ╲ ╳ reach
-    # 139 past the line box, which would space GDI's lines 1.53 em apart. GDI clips the overlap.
+    # 148 past the line box, which would space GDI's lines 1.65 em apart. GDI clips the overlap.
     win = {("FAIL", "family/win_ascent_and_descent", code, frozenset())
            for code in ("ascent", "descent")}
     contours = frozenset({"uni20B9", "uni20B1", "uni25CC", "uni254E", "uni2506", "uni250A",

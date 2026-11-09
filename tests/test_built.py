@@ -344,7 +344,7 @@ class BuiltFontTest(unittest.TestCase):
         self.assertEqual(otf, ttf)
 
     def test_every_platform_reads_one_line_box(self):
-        # So a terminal, a GDI app and a browser space lines alike, 1.25 em apart.
+        # So a terminal, a GDI app and a browser space lines alike, 1.35 em apart.
         for font in self.fonts:
             with self.subTest(font=font.name):
                 self.assertEqual(set(line_boxes(font).values()), {(LINE_TOP, LINE_BOTTOM, 0)})

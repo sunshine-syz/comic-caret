@@ -94,25 +94,25 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   rotated about the cell center.
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
   semicolon, brackets and letter widths; read it before changing them.
-- Box-drawing strokes overlap their neighbours: verticals span −485…1035 (they meet up to
+- Box-drawing strokes overlap their neighbours: verticals span −435…1085 (they meet up to
   1.5 em line height), horizontals −20…620, as in Intel One Mono and Maple Mono (Fira Code's
   run 5). At 10, which the ligatures' lines keep, as Fira Code's and Maple Mono's do, a grid
   that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
-  and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 139 past the
+  and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 148 past the
   line box: the font's furthest ink. The win ascent and descent are the line box, as in Fira
-  Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space lines 1.25 em apart
-  and clip the overlap; set to that ink (1039/489), they spaced lines 1.53 em apart. They
+  Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space lines 1.35 em apart
+  and clip the overlap; set to that ink (1148/498), they would space lines 1.65 em apart. They
   clip the top of two marks stacked on a capital too (Ấ and Ǜ, which HarfBuzz builds from a
   letter and a mark, reach 1026 and 1016), as with Fira Code and Maple Mono, whose win ascent
   is their line box as well and whose own stacked marks reach 61 and 127 units past it. The
   Nerd Fonts builds take the same values.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
-  overlap, so lines 1.25 em apart keep the rhythm and lines 1.5 em apart meet in one longer
+  overlap, so lines 1.35 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
-  long gap marks each seam. Picked by proof 2026-10-06. Lines closer than 1.25 em lose the
-  rhythm sooner: ┊ ┋'s half dash runs on as far as the next line's first gap, so at 1.2 em
-  their seam turns into one dash about three long, where it was two. A dashed row takes half
-  a gap at each side, as in the references.
+  long gap marks each seam. Picked by proof 2026-10-06. Lines closer than 1.35 em lose the
+  rhythm: at 1.25 em ┊ ┋'s seam dash is 270 long, 22 short of the others, and at 1.2 em their
+  half dash runs on past the next line's first gap, so the seam turns into one dash about
+  three long. A dashed row takes half a gap at each side, as in the references.
 - `⎯` (U+23AF) is the `--` line's middle piece and runs `OVERLAP` into each neighbour, as the
   line's pieces do, so a row of them joins as one line, as Vitest's dividers need; a single one
   beside text touches its neighbour's cell. Its seams keep the line's faint notch at 11, 16 and
@@ -417,9 +417,8 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
 - **˚.** It is 161 against Fira Code's 222. In Å, the ring stands 20 above the apex (678) and
-  ends at 849, 51 under the line box's top (900). A round ring 222 wide is 61 taller. It fits
-  only with 10 left above the apex and its top at 900, and the bold pen then takes the bold Å
-  past the line box.
+  ends at 849, 151 under the line box's top (1000). A round ring 222 wide is 61 taller; it
+  fits inside the line box, in the bold too, where Å ends at 870.
 - **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,
   and ⁺ ⁻ ⁼ ₊ ₋ ₌ (208–218) against Fira Code's 233–235. Monaspace gives them no share of a
   wider cell (the table above).
