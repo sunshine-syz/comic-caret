@@ -29,6 +29,11 @@ around. Read this before writing code that edits the SFD.
 - `glyph.references` gives `(name, matrix, selected)` triples; unpack them with
   `name, matrix, *_`. Assigning `(name, matrix)` pairs works, but they are written to the SFD
   in reverse order; assign them reversed to keep the file's order.
+- `fontforge.nameFromUnicode(code)` without a namelist reads the active font, and
+  `font.close()` leaves that pointer on the closed font: the next call segfaults. Opening a
+  file the process already holds returns that font and doesn't reset the pointer. Look the
+  glyph up as `font[code]`, or pass the namelist: `nameFromUnicode(code, "AGL with PUA")`,
+  the one used when no font is open.
 - `validate()` flags a mirrored reference (0x10, and 0x8 for its reversed contours) and a
   glyph whose own outline overlaps its reference (0x4). Mirror into an outline with
   `geo.mirrored_x`, and merge a mark that crosses its base into one outline.

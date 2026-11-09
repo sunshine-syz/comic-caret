@@ -22,7 +22,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 import lig_geometry as geo
 import make_bold
 import measure
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE
+from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE, is_letter
 
 
 def offsets(glyph, name):
@@ -231,6 +231,85 @@ class CounterTest(unittest.TestCase):
                 with self.subTest(glyph=name, y=y):
                     self.assertGreaterEqual(
                         round(measure.counter(self.font[name].foreground, y)), floor)
+
+
+# The narrowest white between a top mark and its letter in Fira Code, Intel One Mono and Maple
+# Mono, x scaled to our cell and y to our cap height, rounded. At 11-16 px a mark any closer
+# merges into its letter.
+MARK_FLOORS = {
+    "aacute": 75, "eacute": 72, "oacute": 72, "cacute": 72, "nacute": 77, "sacute": 72,
+    "zacute": 78, "iacute": 78, "uacute": 102, "yacute": 125, "Eacute": 65, "Oacute": 63,
+    "agrave": 77, "egrave": 72, "ograve": 71, "ugrave": 94, "Egrave": 65,
+    "acircumflex": 79, "ecircumflex": 89, "ocircumflex": 90, "ucircumflex": 78,
+    "Ecircumflex": 70, "Ocircumflex": 77,
+    "ccaron": 67, "ecaron": 67, "scaron": 69, "zcaron": 78, "rcaron": 81, "Ccaron": 53,
+    "Scaron": 53,
+    "atilde": 82, "ntilde": 71, "otilde": 75, "Ntilde": 73, "Otilde": 72,
+    "adieresis": 85, "edieresis": 92, "odieresis": 93, "udieresis": 85, "Adieresis": 85,
+    "Odieresis": 79,
+    "cdotaccent": 81, "edotaccent": 80, "zdotaccent": 89, "Zdotaccent": 78,
+    "aring": 43, "uring": 89, "Aring": 23,
+    "abreve": 72, "ebreve": 67, "gbreve": 69, "Abreve": 59,
+    "amacron": 99, "emacron": 99, "omacron": 99, "Amacron": 90,
+    "ohungarumlaut": 80, "uhungarumlaut": 78, "Ohungarumlaut": 60,
+    "hcircumflex": 63, "lacute": 72, "Lacute": 63,
+}
+# The same from Fira Code Bold, Intel One Mono Bold and Maple Mono Bold.
+BOLD_MARK_FLOORS = {
+    "aacute": 71, "eacute": 71, "oacute": 72, "cacute": 71, "nacute": 77, "sacute": 72,
+    "zacute": 78, "iacute": 78, "uacute": 82, "yacute": 88, "Eacute": 56, "Oacute": 53,
+    "agrave": 72, "egrave": 73, "ograve": 72, "ugrave": 73, "Egrave": 56,
+    "acircumflex": 72, "ecircumflex": 83, "ocircumflex": 83, "ucircumflex": 78,
+    "Ecircumflex": 53, "Ocircumflex": 61,
+    "ccaron": 48, "ecaron": 61, "scaron": 61, "zcaron": 78, "rcaron": 78, "Ccaron": 39,
+    "Scaron": 39,
+    "atilde": 70, "ntilde": 67, "otilde": 74, "Ntilde": 63, "Otilde": 50,
+    "adieresis": 76, "edieresis": 85, "odieresis": 87, "udieresis": 76, "Adieresis": 68,
+    "Odieresis": 64,
+    "cdotaccent": 67, "edotaccent": 73, "zdotaccent": 82, "Zdotaccent": 60,
+    "aring": 39, "uring": 77, "Aring": 15,
+    "abreve": 61, "ebreve": 61, "gbreve": 69, "Abreve": 55,
+    "amacron": 89, "emacron": 89, "omacron": 89, "Amacron": 78,
+    "ohungarumlaut": 78, "uhungarumlaut": 78, "Ohungarumlaut": 43,
+    "hcircumflex": 44, "lacute": 74, "Lacute": 59,
+}
+
+
+class MarkTest(unittest.TestCase):
+    sfd = SFD
+    floors = MARK_FLOORS
+    # Intel One Mono's acute against its period, the references' widest (Fira Code 1.34, Maple
+    # Mono 0.97): where they differ on how distinct a character is, Intel One Mono decides.
+    acute_to_dot = 1.45
+    # Fira Code's ring counter at the ring's middle, the references' narrowest, x scaled to our
+    # cell (Maple Mono 120, Intel One Mono 163).
+    ring_counter = 108
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_acute_stands_apart_from_the_dot(self):
+        # At 11-16 px an acute as narrow as i's dot reads as one: í as i.
+        acute, dot = (measure.ink_width(self.font[n].foreground) for n in ("acute", "period"))
+        self.assertGreaterEqual(acute, self.acute_to_dot * dot)
+
+    def test_marks_keep_the_references_white(self):
+        for name, floor in self.floors.items():
+            mark, letter = fontforge.layer(), fontforge.layer()
+            for ref, matrix, *_ in self.font[name].references:
+                part = geo.transformed(measure.ink(self.font, ref), matrix)
+                target = letter if is_letter(self.font[ref].unicode) else mark
+                for contour in part:
+                    target += contour
+            with self.subTest(glyph=name):
+                self.assertGreaterEqual(round(measure.gap(mark, letter)), floor)
+
+    def test_ring_counter_stays_open(self):
+        # At 11-16 px a narrower counter closes and the ring reads as a dot: på as pȧ.
+        _, bottom, _, top = self.font["ring"].boundingBox()
+        middle = measure.counter(self.font["ring"].foreground, (bottom + top) / 2)
+        self.assertGreaterEqual(middle, self.ring_counter)
 
 
 # (floor, ceiling) of each glyph widened for the 600 cell: the narrowest and widest ink width of
@@ -641,6 +720,13 @@ class BoldCounterTest(CounterTest):
     sfd = BOLD_SFD
     floors = BOLD_FLOORS
     narrow = frozenset()  # the bold's n and h clear the reference bolds' floors
+
+
+class BoldMarkTest(MarkTest):
+    sfd = BOLD_SFD
+    floors = BOLD_MARK_FLOORS
+    acute_to_dot = 1.15  # Intel One Mono Bold's (Fira Code Bold 1.25, Maple Mono Bold 0.97)
+    ring_counter = 89  # Fira Code Bold's (Maple Mono Bold 120, Intel One Mono Bold 137)
 
 
 class BoldWidthTest(WidthTest):

@@ -65,9 +65,9 @@ class GreekTest(unittest.TestCase):
                 self.assertEqual(tuple(matrix[:4]), (1, 0, 0, 1))
 
     def test_tonos_is_the_acute_turned_steeper(self):
-        # The same stroke, only turned, so it needs less room beside a capital.
+        # The acute's stroke, turned (test_make_bold.py holds the turn), so it needs less room
+        # beside a capital.
         tonos, acute = measure.ink(self.font, "tonos"), measure.ink(self.font, "acute")
-        self.assertAlmostEqual(measure.area(tonos) / measure.area(acute), 1, delta=0.02)
         t0, u0, t1, u1 = tonos.boundingBox()
         a0, b0, a1, b1 = acute.boundingBox()
         self.assertGreater((u1 - u0) / (t1 - t0), (b1 - b0) / (a1 - a0))

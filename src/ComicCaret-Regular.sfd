@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794205649
+ModificationTime: 1794210760
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -2371,7 +2371,7 @@ Encoding: 32 32 1
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -3042,7 +3042,7 @@ Width: 600
 Flags: W
 VStem: 182 193
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -3076,7 +3076,7 @@ Width: 600
 Flags: W
 HStem: 235 76<211.039 473.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -3108,7 +3108,7 @@ Flags: W
 HStem: -14 145<249.255 352.555>
 VStem: 225 152<12.6577 106.664>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -3893,7 +3893,7 @@ Width: 600
 Flags: W
 HStem: 131 77<99.3311 508.761> 338 76<101.378 508.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4136,7 +4136,7 @@ Width: 600
 Flags: W
 HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 718 basechar 0
+AnchorPoint: "top" 306 700 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4282,7 +4282,7 @@ Flags: W
 HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 672 20G<481 493.5>
 VStem: 63 93<135.343 358.485> 448 96<497.505 563.626>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 718 basechar 0
+AnchorPoint: "top" 304 694 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4342,7 +4342,7 @@ Flags: W
 HStem: -29 80<206.175 393.885> 648 20G<128.5 141.5>
 VStem: 91 94<72.9963 199.125> 92 89<83.8289 515.155 516 580> 457 90<133.009 370.705>
 AnchorPoint: "bottom" 316 0 basechar 0
-AnchorPoint: "top" 319 718 basechar 0
+AnchorPoint: "top" 319 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4398,7 +4398,7 @@ Flags: W
 HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163>
 VStem: 96 92<67.2849 291 372 565.665>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 718 basechar 0
+AnchorPoint: "top" 312 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4545,7 +4545,7 @@ Flags: W
 HStem: -29 84<222.643 367.656> 257 79<350.75 430> 604 75<372 447.154>
 VStem: 63 93<133.876 362.178> 430 87<110.152 256.839>
 AnchorPoint: "bottom" 278 0 basechar 0
-AnchorPoint: "top" 306 718 basechar 0
+AnchorPoint: "top" 306 699 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4612,7 +4612,7 @@ Flags: W
 HStem: -20 21G<121.5 136 446.5 461> 291 81<185 356.298> 320 76<266.732 418> 648 20G<134.5 148.5 459.5 473.5>
 VStem: 91 92<-7.66968 291 372 655.621> 411 96<-7.66968 73.0662> 418 92<-7.66968 320 396 655.621>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 699 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4689,7 +4689,7 @@ Flags: W
 HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859>
 VStem: 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4753,7 +4753,7 @@ Flags: W
 HStem: -33 95<228.724 385.109> 584 80<198.331 402>
 VStem: 401 84<297.594 584> 404 86<80.6997 397.406>
 AnchorPoint: "bottom" 278 0 basechar 0
-AnchorPoint: "top" 278 718 basechar 0
+AnchorPoint: "top" 278 699 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4877,7 +4877,7 @@ Flags: W
 HStem: -13 80<211 456.994> 640 20G<180.5 194.5>
 VStem: 115 96<67 261.017> 142 89<227.14 647.621> 142 82<90.0325 479.371>
 AnchorPoint: "bottom" 326 0 basechar 0
-AnchorPoint: "top" 334 718 basechar 0
+AnchorPoint: "top" 334 680 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5006,7 +5006,7 @@ Flags: W
 HStem: -13 21G<109.5 123 440.5 455.5> 639 20G<138 145.5 466 481>
 VStem: 82 78<7.51783 468.467> 432 84<517.914 643.624> 441 77<129 614.859>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5070,7 +5070,7 @@ Flags: W
 HStem: -23 79<206.808 362.977> 595 76<238.89 386.337>
 VStem: 65 90<126.343 470.98> 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 718 basechar 0
+AnchorPoint: "top" 302 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5265,7 +5265,7 @@ Flags: W
 HStem: -16 19G<145.5 159.5 496.5 514> 584 76<195 372.138> 648 20G<146.5 152.5>
 VStem: 104 91<410.752 584> 113 91<-6.71582 174.083> 113 82<21.7516 174.083 337.078 583.953> 113 74<21.7516 242 334 464.293> 464 88<371.638 516.818>
 AnchorPoint: "bottom" 381 0 basechar 0
-AnchorPoint: "top" 330 718 basechar 0
+AnchorPoint: "top" 330 689 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5346,7 +5346,7 @@ Flags: W
 HStem: -27 79<189.301 354.821> 603 74<257.06 503.828>
 VStem: 96 94<443.492 548.097> 444 93<130.311 265.927>
 AnchorPoint: "bottom" 286 0 basechar 0
-AnchorPoint: "top" 303 718 basechar 0
+AnchorPoint: "top" 303 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5412,7 +5412,7 @@ Flags: W
 HStem: -12 21G<300.5 315> 572 83<349 535.715> 584 78<93.1406 255> 589 79<67.3779 253.549>
 VStem: 255 94<288.531 577> 265 96<0.330322 152.708> 266 92<32.5535 453.702>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 718 basechar 0
+AnchorPoint: "top" 304 698 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5461,7 +5461,7 @@ Flags: W
 HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5>
 VStem: 73 88<146.894 649.574> 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 299 718 basechar 0
+AnchorPoint: "top" 299 699 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5561,7 +5561,7 @@ Flags: W
 HStem: -10 21G<170.5 184 412.5 426> 646 20G<83.5 89.5 514.5 528.5>
 VStem: 45 81<385.161 660.367> 477 78<353.613 657.88>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 689 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5717,7 +5717,7 @@ Flags: W
 HStem: -37 21G<296 302> 644 20G<103.5 110 497 503>
 VStem: 249 102<-7.20899 278.896>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 718 basechar 0
+AnchorPoint: "top" 302 689 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5771,7 +5771,7 @@ Width: 600
 Flags: W
 HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 689 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5997,7 +5997,7 @@ Width: 600
 Flags: W
 HStem: -107 78<75.2388 524.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6064,7 +6064,7 @@ Flags: W
 HStem: -37 21G<468 493> -29 76<191.56 340.299> 204 76<211.834 402.127> 368 76<119.902 196.412> 410 76<215.081 359.107>
 VStem: 70 96<71.9176 163.04>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 308 530 basechar 0
+AnchorPoint: "top" 308 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6167,7 +6167,7 @@ Flags: W
 HStem: -29 84<226.441 398.45> 408 85<265.444 385.911>
 VStem: 89 95<96.6383 306.479>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 530 basechar 0
+AnchorPoint: "top" 302 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6291,7 +6291,7 @@ Width: 600
 Flags: W
 HStem: -26 76<222.765 390.672> 414 73<244.896 383.237>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 530 basechar 0
+AnchorPoint: "top" 308 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6424,7 +6424,7 @@ Flags: W
 HStem: -273 78<146.339 328.92> -29 82<210.452 374.347> 397 79<250.01 447.906>
 VStem: 84 88<97.4464 317.035> 440 82<-83.4473 35 118.155 382.859>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 302 530 basechar 0
+AnchorPoint: "top" 302 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6498,7 +6498,7 @@ Flags: W
 HStem: -20 21G<126.5 141 453.5 466.5> 387 88<273.041 392.167> 698 20G<139.5 153.5>
 VStem: 101 92<75.1265 296.254 380 705.621> 411 97<-6.52831 301.312> 414 85<39.7358 365.539>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 768 basechar 0
+AnchorPoint: "top" 300 767 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6659,7 +6659,7 @@ Flags: W
 HStem: -26 80<355.942 483.227> 627 82<89.2842 236>
 VStem: 230 90<90.6476 625.688>
 AnchorPoint: "bottom" 268 0 basechar 0
-AnchorPoint: "top" 275 760 basechar 0
+AnchorPoint: "top" 275 759 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6803,7 +6803,7 @@ Flags: W
 HStem: -21 21G<138 151.5 459.5 473.5> 390 87<267.622 376.082>
 VStem: 91 92<28.7998 307.153> 104 96<186.687 273.25 396.235 469.62> 394 86<100.809 374.796> 415 93<-7.62134 207.995>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -6860,7 +6860,7 @@ Flags: W
 HStem: -25 79<216.67 375.41> 416 73<224.762 373.633>
 VStem: 72 96<107.614 339.452> 427 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 298 530 basechar 0
+AnchorPoint: "top" 298 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7031,7 +7031,7 @@ Flags: W
 HStem: -22 21G<143.5 158> 287 186<434.414 505.234> 393 80<309.44 426.513> 461 20G<153.5 165.5>
 VStem: 93 91<-7.7168 248.437> 107 95<371.422 469.621> 427 93<298.172 392.624>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 308 530 basechar 0
+AnchorPoint: "top" 308 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7091,7 +7091,7 @@ Flags: W
 HStem: -33 82<209.34 343.217> 403 82<262.218 384.448>
 VStem: 115 94<305.619 363.942> 415 94<103.933 170.943>
 AnchorPoint: "bottom" 293 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7223,7 +7223,7 @@ Flags: W
 HStem: -16 87<206.912 333.598> 451 20G<133.5 145 446.5 457.5>
 VStem: 93 92<85.5469 459.669> 411 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7280,7 +7280,7 @@ Width: 600
 Flags: W
 HStem: -24 21G<303 311> 446 20G<121.5 128 488 493.5>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 530 basechar 0
+AnchorPoint: "top" 304 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7320,7 +7320,7 @@ Width: 600
 Flags: W
 HStem: -25 21G<182 189.5 408.5 424.5> 441 20G<73.5 112 514.5 519.5>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 302 530 basechar 0
+AnchorPoint: "top" 302 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7389,7 +7389,7 @@ Width: 600
 Flags: W
 HStem: -23 21G<117.5 123.5 474.5 491> 449 20G<132.5 145.5 469 474>
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 298 530 basechar 0
+AnchorPoint: "top" 298 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7448,7 +7448,7 @@ Width: 600
 Flags: W
 HStem: -278 21G<176 182> 453 20G<113.5 120 497 503>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 530 basechar 0
+AnchorPoint: "top" 308 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7490,7 +7490,7 @@ Width: 600
 Flags: W
 HStem: -5 84<202.991 497.714> 378 80<111.284 399> 385 84<111.284 253.803>
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 299 530 basechar 0
+AnchorPoint: "top" 299 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -7640,7 +7640,7 @@ Width: 600
 Flags: W
 HStem: 161 85<345.222 428.055> 292 86<175.2 247.561>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -8088,35 +8088,35 @@ StartChar: dieresis
 Encoding: 168 168 102
 Width: 600
 Flags: W
-HStem: 609 120<147.425 232.53 363.471 448.53>
-VStem: 131 118<626.61 712.436> 347 118<626.61 712.436>
+HStem: 652 120<147.425 232.53 363.471 448.53>
+VStem: 131 118<669.61 755.436> 347 118<669.61 755.436>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 779 basechar 0
+AnchorPoint: "top" 300 822 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-408 609 m 0
- 406 609 403 609 401 609 c 0
- 386 609 373 615 363 626 c 0
- 352 639 347 653 347 670 c 0
- 347 686 353 700 366 711 c 0
- 379 722 393 728 408 729 c 0
- 409 729 410 729 411 729 c 0
- 427 729 439 724 449 713 c 0
- 459 701 465 687 465 670 c 0
- 465 654 459 640 449 629 c 0
- 439 618 425 611 408 609 c 0
-191 609 m 0
- 189 609 186 609 184 609 c 0
- 169 609 156 615 147 626 c 0
- 136 639 131 653 131 670 c 0
- 131 686 137 700 150 711 c 0
- 163 722 176 728 191 729 c 0
- 192 729 193 729 194 729 c 0
- 211 729 223 724 233 713 c 0
- 243 701 249 687 249 670 c 0
- 249 655 243 642 233 630 c 0
- 223 618 209 611 191 609 c 0
+408 652 m 0
+ 406 652 403 652 401 652 c 0
+ 386 652 373 658 363 669 c 0
+ 352 682 347 696 347 713 c 0
+ 347 729 353 743 366 754 c 0
+ 379 765 393 771 408 772 c 0
+ 409 772 410 772 411 772 c 0
+ 427 772 439 767 449 756 c 0
+ 459 744 465 730 465 713 c 0
+ 465 697 459 683 449 672 c 0
+ 439 661 425 654 408 652 c 0
+191 652 m 0
+ 189 652 186 652 184 652 c 0
+ 169 652 156 658 147 669 c 0
+ 136 682 131 696 131 713 c 0
+ 131 729 137 743 150 754 c 0
+ 163 765 176 771 191 772 c 0
+ 192 772 193 772 194 772 c 0
+ 211 772 223 767 233 756 c 0
+ 243 744 249 730 249 713 c 0
+ 249 698 243 685 233 673 c 0
+ 223 661 209 654 191 652 c 0
 EndSplineSet
 EndChar
 
@@ -8127,7 +8127,7 @@ Flags: W
 HStem: 458 20G<302 309 512 519>
 VStem: 47 296 257 296
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 305 8249 N 1 0 0 1 -105 0 2
@@ -8141,7 +8141,7 @@ Flags: W
 HStem: 229 79<126.331 404>
 VStem: 406 77<123.239 151 151.009 229>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -8184,30 +8184,30 @@ StartChar: macron
 Encoding: 175 175 105
 Width: 600
 Flags: W
-HStem: 541 82<103.239 492.669>
+HStem: 599 82<103.239 492.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 676 basechar 0
+AnchorPoint: "top" 300 734 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-135 623 m 2
- 188 623 l 1
- 267 623 l 2
- 296 623 328 623 361 624 c 0
- 394 625 427 625 459 626 c 0
- 460 626 461 626 462 626 c 0
- 477 626 487 621 494 612 c 0
- 500 603 504 595 504 586 c 0
- 504 578 503 567 493 554 c 0
- 486 545 475 541 458 541 c 2
- 379 541 l 1
- 282 541 l 2
- 250 541 220 542 193 542 c 0
- 166 542 146 542 135 543 c 0
- 118 544 108 549 103 558 c 0
- 98 567 95 576 95 586 c 0
- 96 595 98 603 103 611 c 0
- 108 619 119 623 135 623 c 2
+135 681 m 2
+ 188 681 l 1
+ 267 681 l 2
+ 296 681 328 681 361 682 c 0
+ 394 683 427 683 459 684 c 0
+ 460 684 461 684 462 684 c 0
+ 477 684 487 679 494 670 c 0
+ 500 661 504 653 504 644 c 0
+ 504 636 503 625 493 612 c 0
+ 486 603 475 599 458 599 c 2
+ 379 599 l 1
+ 282 599 l 2
+ 250 599 220 600 193 600 c 0
+ 166 600 146 600 135 601 c 0
+ 118 602 108 607 103 616 c 0
+ 98 625 95 634 95 644 c 0
+ 96 653 98 661 103 669 c 0
+ 108 677 119 681 135 681 c 2
 EndSplineSet
 EndChar
 
@@ -8304,34 +8304,34 @@ StartChar: acute
 Encoding: 180 180 108
 Width: 600
 Flags: W
-HStem: 530 128<290.932 320.1>
-VStem: 223 153
+HStem: 570 187
+VStem: 180 240
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 807 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-357 576 m 0
- 348 567 337 560 324 554 c 0
- 312 547 301 542 292 539 c 0
- 283 533 272 530 261 530 c 0
- 258 530 256 531 253 531 c 0
- 251 532 250 532 249 533 c 0
- 238 535 231 540 227 548 c 0
- 224 552 223 556 223 560 c 0
- 223 563 223 567 224 570 c 0
- 225 573 225 576 227 579 c 0
- 232 592 243 602 250 604 c 0
- 261 607 271 614 280 624 c 0
- 289 634 297 643 305 651 c 0
- 311 656 319 658 328 658 c 0
- 332 658 336 658 340 657 c 0
- 341 656 343 656 344 656 c 0
- 357 652 366 647 372 639 c 0
- 375 634 376 627 376 619 c 0
- 376 615 376 611 375 607 c 0
- 374 605 374 604 374 602 c 0
- 371 592 365 582 357 576 c 0
+400 675 m 0
+ 391 666 380 659 280 594 c 0
+ 268 587 257 582 248 579 c 0
+ 239 573 229 570 218 570 c 0
+ 215 570 213 571 210 571 c 0
+ 208 572 207 572 206 573 c 0
+ 195 575 188 580 184 588 c 0
+ 181 592 180 596 180 600 c 0
+ 180 603 179 607 180 610 c 0
+ 181 613 182 616 184 619 c 0
+ 189 632 199 642 206 644 c 0
+ 217 647 228 654 324 723 c 0
+ 333 733 340 742 348 750 c 0
+ 354 755 363 757 372 757 c 0
+ 376 757 380 757 384 756 c 0
+ 385 755 387 755 388 755 c 0
+ 401 751 410 746 416 738 c 0
+ 419 733 420 726 420 718 c 0
+ 420 714 419 710 418 706 c 0
+ 417 704 418 703 418 701 c 0
+ 415 691 408 681 400 675 c 0
 EndSplineSet
 EndChar
 
@@ -8342,7 +8342,7 @@ Flags: W
 HStem: -250 59<259.059 348.13>
 VStem: 263 68<-48.3392 32.5312> 356 71<-182.187 -105.289>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -8387,7 +8387,7 @@ Flags: W
 HStem: 458 20G<81 88 291 298>
 VStem: 47 296 257 296
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 306 8250 N 1 0 0 1 105 0 2
@@ -8427,13 +8427,13 @@ Encoding: 192 192 113
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 128<284.934 314.261>
-VStem: 229 154
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 721 185
+VStem: 186 240
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 896 basechar 0
+AnchorPoint: "top" 306 956 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 6 188 2
+Refer: 620 -1 N 1 0 0 1 6 151 2
 Refer: 34 65 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" A gravecomb
 EndChar
@@ -8443,13 +8443,13 @@ Encoding: 193 193 114
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 128<297.932 327.1>
-VStem: 230 153
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 721 187
+VStem: 187 240
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 896 basechar 0
+AnchorPoint: "top" 306 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 7 188 2
+Refer: 108 180 N 1 0 0 1 7 151 2
 Refer: 34 65 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" A acutecomb
 EndChar
@@ -8459,14 +8459,13 @@ Encoding: 194 194 115
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 73<158.188 220.697 391.303 453.714>
-VStem: 154 303<750 790.323>
+HStem: -4 21G<93.5 99 510 515.5> 236 75<207.592 374> 659 20G<291.5 304.5> 731 73<137.188 196.351 415.649 474.714> 862 20G<303.5 308.5>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 898 basechar 0
+AnchorPoint: "top" 306 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 34 65 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 6 188 2
+Refer: 278 710 N 1 0 0 1 6 171 2
+Refer: 34 65 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" A uni0302
 EndChar
 
@@ -8475,14 +8474,14 @@ Encoding: 195 195 116
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 80<322.462 397.705> 765 80<219.79 290.593>
-VStem: 147 318<765.934 797.057>
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 743 80<322.462 397.705> 790 80<219.79 290.593> 835 20G<420.5 436>
+VStem: 147 318<790.934 822.057>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 895 basechar 0
+AnchorPoint: "top" 306 920 basechar 0
 LayerCount: 2
 Fore
 Refer: 34 65 N 1 0 0 1 0 0 2
-Refer: 284 732 N 1 0 0 1 6 188 2
+Refer: 284 732 N 1 0 0 1 6 178 2
 Ligature2: "marks_compose" A tildecomb
 EndChar
 
@@ -8491,14 +8490,14 @@ Encoding: 196 196 117
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 120<176.425 261.53 352.471 437.53>
-VStem: 160 118<735.61 821.436> 336 118<735.61 821.436>
+HStem: -4 21G<93.5 99 510 515.5> 236 75<207.592 374> 659 20G<291.5 304.5> 743 120<156.425 241.53 372.471 457.53>
+VStem: 140 118<760.61 846.436> 356 118<760.61 846.436>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 888 basechar 0
+AnchorPoint: "top" 306 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 34 65 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 9 109 2
+Refer: 102 168 N 1 0 0 1 9 91 2
+Refer: 34 65 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" A uni0308
 EndChar
 
@@ -8507,14 +8506,14 @@ Encoding: 197 197 118
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 698 50<289.236 326.916> 799 50<289.04 326.071>
-VStem: 226 60<751.767 794.303> 327 60<748.044 798.534>
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 701 42<263.166 348.834> 855 42<263.166 348.834>
+VStem: 208 42<756.166 841.834> 362 42<756.166 841.834>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 899 basechar 0
+AnchorPoint: "top" 306 947 basechar 0
 LayerCount: 2
 Fore
 Refer: 34 65 N 1 0 0 1 0 0 2
-Refer: 282 730 N 1 0 0 1 6 188 2
+Refer: 282 730 N 1 0 0 1 6 172 2
 Ligature2: "marks_compose" A uni030A
 EndChar
 
@@ -8605,14 +8604,14 @@ Encoding: 200 200 120
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 128<290.934 320.261>
-VStem: 96 92<67.2849 291 372 565.665> 235 154
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 721 185
+VStem: 96 92<67.2849 291 372 565.665> 192 240
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 896 basechar 0
+AnchorPoint: "top" 312 956 basechar 0
 LayerCount: 2
 Fore
 Refer: 38 69 N 1 0 0 1 0 0 2
-Refer: 620 -1 N 1 0 0 1 12 188 2
+Refer: 620 -1 N 1 0 0 1 12 151 2
 Ligature2: "marks_compose" E gravecomb
 EndChar
 
@@ -8621,14 +8620,14 @@ Encoding: 201 201 121
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 128<302.932 332.1>
-VStem: 96 92<67.2849 291 372 565.665> 235 153
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 721 187
+VStem: 96 92<67.2849 291 372 565.665> 192 240
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 896 basechar 0
+AnchorPoint: "top" 312 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 38 69 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 12 188 2
+Refer: 108 180 N 1 0 0 1 12 151 2
 Ligature2: "marks_compose" E acutecomb
 EndChar
 
@@ -8637,14 +8636,14 @@ Encoding: 202 202 122
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 73<164.188 226.697 397.303 459.714>
-VStem: 96 92<67.2849 291 372 565.665> 160 303<750 790.323>
+HStem: -18 82<195.335 488.718> -5 85<246.219 517.763> 292 83<186 474.48> 311 74<234.659 505.762> 571 76<431.168 521.761> 576 78<189.939 521.761> 639 20G<136.5 163> 731 73<143.188 202.351 421.649 480.714> 862 20G<309.5 314.5>
+VStem: 96 92<68.2849 292 373 566.665>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 898 basechar 0
+AnchorPoint: "top" 312 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 278 710 N 1 0 0 1 12 188 2
-Refer: 38 69 N 1 0 0 1 0 0 2
+Refer: 38 69 N 1 0 0 1 0 1 2
+Refer: 278 710 N 1 0 0 1 12 171 2
 Ligature2: "marks_compose" E uni0302
 EndChar
 
@@ -8653,14 +8652,14 @@ Encoding: 203 203 123
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 120<181.425 266.53 357.471 442.53>
-VStem: 96 92<67.2849 291 372 565.665> 165 118<735.61 821.436> 341 118<735.61 821.436>
+HStem: -18 82<195.335 488.718> -5 85<246.219 517.763> 292 83<186 474.48> 311 74<234.659 505.762> 571 76<431.168 521.761> 576 78<189.939 521.761> 639 20G<136.5 163> 743 120<161.425 246.53 377.471 462.53>
+VStem: 96 92<68.2849 292 373 566.665> 145 118<760.61 846.436> 361 118<760.61 846.436>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 888 basechar 0
+AnchorPoint: "top" 312 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 102 168 N 1 0 0 1 14 109 2
-Refer: 38 69 N 1 0 0 1 0 0 2
+Refer: 38 69 N 1 0 0 1 0 1 2
+Refer: 102 168 N 1 0 0 1 14 91 2
 Ligature2: "marks_compose" E uni0308
 EndChar
 
@@ -8669,14 +8668,14 @@ Encoding: 204 204 124
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 128<278.934 308.261>
-VStem: 223 154 253 96<67 582>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 721 185
+VStem: 180 240 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 956 basechar 0
 LayerCount: 2
 Fore
 Refer: 42 73 N 1 0 0 1 0 0 2
-Refer: 620 -1 N 1 0 0 1 0 188 2
+Refer: 620 -1 N 1 0 0 1 0 151 2
 Ligature2: "marks_compose" I gravecomb
 EndChar
 
@@ -8685,14 +8684,14 @@ Encoding: 205 205 125
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 128<291.932 321.1>
-VStem: 224 153 253 96<67 582>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 721 187
+VStem: 181 240 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 42 73 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 1 188 2
+Refer: 108 180 N 1 0 0 1 1 151 2
 Ligature2: "marks_compose" I acutecomb
 EndChar
 
@@ -8701,14 +8700,14 @@ Encoding: 206 206 126
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 73<152.188 214.697 385.303 447.714>
-VStem: 148 303<750 790.323> 253 96<67 582>
+HStem: -5 72<139.894 251.219 345 501.761> 585 80<110.33 257 351 471.859> 731 73<131.188 190.351 409.649 468.714> 862 20G<297.5 302.5>
+VStem: 253 96<68 583>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 278 710 N 1 0 0 1 0 188 2
-Refer: 42 73 N 1 0 0 1 0 0 2
+Refer: 42 73 N 1 0 0 1 0 1 2
+Refer: 278 710 N 1 0 0 1 0 171 2
 Ligature2: "marks_compose" I uni0302
 EndChar
 
@@ -8717,14 +8716,14 @@ Encoding: 207 207 127
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 120<169.425 254.53 345.471 430.53>
-VStem: 153 118<735.61 821.436> 253 96<67 582> 329 118<735.61 821.436>
+HStem: -5 72<139.894 251.219 345 501.761> 585 80<110.33 257 351 471.859> 743 120<149.425 234.53 365.471 450.53>
+VStem: 133 118<760.61 846.436> 253 96<68 583> 349 118<760.61 846.436>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 888 basechar 0
+AnchorPoint: "top" 300 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 102 168 N 1 0 0 1 2 109 2
-Refer: 42 73 N 1 0 0 1 0 0 2
+Refer: 42 73 N 1 0 0 1 0 1 2
+Refer: 102 168 N 1 0 0 1 2 91 2
 Ligature2: "marks_compose" I uni0308
 EndChar
 
@@ -8733,13 +8732,13 @@ Encoding: 209 209 128
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -13 21G<109.5 123 440.5 455.5> 718 80<315.462 390.705> 765 80<212.79 283.593>
-VStem: 82 78<7.51783 468.467> 140 318<765.934 797.057> 432 84<517.914 643.624> 441 77<129 614.859>
+HStem: -13 21G<109.5 123 440.5 455.5> 639 20G<138 145.5 466 481> 743 80<315.462 390.705> 790 80<212.79 283.593> 835 20G<413.5 429>
+VStem: 82 78<7.51783 468.467> 140 318<790.934 822.057> 432 84<517.914 643.624> 441 77<129 614.859>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 895 basechar 0
+AnchorPoint: "top" 300 920 basechar 0
 LayerCount: 2
 Fore
-Refer: 284 732 N 1 0 0 1 -1 188 2
+Refer: 284 732 N 1 0 0 1 -1 178 2
 Refer: 47 78 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" N tildecomb
 EndChar
@@ -8749,13 +8748,13 @@ Encoding: 210 210 129
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 128<280.934 310.261>
-VStem: 73 90<126.343 470.98> 225 154 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 721 185
+VStem: 65 90<126.343 470.98> 182 240 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 896 basechar 0
+AnchorPoint: "top" 302 956 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 2 188 2
+Refer: 620 -1 N 1 0 0 1 2 151 2
 Refer: 48 79 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" O gravecomb
 EndChar
@@ -8765,13 +8764,13 @@ Encoding: 211 211 130
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 128<292.932 322.1>
-VStem: 73 90<126.343 470.98> 225 153 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 721 187
+VStem: 65 90<126.343 470.98> 182 240 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 896 basechar 0
+AnchorPoint: "top" 302 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 2 188 2
+Refer: 108 180 N 1 0 0 1 2 151 2
 Refer: 48 79 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" O acutecomb
 EndChar
@@ -8781,14 +8780,14 @@ Encoding: 212 212 131
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 73<154.188 216.697 387.303 449.714>
-VStem: 73 90<126.343 470.98> 150 303<750 790.323> 442 88<151.843 518.969>
+HStem: -22 79<206.808 362.977> 596 76<238.89 386.337> 731 73<133.188 192.351 411.649 470.714> 862 20G<299.5 304.5>
+VStem: 65 90<127.343 471.98> 450 88<152.843 519.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 898 basechar 0
+AnchorPoint: "top" 302 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 48 79 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 2 188 2
+Refer: 278 710 N 1 0 0 1 2 171 2
+Refer: 48 79 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" O uni0302
 EndChar
 
@@ -8797,14 +8796,14 @@ Encoding: 213 213 132
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 80<317.462 392.705> 765 80<214.79 285.593>
-VStem: 73 90<126.343 470.98> 142 318<765.934 797.057> 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 743 80<317.462 392.705> 790 80<214.79 285.593> 835 20G<415.5 431>
+VStem: 65 90<126.343 470.98> 142 318<790.934 822.057> 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 895 basechar 0
+AnchorPoint: "top" 302 920 basechar 0
 LayerCount: 2
 Fore
 Refer: 48 79 N 1 0 0 1 0 0 2
-Refer: 284 732 N 1 0 0 1 1 188 2
+Refer: 284 732 N 1 0 0 1 1 178 2
 Ligature2: "marks_compose" O tildecomb
 EndChar
 
@@ -8813,14 +8812,14 @@ Encoding: 214 214 133
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 120<171.425 256.53 347.471 432.53>
-VStem: 73 90<126.343 470.98> 155 118<735.61 821.436> 331 118<735.61 821.436> 442 88<151.843 518.969>
+HStem: -22 79<206.808 362.977> 596 76<238.89 386.337> 743 120<151.425 236.53 367.471 452.53>
+VStem: 65 90<127.343 471.98> 135 118<760.61 846.436> 351 118<760.61 846.436> 450 88<152.843 519.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 888 basechar 0
+AnchorPoint: "top" 302 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 48 79 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 4 109 2
+Refer: 102 168 N 1 0 0 1 4 91 2
+Refer: 48 79 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" O uni0308
 EndChar
 
@@ -8829,7 +8828,7 @@ Encoding: 215 215 134
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -8883,14 +8882,14 @@ Encoding: 217 217 135
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 128<277.934 307.261>
-VStem: 73 88<146.894 649.574> 222 154 439 87<154.63 649.576>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 721 185
+VStem: 73 88<146.894 649.574> 179 240 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 956 basechar 0
 LayerCount: 2
 Fore
 Refer: 54 85 N 1 0 0 1 0 0 2
-Refer: 620 -1 N 1 0 0 1 -1 188 2
+Refer: 620 -1 N 1 0 0 1 -1 151 2
 Ligature2: "marks_compose" U gravecomb
 EndChar
 
@@ -8899,14 +8898,14 @@ Encoding: 218 218 136
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 128<290.932 320.1>
-VStem: 73 88<146.894 649.574> 223 153 439 87<154.63 649.576>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 721 187
+VStem: 73 88<146.894 649.574> 180 240 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 54 85 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 0 188 2
+Refer: 108 180 N 1 0 0 1 0 151 2
 Ligature2: "marks_compose" U acutecomb
 EndChar
 
@@ -8915,14 +8914,14 @@ Encoding: 219 219 137
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 73<151.188 213.697 384.303 446.714>
-VStem: 73 88<146.894 649.574> 147 303<750 790.323> 439 87<154.63 649.576>
+HStem: -26 85<231.587 357.409> 644 20G<116.5 127.5 474.5 485.5> 731 73<130.188 189.351 408.649 467.714> 862 20G<296.5 301.5>
+VStem: 73 88<147.894 650.574> 439 87<155.63 650.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 54 85 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 -1 188 2
+Refer: 278 710 N 1 0 0 1 -1 171 2
+Refer: 54 85 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" U uni0302
 EndChar
 
@@ -8931,14 +8930,14 @@ Encoding: 220 220 138
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 120<168.425 253.53 344.471 429.53>
-VStem: 73 88<146.894 649.574> 152 118<735.61 821.436> 328 118<735.61 821.436> 439 87<154.63 649.576>
+HStem: -26 85<231.587 357.409> 644 20G<116.5 127.5 474.5 485.5> 743 120<148.425 233.53 364.471 449.53>
+VStem: 73 88<147.894 650.574> 132 118<760.61 846.436> 348 118<760.61 846.436> 439 87<155.63 650.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 888 basechar 0
+AnchorPoint: "top" 300 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 102 168 N 1 0 0 1 1 109 2
-Refer: 54 85 N 1 0 0 1 0 0 2
+Refer: 54 85 N 1 0 0 1 0 1 2
+Refer: 102 168 N 1 0 0 1 1 91 2
 Ligature2: "marks_compose" U uni0308
 EndChar
 
@@ -8947,13 +8946,13 @@ Encoding: 221 221 139
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 718 128<293.932 323.1>
-VStem: 226 153 249 102<-7.20899 278.896>
+HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 721 187
+VStem: 183 240 249 102<-7.20899 278.896>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 896 basechar 0
+AnchorPoint: "top" 302 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 3 188 2
+Refer: 108 180 N 1 0 0 1 3 151 2
 Refer: 58 89 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" Y acutecomb
 EndChar
@@ -8966,7 +8965,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 128<286.934 316.261>
 VStem: 89 97<102.564 308.559> 231 154 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 708 basechar 0
+AnchorPoint: "top" 299 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -8982,7 +8981,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 128<298.932 328.1>
 VStem: 89 97<102.564 308.559> 231 153 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 708 basechar 0
+AnchorPoint: "top" 299 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -8998,7 +8997,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 73<160.188 222.697 393.303 455.714>
 VStem: 89 97<102.564 308.559> 156 303<562 602.323> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 710 basechar 0
+AnchorPoint: "top" 299 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -9014,7 +9013,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 80<323.462 398.705> 577 80<220.79 291.593>
 VStem: 89 97<102.564 308.559> 148 318<577.934 609.057> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 707 basechar 0
+AnchorPoint: "top" 299 742 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -9030,7 +9029,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 120<177.425 262.53 353.471 438.53>
 VStem: 89 97<102.564 308.559> 161 118<547.61 633.436> 337 118<547.61 633.436> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 700 basechar 0
+AnchorPoint: "top" 299 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 102 168 S 1 0 0 1 10 -79 2
@@ -9046,7 +9045,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 510 50<290.236 327.916> 611 50<290.04 327.071>
 VStem: 89 97<102.564 308.559> 227 60<563.767 606.303> 328 60<560.044 610.534> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 711 basechar 0
+AnchorPoint: "top" 299 775 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -9141,7 +9140,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 128<286.934 316.261>
 VStem: 231 154
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 708 basechar 0
+AnchorPoint: "top" 308 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 8 0 2
@@ -9157,7 +9156,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 128<298.932 328.1>
 VStem: 231 153
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 708 basechar 0
+AnchorPoint: "top" 308 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 8 0 2
@@ -9173,7 +9172,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 73<160.188 222.697 393.303 455.714>
 VStem: 156 303<562 602.323>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 710 basechar 0
+AnchorPoint: "top" 308 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 70 101 N 1 0 0 1 0 0 2
@@ -9189,7 +9188,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 120<176.425 261.53 352.471 437.53>
 VStem: 160 118<547.61 633.436> 336 118<547.61 633.436>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 700 basechar 0
+AnchorPoint: "top" 308 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 102 168 S 1 0 0 1 9 -79 2
@@ -9205,7 +9204,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 128<244.934 274.261>
 VStem: 189 154 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 708 basechar 0
+AnchorPoint: "top" 306 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 -34 0 2
@@ -9221,7 +9220,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 128<313.932 343.1>
 VStem: 246 153 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 708 basechar 0
+AnchorPoint: "top" 306 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 23 0 2
@@ -9237,7 +9236,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 73<156.188 218.697 389.303 451.714>
 VStem: 152 303<562 602.323> 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 710 basechar 0
+AnchorPoint: "top" 306 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 4 0 2
@@ -9253,7 +9252,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 120<174.425 259.53 350.471 435.53>
 VStem: 158 118<547.61 633.436> 276 91<65 379.901> 334 118<547.61 633.436>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 700 basechar 0
+AnchorPoint: "top" 306 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 213 305 S 1 0 0 1 0 0 2
@@ -9269,7 +9268,7 @@ Flags: W
 HStem: -21 21G<140 153.5 457.5 471.5> 390 87<269.622 374.127> 530 80<315.462 390.705> 577 80<212.79 283.593>
 VStem: 93 92<28.7998 307.153> 106 96<186.687 273.25 396.235 469.62> 140 318<577.934 609.057> 392 86<100.809 374.796> 413 93<-7.62134 207.995>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 707 basechar 0
+AnchorPoint: "top" 300 742 basechar 0
 LayerCount: 2
 Fore
 Refer: 284 732 N 1 0 0 1 -1 0 2
@@ -9285,7 +9284,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 128<276.934 306.261>
 VStem: 82 96<107.614 339.452> 221 154 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 708 basechar 0
+AnchorPoint: "top" 297 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 -2 0 2
@@ -9301,7 +9300,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 128<287.932 317.1>
 VStem: 82 96<107.614 339.452> 220 153 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 708 basechar 0
+AnchorPoint: "top" 297 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 -3 0 2
@@ -9317,7 +9316,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 73<150.188 212.697 383.303 445.714>
 VStem: 82 96<107.614 339.452> 146 303<562 602.323> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 710 basechar 0
+AnchorPoint: "top" 297 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 80 111 N 1 0 0 1 0 0 2
@@ -9333,7 +9332,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 80<312.462 387.705> 577 80<209.79 280.593>
 VStem: 82 96<107.614 339.452> 137 318<577.934 609.057> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 707 basechar 0
+AnchorPoint: "top" 297 742 basechar 0
 LayerCount: 2
 Fore
 Refer: 80 111 N 1 0 0 1 0 0 2
@@ -9349,7 +9348,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 120<166.425 251.53 342.471 427.53>
 VStem: 82 96<107.614 339.452> 150 118<547.61 633.436> 326 118<547.61 633.436> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 700 basechar 0
+AnchorPoint: "top" 297 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 102 168 S 1 0 0 1 -1 -79 2
@@ -9403,7 +9402,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 128<278.934 308.261>
 VStem: 99 92<85.5469 459.669> 223 154 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 86 117 N 1 0 0 1 0 0 2
@@ -9419,7 +9418,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 128<290.932 320.1>
 VStem: 99 92<85.5469 459.669> 223 153 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 86 117 N 1 0 0 1 0 0 2
@@ -9435,7 +9434,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 73<152.188 214.697 385.303 447.714>
 VStem: 99 92<85.5469 459.669> 148 303<562 602.323> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 0 0 2
@@ -9451,7 +9450,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 120<169.425 254.53 345.471 430.53>
 VStem: 99 92<85.5469 459.669> 153 118<547.61 633.436> 329 118<547.61 633.436> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 700 basechar 0
+AnchorPoint: "top" 300 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 86 117 N 1 0 0 1 0 0 2
@@ -9467,7 +9466,7 @@ Flags: W
 HStem: 453 20G<113.5 120 497 503> 530 128<298.932 328.1>
 VStem: 231 153
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 708 basechar 0
+AnchorPoint: "top" 308 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 8 0 2
@@ -9483,7 +9482,7 @@ Flags: W
 HStem: 453 20G<113.5 120 497 503> 530 120<177.425 262.53 353.471 438.53>
 VStem: 161 118<547.61 633.436> 337 118<547.61 633.436>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 700 basechar 0
+AnchorPoint: "top" 308 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 102 168 S 1 0 0 1 10 -79 2
@@ -9496,12 +9495,12 @@ Encoding: 256 256 168
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 740 82<110.239 499.669>
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 768 82<110.239 499.669>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 875 basechar 0
+AnchorPoint: "top" 306 903 basechar 0
 LayerCount: 2
 Fore
-Refer: 105 175 S 1 0 0 1 7 199 2
+Refer: 105 175 S 1 0 0 1 7 169 2
 Refer: 34 65 S 1 0 0 1 0 0 2
 Ligature2: "marks_compose" A uni0304
 EndChar
@@ -9514,7 +9513,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 82<111.239 500.669>
 VStem: 89 97<102.564 308.559> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 665 basechar 0
+AnchorPoint: "top" 299 723 basechar 0
 LayerCount: 2
 Fore
 Refer: 105 175 S 1 0 0 1 8 -11 2
@@ -9527,14 +9526,14 @@ Encoding: 258 258 170
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 21G<93.5 99 510 515.5> 235 75<234.592 402> 718 74<243.893 376.759>
-VStem: 154 308<773.007 822>
+HStem: -5 21G<93.5 99 510 515.5> 235 75<207.592 374> 658 20G<291.5 304.5> 737 74<243.893 376.759> 840 20G<180.5 196.5 421 435>
+VStem: 154 308<792.007 841>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 891 basechar 0
+AnchorPoint: "top" 306 910 basechar 0
 LayerCount: 2
 Fore
 Refer: 34 65 N 1 0 0 1 0 0 2
-Refer: 280 728 N 1 0 0 1 8 188 2
+Refer: 280 728 N 1 0 0 1 8 179 2
 Ligature2: "marks_compose" A uni0306
 EndChar
 
@@ -9546,7 +9545,7 @@ Flags: W
 HStem: -37 21G<477 492> -29 83<226.228 328.959> 402 84<265.823 407.348> 530 74<243.893 376.759>
 VStem: 89 97<102.564 308.559> 154 308<585.007 634> 409 89<145.097 369.222>
 AnchorPoint: "bottom" 299 0 basechar 0
-AnchorPoint: "top" 299 703 basechar 0
+AnchorPoint: "top" 299 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 66 97 N 1 0 0 1 0 0 2
@@ -9728,13 +9727,13 @@ Encoding: 262 262 174
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 718 128<294.932 324.1>
-VStem: 63 93<135.343 358.485> 227 153 448 96<497.505 563.626>
+HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 672 20G<481 493.5> 721 187
+VStem: 63 93<135.343 358.485> 184 240 448 96<497.505 563.626>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 896 basechar 0
+AnchorPoint: "top" 304 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 4 188 2
+Refer: 108 180 N 1 0 0 1 4 151 2
 Refer: 36 67 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" C acutecomb
 EndChar
@@ -9747,7 +9746,7 @@ Flags: W
 HStem: -29 84<230.896 395.45> 408 85<269.437 382.911> 530 128<292.932 322.1>
 VStem: 93 95<96.6383 306.479> 225 153
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 708 basechar 0
+AnchorPoint: "top" 302 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 2 0 2
@@ -9760,14 +9759,14 @@ Encoding: 264 264 176
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 718 73<157.188 219.697 390.303 452.714>
-VStem: 63 93<135.343 358.485> 153 303<750 790.323> 448 96<497.505 563.626>
+HStem: -28 84<224.006 391.466> 486 21G<490.5 505> 592 76<324.795 442.231> 673 20G<481 493.5> 731 73<136.188 195.351 414.649 473.714> 862 20G<302.5 307.5>
+VStem: 63 93<136.343 359.485> 448 96<498.505 564.626>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 898 basechar 0
+AnchorPoint: "top" 304 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 36 67 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 5 188 2
+Refer: 278 710 N 1 0 0 1 5 171 2
+Refer: 36 67 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" C uni0302
 EndChar
 
@@ -9779,7 +9778,7 @@ Flags: W
 HStem: -29 84<230.896 395.45> 408 85<269.437 382.911> 530 73<154.188 216.697 387.303 449.714>
 VStem: 93 95<96.6383 306.479> 150 303<562 602.323>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 710 basechar 0
+AnchorPoint: "top" 302 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 68 99 N 1 0 0 1 0 0 2
@@ -9792,14 +9791,14 @@ Encoding: 266 266 178
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 718 123<257.847 350.481>
-VStem: 63 93<135.343 358.485> 240 128<735.442 822.427> 448 96<497.505 563.626>
+HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 672 20G<481 493.5> 730 123<257.847 350.481>
+VStem: 63 93<135.343 358.485> 240 128<747.442 834.427> 448 96<497.505 563.626>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 891 basechar 0
+AnchorPoint: "top" 304 903 basechar 0
 LayerCount: 2
 Fore
 Refer: 36 67 N 1 0 0 1 0 0 2
-Refer: 281 729 N 1 0 0 1 4 188 2
+Refer: 281 729 N 1 0 0 1 4 160 2
 Ligature2: "marks_compose" C uni0307
 EndChar
 
@@ -9811,7 +9810,7 @@ Flags: W
 HStem: -29 84<230.896 395.45> 408 85<269.437 382.911> 530 123<255.847 348.481>
 VStem: 93 95<96.6383 306.479> 238 128<547.442 634.427>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 703 basechar 0
+AnchorPoint: "top" 302 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 68 99 N 1 0 0 1 0 0 2
@@ -9824,14 +9823,14 @@ Encoding: 268 268 180
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 762 86<368 449.357> 771 77<160.677 225.629>
-VStem: 63 93<135.343 358.485> 288 38<721 730.03> 448 96<497.505 563.626>
+HStem: -29 84<224.006 391.466> 485 21G<490.5 505> 591 76<324.795 442.231> 672 20G<481 493.5> 798 86<399.108 471.331>
+VStem: 63 93<135.343 358.485> 288 38<730 741.256> 448 96<497.505 563.626>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 898 basechar 0
+AnchorPoint: "top" 304 934 basechar 0
 LayerCount: 2
 Fore
 Refer: 36 67 N 1 0 0 1 0 0 2
-Refer: 279 711 N 1 0 0 1 7 188 2
+Refer: 279 711 N 1 0 0 1 7 169 2
 Ligature2: "marks_compose" C uni030C
 EndChar
 
@@ -9843,7 +9842,7 @@ Flags: W
 HStem: -29 84<230.896 395.45> 408 85<269.437 382.911> 574 86<366 447.357> 583 77<158.677 223.629>
 VStem: 93 95<96.6383 306.479> 286 38<533 542.03>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 710 basechar 0
+AnchorPoint: "top" 302 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 68 99 N 1 0 0 1 0 0 2
@@ -9856,13 +9855,13 @@ Encoding: 270 270 182
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 80<206.175 393.885> 648 20G<128.5 141.5> 762 86<380 461.357> 771 77<172.677 237.629>
-VStem: 91 94<72.9963 199.125> 92 89<83.8289 515.155 516 580> 300 38<721 730.03> 457 90<133.009 370.705>
+HStem: -29 80<206.175 393.885> 648 20G<128.5 141.5> 798 86<411.108 483.331>
+VStem: 91 94<72.9963 199.125> 92 89<83.8289 515.155 516 580> 300 38<730 741.256> 457 90<133.009 370.705>
 AnchorPoint: "bottom" 316 0 basechar 0
-AnchorPoint: "top" 316 898 basechar 0
+AnchorPoint: "top" 316 934 basechar 0
 LayerCount: 2
 Fore
-Refer: 279 711 N 1 0 0 1 19 188 2
+Refer: 279 711 N 1 0 0 1 19 169 2
 Refer: 37 68 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" D uni030C
 EndChar
@@ -9889,14 +9888,14 @@ Encoding: 274 274 184
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 740 82<115.239 504.669>
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 768 82<115.239 504.669>
 VStem: 96 92<67.2849 291 372 565.665>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 875 basechar 0
+AnchorPoint: "top" 312 903 basechar 0
 LayerCount: 2
 Fore
 Refer: 38 69 N 1 0 0 1 0 0 2
-Refer: 105 175 N 1 0 0 1 12 199 2
+Refer: 105 175 N 1 0 0 1 12 169 2
 Ligature2: "marks_compose" E uni0304
 EndChar
 
@@ -9907,7 +9906,7 @@ GlyphClass: 2
 Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 82<111.239 500.669>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 665 basechar 0
+AnchorPoint: "top" 308 723 basechar 0
 LayerCount: 2
 Fore
 Refer: 105 175 S 1 0 0 1 8 -11 2
@@ -9920,13 +9919,13 @@ Encoding: 276 276 186
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 74<247.893 380.759>
-VStem: 96 92<67.2849 291 372 565.665> 158 308<773.007 822>
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 737 74<247.893 380.759> 840 20G<184.5 200.5 425 439>
+VStem: 96 92<67.2849 291 372 565.665> 158 308<792.007 841>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 891 basechar 0
+AnchorPoint: "top" 312 910 basechar 0
 LayerCount: 2
 Fore
-Refer: 280 728 N 1 0 0 1 12 188 2
+Refer: 280 728 N 1 0 0 1 12 179 2
 Refer: 38 69 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" E uni0306
 EndChar
@@ -9939,7 +9938,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 74<243.893 376.759>
 VStem: 154 308<585.007 634>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 703 basechar 0
+AnchorPoint: "top" 308 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 70 101 N 1 0 0 1 0 0 2
@@ -9952,13 +9951,13 @@ Encoding: 278 278 188
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 718 123<265.847 358.481>
-VStem: 96 92<67.2849 291 372 565.665> 248 128<735.442 822.427>
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 730 123<265.847 358.481>
+VStem: 96 92<67.2849 291 372 565.665> 248 128<747.442 834.427>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 891 basechar 0
+AnchorPoint: "top" 312 903 basechar 0
 LayerCount: 2
 Fore
-Refer: 281 729 N 1 0 0 1 12 188 2
+Refer: 281 729 N 1 0 0 1 12 160 2
 Refer: 38 69 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" E uni0307
 EndChar
@@ -9971,7 +9970,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 530 123<260.847 353.481>
 VStem: 243 128<547.442 634.427>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 703 basechar 0
+AnchorPoint: "top" 308 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 70 101 N 1 0 0 1 0 0 2
@@ -10169,13 +10168,13 @@ Encoding: 282 282 192
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 762 86<376 457.357> 771 77<168.677 233.629>
-VStem: 96 92<67.2849 291 372 565.665> 296 38<721 730.03>
+HStem: -19 82<195.335 488.718> -6 85<246.219 517.763> 291 83<186 474.48> 310 74<234.659 505.762> 570 76<431.168 521.761> 575 78<189.939 521.761> 638 20G<136.5 163> 798 86<407.108 479.331>
+VStem: 96 92<67.2849 291 372 565.665> 296 38<730 741.256>
 AnchorPoint: "bottom" 312 0 basechar 0
-AnchorPoint: "top" 312 898 basechar 0
+AnchorPoint: "top" 312 934 basechar 0
 LayerCount: 2
 Fore
-Refer: 279 711 N 1 0 0 1 15 188 2
+Refer: 279 711 N 1 0 0 1 15 169 2
 Refer: 38 69 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" E uni030C
 EndChar
@@ -10188,7 +10187,7 @@ Flags: W
 HStem: -26 76<230.765 381.672> 414 73<252.896 374.269> 574 86<371 452.357> 583 77<163.677 228.629>
 VStem: 291 38<533 542.03>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 710 basechar 0
+AnchorPoint: "top" 308 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 70 101 N 1 0 0 1 0 0 2
@@ -10201,14 +10200,14 @@ Encoding: 284 284 194
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<222.643 356.088> 257 79<350.75 430> 604 75<372 447.154> 718 73<158.188 220.697 391.303 453.714>
-VStem: 63 93<133.876 362.178> 154 303<750 790.323> 430 87<112.366 256.839>
+HStem: -28 84<222.643 367.656> 258 79<350.75 430> 605 75<372 447.154> 731 73<137.188 196.351 415.649 474.714> 862 20G<303.5 308.5>
+VStem: 63 93<134.876 363.178> 430 87<111.152 257.839>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 898 basechar 0
+AnchorPoint: "top" 304 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 40 71 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 6 188 2
+Refer: 278 710 N 1 0 0 1 6 171 2
+Refer: 40 71 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" G uni0302
 EndChar
 
@@ -10220,7 +10219,7 @@ Flags: W
 HStem: -273 78<160.339 314.362> -29 82<224.744 359.347> 397 79<264.01 432.906> 530 73<154.188 216.697 387.303 449.714>
 VStem: 98 88<97.4464 317.035> 150 303<562 602.323> 425 82<-83.4473 35 118.155 382.859>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 303 710 basechar 0
+AnchorPoint: "top" 303 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 72 103 N 1 0 0 1 0 0 2
@@ -10233,14 +10232,14 @@ Encoding: 286 286 196
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<222.643 356.088> 257 79<350.75 430> 604 75<372 447.154> 718 74<241.893 374.759>
-VStem: 63 93<133.876 362.178> 152 308<773.007 822> 430 87<112.366 256.839>
+HStem: -29 84<222.643 367.656> 257 79<350.75 430> 604 75<372 447.154> 737 74<241.893 374.759> 840 20G<178.5 194.5 419 433>
+VStem: 63 93<133.876 362.178> 152 308<792.007 841> 430 87<110.152 256.839>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 891 basechar 0
+AnchorPoint: "top" 304 910 basechar 0
 LayerCount: 2
 Fore
 Refer: 40 71 N 1 0 0 1 0 0 2
-Refer: 280 728 N 1 0 0 1 6 188 2
+Refer: 280 728 N 1 0 0 1 6 179 2
 Ligature2: "marks_compose" G uni0306
 EndChar
 
@@ -10252,7 +10251,7 @@ Flags: W
 HStem: -273 78<160.339 314.362> -29 82<224.744 359.347> 397 79<264.01 432.906> 530 74<237.893 370.759>
 VStem: 98 88<97.4464 317.035> 148 308<585.007 634> 425 82<-83.4473 35 118.155 382.859>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 303 703 basechar 0
+AnchorPoint: "top" 303 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 72 103 N 1 0 0 1 0 0 2
@@ -10265,14 +10264,14 @@ Encoding: 288 288 198
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 84<222.643 356.088> 257 79<350.75 430> 604 75<372 447.154> 718 123<258.847 351.481>
-VStem: 63 93<133.876 362.178> 241 128<735.442 822.427> 430 87<112.366 256.839>
+HStem: -29 84<222.643 367.656> 257 79<350.75 430> 604 75<372 447.154> 730 123<258.847 351.481>
+VStem: 63 93<133.876 362.178> 241 128<747.442 834.427> 430 87<110.152 256.839>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 891 basechar 0
+AnchorPoint: "top" 304 903 basechar 0
 LayerCount: 2
 Fore
 Refer: 40 71 N 1 0 0 1 0 0 2
-Refer: 281 729 N 1 0 0 1 5 188 2
+Refer: 281 729 N 1 0 0 1 5 160 2
 Ligature2: "marks_compose" G uni0307
 EndChar
 
@@ -10284,7 +10283,7 @@ Flags: W
 HStem: -273 78<160.339 314.362> -29 82<224.744 359.347> 397 79<264.01 432.906> 530 123<255.847 348.481>
 VStem: 98 88<97.4464 317.035> 238 128<547.442 634.427> 425 82<-83.4473 35 118.155 382.859>
 AnchorPoint: "bottom" 303 0 basechar 0
-AnchorPoint: "top" 303 703 basechar 0
+AnchorPoint: "top" 303 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 72 103 N 1 0 0 1 0 0 2
@@ -10329,14 +10328,14 @@ Encoding: 292 292 202
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -20 21G<121.5 136 446.5 461> 291 81<185 356.298> 320 76<266.732 418> 648 20G<134.5 148.5 459.5 473.5> 718 73<152.188 214.697 385.303 447.714>
-VStem: 91 92<-7.66968 291 372 655.621> 148 303<750 790.323> 411 96<-7.66968 73.0662> 418 92<-7.66968 320 396 655.621>
+HStem: -19 21G<121.5 136 446.5 461> 292 81<185 356.298> 321 76<266.732 418> 649 20G<134.5 148.5 459.5 473.5> 731 73<131.188 190.351 409.649 468.714> 862 20G<297.5 302.5>
+VStem: 91 92<-6.66968 292 373 656.621> 411 96<-6.66968 74.0662> 418 92<-6.66968 321 397 656.621>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 278 710 N 1 0 0 1 0 188 2
-Refer: 41 72 N 1 0 0 1 0 0 2
+Refer: 41 72 N 1 0 0 1 0 1 2
+Refer: 278 710 N 1 0 0 1 0 171 2
 Ligature2: "marks_compose" H uni0302
 EndChar
 
@@ -10348,7 +10347,7 @@ Flags: W
 HStem: -20 21G<134.5 149 446.5 459.5> 387 88<281.041 385.689> 698 20G<147.5 161.5> 768 73<152.188 214.697 385.303 447.714>
 VStem: 109 92<75.1265 296.254 380 705.621> 148 303<800 840.323> 404 97<-6.52831 301.312> 407 85<39.7358 365.539>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 948 basechar 0
+AnchorPoint: "top" 300 999 basechar 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 0 238 2
@@ -10361,13 +10360,13 @@ Encoding: 296 296 204
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 80<316.462 391.705> 765 80<213.79 284.593>
-VStem: 141 318<765.934 797.057> 253 96<67 582>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 743 80<316.462 391.705> 790 80<213.79 284.593> 835 20G<414.5 430>
+VStem: 141 318<790.934 822.057> 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 895 basechar 0
+AnchorPoint: "top" 300 920 basechar 0
 LayerCount: 2
 Fore
-Refer: 284 732 N 1 0 0 1 0 188 2
+Refer: 284 732 N 1 0 0 1 0 178 2
 Refer: 42 73 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" I tildecomb
 EndChar
@@ -10380,7 +10379,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 80<320.462 395.705> 577 80<217.79 288.593>
 VStem: 145 318<577.934 609.057> 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 707 basechar 0
+AnchorPoint: "top" 306 742 basechar 0
 LayerCount: 2
 Fore
 Refer: 284 732 N 1 0 0 1 4 0 2
@@ -10393,14 +10392,14 @@ Encoding: 298 298 206
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 740 82<104.239 493.669>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 768 82<104.239 493.669>
 VStem: 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 875 basechar 0
+AnchorPoint: "top" 300 903 basechar 0
 LayerCount: 2
 Fore
 Refer: 42 73 N 1 0 0 1 0 0 2
-Refer: 105 175 N 1 0 0 1 1 199 2
+Refer: 105 175 N 1 0 0 1 1 169 2
 Ligature2: "marks_compose" I uni0304
 EndChar
 
@@ -10412,7 +10411,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 82<108.239 497.669>
 VStem: 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 665 basechar 0
+AnchorPoint: "top" 306 723 basechar 0
 LayerCount: 2
 Fore
 Refer: 213 305 S 1 0 0 1 0 0 2
@@ -10425,13 +10424,13 @@ Encoding: 300 300 208
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 74<235.893 368.759>
-VStem: 146 308<773.007 822> 253 96<67 582>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 737 74<235.893 368.759> 840 20G<172.5 188.5 413 427>
+VStem: 146 308<792.007 841> 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 891 basechar 0
+AnchorPoint: "top" 300 910 basechar 0
 LayerCount: 2
 Fore
-Refer: 280 728 N 1 0 0 1 0 188 2
+Refer: 280 728 N 1 0 0 1 0 179 2
 Refer: 42 73 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" I uni0306
 EndChar
@@ -10444,7 +10443,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279> 530 74<231.893 364.759>
 VStem: 142 308<585.007 634> 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 703 basechar 0
+AnchorPoint: "top" 306 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 280 728 N 1 0 0 1 -4 0 2
@@ -10623,13 +10622,13 @@ Encoding: 304 304 212
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 123<253.847 346.481>
-VStem: 236 128<735.442 822.427> 253 96<67 582>
+HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 730 123<253.847 346.481>
+VStem: 236 128<747.442 834.427> 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 891 basechar 0
+AnchorPoint: "top" 300 903 basechar 0
 LayerCount: 2
 Fore
-Refer: 281 729 N 1 0 0 1 0 188 2
+Refer: 281 729 N 1 0 0 1 0 160 2
 Refer: 42 73 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" I uni0307
 EndChar
@@ -10641,7 +10640,7 @@ Flags: W
 HStem: -16 81<99.238 276 367 512.761> 378 81<134.283 279>
 VStem: 276 91<65 379.901>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 304 530 basechar 0
+AnchorPoint: "top" 304 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -10691,14 +10690,14 @@ Encoding: 308 308 214
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 95<233.713 379.109> 584 80<192.331 396> 718 73<130.188 192.697 363.303 425.714>
-VStem: 126 303<750 790.323> 395 84<297.594 584> 398 86<80.6997 397.406>
+HStem: -32 95<228.724 385.109> 585 80<198.331 402> 731 73<109.188 168.351 387.649 446.714> 862 20G<275.5 280.5>
+VStem: 401 84<298.594 585> 404 86<81.6997 398.406>
 AnchorPoint: "bottom" 278 0 basechar 0
-AnchorPoint: "top" 278 898 basechar 0
+AnchorPoint: "top" 278 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 278 710 N 1 0 0 1 -22 188 2
-Refer: 43 74 N 1 0 0 1 0 0 2
+Refer: 43 74 N 1 0 0 1 0 1 2
+Refer: 278 710 N 1 0 0 1 -22 171 2
 Ligature2: "marks_compose" J uni0302
 EndChar
 
@@ -10709,8 +10708,8 @@ GlyphClass: 2
 Flags: W
 HStem: -268 84<109.423 257.737> 370 84<126.378 353> 530 73<192.188 254.697 425.303 487.714>
 VStem: 188 303<562 602.323> 349 93<117.411 327.292> 358 87<-96.0669 218.22 222.113 262.733 265.262 370.993>
-AnchorPoint: "bottom" 294 0 basechar 0
-AnchorPoint: "top" 294 710 basechar 0
+AnchorPoint: "bottom" 304 0 basechar 0
+AnchorPoint: "top" 304 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 40 0 2
@@ -10755,14 +10754,14 @@ Encoding: 313 313 218
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -13 80<211 456.994> 718 128<324.932 354.1>
-VStem: 115 96<67 261.017> 142 82<90.0325 479.371> 142 89<227.14 647.621> 257 153
+HStem: -13 80<211 456.994> 640 20G<180.5 194.5> 721 187
+VStem: 115 96<67 261.017> 142 82<90.0325 479.371> 142 89<227.14 647.621> 214 240
 AnchorPoint: "bottom" 333 0 basechar 0
-AnchorPoint: "top" 333 896 basechar 0
+AnchorPoint: "top" 333 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 45 76 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 34 188 2
+Refer: 108 180 N 1 0 0 1 34 151 2
 Ligature2: "marks_compose" L acutecomb
 EndChar
 
@@ -10774,7 +10773,7 @@ Flags: W
 HStem: -26 80<355.942 476.227> 627 82<95.2842 236> 760 128<265.932 295.1>
 VStem: 198 153 230 90<90.6476 625.688>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 938 basechar 0
+AnchorPoint: "top" 301 1037 basechar 0
 LayerCount: 2
 Fore
 Refer: 77 108 N 1 0 0 1 0 0 2
@@ -10819,14 +10818,14 @@ Encoding: 323 323 222
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -13 21G<109.5 123 440.5 455.5> 718 128<290.932 320.1>
-VStem: 82 78<7.51783 468.467> 223 153 432 84<517.914 643.624> 441 77<129 614.859>
+HStem: -13 21G<109.5 123 440.5 455.5> 639 20G<138 145.5 466 481> 721 187
+VStem: 82 78<7.51783 468.467> 180 240 432 84<517.914 643.624> 441 77<129 614.859>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 47 78 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 0 188 2
+Refer: 108 180 N 1 0 0 1 0 151 2
 Ligature2: "marks_compose" N acutecomb
 EndChar
 
@@ -10838,7 +10837,7 @@ Flags: W
 HStem: -21 21G<140 153.5 457.5 471.5> 390 87<269.622 374.127> 530 128<290.932 320.1>
 VStem: 93 92<28.7998 307.153> 106 96<186.687 273.25 396.235 469.62> 223 153 392 86<100.809 374.796> 413 93<-7.62134 207.995>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 79 110 N 1 0 0 1 0 0 2
@@ -10883,13 +10882,13 @@ Encoding: 327 327 226
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -13 21G<109.5 123 440.5 455.5> 762 86<364 445.357> 771 77<156.677 221.629>
-VStem: 82 78<7.51783 468.467> 284 38<721 730.03> 432 84<517.914 643.624> 441 77<129 614.859>
+HStem: -13 21G<109.5 123 440.5 455.5> 639 20G<138 145.5 466 481> 798 86<395.108 467.331>
+VStem: 82 78<7.51783 468.467> 284 38<730 741.256> 432 84<517.914 643.624> 441 77<129 614.859>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 934 basechar 0
 LayerCount: 2
 Fore
-Refer: 279 711 N 1 0 0 1 3 188 2
+Refer: 279 711 N 1 0 0 1 3 169 2
 Refer: 47 78 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" N uni030C
 EndChar
@@ -10902,7 +10901,7 @@ Flags: W
 HStem: -21 21G<140 153.5 457.5 471.5> 390 87<269.622 374.127> 574 86<364 445.357> 583 77<156.677 221.629>
 VStem: 93 92<28.7998 307.153> 106 96<186.687 273.25 396.235 469.62> 284 38<533 542.03> 392 86<100.809 374.796> 413 93<-7.62134 207.995>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 279 711 N 1 0 0 1 3 0 2
@@ -10915,13 +10914,13 @@ Encoding: 332 332 228
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 740 82<105.239 494.669>
-VStem: 73 90<126.343 470.98> 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 768 82<105.239 494.669>
+VStem: 65 90<126.343 470.98> 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 875 basechar 0
+AnchorPoint: "top" 302 903 basechar 0
 LayerCount: 2
 Fore
-Refer: 105 175 S 1 0 0 1 2 199 2
+Refer: 105 175 S 1 0 0 1 2 169 2
 Refer: 48 79 S 1 0 0 1 0 0 2
 Ligature2: "marks_compose" O uni0304
 EndChar
@@ -10934,7 +10933,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 82<100.239 489.669>
 VStem: 82 96<107.614 339.452> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 665 basechar 0
+AnchorPoint: "top" 297 723 basechar 0
 LayerCount: 2
 Fore
 Refer: 105 175 S 1 0 0 1 -3 -11 2
@@ -10947,14 +10946,14 @@ Encoding: 334 334 230
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 74<237.893 370.759>
-VStem: 73 90<126.343 470.98> 148 308<773.007 822> 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 737 74<237.893 370.759> 840 20G<174.5 190.5 415 429>
+VStem: 65 90<126.343 470.98> 148 308<792.007 841> 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 891 basechar 0
+AnchorPoint: "top" 302 910 basechar 0
 LayerCount: 2
 Fore
 Refer: 48 79 N 1 0 0 1 0 0 2
-Refer: 280 728 N 1 0 0 1 2 188 2
+Refer: 280 728 N 1 0 0 1 2 179 2
 Ligature2: "marks_compose" O uni0306
 EndChar
 
@@ -10966,7 +10965,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 74<233.893 366.759>
 VStem: 82 96<107.614 339.452> 144 308<585.007 634> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 703 basechar 0
+AnchorPoint: "top" 297 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 80 111 N 1 0 0 1 0 0 2
@@ -10979,14 +10978,14 @@ Encoding: 336 336 232
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -23 79<214.808 354.984> 595 76<247.13 378.337> 718 130<201.001 233.031 369.666 399.777>
-VStem: 73 90<126.343 470.98> 143 319 442 88<151.843 518.969>
+HStem: -23 79<206.808 362.977> 595 76<238.89 386.337> 731 130<201.001 233.031 369.666 399.777>
+VStem: 65 90<126.343 470.98> 143 319 450 88<151.843 518.969>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 900 basechar 0
+AnchorPoint: "top" 302 913 basechar 0
 LayerCount: 2
 Fore
+Refer: 285 733 N 1 0 0 1 2 162 2
 Refer: 48 79 N 1 0 0 1 0 0 2
-Refer: 285 733 N 1 0 0 1 2 188 2
 Ligature2: "marks_compose" O uni030B
 EndChar
 
@@ -10998,7 +10997,7 @@ Flags: W
 HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 530 130<197.001 229.031 365.666 395.777>
 VStem: 82 96<107.614 339.452> 139 319 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 712 basechar 0
+AnchorPoint: "top" 297 751 basechar 0
 LayerCount: 2
 Fore
 Refer: 80 111 N 1 0 0 1 0 0 2
@@ -11011,14 +11010,14 @@ Encoding: 340 340 234
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -16 19G<145.5 159.5 496.5 514> 584 76<195 372.138> 648 20G<146.5 152.5> 718 128<318.932 348.1>
-VStem: 104 91<410.752 584> 113 74<21.7516 242 334 464.293> 113 82<21.7516 174.083 337.078 583.953> 113 91<-6.71582 174.083> 251 153 464 88<371.638 516.818>
+HStem: -16 19G<145.5 159.5 496.5 514> 584 76<195 372.138> 648 20G<146.5 152.5> 721 187
+VStem: 104 91<410.752 584> 113 74<21.7516 242 334 464.293> 113 82<21.7516 174.083 337.078 583.953> 113 91<-6.71582 174.083> 208 240 464 88<371.638 516.818>
 AnchorPoint: "bottom" 328 0 basechar 0
-AnchorPoint: "top" 328 896 basechar 0
+AnchorPoint: "top" 328 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 51 82 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 28 188 2
+Refer: 108 180 N 1 0 0 1 28 151 2
 Ligature2: "marks_compose" R acutecomb
 EndChar
 
@@ -11030,7 +11029,7 @@ Flags: W
 HStem: -22 21G<160.5 175> 287 186<416.291 487.234> 393 80<326.44 408.513> 461 20G<170.5 182.5> 530 128<296.932 326.1>
 VStem: 110 91<-7.7168 248.437> 124 95<371.422 469.621> 229 153 409 93<298.172 392.624>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 708 basechar 0
+AnchorPoint: "top" 306 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 6 0 2
@@ -11075,13 +11074,13 @@ Encoding: 344 344 238
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -16 19G<145.5 159.5 496.5 514> 584 76<195 372.138> 648 20G<146.5 152.5> 762 86<392 473.357> 771 77<184.677 249.629>
-VStem: 104 91<410.752 584> 113 74<21.7516 242 334 464.293> 113 82<21.7516 174.083 337.078 583.953> 113 91<-6.71582 174.083> 312 38<721 730.03> 464 88<371.638 516.818>
+HStem: -16 19G<145.5 159.5 496.5 514> 584 76<195 372.138> 648 20G<146.5 152.5> 798 86<423.108 495.331>
+VStem: 104 91<410.752 584> 113 74<21.7516 242 334 464.293> 113 82<21.7516 174.083 337.078 583.953> 113 91<-6.71582 174.083> 312 38<730 741.256> 464 88<371.638 516.818>
 AnchorPoint: "bottom" 328 0 basechar 0
-AnchorPoint: "top" 328 898 basechar 0
+AnchorPoint: "top" 328 934 basechar 0
 LayerCount: 2
 Fore
-Refer: 279 711 N 1 0 0 1 31 188 2
+Refer: 279 711 N 1 0 0 1 31 169 2
 Refer: 51 82 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" R uni030C
 EndChar
@@ -11094,7 +11093,7 @@ Flags: W
 HStem: -22 21G<160.5 175> 287 186<416.291 487.234> 393 80<326.44 408.513> 461 20G<170.5 182.5> 574 86<370 451.357> 583 77<162.677 227.629>
 VStem: 110 91<-7.7168 248.437> 124 95<371.422 469.621> 290 38<533 542.03> 409 93<298.172 392.624>
 AnchorPoint: "bottom" 306 0 basechar 0
-AnchorPoint: "top" 306 710 basechar 0
+AnchorPoint: "top" 306 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 83 114 N 1 0 0 1 0 0 2
@@ -11107,13 +11106,13 @@ Encoding: 346 346 240
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 79<189.301 354.821> 603 74<257.06 503.828> 718 128<293.932 323.1>
-VStem: 96 94<443.492 548.097> 226 153 444 93<130.311 265.927>
+HStem: -27 79<189.301 354.821> 603 74<257.06 503.828> 721 187
+VStem: 96 94<443.492 548.097> 183 240 444 93<130.311 265.927>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 896 basechar 0
+AnchorPoint: "top" 302 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 3 188 2
+Refer: 108 180 N 1 0 0 1 3 151 2
 Refer: 52 83 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" S acutecomb
 EndChar
@@ -11126,7 +11125,7 @@ Flags: W
 HStem: -33 82<209.34 343.217> 403 82<262.218 384.448> 530 128<290.932 320.1>
 VStem: 115 94<305.619 363.942> 223 153 415 94<103.933 170.943>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 84 115 N 1 0 0 1 0 0 2
@@ -11139,14 +11138,14 @@ Encoding: 348 348 242
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 79<189.301 354.821> 603 74<257.06 503.828> 718 73<154.188 216.697 387.303 449.714>
-VStem: 96 94<443.492 548.097> 150 303<750 790.323> 444 93<130.311 265.927>
+HStem: -26 79<189.301 354.821> 604 74<257.06 503.828> 731 73<133.188 192.351 411.649 470.714> 862 20G<299.5 304.5>
+VStem: 96 94<444.492 549.097> 444 93<131.311 266.927>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 898 basechar 0
+AnchorPoint: "top" 302 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 52 83 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 2 188 2
+Refer: 278 710 N 1 0 0 1 2 171 2
+Refer: 52 83 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" S uni0302
 EndChar
 
@@ -11158,7 +11157,7 @@ Flags: W
 HStem: -33 82<209.34 343.217> 403 82<262.218 384.448> 530 73<152.188 214.697 385.303 447.714>
 VStem: 115 94<305.619 363.942> 148 303<562 602.323> 415 94<103.933 170.943>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 0 0 2
@@ -11355,14 +11354,14 @@ Encoding: 352 352 246
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 79<189.301 354.821> 603 74<257.06 503.828> 762 86<367 448.357> 771 77<159.677 224.629>
-VStem: 96 94<443.492 548.097> 287 38<721 730.03> 444 93<130.311 265.927>
+HStem: -27 79<189.301 354.821> 603 74<257.06 503.828> 798 86<398.108 470.331>
+VStem: 96 94<443.492 548.097> 287 38<730 741.256> 444 93<130.311 265.927>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 898 basechar 0
+AnchorPoint: "top" 302 934 basechar 0
 LayerCount: 2
 Fore
 Refer: 52 83 N 1 0 0 1 0 0 2
-Refer: 279 711 N 1 0 0 1 6 188 2
+Refer: 279 711 N 1 0 0 1 6 169 2
 Ligature2: "marks_compose" S uni030C
 EndChar
 
@@ -11374,7 +11373,7 @@ Flags: W
 HStem: -33 82<209.34 343.217> 403 82<262.218 384.448> 574 86<364 445.357> 583 77<156.677 221.629>
 VStem: 115 94<305.619 363.942> 284 38<533 542.03> 415 94<103.933 170.943>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 279 711 N 1 0 0 1 3 0 2
@@ -11387,14 +11386,14 @@ Encoding: 356 356 248
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -12 21G<300.5 315> 572 83<349 525.715> 584 78<103.141 255> 589 79<77.3779 253.549> 762 86<365 446.357> 771 77<157.677 222.629>
-VStem: 255 94<288.531 577> 265 96<0.330322 152.708> 266 92<32.5535 453.702> 285 38<721 730.03>
+HStem: -12 21G<300.5 315> 572 83<349 535.715> 584 78<93.1406 255> 589 79<67.3779 253.549> 798 86<396.108 468.331>
+VStem: 255 94<288.531 577> 265 96<0.330322 152.708> 266 92<32.5535 453.702> 285 38<730 741.256>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 898 basechar 0
+AnchorPoint: "top" 301 934 basechar 0
 LayerCount: 2
 Fore
 Refer: 53 84 N 1 0 0 1 0 0 2
-Refer: 279 711 N 1 0 0 1 4 188 2
+Refer: 279 711 N 1 0 0 1 4 169 2
 Ligature2: "marks_compose" T uni030C
 EndChar
 
@@ -11419,13 +11418,13 @@ Encoding: 360 360 250
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 80<315.462 390.705> 765 80<212.79 283.593>
-VStem: 73 88<146.894 649.574> 140 318<765.934 797.057> 439 87<154.63 649.576>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 743 80<315.462 390.705> 790 80<212.79 283.593> 835 20G<413.5 429>
+VStem: 73 88<146.894 649.574> 140 318<790.934 822.057> 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 895 basechar 0
+AnchorPoint: "top" 300 920 basechar 0
 LayerCount: 2
 Fore
-Refer: 284 732 N 1 0 0 1 -1 188 2
+Refer: 284 732 N 1 0 0 1 -1 178 2
 Refer: 54 85 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" U tildecomb
 EndChar
@@ -11438,7 +11437,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 80<315.462 390.705> 577 80<212.79 283.593>
 VStem: 99 92<85.5469 459.669> 140 318<577.934 609.057> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 707 basechar 0
+AnchorPoint: "top" 300 742 basechar 0
 LayerCount: 2
 Fore
 Refer: 284 732 N 1 0 0 1 -1 0 2
@@ -11451,14 +11450,14 @@ Encoding: 362 362 252
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 740 82<103.239 492.669>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 768 82<103.239 492.669>
 VStem: 73 88<146.894 649.574> 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 875 basechar 0
+AnchorPoint: "top" 300 903 basechar 0
 LayerCount: 2
 Fore
 Refer: 54 85 N 1 0 0 1 0 0 2
-Refer: 105 175 N 1 0 0 1 0 199 2
+Refer: 105 175 N 1 0 0 1 0 169 2
 Ligature2: "marks_compose" U uni0304
 EndChar
 
@@ -11470,7 +11469,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 82<104.239 493.669>
 VStem: 99 92<85.5469 459.669> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 665 basechar 0
+AnchorPoint: "top" 300 723 basechar 0
 LayerCount: 2
 Fore
 Refer: 86 117 N 1 0 0 1 0 0 2
@@ -11483,13 +11482,13 @@ Encoding: 364 364 254
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 74<234.893 367.759>
-VStem: 73 88<146.894 649.574> 145 308<773.007 822> 439 87<154.63 649.576>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 737 74<234.893 367.759> 840 20G<171.5 187.5 412 426>
+VStem: 73 88<146.894 649.574> 145 308<792.007 841> 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 891 basechar 0
+AnchorPoint: "top" 300 910 basechar 0
 LayerCount: 2
 Fore
-Refer: 280 728 N 1 0 0 1 -1 188 2
+Refer: 280 728 N 1 0 0 1 -1 179 2
 Refer: 54 85 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" U uni0306
 EndChar
@@ -11502,7 +11501,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 74<235.893 368.759>
 VStem: 99 92<85.5469 459.669> 146 308<585.007 634> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 703 basechar 0
+AnchorPoint: "top" 300 731 basechar 0
 LayerCount: 2
 Fore
 Refer: 280 728 N 1 0 0 1 0 0 2
@@ -11515,13 +11514,13 @@ Encoding: 366 366 256
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 698 50<282.236 319.916> 799 50<282.04 319.071>
-VStem: 73 88<146.894 649.574> 219 60<751.767 794.303> 320 60<748.044 798.534> 439 87<154.63 649.576>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 701 42<256.166 341.834> 855 42<256.166 341.834>
+VStem: 73 88<146.894 649.574> 201 42<756.166 841.834> 355 42<756.166 841.834> 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 899 basechar 0
+AnchorPoint: "top" 300 947 basechar 0
 LayerCount: 2
 Fore
-Refer: 282 730 N 1 0 0 1 -1 188 2
+Refer: 282 730 N 1 0 0 1 -1 172 2
 Refer: 54 85 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" U uni030A
 EndChar
@@ -11534,7 +11533,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 510 50<283.236 320.916> 611 50<283.04 320.071>
 VStem: 99 92<85.5469 459.669> 220 60<563.767 606.303> 321 60<560.044 610.534> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 711 basechar 0
+AnchorPoint: "top" 300 775 basechar 0
 LayerCount: 2
 Fore
 Refer: 282 730 N 1 0 0 1 0 0 2
@@ -11547,14 +11546,14 @@ Encoding: 368 368 258
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 718 130<199.001 231.031 367.666 397.777>
+HStem: -27 85<231.587 357.409> 643 20G<116.5 127.5 474.5 485.5> 731 130<199.001 231.031 367.666 397.777>
 VStem: 73 88<146.894 649.574> 141 319 439 87<154.63 649.576>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 900 basechar 0
+AnchorPoint: "top" 300 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 285 733 N 1 0 0 1 0 188 2
 Refer: 54 85 N 1 0 0 1 0 0 2
+Refer: 285 733 N 1 0 0 1 0 162 2
 Ligature2: "marks_compose" U uni030B
 EndChar
 
@@ -11566,7 +11565,7 @@ Flags: W
 HStem: -16 87<212.912 326.603> 451 20G<139.5 151 439.5 450.5> 530 130<200.001 232.031 368.666 398.777>
 VStem: 99 92<85.5469 459.669> 142 319 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 712 basechar 0
+AnchorPoint: "top" 300 751 basechar 0
 LayerCount: 2
 Fore
 Refer: 285 733 N 1 0 0 1 1 0 2
@@ -11664,7 +11663,7 @@ Flags: W
 HStem: -264 83<361.435 465.311> -16 87<206.912 333.598> 451 20G<133.5 145 446.5 457.5>
 VStem: 93 92<85.5469 459.669> 411 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -11745,14 +11744,14 @@ Encoding: 372 372 262
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -10 21G<170.5 184 412.5 426> 645 22G<92.5 98.5 306.5 322.5 504.5 518.5> 718 73<152.188 214.697 385.303 447.714>
-VStem: 53 81<375.716 660.804> 148 303<750 790.323> 468 78<304.719 659.925>
+HStem: -9 21G<170.5 184 412.5 426> 647 20G<83.5 89.5 514.5 528.5> 731 73<131.188 190.351 409.649 468.714> 862 20G<297.5 302.5>
+VStem: 45 81<386.161 661.367> 477 78<354.613 658.88>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 56 87 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 0 188 2
+Refer: 278 710 N 1 0 0 1 0 171 2
+Refer: 56 87 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" W uni0302
 EndChar
 
@@ -11764,7 +11763,7 @@ Flags: W
 HStem: -25 21G<182 189.5 408.5 424.5> 530 73<154.188 216.697 387.303 449.714>
 VStem: 150 303<562 602.323> 262 94<333.277 457.763>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 88 119 N 1 0 0 1 0 0 2
@@ -11777,14 +11776,14 @@ Encoding: 374 374 264
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 718 73<154.188 216.697 387.303 449.714>
-VStem: 150 303<750 790.323> 249 102<-7.20899 278.896>
+HStem: -36 21G<296 302> 645 20G<103.5 110 497 503> 731 73<133.188 192.351 411.649 470.714> 862 20G<299.5 304.5>
+VStem: 249 102<-6.20899 279.896>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 898 basechar 0
+AnchorPoint: "top" 302 932 basechar 0
 LayerCount: 2
 Fore
-Refer: 58 89 N 1 0 0 1 0 0 2
-Refer: 278 710 N 1 0 0 1 2 188 2
+Refer: 278 710 N 1 0 0 1 2 171 2
+Refer: 58 89 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Y uni0302
 EndChar
 
@@ -11796,7 +11795,7 @@ Flags: W
 HStem: 453 20G<113.5 120 497 503> 530 73<160.188 222.697 393.303 455.714>
 VStem: 156 303<562 602.323>
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 710 basechar 0
+AnchorPoint: "top" 308 761 basechar 0
 LayerCount: 2
 Fore
 Refer: 90 121 N 1 0 0 1 0 0 2
@@ -11809,14 +11808,14 @@ Encoding: 376 376 266
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 718 120<172.425 257.53 348.471 433.53>
-VStem: 156 118<735.61 821.436> 249 102<-7.20899 278.896> 332 118<735.61 821.436>
+HStem: -36 21G<296 302> 645 20G<103.5 110 497 503> 743 120<152.425 237.53 368.471 453.53>
+VStem: 136 118<760.61 846.436> 249 102<-6.20899 279.896> 352 118<760.61 846.436>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 888 basechar 0
+AnchorPoint: "top" 302 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 58 89 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 5 109 2
+Refer: 102 168 N 1 0 0 1 5 91 2
+Refer: 58 89 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Y uni0308
 EndChar
 
@@ -11825,14 +11824,14 @@ Encoding: 377 377 267
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 718 128<290.932 320.1>
-VStem: 223 153
+HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 721 187
+VStem: 180 240
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 958 basechar 0
 LayerCount: 2
 Fore
 Refer: 59 90 N 1 0 0 1 0 0 2
-Refer: 108 180 N 1 0 0 1 0 188 2
+Refer: 108 180 N 1 0 0 1 0 151 2
 Ligature2: "marks_compose" Z acutecomb
 EndChar
 
@@ -11844,7 +11843,7 @@ Flags: W
 HStem: -5 84<202.991 497.714> 378 80<111.284 399> 385 84<111.284 253.803> 530 128<289.932 319.1>
 VStem: 222 153
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 298 708 basechar 0
+AnchorPoint: "top" 298 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 -1 0 2
@@ -11857,13 +11856,13 @@ Encoding: 379 379 269
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 718 123<253.847 346.481>
-VStem: 236 128<735.442 822.427>
+HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 730 123<253.847 346.481>
+VStem: 236 128<747.442 834.427>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 891 basechar 0
+AnchorPoint: "top" 300 903 basechar 0
 LayerCount: 2
 Fore
-Refer: 281 729 N 1 0 0 1 0 188 2
+Refer: 281 729 N 1 0 0 1 0 160 2
 Refer: 59 90 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" Z uni0307
 EndChar
@@ -11876,7 +11875,7 @@ Flags: W
 HStem: -5 84<202.991 497.714> 378 80<111.284 399> 385 84<111.284 253.803> 530 123<252.847 345.481>
 VStem: 235 128<547.442 634.427>
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 298 703 basechar 0
+AnchorPoint: "top" 298 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 91 122 N 1 0 0 1 0 0 2
@@ -11889,13 +11888,13 @@ Encoding: 381 381 271
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 762 86<364 445.357> 771 77<156.677 221.629>
-VStem: 284 38<721 730.03>
+HStem: -5 84<176.272 516.714> 575 87<94.5713 393> 578 73<141.983 393> 798 86<395.108 467.331>
+VStem: 284 38<730 741.256>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 898 basechar 0
+AnchorPoint: "top" 300 934 basechar 0
 LayerCount: 2
 Fore
-Refer: 279 711 N 1 0 0 1 3 188 2
+Refer: 279 711 N 1 0 0 1 3 169 2
 Refer: 59 90 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" Z uni030C
 EndChar
@@ -11908,7 +11907,7 @@ Flags: W
 HStem: -5 84<202.991 497.714> 378 80<111.284 399> 385 84<111.284 253.803> 574 86<363 444.357> 583 77<155.677 220.629>
 VStem: 283 38<533 542.03>
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 298 710 basechar 0
+AnchorPoint: "top" 298 765 basechar 0
 LayerCount: 2
 Fore
 Refer: 91 122 N 1 0 0 1 0 0 2
@@ -11987,7 +11986,7 @@ Flags: W
 HStem: -268 84<109.423 257.737> 370 84<126.378 353>
 VStem: 349 93<117.411 327.292> 358 87<-96.0669 218.22 222.113 262.733 265.262 370.993>
 AnchorPoint: "bottom" 272 0 basechar 0
-AnchorPoint: "top" 340 530 basechar 0
+AnchorPoint: "top" 340 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12037,41 +12036,40 @@ StartChar: circumflex
 Encoding: 710 710 278
 Width: 600
 Flags: W
-HStem: 530 73<152.188 214.697 385.303 447.714> 640 20G<297.5 302.5>
-VStem: 148 303<562 602.323>
+HStem: 560 73<131.188 190.351 409.649 468.714> 691 20G<297.5 302.5>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 761 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-318 656 m 1
- 395 621 410 613 425 605 c 0
- 426 604 427 603 428 603 c 2
- 428 603 428 603 429 603 c 0
- 443 596 451 582 451 567 c 0
- 451 562 450 557 448 552 c 0
- 442 538 429 530 414 530 c 0
- 409 530 403 531 398 533 c 0
- 395 534 392 536 389 538 c 0
- 385 541 381 543 376 546 c 0
- 368 551 359 556 300 583 c 1
- 240 556 232 551 224 546 c 0
- 219 543 215 541 210 538 c 0
- 208 536 205 534 202 533 c 1
- 201 533 l 1
- 196 531 191 530 186 530 c 0
- 171 530 158 538 152 552 c 0
- 150 557 148 562 148 568 c 0
- 148 582 157 596 171 603 c 1
- 171 603 171 603 172 603 c 0
- 173 603 174 604 175 605 c 0
- 190 613 205 621 282 656 c 1
- 282 656 282 656 283 657 c 1
- 284 657 l 1
- 289 659 295 660 300 660 c 0
- 305 660 311 659 316 657 c 1
- 316 657 316 657 317 657 c 1
- 317 656 318 656 318 656 c 1
+318 707 m 1
+ 416 651 431 643 446 635 c 0
+ 447 634 448 633 449 633 c 2
+ 449 633 449 633 450 633 c 0
+ 464 626 472 612 472 597 c 0
+ 472 592 471 587 469 582 c 0
+ 463 568 450 560 435 560 c 0
+ 430 560 424 561 419 563 c 0
+ 416 564 413 566 410 568 c 0
+ 406 571 402 573 397 576 c 0
+ 389 581 380 586 300 634 c 1
+ 219 586 211 581 203 576 c 0
+ 198 573 194 571 189 568 c 0
+ 187 566 184 564 181 563 c 1
+ 180 563 l 1
+ 175 561 170 560 165 560 c 0
+ 150 560 137 568 131 582 c 0
+ 129 587 127 592 127 598 c 0
+ 127 612 136 626 150 633 c 1
+ 150 633 150 633 151 633 c 0
+ 152 633 153 634 154 635 c 0
+ 169 643 184 651 282 707 c 1
+ 282 707 282 707 283 708 c 1
+ 284 708 l 1
+ 289 710 295 711 300 711 c 0
+ 305 711 311 710 316 708 c 1
+ 316 708 316 708 317 708 c 1
+ 317 707 318 707 318 707 c 1
 EndSplineSet
 EndChar
 
@@ -12079,38 +12077,37 @@ StartChar: caron
 Encoding: 711 711 279
 Width: 600
 Flags: W
-HStem: 574 86<361 442.357> 583 77<153.677 218.629>
-VStem: 281 38<533 542.03>
+HStem: 629 86<392.108 464.331>
+VStem: 281 38<561 572.256>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 710 basechar 0
+AnchorPoint: "top" 300 765 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-300 618 m 1x60
- 364 646 379 652 393 657 c 0
- 399 659 404 660 410 660 c 0xa0
- 426 660 440 652 447 637 c 0
- 449 632 450 626 450 620 c 0
- 450 604 442 590 426 583 c 0x60
- 419 580 413 577 406 574 c 0
- 398 569 389 565 319 534 c 0
- 319 533 318 533 318 533 c 1
- 317 533 l 1
- 312 531 308 530 304 530 c 0
- 303 530 301 530 300 530 c 0
- 298 530 297 530 296 530 c 2
- 282 533 l 1
- 281 533 l 1
- 281 533 281 533 281 534 c 0
- 210 565 202 569 193 574 c 0xa0
- 187 577 180 580 174 583 c 1
- 173 583 l 1
- 158 590 150 604 150 620 c 0
- 150 626 151 631 153 637 c 0
- 160 652 174 660 190 660 c 0
- 195 660 201 659 206 657 c 1
- 207 657 l 1
- 220 652 236 646 300 618 c 1x60
+300 646 m 1
+ 386 701 402 707 416 712 c 0
+ 422 714 426 715 432 715 c 0
+ 448 715 463 707 470 692 c 0
+ 472 687 472 681 472 675 c 0
+ 472 659 464 645 448 638 c 0
+ 441 635 435 632 428 629 c 0
+ 420 624 411 620 319 562 c 0
+ 319 561 318 561 318 561 c 1
+ 317 561 l 1
+ 312 559 308 558 304 558 c 0
+ 303 558 301 558 300 558 c 0
+ 298 558 297 558 296 558 c 2
+ 282 561 l 1
+ 281 561 l 1
+ 281 561 281 561 281 562 c 0
+ 187 620 179 624 170 629 c 0
+ 164 632 158 635 152 638 c 1
+ 150 638 l 1
+ 135 645 128 659 128 675 c 0
+ 128 681 128 686 130 692 c 0
+ 137 707 152 715 168 715 c 0
+ 173 715 179 714 184 712 c 1
+ 197 707 214 701 300 646 c 1
 EndSplineSet
 EndChar
 
@@ -12118,25 +12115,25 @@ StartChar: breve
 Encoding: 728 728 280
 Width: 600
 Flags: W
-HStem: 530 74<235.893 368.759>
-VStem: 146 308<585.007 634>
+HStem: 558 74<235.893 368.759> 661 20G<172.5 188.5 413 427>
+VStem: 146 308<613.007 662>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 703 basechar 0
+AnchorPoint: "top" 300 731 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-163 585 m 1
- 163 585 146 595 146 616 c 0
- 146 636 162 653 183 653 c 0
- 194 653 195 652 226 632 c 0
- 262 609 282 604 298 604 c 0
- 336 604 353 615 378 632 c 2
- 396 644 l 2
- 402 648 409 650 417 650 c 0
- 437 650 454 634 454 613 c 0
- 454 592 437 583 437 582 c 0
- 384 547 359 530 298 530 c 0
- 247 530 213 552 163 585 c 1
+163 613 m 1
+ 163 613 146 623 146 644 c 0
+ 146 664 162 681 183 681 c 0
+ 194 681 195 680 226 660 c 0
+ 262 637 282 632 298 632 c 0
+ 336 632 353 643 378 660 c 2
+ 396 672 l 2
+ 402 676 409 678 417 678 c 0
+ 437 678 454 662 454 641 c 0
+ 454 620 437 611 437 610 c 0
+ 384 575 359 558 298 558 c 0
+ 247 558 213 580 163 613 c 1
 EndSplineSet
 EndChar
 
@@ -12144,24 +12141,24 @@ StartChar: dotaccent
 Encoding: 729 729 281
 Width: 600
 Flags: W
-HStem: 530 123<253.847 346.481>
-VStem: 236 128<547.442 634.427>
+HStem: 570 123<253.847 346.481>
+VStem: 236 128<587.442 674.427>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 703 basechar 0
+AnchorPoint: "top" 300 743 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-302 531 m 0
- 299 531 296 530 294 530 c 0
- 277 530 264 536 254 548 c 0
- 242 561 236 577 236 593 c 0
- 236 609 243 623 257 634 c 0
- 270 646 286 652 302 653 c 1
- 302 653 303 653 304 653 c 0
- 321 653 336 647 347 636 c 0
- 359 625 364 610 364 594 c 0
- 364 577 359 563 347 552 c 0
- 336 540 321 533 302 531 c 0
+302 571 m 0
+ 299 571 296 570 294 570 c 0
+ 277 570 264 576 254 588 c 0
+ 242 601 236 617 236 633 c 0
+ 236 649 243 663 257 674 c 0
+ 270 686 286 692 302 693 c 1
+ 302 693 303 693 304 693 c 0
+ 321 693 336 687 347 676 c 0
+ 359 665 364 650 364 634 c 0
+ 364 617 359 603 347 592 c 0
+ 336 580 321 573 302 571 c 0
 EndSplineSet
 EndChar
 
@@ -12169,33 +12166,23 @@ StartChar: ring
 Encoding: 730 730 282
 Width: 600
 Flags: W
-HStem: 510 50<283.236 320.916> 611 50<283.04 320.071>
-VStem: 220 60<563.767 606.303> 321 60<560.044 610.534>
+HStem: 529 42<257.166 342.834> 683 42<257.166 342.834>
+VStem: 202 42<584.166 669.834> 356 42<584.166 669.834>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 711 basechar 0
+AnchorPoint: "top" 300 775 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-299 510 m 0
- 274 510 255 517 241 531 c 0
- 227 546 220 563 220 584 c 0
- 220 593 222 601 224 610 c 0
- 226 619 232 627 239 635 c 0
- 245 642 255 648 266 654 c 0
- 277 659 291 661 308 661 c 0
- 338 661 358 654 367 637 c 0
- 376 620 381 600 381 576 c 0
- 381 560 372 546 356 531 c 0
- 339 517 320 510 299 510 c 0
-301 560 m 0
- 306 560 310 562 314 567 c 0
- 318 572 321 577 321 583 c 0
- 321 587 319 593 317 600 c 0
- 315 607 310 611 302 611 c 0
- 294 611 289 608 285 602 c 0
- 282 597 280 591 280 585 c 0
- 280 580 282 573 286 567 c 0
- 289 562 294 560 301 560 c 0
+300 725 m 0
+ 354 725 398 681 398 627 c 0
+ 398 573 354 529 300 529 c 0
+ 246 529 202 573 202 627 c 0
+ 202 681 246 725 300 725 c 0
+300 683 m 0
+ 269 683 244 658 244 627 c 0
+ 244 596 269 571 300 571 c 0
+ 331 571 356 596 356 627 c 0
+ 356 658 331 683 300 683 c 0
 EndSplineSet
 EndChar
 
@@ -12206,7 +12193,7 @@ Flags: W
 HStem: -264 83<273.435 377.311>
 VStem: 181 239<-220.593 -171>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12248,31 +12235,31 @@ StartChar: tilde
 Encoding: 732 732 284
 Width: 600
 Flags: W
-HStem: 530 80<316.462 391.705> 577 80<213.79 284.593>
-VStem: 141 318<577.934 609.057>
+HStem: 565 80<316.462 391.705> 612 80<213.79 284.593> 657 20G<414.5 430>
+VStem: 141 318<612.934 644.057>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 707 basechar 0
+AnchorPoint: "top" 300 742 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-354 610 m 0xa0
- 363 610 363 610 378 622 c 1
- 395 634 l 2
- 402 639 410 642 419 642 c 0
- 441 642 459 624 459 602 c 0
- 459 589 453 577 443 570 c 0
- 398 537 389 530 354 530 c 0xa0
- 322 530 309 538 281 558 c 0
- 264 571 257 577 244 577 c 0
- 242 577 241 576 235 571 c 0
- 232 569 232 569 205 549 c 0
- 198 544 190 541 181 541 c 0
- 159 541 141 559 141 581 c 0
- 141 594 147 606 157 613 c 0
- 173 625 173 625 193 640 c 0
- 208 651 220 657 244 657 c 0x60
- 281 657 298 645 334 619 c 0
- 345 611 346 610 354 610 c 0xa0
+354 645 m 0x90
+ 363 645 363 645 378 657 c 1
+ 395 669 l 2
+ 402 674 410 677 419 677 c 0
+ 441 677 459 659 459 637 c 0
+ 459 624 453 612 443 605 c 0
+ 398 572 389 565 354 565 c 0xb0
+ 322 565 309 573 281 593 c 0
+ 264 606 257 612 244 612 c 0
+ 242 612 241 611 235 606 c 0
+ 232 604 232 604 205 584 c 0
+ 198 579 190 576 181 576 c 0
+ 159 576 141 594 141 616 c 0
+ 141 629 147 641 157 648 c 0
+ 173 660 173 660 193 675 c 0
+ 208 686 220 692 244 692 c 0x50
+ 281 692 298 680 334 654 c 0
+ 345 646 346 645 354 645 c 0x90
 EndSplineSet
 EndChar
 
@@ -12280,55 +12267,55 @@ StartChar: hungarumlaut
 Encoding: 733 733 285
 Width: 600
 Flags: W
-HStem: 530 130<199.001 231.031 367.666 397.777>
+HStem: 569 130<199.001 231.031 367.666 397.777>
 VStem: 141 319
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 712 basechar 0
+AnchorPoint: "top" 300 751 basechar 0
 LayerCount: 2
 Fore
 SplineSet
-279 589 m 0
- 268 580 264 575 259 571 c 0
- 254 567 248 562 242 558 c 0
- 236 555 230 551 224 548 c 0
- 218 545 213 543 207 541 c 0
- 195 534 185 530 176 530 c 0
- 174 530 173 531 171 531 c 0
- 162 534 153 538 147 545 c 0
- 143 550 141 555 141 561 c 0
- 141 565 142 569 143 573 c 0
- 147 584 155 594 164 601 c 0
- 167 604 171 608 175 612 c 2
- 188 624 l 2
- 192 629 196 633 199 638 c 0
- 202 643 206 646 209 648 c 0
- 216 656 224 660 233 660 c 0
- 236 660 238 660 241 659 c 0
- 244 658 246 657 249 656 c 0
- 257 654 264 650 271 644 c 0
- 277 638 283 630 288 620 c 0
- 289 616 290 613 290 609 c 0
- 290 607 290 604 289 602 c 0
- 287 597 284 593 279 589 c 0
-453 590 m 0
- 437 574 427 566 413 559 c 0
- 399 552 386 547 376 543 c 0
- 363 534 354 530 346 530 c 0
- 345 530 344 530 343 530 c 0
- 334 532 326 535 319 542 c 0
- 314 547 312 552 312 559 c 0
- 312 562 313 566 314 570 c 0
- 317 581 324 592 333 600 c 0
- 340 606 348 614 356 624 c 0
- 365 634 371 642 375 649 c 0
- 382 657 391 662 401 662 c 0
- 402 662 403 662 404 662 c 0
- 408 662 413 662 415 661 c 0
- 422 659 427 656 433 651 c 0
- 437 648 441 644 445 639 c 0
- 449 635 453 630 456 624 c 0
- 458 618 460 612 460 606 c 0
- 460 600 457 595 453 590 c 0
+279 628 m 0
+ 268 619 264 614 259 610 c 0
+ 254 606 248 601 242 597 c 0
+ 236 594 230 590 224 587 c 0
+ 218 584 213 582 207 580 c 0
+ 195 573 185 569 176 569 c 0
+ 174 569 173 570 171 570 c 0
+ 162 573 153 577 147 584 c 0
+ 143 589 141 594 141 600 c 0
+ 141 604 142 608 143 612 c 0
+ 147 623 155 633 164 640 c 0
+ 167 643 171 647 175 651 c 2
+ 188 663 l 2
+ 192 668 196 672 199 677 c 0
+ 202 682 206 685 209 687 c 0
+ 216 695 224 699 233 699 c 0
+ 236 699 238 699 241 698 c 0
+ 244 697 246 696 249 695 c 0
+ 257 693 264 689 271 683 c 0
+ 277 677 283 669 288 659 c 0
+ 289 655 290 652 290 648 c 0
+ 290 646 290 643 289 641 c 0
+ 287 636 284 632 279 628 c 0
+453 629 m 0
+ 437 613 427 605 413 598 c 0
+ 399 591 386 586 376 582 c 0
+ 363 573 354 569 346 569 c 0
+ 345 569 344 569 343 569 c 0
+ 334 571 326 574 319 581 c 0
+ 314 586 312 591 312 598 c 0
+ 312 601 313 605 314 609 c 0
+ 317 620 324 631 333 639 c 0
+ 340 645 348 653 356 663 c 0
+ 365 673 371 681 375 688 c 0
+ 382 696 391 701 401 701 c 0
+ 402 701 403 701 404 701 c 0
+ 408 701 413 701 415 700 c 0
+ 422 698 427 695 433 690 c 0
+ 437 687 441 683 445 678 c 0
+ 449 674 453 669 456 663 c 0
+ 458 657 460 651 460 645 c 0
+ 460 639 457 634 453 629 c 0
 EndSplineSet
 EndChar
 
@@ -12337,13 +12324,13 @@ Encoding: 7808 7808 286
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -10 21G<170.5 184 412.5 426> 645 22G<92.5 98.5 306.5 322.5 504.5 518.5> 718 128<278.934 308.261>
-VStem: 53 81<375.716 660.804> 223 154 468 78<304.719 659.925>
+HStem: -10 21G<170.5 184 412.5 426> 646 20G<83.5 89.5 514.5 528.5> 721 185
+VStem: 45 81<385.161 660.367> 180 240 477 78<353.613 657.88>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 956 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 0 188 2
+Refer: 620 -1 N 1 0 0 1 0 151 2
 Refer: 56 87 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" W gravecomb
 EndChar
@@ -12356,7 +12343,7 @@ Flags: W
 HStem: -25 21G<182 189.5 408.5 424.5> 530 128<280.934 310.261>
 VStem: 225 154 262 94<333.277 457.763>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 2 0 2
@@ -12369,13 +12356,13 @@ Encoding: 7810 7810 288
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -10 21G<170.5 184 412.5 426> 645 22G<92.5 98.5 306.5 322.5 504.5 518.5> 718 128<290.932 320.1>
-VStem: 53 81<375.716 660.804> 223 153 468 78<304.719 659.925>
+HStem: -10 21G<170.5 184 412.5 426> 646 20G<83.5 89.5 514.5 528.5> 721 187
+VStem: 45 81<385.161 660.367> 180 240 477 78<353.613 657.88>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 896 basechar 0
+AnchorPoint: "top" 300 958 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 0 188 2
+Refer: 108 180 N 1 0 0 1 0 151 2
 Refer: 56 87 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" W acutecomb
 EndChar
@@ -12388,7 +12375,7 @@ Flags: W
 HStem: -25 21G<182 189.5 408.5 424.5> 530 128<292.932 322.1>
 VStem: 225 153 262 94<333.277 457.763>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 708 basechar 0
+AnchorPoint: "top" 300 807 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 2 0 2
@@ -12401,14 +12388,14 @@ Encoding: 7812 7812 290
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -10 21G<170.5 184 412.5 426> 645 22G<92.5 98.5 306.5 322.5 504.5 518.5> 718 120<168.425 253.53 344.471 429.53>
-VStem: 53 81<375.716 660.804> 152 118<735.61 821.436> 328 118<735.61 821.436> 468 78<304.719 659.925>
+HStem: -9 21G<170.5 184 412.5 426> 647 20G<83.5 89.5 514.5 528.5> 743 120<148.425 233.53 364.471 449.53>
+VStem: 45 81<386.161 661.367> 132 118<760.61 846.436> 348 118<760.61 846.436> 477 78<354.613 658.88>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 888 basechar 0
+AnchorPoint: "top" 300 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 56 87 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 1 109 2
+Refer: 102 168 N 1 0 0 1 1 91 2
+Refer: 56 87 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" W uni0308
 EndChar
 
@@ -12420,7 +12407,7 @@ Flags: W
 HStem: -25 21G<182 189.5 408.5 424.5> 530 120<171.425 256.53 347.471 432.53>
 VStem: 155 118<547.61 633.436> 262 94<333.277 457.763> 331 118<547.61 633.436>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 700 basechar 0
+AnchorPoint: "top" 300 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 102 168 S 1 0 0 1 4 -79 2
@@ -12433,13 +12420,13 @@ Encoding: 7922 7922 292
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 718 128<280.934 310.261>
-VStem: 225 154 249 102<-7.20899 278.896>
+HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 721 185
+VStem: 182 240 249 102<-7.20899 278.896>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 896 basechar 0
+AnchorPoint: "top" 302 956 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 2 188 2
+Refer: 620 -1 N 1 0 0 1 2 151 2
 Refer: 58 89 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" Y gravecomb
 EndChar
@@ -12452,7 +12439,7 @@ Flags: W
 HStem: 453 20G<113.5 120 497 503> 530 128<286.934 316.261>
 VStem: 231 154
 AnchorPoint: "bottom" 308 0 basechar 0
-AnchorPoint: "top" 308 708 basechar 0
+AnchorPoint: "top" 308 805 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 8 0 2
@@ -12466,7 +12453,7 @@ Width: 600
 Flags: W
 HStem: 233 81<82.2388 511.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12496,7 +12483,7 @@ Width: 600
 Flags: W
 HStem: 234 78<58.2388 546.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12597,7 +12584,7 @@ Width: 600
 Flags: W
 VStem: 204 193
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 13 44 N 1 0 0 1 22 0 2
@@ -12766,7 +12753,7 @@ Flags: W
 HStem: 155 228<228.705 373.948>
 VStem: 181 240<199.538 339.911>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12792,7 +12779,7 @@ HStem: -12 100<73.3779 150.575 261.378 338.575 449.378 526.575>
 VStem: 58 107<4.47021 73.5298> 246 107<4.47021 73.5298> 434 107<4.47021 73.5298>
 CounterMasks: 1 70
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12840,7 +12827,7 @@ Flags: W
 HStem: 458 20G<407 414>
 VStem: 152 296
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12883,7 +12870,7 @@ Flags: W
 HStem: 458 20G<186 193>
 VStem: 152 296
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13340,7 +13327,7 @@ Width: 600
 Flags: W
 HStem: 234 79<82.3311 525.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13506,7 +13493,7 @@ Width: 600
 Flags: W
 HStem: 227 84<-20 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13524,7 +13511,7 @@ Width: 600
 Flags: W
 HStem: 185 168<-20 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13544,7 +13531,7 @@ HStem: 185 168<34 166 234 366 434 566>
 VStem: 34 132<185 353> 234 132<185 353> 434 132<185 353>
 CounterMasks: 1 70
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13754,7 +13741,7 @@ HStem: 227 84<34 166 234 366 434 566>
 VStem: 34 132<227 311> 234 132<227 311> 434 132<227 311>
 CounterMasks: 1 70
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13783,7 +13770,7 @@ Flags: W
 HStem: 227 84<23 127 173 277 323 427 473 577>
 VStem: 23 104<227 311> 173 104<227 311> 323 104<227 311> 473 104<227 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13817,7 +13804,7 @@ Flags: W
 HStem: 185 168<23 127 173 277 323 427 473 577>
 VStem: 23 104<185 353> 173 104<185 353> 323 104<185 353> 473 104<185 353>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13851,7 +13838,7 @@ Flags: W
 HStem: 227 84<342 620>
 VStem: 258 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13872,7 +13859,7 @@ Flags: W
 HStem: 185 168<342 620>
 VStem: 258 84<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13893,7 +13880,7 @@ Flags: W
 HStem: 227 84<384 620>
 VStem: 216 168<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13914,7 +13901,7 @@ Flags: W
 HStem: 185 168<384 620>
 VStem: 216 168<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13935,7 +13922,7 @@ Flags: W
 HStem: 227 84<-20 258>
 VStem: 258 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13956,7 +13943,7 @@ Flags: W
 HStem: 185 168<-20 258>
 VStem: 258 84<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13977,7 +13964,7 @@ Flags: W
 HStem: 227 84<-20 216>
 VStem: 216 168<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -13998,7 +13985,7 @@ Flags: W
 HStem: 185 168<-20 216>
 VStem: 216 168<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -14187,7 +14174,7 @@ Flags: W
 HStem: -269 150<102.177 194.194> 44 149<102.478 195.191>
 VStem: 76 148<71.552 167.193> 76 149<-238.862 -144.214>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 423 10304 S 1 0 0 1 0 0 2
@@ -14608,7 +14595,7 @@ Flags: W
 HStem: -269 150<102.177 194.194 401.63 494.005> 44 149<102.478 195.191 402.805 495.875>
 VStem: 76 148<71.552 167.193> 76 149<-238.862 -144.214> 376 148<-239.456 -143.679 71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -14665,7 +14652,7 @@ Flags: W
 HStem: -269 150<102.177 194.194 401.63 494.005> 44 149<402.805 495.875>
 VStem: 76 149<-238.862 -144.214> 376 148<-239.456 -143.679 71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -15074,7 +15061,7 @@ Flags: W
 HStem: -269 150<102.177 194.194 401.63 494.005> 44 149<102.478 195.191>
 VStem: 76 148<71.552 167.193> 76 149<-238.862 -144.214> 376 148<-239.456 -143.679>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -15130,7 +15117,7 @@ Flags: W
 HStem: -269 150<102.177 194.194 401.63 494.005>
 VStem: 76 149<-238.862 -144.214> 376 148<-239.456 -143.679>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -15316,7 +15303,7 @@ Flags: W
 HStem: -256 150<102.177 194.194>
 VStem: 76 149<-225.862 -131.214>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -15337,7 +15324,7 @@ Encoding: 10240 10240 424
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -15401,7 +15388,7 @@ Flags: W
 HStem: 82 149<102.478 195.191>
 VStem: 76 148<109.552 205.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -15899,7 +15886,7 @@ Flags: W
 HStem: -269 150<401.63 494.005> 44 149<102.478 195.191 402.805 495.875>
 VStem: 76 148<71.552 167.193> 376 148<-239.456 -143.679 71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -15956,7 +15943,7 @@ Flags: W
 HStem: -269 150<401.63 494.005> 44 149<402.805 495.875>
 VStem: 376 148<-239.456 -143.679 71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -16351,7 +16338,7 @@ Flags: W
 HStem: -269 150<401.63 494.005> 44 149<102.478 195.191>
 VStem: 76 148<71.552 167.193> 376 148<-239.456 -143.679>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 497 10368 S 1 0 0 1 0 0 2
@@ -16408,7 +16395,7 @@ Flags: W
 HStem: -256 150<401.63 494.005>
 VStem: 376 148<-226.456 -130.679>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -16814,7 +16801,7 @@ Flags: W
 HStem: -269 150<102.177 194.194> 44 149<102.478 195.191 402.805 495.875>
 VStem: 76 148<71.552 167.193> 76 149<-238.862 -144.214> 376 148<71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 423 10304 S 1 0 0 1 0 0 2
@@ -16871,7 +16858,7 @@ Flags: W
 HStem: -269 150<102.177 194.194> 44 149<402.805 495.875>
 VStem: 76 149<-238.862 -144.214> 376 148<71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 423 10304 S 1 0 0 1 0 0 2
@@ -17645,7 +17632,7 @@ Flags: W
 HStem: 44 149<102.478 195.191 402.805 495.875>
 VStem: 76 148<71.552 167.193> 376 148<71.7122 167.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 587 10272 S 1 0 0 1 0 0 2
@@ -17703,7 +17690,7 @@ Flags: W
 HStem: 82 149<402.805 495.875>
 VStem: 376 148<109.712 205.193>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -18504,7 +18491,7 @@ Encoding: 160 160 615
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -18514,7 +18501,7 @@ Width: 600
 Flags: W
 VStem: 97 193 309 193
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 13 44 N 1 0 0 1 -85 0 2
@@ -18654,32 +18641,32 @@ Encoding: 65539 -1 620
 Width: 600
 VWidth: 0
 Flags: W
-HStem: 530 128<278.934 308.261>
-VStem: 223 154
+HStem: 570 185
+VStem: 180 240
 LayerCount: 2
 Fore
 SplineSet
-308 539 m 0
- 299 542 287 547 275 554 c 0
- 262 560 251 568 242 576 c 0
- 234 582 228 592 226 603 c 0
- 225 605 225 606 224 608 c 0
- 223 612 223 616 223 620 c 0
- 223 627 224 634 227 639 c 0
- 233 647 242 653 255 656 c 0
- 256 656 258 657 259 657 c 0
- 263 658 267 658 271 658 c 0
- 280 658 288 656 294 651 c 0
- 302 643 310 634 320 624 c 0
- 329 614 339 607 350 604 c 0
- 357 602 368 593 373 580 c 0
- 375 577 375 573 376 570 c 0
- 377 567 377 564 377 561 c 0
- 377 556 376 552 373 548 c 0
- 369 541 362 536 352 533 c 0
- 350 532 349 532 347 531 c 0
- 344 531 342 530 339 530 c 0
- 328 530 318 533 308 539 c 0
+351 579 m 0
+ 342 582 330 587 318 594 c 0
+ 219 657 208 665 199 673 c 0
+ 191 679 185 689 183 700 c 0
+ 182 702 182 703 181 705 c 0
+ 180 709 180 713 180 717 c 0
+ 180 724 181 731 184 736 c 0
+ 190 744 199 750 212 753 c 0
+ 213 753 215 754 216 754 c 0
+ 220 755 224 755 228 755 c 0
+ 237 755 245 753 251 748 c 0
+ 259 740 267 731 277 721 c 0
+ 372 654 382 647 393 644 c 0
+ 400 642 411 633 416 620 c 0
+ 418 617 418 613 419 610 c 0
+ 420 607 420 604 420 601 c 0
+ 420 596 419 592 416 588 c 0
+ 412 581 405 576 395 573 c 0
+ 393 572 392 572 390 571 c 0
+ 387 571 385 570 382 570 c 0
+ 371 570 361 573 351 579 c 0
 EndSplineSet
 EndChar
 
@@ -18723,7 +18710,7 @@ Encoding: 173 173 622
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -18734,7 +18721,7 @@ Flags: W
 HStem: 234 145<249.255 352.555>
 VStem: 225 152<260.658 354.664>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 15 46 N 1 0 0 1 0 248 2
@@ -20484,7 +20471,7 @@ Flags: W
 HStem: -278 21G<141.5 152.5> -16 87<206.824 333.598> 451 20G<133.5 145 446.5 457.5>
 VStem: 100 91<-265.669 -9 100 194.828 271.451 273.829 301.984 459.669> 411 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -21538,7 +21525,7 @@ Flags: W
 HStem: 104 61<121.129 219.493 381.028 478.65> 369 65<124.396 227.081 369.749 477.632>
 VStem: 36 60<192.181 339.225> 504 60<191.302 340.623>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -21598,7 +21585,7 @@ Width: 600
 Flags: W
 HStem: 229 80<153 448>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22138,7 +22125,7 @@ Flags: W
 HStem: 227 90<107.117 367.501> 234 72<120.989 450>
 VStem: 25 78<196.469 227 316.21 445.716>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22757,7 +22744,7 @@ Flags: W
 HStem: 227 84<-20 258 342 620>
 VStem: 258 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22780,7 +22767,7 @@ Flags: W
 HStem: 185 168<-20 258> 227 84<342 620>
 VStem: 258 84<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22805,7 +22792,7 @@ Flags: W
 HStem: 185 168<342 620> 227 84<-20 258>
 VStem: 258 84<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22830,7 +22817,7 @@ Flags: W
 HStem: 185 168<-20 258 342 620>
 VStem: 258 84<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22853,7 +22840,7 @@ Flags: W
 HStem: 227 84<-20 216 384 620>
 VStem: 216 168<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22876,7 +22863,7 @@ Flags: W
 HStem: 185 168<-20 216> 227 84<384 620>
 VStem: 216 168<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22901,7 +22888,7 @@ Flags: W
 HStem: 185 168<384 620> 227 84<-20 216>
 VStem: 216 168<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -22926,7 +22913,7 @@ Flags: W
 HStem: 185 168<-20 216 384 620>
 VStem: 216 168<-435 185>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23580,7 +23567,7 @@ Width: 600
 Flags: W
 HStem: 227 84<64 236 364 536>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23604,7 +23591,7 @@ Flags: W
 HStem: 185 168<64 236 364 536>
 VStem: 64 172<185 353> 364 172<185 353>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23683,7 +23670,7 @@ Width: 600
 Flags: W
 HStem: 143 84<-20 620> 311 84<-20 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23730,7 +23717,7 @@ Flags: W
 HStem: 143 84<342 620> 311 84<342 620>
 VStem: 258 84<-435 143 227 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23755,7 +23742,7 @@ Flags: W
 HStem: 227 84<258 342 426 620>
 VStem: 174 84<-435 227> 342 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23780,7 +23767,7 @@ Flags: W
 HStem: 143 84<426 620> 311 84<258 620>
 VStem: 174 84<-435 311> 342 84<-435 143>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23808,7 +23795,7 @@ Flags: W
 HStem: 143 84<-20 258> 311 84<-20 258>
 VStem: 258 84<-435 143 227 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23833,7 +23820,7 @@ Flags: W
 HStem: 227 84<-20 174 258 342>
 VStem: 174 84<-435 227> 342 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -23858,7 +23845,7 @@ Flags: W
 HStem: 143 84<-20 174> 311 84<-20 342>
 VStem: 174 84<-435 143> 342 84<-435 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24218,7 +24205,7 @@ Flags: W
 HStem: 143 84<-20 258 342 620> 311 84<-20 620>
 VStem: 258 84<-435 143>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24246,7 +24233,7 @@ Flags: W
 HStem: 227 84<-20 174 258 342 426 620>
 VStem: 174 84<-435 227> 342 84<-435 227>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24273,7 +24260,7 @@ Flags: W
 HStem: 143 84<-20 174 426 620> 311 84<-20 620>
 VStem: 174 84<-435 143> 342 84<-435 143>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24506,7 +24493,7 @@ Flags: W
 HStem: 227 84<499.781 620>
 VStem: 258 84<-435 69.2188>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24529,7 +24516,7 @@ Flags: W
 HStem: 227 84<-20 100.219>
 VStem: 258 84<-435 69.2188>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24656,7 +24643,7 @@ Width: 600
 Flags: W
 HStem: 227 84<-20 342>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24692,7 +24679,7 @@ Width: 600
 Flags: W
 HStem: 227 84<258 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 781 9588 N 1 0 0 1 278 0 2
@@ -24704,7 +24691,7 @@ Width: 600
 Flags: W
 VStem: 258 84<-435 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24722,7 +24709,7 @@ Width: 600
 Flags: W
 HStem: 185 168<-20 342>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24758,7 +24745,7 @@ Width: 600
 Flags: W
 HStem: 185 168<258 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 785 9592 N 1 0 0 1 278 0 2
@@ -24770,7 +24757,7 @@ Width: 600
 Flags: W
 VStem: 216 168<-435 311>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24788,7 +24775,7 @@ Width: 600
 Flags: W
 HStem: 185 168<258 620>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24832,7 +24819,7 @@ Width: 600
 Flags: W
 HStem: 185 168<-20 342>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24895,7 +24882,7 @@ Width: 600
 Flags: W
 HStem: -386 205<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24913,7 +24900,7 @@ Width: 600
 Flags: W
 HStem: -386 374<-36 636>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24932,7 +24919,7 @@ Flags: W
 HStem: -386 542<-36 636>
 VStem: -36 672<-386 156>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -24951,7 +24938,7 @@ Flags: W
 HStem: -386 711<-36 636>
 VStem: -36 672<-386 325>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 793 9600 N 1 0 0 1 0 -711 2
@@ -26203,7 +26190,7 @@ Width: 600
 Flags: W
 VStem: -36 336<-386 325>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -26221,7 +26208,7 @@ Width: 600
 Flags: W
 VStem: 300 336<-386 325>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 815 9622 N 1 0 0 1 336 0 2
@@ -26664,7 +26651,7 @@ Width: 600
 Flags: W
 HStem: 63 122<279.883 337.055> 201 142<59.7656 342.75> 211 118<193.608 343> 456 20G<312.5 321.5>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -26886,7 +26873,7 @@ Flags: W
 HStem: 118 302<153.188 184.594>
 VStem: 146 39<120.146 133.921 172.462 364>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -26930,7 +26917,7 @@ Flags: W
 HStem: 118 302<153.188 185.899>
 VStem: 147 39<120.146 133.921>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -26964,7 +26951,7 @@ Encoding: 9658 9658 839
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -27002,7 +26989,7 @@ Encoding: 9668 9668 840
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -27177,7 +27164,7 @@ Flags: W
 HStem: 118 302<414.101 446.812>
 VStem: 414 39<120.146 133.921>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -27211,7 +27198,7 @@ Encoding: 9652 9652 848
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 838 9656 N 0 1 -1 0 569 -31 2
@@ -27222,7 +27209,7 @@ Encoding: 9662 9662 849
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 838 9656 N 0 -1 1 0 31 569 2
@@ -27235,7 +27222,7 @@ Flags: W
 HStem: 118 302<415.406 446.812>
 VStem: 415 39<120.146 133.921 172.462 364>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -27277,7 +27264,7 @@ Encoding: 9653 9653 851
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 837 9657 N 0 1 -1 0 569 -31 2
@@ -27288,7 +27275,7 @@ Encoding: 9663 9663 852
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 837 9657 N 0 -1 1 0 31 569 2
@@ -27988,7 +27975,7 @@ Flags: W
 HStem: 219 100<95.3779 172.575 261.378 338.575 428.378 505.575>
 VStem: 80 107<235.47 304.53> 246 107<235.47 304.53> 413 107<235.47 304.53>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 304 8230 N 1 0 0 1 0 231 2
@@ -28283,11 +28270,11 @@ Encoding: 768 768 868
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 128<278.934 308.261>
-VStem: 223 154
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 708 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 570 185
+VStem: 180 240
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 805 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 0 0 2
@@ -28298,11 +28285,11 @@ Encoding: 769 769 869
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 128<290.932 320.1>
-VStem: 223 153
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 708 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 570 187
+VStem: 180 240
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 807 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 0 0 2
@@ -28313,11 +28300,10 @@ Encoding: 770 770 870
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 73<152.188 214.697 385.303 447.714> 640 20G<297.5 302.5>
-VStem: 148 303<562 602.323>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 710 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 560 73<131.188 190.351 409.649 468.714> 691 20G<297.5 302.5>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 761 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 278 710 N 1 0 0 1 0 0 2
@@ -28328,11 +28314,11 @@ Encoding: 771 771 871
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 80<316.462 391.705> 577 80<213.79 284.593>
-VStem: 141 318<577.934 609.057>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 707 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 565 80<316.462 391.705> 612 80<213.79 284.593> 657 20G<414.5 430>
+VStem: 141 318<612.934 644.057>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 742 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 284 732 N 1 0 0 1 0 0 2
@@ -28343,10 +28329,10 @@ Encoding: 772 772 872
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 82<103.239 492.669>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 665 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 588 82<103.239 492.669>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 723 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 105 175 N 1 0 0 1 0 -11 2
@@ -28357,11 +28343,11 @@ Encoding: 774 774 873
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 74<235.893 368.759>
-VStem: 146 308<585.007 634>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 703 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 558 74<235.893 368.759> 661 20G<172.5 188.5 413 427>
+VStem: 146 308<613.007 662>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 731 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 280 728 N 1 0 0 1 0 0 2
@@ -28372,11 +28358,11 @@ Encoding: 775 775 874
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 123<253.847 346.481>
-VStem: 236 128<547.442 634.427>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 703 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 570 123<253.847 346.481>
+VStem: 236 128<587.442 674.427>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 743 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 281 729 N 1 0 0 1 0 0 2
@@ -28387,11 +28373,11 @@ Encoding: 776 776 875
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 120<149.425 234.53 365.471 450.53>
-VStem: 133 118<547.61 633.436> 349 118<547.61 633.436>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 700 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 573 120<149.425 234.53 365.471 450.53>
+VStem: 133 118<590.61 676.436> 349 118<590.61 676.436>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 743 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 102 168 N 1 0 0 1 2 -79 2
@@ -28402,11 +28388,11 @@ Encoding: 778 778 876
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 510 50<283.236 320.916> 611 50<283.04 320.071>
-VStem: 220 60<563.767 606.303> 321 60<560.044 610.534>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 711 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 529 42<257.166 342.834> 683 42<257.166 342.834>
+VStem: 202 42<584.166 669.834> 356 42<584.166 669.834>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 775 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 282 730 N 1 0 0 1 0 0 2
@@ -28417,11 +28403,11 @@ Encoding: 779 779 877
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 530 130<199.001 231.031 367.666 397.777>
+HStem: 569 130<199.001 231.031 367.666 397.777>
 VStem: 141 319
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 712 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 751 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 285 733 N 1 0 0 1 0 0 2
@@ -28432,11 +28418,11 @@ Encoding: 780 780 878
 Width: 0
 GlyphClass: 4
 Flags: W
-HStem: 574 86<361 442.357> 583 77<153.677 218.629>
-VStem: 281 38<533 542.03>
-AnchorPoint: "top_mkmk" 300 530 mark 0
-AnchorPoint: "top_mkmk" 300 710 basemark 0
-AnchorPoint: "top" 300 530 mark 0
+HStem: 629 86<392.108 464.331>
+VStem: 281 38<561 572.256>
+AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 765 basemark 0
+AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
 Fore
 Refer: 279 711 N 1 0 0 1 0 0 2
@@ -28999,7 +28985,7 @@ Flags: W
 HStem: 144 40<218 385> 354 40<215 382>
 VStem: 175 40<184 351> 385 40<187 354>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -29047,7 +29033,7 @@ Flags: W
 HStem: 144 250<183.142 416.858>
 VStem: 175 250<152.142 385.858>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -29078,7 +29064,7 @@ Flags: W
 HStem: 144 38<247.48 352.494> 359 35<255.096 351.848>
 VStem: 176 46<204.396 328.208> 380 46<208.693 335.238>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -29484,7 +29470,7 @@ Width: 600
 Flags: W
 HStem: 231 79<-10 610>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1169 -1 N 1 0 0 1 0 0 2
@@ -30442,7 +30428,7 @@ Flags: W
 HStem: 76 69<116 369.818> 393 64<110 348.999 349.093 364.709>
 VStem: 52 64<140 393>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -30545,7 +30531,7 @@ Flags: W
 HStem: 76 69<230.182 484> 393 64<235.291 251 251.001 490>
 VStem: 484 64<140 393>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -30816,7 +30802,7 @@ Flags: W
 HStem: -109 80<193 407.996>
 VStem: 110 83<-28.75 84.762> 406 76<-25.7188 85.7612>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -30870,7 +30856,7 @@ Flags: W
 HStem: -109 80<226 375> 18 76<91.6512 145.922 452.188 541.761>
 VStem: 375 82<-26 15.8281>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -31001,7 +30987,7 @@ Flags: W
 HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859>
 VStem: 253 96<67 582>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 718 basechar 0
+AnchorPoint: "top" 300 698 basechar 0
 LayerCount: 2
 Fore
 Refer: 42 73 N 1 0 0 1 0 0 2
@@ -31092,7 +31078,7 @@ Flags: W
 HStem: -37 21G<296 302> 644 20G<103.5 110 497 503>
 VStem: 249 102<-7.20899 278.896>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 303 718 basechar 0
+AnchorPoint: "top" 303 698 basechar 0
 LayerCount: 2
 Fore
 Refer: 58 89 N 1 0 0 1 0 0 2
@@ -31670,7 +31656,7 @@ Flags: W
 HStem: -19 21G<505 527> -10 78<203.276 348.639> 396 78<204.458 348.46>
 VStem: 60 92<126.617 337.519> 411 94<133.318 330.682> 462 98<-6.62751 60.5781 441 469.193>
 AnchorPoint: "bottom" 310 0 basechar 0
-AnchorPoint: "top" 310 530 basechar 0
+AnchorPoint: "top" 310 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -31760,7 +31746,7 @@ Flags: W
 HStem: -278 21G<284.5 309.5> 446 20G<101.5 108 508 513.5>
 VStem: 251 92<-270.901 33.3706>
 AnchorPoint: "bottom" 304 0 basechar 0
-AnchorPoint: "top" 304 530 basechar 0
+AnchorPoint: "top" 304 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32069,7 +32055,7 @@ Flags: W
 HStem: -26 80<358.679 489.223> 378 81<82.2842 237>
 VStem: 233 90<90.6476 379.916>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 305 530 basechar 0
+AnchorPoint: "top" 305 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32198,7 +32184,7 @@ Flags: W
 HStem: -278 21G<147.5 158.5> -16 87<212.824 326.603> 451 20G<139.5 151 439.5 450.5>
 VStem: 106 91<-265.669 -9 100 194.828 271.451 273.829 301.984 459.669> 404 90<118.688 458.669>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 665 181 N 1 0 0 1 0 0 2
@@ -32211,7 +32197,7 @@ Flags: W
 HStem: -4 21G<264.5 282.5> 454 20G<102.5 124.5 450 474.5>
 VStem: 433 92<253.95 439.024>
 AnchorPoint: "bottom" 298 0 basechar 0
-AnchorPoint: "top" 298 530 basechar 0
+AnchorPoint: "top" 298 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32511,7 +32497,7 @@ Flags: W
 HStem: -26 80<291.945 481.674> 378 78<87.1933 177 265 495.716>
 VStem: 167 90<90.6476 375.921> 177 88<193.311 377>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 530 basechar 0
+AnchorPoint: "top" 301 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32565,7 +32551,7 @@ Flags: W
 HStem: -26 78<229.878 354.717> 453 20G<124.5 149.5 442 466.5>
 VStem: 88 92<104.373 260 260.044 464.036> 424 92<119.204 439.977>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32703,7 +32689,7 @@ HStem: -271 21G<289 311> -17 78<170.58 261 339 429.011> 446 27G<84.5 109.5 289 3
 VStem: 48 92<96.775 463.742> 261 78<-267.233 -17 61 462.233> 460 92<96.9745 463.742>
 CounterMasks: 1 1c
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32749,7 +32735,7 @@ HStem: -28 78<167.493 226.158 373.534 433.604> 456 20G<133.5 156.5 443.5 466.5>
 VStem: 44 92<85.6797 318.428> 254 92<84.2528 290.479> 464 92<85.9215 316.791>
 CounterMasks: 1 38
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -32913,13 +32899,13 @@ Encoding: 901 901 976
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: 609 120<167.425 252.53 343.471 428.53> 741 151
-VStem: 151 118<626.61 712.436> 236 124 327 118<626.61 712.436>
+HStem: 609 120<147.425 232.53 363.471 448.53> 741 151
+VStem: 131 118<626.61 712.436> 236 124 347 118<626.61 712.436>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 944 basechar 0
 LayerCount: 2
 Fore
-Refer: 102 168 N 1 0 0 1 0 0 2
+Refer: 102 168 N 1 0 0 1 0 -43 2
 Refer: 975 900 N 1 0 0 1 -4 224 2
 Ligature2: "marks_compose" dieresis acutecomb
 EndChar
@@ -33156,7 +33142,7 @@ Flags: W
 HStem: -26 80<358.679 479.223> 378 81<91.2842 237> 530 120<174.425 259.53 350.471 435.53>
 VStem: 158 118<547.61 633.436> 233 90<90.6476 379.916> 334 118<547.61 633.436>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 700 basechar 0
+AnchorPoint: "top" 301 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 958 953 N 1 0 0 1 0 0 2
@@ -33172,7 +33158,7 @@ Flags: W
 HStem: -26 78<229.878 354.717> 453 20G<124.5 149.5 442 466.5> 530 120<169.425 254.53 345.471 430.53>
 VStem: 88 92<104.373 260 260.044 464.036> 153 118<547.61 633.436> 329 118<547.61 633.436> 424 92<119.204 439.977>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 700 basechar 0
+AnchorPoint: "top" 302 743 basechar 0
 LayerCount: 2
 Fore
 Refer: 969 965 N 1 0 0 1 0 0 2
@@ -33185,14 +33171,14 @@ Encoding: 938 938 993
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -6 72<139.894 251.219 345 501.761> 584 80<110.33 257 351 471.859> 718 120<169.425 254.53 345.471 430.53>
-VStem: 153 118<735.61 821.436> 253 96<67 582> 329 118<735.61 821.436>
+HStem: -5 72<139.894 251.219 345 501.761> 585 80<110.33 257 351 471.859> 743 120<149.425 234.53 365.471 450.53>
+VStem: 133 118<760.61 846.436> 253 96<68 583> 349 118<760.61 846.436>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 888 basechar 0
+AnchorPoint: "top" 300 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 930 921 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 2 109 2
+Refer: 102 168 N 1 0 0 1 2 91 2
+Refer: 930 921 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Iota uni0308
 EndChar
 
@@ -33201,14 +33187,14 @@ Encoding: 939 939 994
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -37 21G<296 302> 644 20G<103.5 110 497 503> 718 120<172.425 257.53 348.471 433.53>
-VStem: 156 118<735.61 821.436> 249 102<-7.20899 278.896> 332 118<735.61 821.436>
+HStem: -36 21G<296 302> 645 20G<103.5 110 497 503> 743 120<152.425 237.53 368.471 453.53>
+VStem: 136 118<760.61 846.436> 249 102<-6.20899 279.896> 352 118<760.61 846.436>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 888 basechar 0
+AnchorPoint: "top" 302 913 basechar 0
 LayerCount: 2
 Fore
-Refer: 937 933 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 5 109 2
+Refer: 102 168 N 1 0 0 1 5 91 2
+Refer: 937 933 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Upsilon uni0308
 EndChar
 
@@ -33302,7 +33288,7 @@ Flags: W
 HStem: -136 296
 VStem: 181 167
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 997 697 N 1 0 0 1 -40 -560 2
@@ -33328,7 +33314,7 @@ Flags: W
 HStem: 234 145<249.255 352.555>
 VStem: 225 152<260.658 354.664>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 623 183 N 1 0 0 1 0 0 2
@@ -34005,7 +33991,7 @@ Flags: W
 HStem: -199 50<259.476 323.531> 79 50<262.398 334.435>
 VStem: 193 56<-70 -16> 351 54<-106.976 -8 -7 1.31445>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1002 -1 N 1 0 0 1 148 -181 2
@@ -34018,7 +34004,7 @@ Flags: W
 HStem: -195 53<192.474 274 329 379.987 380 402.763>
 VStem: 274 55<-143 -10.0167 -10 47>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 641 -1 N 1 0 0 1 146 -185 2
@@ -34031,7 +34017,7 @@ Flags: W
 HStem: -193 51<252 404.374> 80 50<258.989 336.102>
 VStem: 343 56<1.66714 73.5059>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 642 -1 N 1 0 0 1 150 -181 2
@@ -34044,7 +34030,7 @@ Flags: W
 HStem: -199 51<255.287 341.02> -55 57<246.318 320.434> 80 50<258.253 332.083>
 VStem: 338 56<15.3765 71.8103> 347 57<-141.329 -66.2246>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 643 -1 N 1 0 0 1 146 -181 2
@@ -34057,7 +34043,7 @@ Flags: W
 HStem: -198 21G<347.5 360.5> -96 49<255.469 323 375 403.81>
 VStem: 323 52<-196.277 -96 -166.859 -96 -46 38 -46 52>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 644 -1 N 1 0 0 1 148 -181 2
@@ -34070,7 +34056,7 @@ Flags: W
 HStem: -197 52<276.092 327.943> -11 52<261.175 341.619> 73 52<253 397.821>
 VStem: 197 56<19 76> 347 56<-128.264 -15.0223>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1003 -1 N 1 0 0 1 152 -181 2
@@ -34083,7 +34069,7 @@ Flags: W
 HStem: -197 50<260.344 337.748> -23 52<255.289 343.74> 88 49<287.195 369.635>
 VStem: 192 52<-131.709 -36.0125> 352 56<-134.203 -31.8667>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1004 -1 N 1 0 0 1 149 -181 2
@@ -34096,7 +34082,7 @@ Flags: W
 HStem: -199 21G<231 240.5> 73 54<194.138 340>
 VStem: 193 214<73.1644 120.901>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1005 -1 N 1 0 0 1 154 -181 2
@@ -34109,7 +34095,7 @@ Flags: W
 HStem: -201 52<252.06 337.159> 83 46<259.846 334.599>
 VStem: 191 52<-138.806 -61.2134> 201 54<19.9009 78.1146> 341 52<15.6013 76.388> 355 54<-137.426 -73.2707>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1006 -1 N 1 0 0 1 152 -181 2
@@ -34122,7 +34108,7 @@ Flags: W
 HStem: -197 47<232.19 262.986> -89 52<259.625 348.708> 87 50<261.514 338.438>
 VStem: 191 56<-24.4351 72.9263> 357 52<-27.9841 64.9652>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1007 -1 N 1 0 0 1 150 -181 2
@@ -34148,7 +34134,7 @@ Flags: W
 HStem: -52 50<191.412 275 325 408.576>
 VStem: 275 50<-137.809 -53 -1 59.9883 60 79.8103>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1010 -1 N 1 0 0 1 150 -150 2
@@ -34174,7 +34160,7 @@ Flags: W
 HStem: -56 54<191.843 407.895>
 VStem: 191 218<-53.7588 -4.29089>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1011 -1 N 1 0 0 1 150 -152 2
@@ -34200,7 +34186,7 @@ Flags: W
 HStem: -94 48<204.237 399.809> -12 48<196.145 263 264 308.968 309 400.809>
 VStem: 196 208<-93.7856 -54.1882 -1.7649 35.8848>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1012 -1 N 1 0 0 1 151 -152 2
@@ -34226,7 +34212,7 @@ Flags: W
 HStem: -279 54<337.373 386.281> 168 53<340.055 386.455>
 VStem: 213 56<-133.193 75.9957>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1013 -1 N 1 0 0 1 132 -199 2
@@ -34252,7 +34238,7 @@ Flags: W
 HStem: -279 53<213.545 259.945> 167 54<213.719 262.627>
 VStem: 331 56<-133.996 75.1931>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 1013 -1 N -1 0 0 -1 468 141 2
@@ -35372,7 +35358,7 @@ Flags: W
 HStem: 118 302<169.188 201.899>
 VStem: 163 39<120.146 135.745>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -35408,7 +35394,7 @@ Flags: W
 HStem: 235 76<248.984 435.761>
 VStem: 155 289
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 14 45 N 1 0 0 1 0 0 2
@@ -35421,7 +35407,7 @@ Flags: W
 HStem: 235 76<248.984 435.761>
 VStem: 155 289
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 14 45 N 1 0 0 1 0 0 2
@@ -35433,7 +35419,7 @@ Width: 600
 Flags: W
 HStem: 233 81<125.239 468.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 294 8211 N 1 0 0 1 0 0 2
@@ -35445,7 +35431,7 @@ Width: 600
 Flags: W
 HStem: 234 78<75.2388 528.761>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 295 8212 N 1 0 0 1 0 0 2
@@ -35456,7 +35442,7 @@ Encoding: 8201 8201 1074
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35465,7 +35451,7 @@ Encoding: 8239 8239 1075
 Width: 600
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35474,7 +35460,7 @@ Encoding: 8203 8203 1076
 Width: 0
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35483,7 +35469,7 @@ Encoding: 8204 8204 1077
 Width: 0
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35492,7 +35478,7 @@ Encoding: 8205 8205 1078
 Width: 0
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35501,7 +35487,7 @@ Encoding: 8288 8288 1079
 Width: 0
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -35510,7 +35496,7 @@ Encoding: 65279 65279 1080
 Width: 0
 Flags: W
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 EndChar
 
@@ -36792,7 +36778,7 @@ Flags: W
 HStem: 166 35<103.034 194.141> 169 200<383.973 520.476> 248 42<248.224 356.999> 339 33<107.494 195.648>
 VStem: 47 41<219.471 321.38>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -37251,7 +37237,7 @@ Flags: W
 HStem: -5 79<300 398.994>
 VStem: 479 95<170.112 269>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -37276,7 +37262,7 @@ Flags: W
 HStem: -5 80<203.53 300>
 VStem: 26 96<158.348 269>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -37336,7 +37322,7 @@ Flags: W
 HStem: -5 79<206.571 397.631>
 VStem: 26 96<158.348 269> 479 95<170.112 269>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -37627,7 +37613,7 @@ Flags: W
 HStem: 196 145<248.255 351.555>
 VStem: 224 152<222.658 316.664>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 Refer: 15 46 N 1 0 0 1 -1 210 2
@@ -38726,7 +38712,7 @@ Flags: W
 HStem: 166 35<403.034 494.141> 169 200<83.9725 220.476> 248 42<245.062 353.116> 339 33<407.494 495.648>
 VStem: 512 41<214.783 325.934>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -38837,7 +38823,7 @@ Width: 600
 Flags: W
 HStem: 119 79<155 402> 340 79<198 445>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -38866,7 +38852,7 @@ Width: 600
 Flags: W
 HStem: 119 300<133.328 466.672>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 530 basechar 0
+AnchorPoint: "top" 300 529 basechar 0
 LayerCount: 2
 Fore
 SplineSet

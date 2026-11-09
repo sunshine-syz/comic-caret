@@ -78,13 +78,35 @@ them. The exceptions:
   the baseline. The bowl's top is at 0.59 of the x-height, Fira Code's and Intel One Mono's
   0.60, and its counter 0.33 tall (Intel One Mono 0.31, Fira Code 0.39). It is drawn on two
   centrelines with an elliptical pen 95 wide and 76 tall, `o`'s sides and top. Its top stays
-  at 486, the old `a`'s, so å's ring keeps 24 of white. `æ`'s a half is the same centrelines
+  at 486, the old `a`'s. `æ`'s a half is the same centrelines
   at 0.62 across with the old `æ`'s pen (72 × 80), and `ª`'s small a is `a` at 0.55.
+- **Accents.** At 11–16 px the old acute (153 × 128) was as wide as `i`'s dot and read as one,
+  and every mark sat 40–60 above its letter, where the references keep more (é: Intel One
+  Mono 71; ä: Maple Mono 94).
+  - The acute and grave lengthen along their own 34° slant to 240 × 187, Intel One Mono's
+    width (246); the acute is 1.59 times the dot's width, over Intel One Mono's 1.45, the
+    widest of the references' (Fira Code 1.34, Maple Mono 0.97). The circumflex and caron
+    lengthen both arms along their slants to 345 wide (the references' 312–362).
+  - Each mark rises over the lowercase letters until its white to each letter reaches the
+    narrowest reference's (`MARK_FLOORS`, `tests/test_legibility.py`): the acute and grave
+    +40, the dieresis +43, the dot above +40, the tilde +35, the circumflex +30, the caron and
+    breve +28, the ring +19, the macron +58 and the double acute +39. ý's diagonal white sets
+    the acute's; the grave stands as high, so è é match.
+  - Capitals take the same marks, which fit under the 1000 line top (Á 908, Ö 863), and rise
+    to their floors: Ê +14, Š +9, Ö +26, Ā +28. ĥ and ĺ stand their marks over the ascender,
+    81 and 93 above it (the references' floors: 63 and 72).
+  - The dots stay 152: `.` `·` `∙` `:` and `i`'s dot are one glyph, and at 152 `i`'s dot is
+    within the references' (129–156). A period at Maple Mono's 170 would make it wider than
+    every reference's `i` dot, and nearer the acute. The acute grows apart from it instead.
+- **˚.** 196 across, with a 42 stroke, so its counter is 112 across (Fira Code's 108 at its
+  middle). The old ring, 161 wide, kept a counter of 41 × 51, which closed into a dot at
+  12 px. å ů Å Ů and U+030A take the same ring; Å tops at 897.
 
 ## Greek
 
 Greek follows Fira Code and Maple Mono (Intel One Mono has none). Capitals that match Latin
-are references to it; the tonos is the acute turned 25° steeper, and beside a capital it
+are references to it; the tonos is the acute's stroke turned 25° steeper, and shorter than
+the acute, which grew along its slant for small sizes. Beside a capital it
 stands to the left, reaching into the cell before (all but Ά) no further than the references'
 122 (`tests/test_sanity.py` lists them).
 
@@ -425,10 +447,8 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   their `j`, ours 30. Ĵ is 425 against Fira Code's 440: the references' circumflex reaches 16
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
-- **˚.** It is 161 against Fira Code's 222. In Å, the ring stands 20 above the apex (678) and
-  ends at 849, 151 under the line box's top (1000). A round ring 222 wide is 61 taller and
-  fits inside the line box, in the bold too (Å ends at 870), so the line box no longer keeps
-  ˚ under the floor; its width is open.
+- **˚.** It is 196 against Fira Code's 222: a proof of both, round, chose 196. The 1000 line
+  top would hold 222 over Å too.
 - **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,
   and ⁺ ⁻ ⁼ ₊ ₋ ₌ (208–218) against Fira Code's 233–235. Monaspace gives them no share of a
   wider cell (the table above).
@@ -629,15 +649,20 @@ are in `build/cache/reference/bold/`.
 - **Mirrors and marks.** The pen alone would break two things the regular keeps.
   - A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one
     mirrored, so the two stay exact mirrors.
-  - A mark the pen grows within `MARK_CLEARANCE` of its letter rises clear. It rises as far on
-    every letter where it stands as high, so a row of them stays level.
+  - A mark above a letter rises by as much as the pen grew the two toward each other, 14 (the
+    ring's 21), so it keeps the regular's white, which the reference bolds' floors stay under
+    (`BoldMarkTest`). It rises as far on every letter where it stands as high, so a row of
+    them stays level, and must clear `MARK_CLEARANCE` (20), a floor under the regular's
+    closest marks and over the reference bolds' closest, Maple Mono Bold's Å ring at 15.
+  - The anchors carry over, so each combining mark rises as far as its accent does over the
+    lowercase letters, and a shaped mark lands where the precomposed letter puts it.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:
 
-- `TURNED`: the tonos, the acute turned 25° steeper, grows by the pen turned with it.
+- `TURNED`: the tonos, the acute's stroke turned 25° steeper, grows by the pen turned with it.
   `test_tonos_is_the_acute_turned` (`tests/test_make_bold.py`) holds the regular's tonos to
-  the acute turned 25°. So the bold tonos stays the bold acute turned.
+  the acute's slant plus 25°. So the bold tonos stays the bold acute's stroke turned.
 - `ROUND`: ª º's bar and ⇪'s bar, drawn as heavy as the stems beside them, grow as much up and
   down as across. The level pen would leave them 21 lighter than the bold stems.
 - `NARROW`: ẞ and the small 4 grow by 0.7 and 0.83 of the pen's width. ẞ: the full pen keeps
@@ -657,7 +682,8 @@ what it does to them:
   - ‖ and the tightened `||` `|||` are references to `|`.
 - `OUTWARD`: © ®'s ring grows outward only, by the small pen's whole width. So it stays as
   heavy as its letter and the letter keeps its room. Grown both ways, it came 35 from ®'s R,
-  under Fira Code Bold's 41 around its ©.
+  under Fira Code Bold's 41 around its ©. The ring of å ů grows outward only too, by the full
+  pen, so its counter stays 112 across, over Fira Code Bold's 89.
 - `BLUNT`: ₩ ₦ ₱'s bars run 43 to 127 past their letter on both sides. The pen lengthens their
   round ends. This tapers the bars' run clear of the letter, so the bars would reach the
   hyphen's weight only near it. So the sign keeps its regular box, condensed. A second pen, as

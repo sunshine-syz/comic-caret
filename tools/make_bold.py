@@ -43,8 +43,9 @@ Where the pen alone would break a rule the regular keeps, a name list says what 
 instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
 SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
-stems (RAISED) or keeps its ends (BLUNT). A mark the pen grows within MARK_CLEARANCE of its
-letter rises clear (raise_clear()). Widths, anchors and the lookups carry over as they are.
+stems (RAISED) or keeps its ends (BLUNT). A mark rises by as much as the pen grew it and its
+letter toward each other (raise_clear()). Widths, anchors and the lookups carry over as they
+are.
 """
 import argparse
 import collections
@@ -61,6 +62,7 @@ import psMat
 import lig_geometry as geo
 import project
 from add_ligatures import GENERATED, THREE_ENDS, TIGHT_KEEP
+from add_marks import MARKS
 from add_shapes import CODES
 from measure import (
     area,
@@ -153,16 +155,17 @@ TICKED = {"uni20BF": "B"}
 TICK_ROOT = 60
 
 # The strokes the regular draws as another stroke turned, and the turn, anticlockwise: the
-# tonos is the acute turned 25° steeper, as test_tonos_is_the_acute_turned
-# (tests/test_make_bold.py) holds. The pen turns with it, so the bold tonos is the bold acute
-# turned. The level pen would grow the steeper stroke heavier.
+# tonos is the acute's stroke turned 25° steeper, as test_tonos_is_the_acute_turned
+# (tests/test_make_bold.py) holds. The pen turns with it, so the bold tonos is the bold acute's
+# stroke turned. The level pen would grow the steeper stroke heavier.
 TURNED = {"tonos": math.radians(25)}
 
 # The rings that grow outward only, by twice their pen, so they thicken by its whole width as
-# a stem does on its two sides: © ®'s, which the regular draws as heavy as the letter inside
-# it (tests/test_latin.py). Its counter stays the regular's, so the letter keeps its room:
-# grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©.
-OUTWARD = ("circle.copyright",)
+# a stem does on its two sides, and their counter stays the regular's. © ®'s, which the regular
+# draws as heavy as the letter inside it (tests/test_latin.py), so the letter keeps its room:
+# grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©. And
+# the ring of å ů, whose counter must stay at least Fira Code Bold's (tests/test_legibility.py).
+OUTWARD = ("circle.copyright", "ring")
 
 # The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
 # below it: Ħ, 81 apart against the bold hyphen's 93 (tests/test_latin.py). The bar moves up
@@ -913,25 +916,38 @@ def marks_above(font, glyph, grows_by):
 
 
 def raise_clear(font, letters, heights, grows_by):
-    """Raise each mark that the pen grew within MARK_CLEARANCE of its letter, by the fewest
-    whole units that clear it, and the same mark as far on every letter where the regular
-    places it as high, so a row of them stays level (the tonos over έ ό, and so over ά ή ί).
+    """Raise each mark above a letter by as much as the pen grew the two toward each other, the
+    mark's pen's reach up and the letter's, so it keeps the regular's white; and the same mark
+    as far on every letter where the regular places it as high, so a row of them stays level
+    (the tonos over έ ό, and so over ά ή ί). Each mark must then clear MARK_CLEARANCE.
     `heights` holds how high the regular places each (letter, mark). One row breaks on
-    purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART)."""
+    purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART). A part APART moves
+    keeps its white there (i's dot). Returns {(mark, height): rise}."""
+    def above(glyph):
+        marks, letter = marks_above(font, glyph, grows_by)
+        moved = APART.get(glyph.glyphname, (None,))[0]
+        return [(name, mark) for name, mark in marks if name != moved], letter
+
     needs = collections.defaultdict(int)
     for glyph in letters:
-        marks, letter = marks_above(font, glyph, grows_by)
-        for name, mark in marks:
-            if (steps := clearance(mark, letter, (0, 1), MARK_CLEARANCE)) is None:
-                sys.exit(f"{glyph.glyphname}: its {name} can't rise clear of the letter")
+        marks, _ = above(glyph)
+        if not marks:
+            continue
+        [base] = [name for name, *_ in glyph.references if is_letter(font[name].unicode)]
+        grew = reach(pen_of(base, grows_by))[1]
+        for name, _ in marks:
             row = (name, heights[glyph.glyphname, name])
-            needs[row] = max(needs[row], steps)
+            needs[row] = max(needs[row], math.ceil(grew + reach(pen_of(name, grows_by))[1]))
     for glyph in letters:
-        marks, _ = marks_above(font, glyph, grows_by)
-        rises = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
-        if any(dy for _, dy in rises.values()):
-            reposition(glyph, shifted(rises))
+        marks, letter = above(glyph)
+        moves = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
+        for name, mark in marks:
+            if clearance(geo.moved(mark, *moves[name]), letter, (0, 1), MARK_CLEARANCE) != 0:
+                sys.exit(f"{glyph.glyphname}: its {name} can't rise clear of the letter")
+        if any(dy for _, dy in moves.values()):
+            reposition(glyph, shifted(moves))
             glyph.autoHint()
+    return needs
 
 
 def depth(font, name):
@@ -1095,9 +1111,18 @@ def build(font):
             reposition(glyph, shifted({part: (dx * back, dy * back)}))
         if glyph.references != before:
             glyph.autoHint()  # a reference assigned leaves the hints stale
-    raise_clear(font, [glyph for glyph in font.glyphs()
-                       if is_letter(glyph.unicode) and classes[glyph.glyphname] == BOLDER
-                       and glyph.references], heights, grows_by)
+    rises = raise_clear(font, [glyph for glyph in font.glyphs()
+                               if is_letter(glyph.unicode) and classes[glyph.glyphname] == BOLDER
+                               and glyph.references], heights, grows_by)
+    # The anchors carry over, so a combining mark rises as far as its accent does over the
+    # lowercase letters, where add_marks.py places it: a shaped mark then lands where the
+    # precomposed letters put it.
+    for code in MARKS:
+        glyph = font[code]
+        [(accent, matrix, *_)] = glyph.references
+        if rise := rises.get((accent, matrix[5]), 0):
+            reposition(glyph, shifted({accent: (0, rise)}))
+            glyph.autoHint()
     # Where a contour starts can make the autohinter write a nan into a stem's range, which
     # breaks the hints read back (docs/fontforge-pitfalls.md); so such a glyph's contours start
     # later until none does.

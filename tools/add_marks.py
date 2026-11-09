@@ -46,7 +46,8 @@ STACK_GAP = 50
 
 
 def mark_name(code):
-    return fontforge.nameFromUnicode(code)
+    # Without a namelist it reads the active font, which font.close() leaves dangling.
+    return fontforge.nameFromUnicode(code, "AGL with PUA")
 
 
 def is_top(code):
@@ -263,8 +264,10 @@ def build(font):
     offsets = mark_offsets(font, placements)
     add_mark_glyphs(font, offsets)
     boxes = mark_boxes(font, offsets)
-    # A mark above rests where the acute does on the lowercase letters.
-    top_y = round(boxes[0x301][1])
+    # Marks above rest on the lowest one's bottom, so on a glyph without accented forms each
+    # stands at least STACK_GAP above the ink: they rise by different amounts over the
+    # lowercase letters, and the ring stands lowest.
+    top_y = round(min(boxes[code][1] for code in MARKS if is_top(code)))
     add_compositions(font)
     add_dotless(font)
     anchors = base_anchors(font, placements, offsets, top_y)

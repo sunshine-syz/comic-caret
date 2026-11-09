@@ -92,6 +92,29 @@ def length(layer, steps=16):
     return total
 
 
+def slant(layer, steps=16):
+    """The angle of the ink's long axis, in degrees anticlockwise from level, from its second
+    moments of area: a stroke lengthened along its own slant keeps it."""
+    mass = mx = my = 0
+    polygons = [_polyline(contour, steps) for contour in layer]
+    for points in polygons:
+        for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]):
+            cross = y0 * x1 - y1 * x0  # signed as area()'s: outer contours run clockwise
+            mass += cross / 2
+            mx += (x0 + x1) * cross / 6
+            my += (y0 + y1) * cross / 6
+    mx, my = mx / mass, my / mass
+    xx = yy = xy = 0
+    for points in polygons:
+        moved = [(x - mx, y - my) for x, y in points]
+        for (x0, y0), (x1, y1) in zip(moved, moved[1:] + moved[:1]):
+            cross = y0 * x1 - y1 * x0
+            xx += (x0 * x0 + x0 * x1 + x1 * x1) * cross / 12
+            yy += (y0 * y0 + y0 * y1 + y1 * y1) * cross / 12
+            xy += (2 * x0 * y0 + x0 * y1 + x1 * y0 + 2 * x1 * y1) * cross / 24
+    return math.degrees(0.5 * math.atan2(2 * xy, xx - yy))
+
+
 def covered(inner, outer):
     """The share of `inner`'s ink that `outer` covers. Neither may overlap itself."""
     both = inner.dup()

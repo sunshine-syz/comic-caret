@@ -5,6 +5,7 @@ Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
 import itertools
 import json
+import math
 import os
 import pathlib
 import shutil
@@ -20,17 +21,21 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
+import lig_geometry as geo
 import project
 import sfnt
+from add_marks import MARKS, is_top
 from bump_version import font_version, sfd_version
 from helpers import NerdBuilds, require_current_build
-from make_italic import SLANT
+from make_italic import SLANT, UPRIGHT, encoded_style
+from measure import gap, ink
 from project import (
     ADVANCE,
     AXIS,
     FORMATS,
     LINE_BOTTOM,
     LINE_TOP,
+    MARK_CLEARANCE,
     ROOT,
     SFD,
     STYLES,
@@ -526,7 +531,7 @@ class MarkShapingTest(unittest.TestCase):
     def setUpClass(cls):
         require_current_build((cls.style,))
         cls.fonts = FONTS[cls.style]
-        sfd = fontforge.open(str(STYLES[cls.style]))
+        cls.sfd = sfd = fontforge.open(str(STYLES[cls.style]))
         # Not the soft hyphen: shapers skip a default ignorable, and a mark after one goes on
         # the character before it.
         cls.bases = [chr(g.unicode) for g in sfd.glyphs() if g.unicode >= 0
@@ -538,7 +543,8 @@ class MarkShapingTest(unittest.TestCase):
         # the next cell. Each base and its mark make one cluster, two characters long and one
         # cell wide, whether they compose or not. The italic's cell is sheared: ink at a
         # height y may lie left of it below the axis and right of it above, by (y - AXIS)
-        # times the slant.
+        # times the slant. Over a picture the italic keeps upright, a mark may stand over the
+        # upright cell instead.
         for font in self.fonts:
             for mark in (0x301, 0x326):
                 with self.subTest(font=font.name, mark=f"U+{mark:04X}"):
@@ -546,12 +552,41 @@ class MarkShapingTest(unittest.TestCase):
                     outside = {}
                     for cluster, name, (x0, y0, x1, y1) in placed(font, text):
                         cell = cluster // 2 * ADVANCE
-                        left = cell + (y0 - AXIS) * self.slant - self.rounding
-                        right = cell + ADVANCE + (y1 - AXIS) * self.slant + self.rounding
+                        lean0, lean1 = (y0 - AXIS) * self.slant, (y1 - AXIS) * self.slant
+                        if self.slant and encoded_style(ord(self.bases[cluster // 2])) == UPRIGHT:
+                            lean0, lean1 = min(lean0, 0), max(lean1, 0)
+                        left = cell + lean0 - self.rounding
+                        right = cell + ADVANCE + lean1 + self.rounding
                         if name == self.names[mark] and (x0 < left or x1 > right):
                             outside[self.bases[cluster // 2]] = (round(x0 - cell),
                                                                  round(x1 - cell))
                     self.assertEqual(outside, {})
+
+    def test_a_shaped_mark_keeps_its_clearance(self):
+        # A mark above a lowercase letter the font has no precomposed form of lands through the
+        # anchors, and keeps the clearance the precomposed letters' marks keep. The bold grows
+        # the letter up and the mark down, so its marks must rise with its accents.
+        lower = [base for base in self.bases if unicodedata.category(base) == "Ll"]
+        pairs = set()
+        for font in self.fonts:
+            for mark in (code for code in MARKS if is_top(code)):
+                pen, clusters = 0, {}
+                for g in shaped(font, "".join(base + chr(mark) for base in lower)):
+                    clusters.setdefault(g["cl"], []).append((g["g"], pen + g["dx"], g["dy"]))
+                    pen += g["ax"]
+                for parts in clusters.values():
+                    if len(parts) == 2:  # else composed into the precomposed letter
+                        (letter, x, y), (name, mx, my) = parts
+                        pairs.add((letter, name, mx - x, my - y))
+        close = {}
+        for letter, name, dx, dy in pairs:
+            mark, rest = geo.moved(ink(self.sfd, name), dx, dy), ink(self.sfd, letter)
+            (a0, b0, a1, b1), (c0, d0, c1, d1) = mark.boundingBox(), rest.boundingBox()
+            if math.hypot(max(c0 - a1, a0 - c1, 0), max(d0 - b1, b0 - d1, 0)) >= MARK_CLEARANCE:
+                continue  # outlines are never closer than their boxes
+            if (white := gap(mark, rest)) < MARK_CLEARANCE:
+                close[letter, name] = round(white)
+        self.assertEqual(close, {})
 
     def test_stacked_marks_stay_apart(self):
         # Two marks above, or two below, one over the other without touching. Canonical order

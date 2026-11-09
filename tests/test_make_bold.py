@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import unittest
 
 import fontforge
@@ -20,6 +21,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
+from add_marks import MARKS
 from make_bold import BOLDER, PEN, SHARED
 from measure import (
     area,
@@ -29,6 +31,7 @@ from measure import (
     length,
     outline,
     pieces,
+    slant,
     spans_at_y,
     vertical_edges,
 )
@@ -104,23 +107,16 @@ class GeneratorTest(unittest.TestCase):
 
     def test_tonos_is_the_acute_turned(self):
         # The bold turns the tonos's pen by TURNED's angle, so it grows the tonos as the bold
-        # acute turned only while the regular draws the tonos as the acute turned by as much.
+        # acute turned only while the regular draws the tonos as the acute's stroke turned by as
+        # much. The tonos is shorter than the acute, which grew along its own slant.
         font = fontforge.open(str(SFD))
-        acute, tonos = font["acute"].foreground.dup(), font["tonos"].foreground.dup()
-        x0, y0, x1, y1 = acute.boundingBox()
-        acute.transform(geo.about(psMat.rotate(make_bold.TURNED["tonos"]),
-                                  (x0 + x1) / 2, (y0 + y1) / 2))
-        for layer in (acute, tonos):
-            layer.addExtrema("all")  # so the box reaches the curves, not their control points
-        (a0, b0, a1, b1), (t0, u0, t1, u1) = acute.boundingBox(), tonos.boundingBox()
-        # The tonos is the turned acute on whole units: rounding moves each point at most half a
-        # unit each way, so each side of the box at most half a unit, and the width and height
-        # within ROUNDING. They tell the angle.
-        self.assertAlmostEqual(t1 - t0, a1 - a0, delta=ROUNDING)
-        self.assertAlmostEqual(u1 - u0, b1 - b0, delta=ROUNDING)
-        # Turning keeps the area, which tells the stroke. Rounding moves the edge at most half a
-        # unit's diagonal, so the area within that times the outline's length.
-        self.assertAlmostEqual(area(tonos), area(acute), delta=length(acute) * math.sqrt(0.5))
+        acute, tonos = font["acute"].foreground, font["tonos"].foreground
+        turn = slant(tonos) - slant(acute)
+        # Rounding moves each end of the tonos at most ROUNDING across its stroke, which turns
+        # its axis by at most this.
+        x0, y0, x1, y1 = tonos.boundingBox()
+        delta = math.degrees(math.atan2(ROUNDING, math.hypot(x1 - x0, y1 - y0) / 2))
+        self.assertAlmostEqual(turn, math.degrees(make_bold.TURNED["tonos"]), delta=delta)
 
     def test_middle_stroke_exits_on_two_strokes(self):
         # A pen is measured from one stem; of two, it can't tell which.
@@ -174,6 +170,28 @@ class BoldTest(unittest.TestCase):
                  for g in self.regular.glyphs()
                  if sorted(self.bold[g.glyphname].anchorPoints) != sorted(g.anchorPoints)}
         self.assertEqual(moved, {})
+
+    def test_combining_marks_rise_with_their_accents(self):
+        # The anchors carry over, so a shaped mark lands where the precomposed bold letters put
+        # its accent only while the combining mark rises as far as raise_clear() raises the
+        # accent over the lowercase letters at its height.
+        wrong = {}
+        for code, accent in MARKS.items():
+            name = self.regular[code].glyphname
+            [(_, regular, *_)], [(_, bold, *_)] = (font[code].references
+                                                    for font in (self.regular, self.bold))
+            rises = set()
+            for glyph in self.regular.glyphs():
+                if glyph.unicode < 0 or unicodedata.category(chr(glyph.unicode)) != "Ll":
+                    continue
+                before = [m for part, m, *_ in glyph.references if part == accent]
+                after = [m for part, m, *_ in self.bold[glyph.glyphname].references
+                         if part == accent]
+                if len(before) == 1 and len(after) == 1 and before[0][5] == regular[5]:
+                    rises.add(after[0][5] - before[0][5])
+            if rises and rises != {bold[5] - regular[5]}:
+                wrong[name] = (sorted(rises), bold[5] - regular[5])
+        self.assertEqual(wrong, {})
 
     def test_bolder_glyphs_have_more_ink(self):
         # Parts included: a bolder glyph built on a shared one grows too.
