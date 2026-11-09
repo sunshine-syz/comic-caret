@@ -106,6 +106,13 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   letter and a mark, reach 1026 and 1016), as with Fira Code and Maple Mono, whose win ascent
   is their line box as well and whose own stacked marks reach 61 and 127 units past it. The
   Nerd Fonts builds take the same values.
+- Only a letter's marks may pass the line box: accented capitals, stacked marks and the comma
+  below, as in Fira Code (57 letters, up to 112 past its top), Intel One Mono (up to 12) and
+  Monaspace Neon (up to 262, with a line gap behind it); Maple Mono keeps everything inside.
+  The letter itself stays inside, and so does every other glyph but those that join their
+  neighbours. Keeping every accent inside 900 cost the capitals flattened marks and the bold
+  marks pushed down to the top, so the line top rose to 1000 (1.35 em rows) and the bold keeps
+  its marks where the pen leaves them.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.35 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a

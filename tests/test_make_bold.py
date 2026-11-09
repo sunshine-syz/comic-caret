@@ -35,7 +35,6 @@ from measure import (
 from project import (
     ADVANCE,
     BOLD_SFD,
-    LINE_TOP,
     OVERLAP,
     ROOT,
     ROUNDING,
@@ -137,32 +136,6 @@ class GeneratorTest(unittest.TestCase):
                           geo.rect(150, 20, 450, 90), geo.rect(150, 400, 450, 490))
         with self.assertRaisesRegex(SystemExit, "ladder"):
             make_bold.raised("ladder", layer, (700 - 490) / 2)
-
-    @staticmethod
-    def composite(base_top, mark_rise):
-        """A font with one composite: a box `base_top` tall and a mark raised `mark_rise`."""
-        font = fontforge.font()
-        for name, layer in (("base", geo.rect(100, 0, 500, base_top)),
-                            ("mark", geo.rect(250, 0, 350, 100))):
-            glyph = font.createChar(-1, name)
-            glyph.foreground, glyph.width = layer, ADVANCE
-        glyph = font.createChar(-1, "composite")
-        glyph.width = ADVANCE
-        glyph.addReference("base")
-        glyph.addReference("mark", psMat.translate(0, mark_rise))
-        return font, glyph
-
-    def test_lower_into_line_takes_a_mark_down_by_its_excess(self):
-        font, glyph = self.composite(500, LINE_TOP - 63)  # the mark's top 37 past LINE_TOP
-        make_bold.lower_into_line(font, glyph)
-        places = {name: tuple(matrix[4:]) for name, matrix, *_ in glyph.references}
-        self.assertEqual(places, {"base": (0, 0), "mark": (0, LINE_TOP - 100)})
-
-    def test_lower_into_line_exits_when_the_base_passes(self):
-        # Only the parts above the base move, so no move brings the base back in.
-        font, glyph = self.composite(LINE_TOP + 50, LINE_TOP + 100)
-        with self.assertRaisesRegex(SystemExit, "composite"):
-            make_bold.lower_into_line(font, glyph)
 
 
 class BoldTest(unittest.TestCase):

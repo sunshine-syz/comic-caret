@@ -43,9 +43,8 @@ Where the pen alone would break a rule the regular keeps, a name list says what 
 instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
 SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
-stems (RAISED) or keeps its ends (BLUNT). An accent the pen grows out of the line box moves down
-into it (lower_into_line()), and a mark it grows within MARK_CLEARANCE of its letter rises clear
-(raise_clear()). Widths, anchors and the lookups carry over as they are.
+stems (RAISED) or keeps its ends (BLUNT). A mark the pen grows within MARK_CLEARANCE of its
+letter rises clear (raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import argparse
 import collections
@@ -79,7 +78,6 @@ from measure import (
 from project import (
     ADVANCE,
     BOLD_SFD,
-    LINE_TOP,
     MARK_CLEARANCE,
     OVERLAP,
     ROUNDING,
@@ -934,25 +932,6 @@ def raise_clear(font, letters, heights, grows_by):
         if any(dy for _, dy in rises.values()):
             reposition(glyph, shifted(rises))
             glyph.autoHint()
-            if ink(font, glyph.glyphname).boundingBox()[3] > LINE_TOP:
-                sys.exit(f"{glyph.glyphname}: its marks rise past LINE_TOP")
-
-
-def lower_into_line(font, glyph):
-    """Move the composite's parts above its base down by as much as its ink passes LINE_TOP,
-    which terminals clip to (ĥ's circumflex). The base is the part that reaches lowest; a part
-    is above it when it starts no lower than the base's top less the pen's height, what the
-    pen grew the two toward each other."""
-    if (excess := math.ceil(ink(font, glyph.glyphname).boundingBox()[3] - LINE_TOP)) <= 0:
-        return
-    boxes = [layer.boundingBox() for layer in placed(font, glyph)]
-    if len(glyph.foreground):
-        boxes.append(glyph.foreground.boundingBox())  # the glyph's own outline can't move
-    base = min(boxes, key=lambda box: box[1])
-    above = [box[1] >= base[3] - PEN[1] for box in boxes]
-    reposition(glyph, lambda i, _, at: (at[0], at[1] - (excess if above[i] else 0)))
-    if ink(font, glyph.glyphname).boundingBox()[3] > LINE_TOP:
-        sys.exit(f"{glyph.glyphname}: its base passes LINE_TOP")
 
 
 def depth(font, name):
@@ -1106,9 +1085,8 @@ def build(font):
         before = glyph.references
         if name in bounds:
             fit_references(font, glyph, bounds[name])
-        lower_into_line(font, glyph)
         if name in APART:
-            move_apart(font, glyph, gaps[name])  # from the parts as lowered (΅'s tonos)
+            move_apart(font, glyph, gaps[name])
         if name in DOUBLES:
             spread(font, glyph, gaps[name])
         if name in TIGHT:

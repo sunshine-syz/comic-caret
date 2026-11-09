@@ -30,6 +30,7 @@ from project import (
     SFD,
     WOBBLE,
     ZERO_WIDTH,
+    is_letter,
     takes_no_cell,
     validation_errors,
 )
@@ -84,6 +85,20 @@ def joins_its_neighbours(glyph):
     # test_consistency.BlockElementTest. The shades ░ ▒ ▓ stay within the cell, so their
     # pattern tiles.
     return 0x2500 <= glyph.unicode <= 0x259F and glyph.unicode not in range(0x2591, 0x2594)
+
+
+def only_marks_pass(font, glyph, past):
+    """Whether only its marks take the letter `glyph` past the line box: it is built from
+    references, and neither its own outline nor any reference to a letter passes, judged by
+    past(bounding box). GDI apps and terminals that clip to the cell cut off what passes, so
+    only marks may, as in Fira Code, Intel One Mono and Monaspace Neon (accented capitals,
+    stacked marks, the comma below)."""
+    if not is_letter(glyph.unicode) or not glyph.references:
+        return False
+    if len(glyph.foreground) and past(glyph.foreground.boundingBox()):
+        return False
+    return not any(past(geo.transformed(ink(font, name), matrix).boundingBox())
+                   for name, matrix, *_ in glyph.references if is_letter(font[name].unicode))
 
 
 class SanityTest(unittest.TestCase):
@@ -159,15 +174,20 @@ class SanityTest(unittest.TestCase):
                 outside[glyph.glyphname] = reach
         self.assertEqual(outside, {})
 
-    def test_nothing_hangs_below_the_line(self):
-        below = [g.glyphname for g in self.glyphs
-                 if not joins_its_neighbours(g) and g.boundingBox()[1] < LINE_BOTTOM]
+    def test_only_marks_hang_below_the_line(self):
+        def past(box):
+            return box[1] < LINE_BOTTOM
+
+        below = [g.glyphname for g in self.glyphs if not joins_its_neighbours(g)
+                 and past(g.boundingBox()) and not only_marks_pass(self.font, g, past)]
         self.assertEqual(below, [])
 
-    def test_nothing_rises_above_the_line(self):
-        # Many terminals clip glyphs to the line box, so ink above it is cut off.
-        above = [g.glyphname for g in self.glyphs
-                 if not joins_its_neighbours(g) and g.boundingBox()[3] > LINE_TOP]
+    def test_only_marks_rise_above_the_line(self):
+        def past(box):
+            return box[3] > LINE_TOP
+
+        above = [g.glyphname for g in self.glyphs if not joins_its_neighbours(g)
+                 and past(g.boundingBox()) and not only_marks_pass(self.font, g, past)]
         self.assertEqual(above, [])
 
     def test_unencoded_glyphs_are_used(self):

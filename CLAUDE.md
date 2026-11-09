@@ -123,6 +123,9 @@ README's images in `docs/images/` are out of date.
 - Never make a counter narrower than the narrowest reference's, compared at the same letter
   height, and bring no symbol closer to the cell's edges than `project.SYMBOL_SIDE` (15), so
   two side by side don't touch.
+- Keep ink inside the line box. Only a letter's marks may pass it, as in Fira Code, Intel One
+  Mono and Monaspace Neon; the letter itself stays inside. GDI apps and terminals that clip to
+  the cell cut off what passes.
 - Center symmetric ink in the cell; turned glyphs such as ¡ ¿ are references rotated 180°
   about the cell center.
 - `docs/design-notes.md` records how the scaled parts, heavy marks, shapes and Greek were
