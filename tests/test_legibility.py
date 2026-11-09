@@ -24,7 +24,16 @@ import lig_geometry as geo
 import make_bold
 import measure
 from helpers import CIRCUMFLEX_STACKS
-from project import ADVANCE, BOLD_SFD, MARK_CLEARANCE, ROUNDING, SFD, WOBBLE, is_letter
+from project import (
+    ADVANCE,
+    BOLD_SFD,
+    MARK_CLEARANCE,
+    ROUNDING,
+    SFD,
+    SYMBOL_SIDE,
+    WOBBLE,
+    is_letter,
+)
 
 
 def offsets(glyph, name):
@@ -323,6 +332,8 @@ class MarkTest(unittest.TestCase):
                 self.assertGreater(a0 + a1, r0 + r1)  # right of the circumflex's middle
                 self.assertLess(accent_foot, roof_top + MARK_CLEARANCE)
                 self.assertGreaterEqual(round(measure.gap(accent, roof)), MARK_CLEARANCE)
+                # Clear of the next cell's ink, as a symbol keeps.
+                self.assertGreaterEqual(round(ADVANCE - a1), SYMBOL_SIDE)
 
     def test_ring_counter_stays_open(self):
         # At 11-16 px a narrower counter closes and the ring reads as a dot: på as pȧ.

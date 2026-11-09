@@ -227,10 +227,13 @@ def positioning(anchors, boxes, top_y):
     for code in MARKS:
         name, top = mark_name(code), is_top(code)
         side = "top" if top else "bottom"
+        _, bottom, _, height = boxes[code]
         y = top_y if top else 0
         lines.append(f"markClass [{name}] <anchor {MIDDLE} {y}> @{side};")
+        # Stacked, a mark above hangs from its own foot, so each stands STACK_GAP over the
+        # mark under it: their feet differ, as they rise by different amounts.
+        y = round(bottom) if top else 0
         lines.append(f"markClass [{name}] <anchor {MIDDLE} {y}> @{side}_mkmk;")
-        _, bottom, _, height = boxes[code]
         stack_y = round(height + STACK_GAP) if top else round(bottom - STACK_GAP - rise)
         stacks[top].append(f"  pos mark {name} <anchor {MIDDLE} {stack_y}> mark @{side}_mkmk;")
     lines.append(f"lookup {PREFIX}base {{")
@@ -264,9 +267,11 @@ def build(font):
     offsets = mark_offsets(font, placements)
     add_mark_glyphs(font, offsets)
     boxes = mark_boxes(font, offsets)
-    # Marks above rest on the lowest one's bottom, so on a glyph without accented forms each
-    # stands at least STACK_GAP above the ink: they rise by different amounts over the
-    # lowercase letters, and the ring stands lowest.
+    # Marks above rest on the lowest one's foot, the ring's, so on a glyph without accented
+    # forms, Ü among them, each stands at least STACK_GAP over the ink: the ring STACK_GAP, and
+    # each other mark as much higher as it rises past the ring over the lowercase letters: the
+    # acute 91. Lower, the bold's pens bring a ring typed over å's ring within
+    # MARK_CLEARANCE of it: they close the two by 28.
     top_y = round(min(boxes[code][1] for code in MARKS if is_top(code)))
     add_compositions(font)
     add_dotless(font)

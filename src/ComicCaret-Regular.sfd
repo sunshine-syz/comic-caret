@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794211789
+ModificationTime: 1794214243
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -28292,7 +28292,7 @@ GlyphClass: 4
 Flags: W
 HStem: 570 185
 VStem: 180 240
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 805 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28307,7 +28307,7 @@ GlyphClass: 4
 Flags: W
 HStem: 570 187
 VStem: 180 240
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 807 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28321,7 +28321,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 560 73<131.188 190.351 409.649 468.714> 691 20G<297.5 302.5>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 560 mark 0
 AnchorPoint: "top_mkmk" 300 761 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28336,7 +28336,7 @@ GlyphClass: 4
 Flags: W
 HStem: 565 80<316.462 391.705> 612 80<213.79 284.593> 657 20G<414.5 430>
 VStem: 141 318<612.934 644.057>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 565 mark 0
 AnchorPoint: "top_mkmk" 300 742 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28350,7 +28350,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 588 82<103.239 492.669>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 588 mark 0
 AnchorPoint: "top_mkmk" 300 723 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28365,7 +28365,7 @@ GlyphClass: 4
 Flags: W
 HStem: 558 74<235.893 368.759> 661 20G<172.5 188.5 413 427>
 VStem: 146 308<613.007 662>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 558 mark 0
 AnchorPoint: "top_mkmk" 300 731 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28380,7 +28380,7 @@ GlyphClass: 4
 Flags: W
 HStem: 570 123<253.847 346.481>
 VStem: 236 128<587.442 674.427>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 743 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28395,7 +28395,7 @@ GlyphClass: 4
 Flags: W
 HStem: 573 120<149.425 234.53 365.471 450.53>
 VStem: 133 118<590.61 676.436> 349 118<590.61 676.436>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 573 mark 0
 AnchorPoint: "top_mkmk" 300 743 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28425,7 +28425,7 @@ GlyphClass: 4
 Flags: W
 HStem: 569 130<199.001 231.031 367.666 397.777>
 VStem: 141 319
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 569 mark 0
 AnchorPoint: "top_mkmk" 300 751 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -28440,7 +28440,7 @@ GlyphClass: 4
 Flags: W
 HStem: 629 86<392.108 464.331>
 VStem: 281 38<561 572.256>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 558 mark 0
 AnchorPoint: "top_mkmk" 300 765 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2

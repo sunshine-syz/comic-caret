@@ -95,7 +95,7 @@ def only_marks_pass(font, glyph, past):
     stacked marks, the comma below)."""
     def is_letter_part(name):
         # An unencoded part is a letter when the glyph its name starts with is: ª's a.small,
-        # but not circumflex.case or bar.ordinal.
+        # but not grave.accent or bar.ordinal.
         stem = name.split(".")[0]
         return is_letter(font[name].unicode) or stem in font and is_letter(font[stem].unicode)
 

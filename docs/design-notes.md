@@ -81,8 +81,8 @@ them. The exceptions:
   at 486, the old `a`'s. `æ`'s a half is the same centrelines
   at 0.62 across with the old `æ`'s pen (72 × 80), and `ª`'s small a is `a` at 0.55.
 - **Accents.** At 11–16 px the old acute (153 × 128) was as wide as `i`'s dot and read as one,
-  and every mark sat 40–60 above its letter, where the references keep more (é: Intel One
-  Mono 71; ä: Maple Mono 94).
+  and every mark sat 40–60 above its letter, where the references keep at least 72 over é and
+  85 over ä.
   - The acute and grave lengthen along their own 34° slant to 240 × 187, Intel One Mono's
     width (246); the acute is 1.59 times the dot's width, over Intel One Mono's 1.45, the
     widest of the references' (Fira Code 1.34, Maple Mono 0.97). The circumflex and caron
@@ -110,11 +110,11 @@ them. The exceptions:
   240 apart, so their white is 86 (Fira Code 80) and the bold's 59 (Fira Code Bold 54).
   Moved apart with the old arms, the white grew by 0.6 of the move, and reached 80 only 7
   from the bold cell's edge. Intel One Mono draws its « chevrons narrower than its ‹ too.
-- **Ấ ầ ế ề ố ồ.** The acute or grave stands at the circumflex's upper right, its right end
-  `SYMBOL_SIDE` (15) from the cell's edge, lowered until `MARK_CLEARANCE` (20) stands between
-  it and the circumflex: Ấ tops at 1061, ấ 891, Ầ 972, ầ 803 (Intel One Mono 1029 and 866,
-  Maple Mono 1020 and 900). Centred over the circumflex, Ấ would top at 1160. HarfBuzz composes
-  a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A combined mark
+- **Ấ ấ Ầ ầ Ế ế Ề ề Ố ố Ồ ồ.** The acute or grave stands at the circumflex's upper right,
+  its right end `SYMBOL_SIDE` (15) from the cell's edge, lowered until `MARK_CLEARANCE` (20)
+  stands between it and the circumflex: Ấ tops at 1061, ấ 891, Ầ 972, ầ 803 (Intel One Mono
+  1029 and 866, Maple Mono 1020 and 900). Centred over the circumflex, Ấ would top at 1160.
+  HarfBuzz composes a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A combined mark
   for ◌̂ ◌́, as the references also draw for other bases, would not: the shaper composes Â
   first and centres the acute over it. The hook above, the dot below and the horn are not
   drawn, so the rest of Vietnamese comes from a fallback font.
@@ -141,10 +141,10 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   line box: the font's furthest ink. The win ascent and descent are the line box, as in Fira
   Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space lines 1.35 em apart
   and clip the overlap; set to that ink (1148/498), they would space lines 1.65 em apart. They
-  clip the top of two marks stacked on a capital too (Ấ and Ǜ, which HarfBuzz builds from a
-  letter and a mark, reach 1026 and 1016), as with Fira Code and Maple Mono, whose win ascent
-  is their line box as well and whose own stacked marks reach 61 and 127 units past it. The
-  Nerd Fonts builds take the same values.
+  clip the top of two marks stacked on a capital too (Ấ at 1061, and Ǜ, which HarfBuzz builds
+  from Ü and a grave, at 1139; the bold's 1114 and 1160), as with Fira Code and Maple Mono,
+  whose win ascent is their line box as well and whose own stacked marks reach 61 and 127
+  units past it. The Nerd Fonts builds take the same values.
 - Only a letter's marks may pass the line box: accented capitals, stacked marks and the comma
   below, as in Fira Code (57 letters, up to 112 past its top), Intel One Mono (up to 12) and
   Monaspace Neon (up to 262, with a line gap behind it); Maple Mono keeps everything inside.
@@ -152,7 +152,7 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   neighbours (`test_only_marks_rise_above_the_line` and `test_only_marks_hang_below_the_line`
   in `tests/test_sanity.py`). Keeping every accent inside 900 would have needed flattened marks
   on capitals and kept the bold's marks pushed down to the top, so the line top rose to 1000
-  (1.35 em rows) and the bold keeps its marks where the pen leaves them.
+  (1.35 em rows) and the bold's marks rise clear of their letters.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.35 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
@@ -670,12 +670,15 @@ are in `build/cache/reference/bold/`.
     ring's 21), so it keeps the regular's white, which the reference bolds' floors stay under
     (`BoldMarkTest`). It rises as far on every letter where it stands as high, so a row of
     them stays level, and must clear `MARK_CLEARANCE` (20), a floor under the regular's
-    closest marks and over the reference bolds' closest, Maple Mono Bold's Å ring at 15.
+    closest marks over a letter (ď's caron at 22.5) and over the reference bolds' closest,
+    Maple Mono Bold's Å ring at 15. The circumflex stacks' accent stands at it, beside its
+    circumflex.
   - The anchors carry over, so each combining mark rises as far as its accent does over the
     lowercase letters, and a shaped mark lands where the precomposed letter puts it.
-  - A mark beside another (ấ's acute and its circumflex) rises on until it clears
-    `MARK_CLEARANCE` from it. The pens close the two across, by a full pen, so the accent
-    rises 40, 26 more than the circumflex.
+  - A mark beside another (ấ's acute and its circumflex) keeps `SYMBOL_SIDE` from the cell's
+    side, so it moves 18 left, where the pen grew it, and rises on until it clears
+    `MARK_CLEARANCE` from the circumflex. The pens close the two across, by a full pen, so the
+    accent rises 46, 32 more than the circumflex: Ấ tops at 1114, ấ at 943.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:

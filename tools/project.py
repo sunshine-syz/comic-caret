@@ -28,8 +28,10 @@ OVERLAP = 10  # how far joining strokes (ligatures, box drawing at 1.5 em) reach
 CELL_REACH = 36
 ROUNDING = 1  # an outline's points and a reference's offset are each rounded to whole units
 WOBBLE = 10  # how far the hand's wobble strays; centering and mirroring hold within it
-# The closest a mark may come to its letter: a floor a little under the regular's closest
-# marks, ď's caron and Ύ's tonos at 24.5, not a reference font's measurement.
+# The closest a mark may come to its letter, or to a mark beside it: a floor a little under the
+# regular's closest marks over a letter, ď's caron at 22.5 and Å's ring at 23, not a reference
+# font's measurement. The circumflex stacks' acute and grave stand at it, beside their
+# circumflex.
 MARK_CLEARANCE = 20
 # The format characters that take no cell (their wcwidth is 0), kept blank and zero wide like
 # the combining marks: the zero width space, non-joiner and joiner, the word joiner and the

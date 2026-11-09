@@ -5,17 +5,19 @@ Run: python3 -m unittest discover tests
 Rows, centering, and accented letters built on their letter with marks clear of it are
 checked in test_consistency.py. The bold runs these rules too (BoldGreekTest).
 """
+import math
 import pathlib
 import sys
 import unittest
 
 import fontforge
+import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import lig_geometry as geo
 import measure
 from measure import outline
-from project import BOLD_SFD, SFD
+from project import BOLD_SFD, SFD, WOBBLE
 
 # Google Fonts' Greek Core (the glyphsets package), less what Latin Core already covers:
 # the numeral signs, question mark, tonos, dialytika tonos and ano teleia, the alphabet with its
@@ -68,6 +70,16 @@ class GreekTest(unittest.TestCase):
         # The acute's stroke, turned (test_make_bold.py holds the turn), so it needs less room
         # beside a capital.
         tonos, acute = measure.ink(self.font, "tonos"), measure.ink(self.font, "acute")
+
+        def weight(layer):
+            # Levelled by its slant, the stroke's height across its middle.
+            x0, y0, x1, y1 = layer.boundingBox()
+            turn = psMat.rotate(-math.radians(measure.slant(layer)))
+            level = geo.transformed(layer, geo.about(turn, (x0 + x1) / 2, (y0 + y1) / 2))
+            l0, _, l1, _ = level.boundingBox()
+            return sum(top - foot for foot, top in measure.spans_at_x(level, (l0 + l1) / 2))
+
+        self.assertAlmostEqual(weight(tonos), weight(acute), delta=WOBBLE)
         t0, u0, t1, u1 = tonos.boundingBox()
         a0, b0, a1, b1 = acute.boundingBox()
         self.assertGreater((u1 - u0) / (t1 - t0), (b1 - b0) / (a1 - a0))

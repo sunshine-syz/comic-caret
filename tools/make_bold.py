@@ -920,10 +920,12 @@ def raise_clear(font, letters, heights, grows_by):
     mark's pen's reach up and the letter's, so it keeps the regular's white; and the same mark
     as far on every letter where the regular places it as high, so a row of them stays level
     (the tonos over έ ό, and so over ά ή ί). A mark over another mark (ấ's acute beside its
-    circumflex) rises on until it clears MARK_CLEARANCE from it, which the pens closed. Each
-    mark must then clear MARK_CLEARANCE from its letter. `heights` holds how high the regular places each (letter, mark). One row breaks on
-    purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART). A part APART moves
-    keeps its white there (i's dot). Returns {(mark, height): rise}."""
+    circumflex) keeps SYMBOL_SIDE from the cell's side, as the regular places it, and rises on
+    until it clears MARK_CLEARANCE from the mark, which the pens closed. Each mark must then
+    clear MARK_CLEARANCE from its letter. `heights` holds how high the regular places each
+    (letter, mark). One row breaks on purpose: ΐ ΰ's dieresis, which ΅ takes down below its
+    tonos (APART). A part APART moves keeps its white there (i's dot). Returns
+    {(mark, height): rise}."""
     def above(glyph):
         marks, letter = marks_above(font, glyph, grows_by)
         moved = APART.get(glyph.glyphname, (None,))[0]
@@ -941,7 +943,7 @@ def raise_clear(font, letters, heights, grows_by):
             needs[row] = max(needs[row], math.ceil(grew + reach(pen_of(name, grows_by))[1]))
     # A row's rise can raise a mark beneath another in some other letter, so repeat until no
     # mark needs more.
-    rising = True
+    shifts, rising = collections.defaultdict(int), True
     while rising:
         rising = False
         for glyph in letters:
@@ -950,8 +952,13 @@ def raise_clear(font, letters, heights, grows_by):
                 if high.boundingBox()[1] <= low.boundingBox()[1]:
                     continue
                 up, down = ((name, heights[glyph.glyphname, name]) for name in (upper, lower))
-                steps = clearance(geo.moved(high, 0, needs[up]), geo.moved(low, 0, needs[down]),
-                                  (0, 1), MARK_CLEARANCE)
+                # The pen grew the mark toward the cell's side, where the regular keeps it
+                # SYMBOL_SIDE away.
+                over = high.boundingBox()[2] - (ADVANCE - project.SYMBOL_SIDE)
+                shifts[up] = min(shifts[up], -math.ceil(over))
+                steps = clearance(geo.moved(high, shifts[up], needs[up]),
+                                  geo.moved(low, shifts[down], needs[down]), (0, 1),
+                                  MARK_CLEARANCE)
                 if steps is None:
                     sys.exit(f"{glyph.glyphname}: its {upper} can't rise clear of its {lower}")
                 if steps:
@@ -959,11 +966,13 @@ def raise_clear(font, letters, heights, grows_by):
                     rising = True
     for glyph in letters:
         marks, letter = above(glyph)
-        moves = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
+        rows = {name: (name, heights[glyph.glyphname, name]) for name, _ in marks}
+        moves = {name: (shifts[row], needs[row]) for name, row in rows.items()}
         for name, mark in marks:
             if clearance(geo.moved(mark, *moves[name]), letter, (0, 1), MARK_CLEARANCE) != 0:
-                sys.exit(f"{glyph.glyphname}: its {name} can't rise clear of the letter")
-        if any(dy for _, dy in moves.values()):
+                sys.exit(f"{glyph.glyphname}: its {name} stands under MARK_CLEARANCE from the "
+                         "letter after rising by the pens' reach")
+        if any(dx or dy for dx, dy in moves.values()):
             reposition(glyph, shifted(moves))
             glyph.autoHint()
     return needs

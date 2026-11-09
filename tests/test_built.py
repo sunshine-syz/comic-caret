@@ -37,6 +37,7 @@ from project import (
     LINE_TOP,
     MARK_CLEARANCE,
     ROOT,
+    ROUNDING,
     SFD,
     STYLES,
     font_file,
@@ -565,11 +566,13 @@ class MarkShapingTest(unittest.TestCase):
     def test_a_shaped_mark_keeps_its_clearance(self):
         # A mark above a lowercase letter the font has no precomposed form of lands through the
         # anchors, and keeps the clearance the precomposed letters' marks keep. The bold grows
-        # the letter up and the mark down, so its marks must rise with its accents. Not over a
-        # circumflex stack: the bold raises its accent further, clear of the circumflex, than
-        # the anchor it carries over allows for, and no language sets a third mark above it.
+        # the letter up and the mark down, so its marks must rise with its accents. Not over the
+        # bold's circumflex stacks: the bold raises their accent further, clear of the
+        # circumflex, than the anchor it carries over allows for, and no language sets a third
+        # mark above them.
+        stacks = CIRCUMFLEX_STACKS if self.style == "Bold" else ""
         lower = [base for base in self.bases
-                 if unicodedata.category(base) == "Ll" and base not in CIRCUMFLEX_STACKS]
+                 if unicodedata.category(base) == "Ll" and base not in stacks]
         pairs = set()
         for font in self.fonts:
             for mark in (code for code in MARKS if is_top(code)):
@@ -611,6 +614,19 @@ class MarkShapingTest(unittest.TestCase):
                     [_, (_, _, (_, low0, _, high0)), (_, _, (_, low1, _, high1))] = \
                         placed(font, text)
                     self.assertTrue(low1 > high0 or high1 < low0)
+
+    def test_marks_stack_one_gap_apart(self):
+        # Each mark above hangs from its own foot over the mark under it, so it stands as far
+        # over it as any other mark would. x has no precomposed form with the dieresis.
+        for font in self.fonts:
+            gaps = {}
+            for mark in (code for code in MARKS if is_top(code)):
+                [_, (_, _, (_, _, _, top)), (_, _, (_, foot, _, _))] = \
+                    placed(font, "x\u0308" + chr(mark))
+                gaps[f"U+{mark:04X}"] = foot - top
+            with self.subTest(font=font.name):
+                # The two anchors are each rounded to units.
+                self.assertLessEqual(max(gaps.values()) - min(gaps.values()), 2 * ROUNDING, gaps)
 
     def test_i_and_j_lose_their_dot_under_a_mark_above(self):
         for font in self.fonts:

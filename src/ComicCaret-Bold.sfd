@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794212169
+ModificationTime: 1794214257
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -26717,7 +26717,7 @@ GlyphClass: 4
 Flags: W
 HStem: 577 199
 VStem: 162 274
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 805 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26732,7 +26732,7 @@ GlyphClass: 4
 Flags: W
 HStem: 577 201
 VStem: 162 276
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 807 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26746,7 +26746,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 635 97<266.002 335.352>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 560 mark 0
 AnchorPoint: "top_mkmk" 300 761 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26760,7 +26760,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 572 126<365.879 427.758> 583 130<177.405 233.672>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 565 mark 0
 AnchorPoint: "top_mkmk" 300 742 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26774,7 +26774,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 595 96<86.0036 509.666>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 588 mark 0
 AnchorPoint: "top_mkmk" 300 723 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26788,7 +26788,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 565 88<245.97 357.891>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 558 mark 0
 AnchorPoint: "top_mkmk" 300 731 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26803,7 +26803,7 @@ GlyphClass: 4
 Flags: W
 HStem: 577 137<242.557 358.209>
 VStem: 218 164<600.658 689.866>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 570 mark 0
 AnchorPoint: "top_mkmk" 300 743 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26818,7 +26818,7 @@ GlyphClass: 4
 Flags: W
 HStem: 580 134<136.043 193 352.527 463.832>
 VStem: 116 152<602.656 692.996> 332 152<600.599 692.969>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 573 mark 0
 AnchorPoint: "top_mkmk" 300 743 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26847,7 +26847,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 576 146<188.062 239.547 358.426 404.715>
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 569 mark 0
 AnchorPoint: "top_mkmk" 300 751 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -26861,7 +26861,7 @@ Width: 0
 GlyphClass: 4
 Flags: W
 HStem: 565 171
-AnchorPoint: "top_mkmk" 300 529 mark 0
+AnchorPoint: "top_mkmk" 300 558 mark 0
 AnchorPoint: "top_mkmk" 300 765 basemark 0
 AnchorPoint: "top" 300 529 mark 0
 LayerCount: 2
@@ -37067,13 +37067,13 @@ Encoding: 7844 7844 1167
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -11 21G<80 101.5 492 531> 666 20G<286 308> 806 97<271.002 340.352> 907 201
-VStem: 324 276 447 127<2.97903 95.7733>
+HStem: -11 21G<80 101.5 492 531> 666 20G<286 308> 806 97<271.002 340.352> 913 201
+VStem: 309 276 447 127<2.97903 95.7733>
 AnchorPoint: "bottom" 321 0 basechar 0
 AnchorPoint: "top" 321 1111 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 344 2
+Refer: 108 180 N 1 0 0 1 147 350 2
 Refer: 34 65 N 1 0 0 1 0 1 2
 Refer: 278 710 N 1 0 0 1 5 185 2
 Ligature2: "marks_compose" Acircumflex acutecomb
@@ -37085,13 +37085,13 @@ Encoding: 7845 7845 1168
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -44 21G<469.5 501.5> -36 90<203.53 331.52> 197 90<221.368 383.611> 403 90<220.931 345.43> 635 97<273.002 342.352> 737 201
-VStem: 52 132<73.8433 161.558> 324 276
+HStem: -44 21G<469.5 501.5> -36 90<203.53 331.52> 197 90<221.368 383.611> 403 90<220.931 345.43> 635 97<273.002 342.352> 742 201
+VStem: 52 132<73.8433 161.558> 309 276
 AnchorPoint: "bottom" 328 0 basechar 0
 AnchorPoint: "top" 328 941 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 174 2
+Refer: 108 180 N 1 0 0 1 147 179 2
 Refer: 278 710 N 1 0 0 1 7 14 2
 Refer: 66 97 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" acircumflex acutecomb
@@ -37103,13 +37103,13 @@ Encoding: 7846 7846 1169
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -11 21G<80 101.5 492 531> 666 20G<286 308> 806 97<271.002 340.352> 820 199
-VStem: 324 274 447 127<2.97903 95.7733>
+HStem: -11 21G<80 101.5 492 531> 666 20G<286 308> 806 97<271.002 340.352> 829 199
+VStem: 309 274 447 127<2.97903 95.7733>
 AnchorPoint: "bottom" 321 0 basechar 0
 AnchorPoint: "top" 321 1022 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 257 2
+Refer: 620 -1 N 1 0 0 1 147 266 2
 Refer: 34 65 N 1 0 0 1 0 1 2
 Refer: 278 710 N 1 0 0 1 5 185 2
 Ligature2: "marks_compose" Acircumflex gravecomb
@@ -37121,13 +37121,13 @@ Encoding: 7847 7847 1170
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -44 21G<469.5 501.5> -36 90<203.53 331.52> 197 90<221.368 383.611> 403 90<220.931 345.43> 635 97<273.002 342.352> 650 199
-VStem: 52 132<73.8433 161.558> 324 274
+HStem: -44 21G<469.5 501.5> -36 90<203.53 331.52> 197 90<221.368 383.611> 403 90<220.931 345.43> 635 97<273.002 342.352> 659 199
+VStem: 52 132<73.8433 161.558> 309 274
 AnchorPoint: "bottom" 328 0 basechar 0
 AnchorPoint: "top" 328 853 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 87 2
+Refer: 620 -1 N 1 0 0 1 147 96 2
 Refer: 278 710 N 1 0 0 1 7 14 2
 Refer: 66 97 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" acircumflex gravecomb
@@ -37139,13 +37139,13 @@ Encoding: 7870 7870 1171
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -25 96<208.703 457.166> -12 99<245.204 460 460.012 534.617> 288 92<204.845 461.532> 304 90<218.748 522.52> 564 97<209.249 536.797> 806 97<277.002 346.352> 910 201
-VStem: 78 127<72.2842 286.219 380 538.976 539 561.326> 324 276
+HStem: -25 96<208.703 457.166> -12 99<245.204 460 460.012 534.617> 288 92<204.845 461.532> 304 90<218.748 522.52> 564 97<209.249 536.797> 806 97<277.002 346.352> 915 201
+VStem: 78 127<72.2842 286.219 380 538.976 539 561.326> 309 276
 AnchorPoint: "bottom" 339 0 basechar 0
 AnchorPoint: "top" 339 1115 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 347 2
+Refer: 108 180 N 1 0 0 1 147 352 2
 Refer: 278 710 N 1 0 0 1 11 185 2
 Refer: 38 69 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Ecircumflex acutecomb
@@ -37157,13 +37157,13 @@ Encoding: 7871 7871 1172
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 90<236.128 381.49> 407 87<256.113 371.053> 635 97<273.002 342.352> 737 201
-VStem: 324 276
+HStem: -33 90<236.128 381.49> 407 87<256.113 371.053> 635 97<273.002 342.352> 742 201
+VStem: 309 276
 AnchorPoint: "bottom" 336 0 basechar 0
 AnchorPoint: "top" 336 941 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 174 2
+Refer: 108 180 N 1 0 0 1 147 179 2
 Refer: 278 710 N 1 0 0 1 7 14 2
 Refer: 70 101 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" ecircumflex acutecomb
@@ -37175,13 +37175,13 @@ Encoding: 7872 7872 1173
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -25 96<208.703 457.166> -12 99<245.204 460 460.012 534.617> 288 92<204.845 461.532> 304 90<218.748 522.52> 564 97<209.249 536.797> 806 97<277.002 346.352> 824 199
-VStem: 78 127<72.2842 286.219 380 538.976 539 561.326> 324 274
+HStem: -25 96<208.703 457.166> -12 99<245.204 460 460.012 534.617> 288 92<204.845 461.532> 304 90<218.748 522.52> 564 97<209.249 536.797> 806 97<277.002 346.352> 832 199
+VStem: 78 127<72.2842 286.219 380 538.976 539 561.326> 309 274
 AnchorPoint: "bottom" 339 0 basechar 0
 AnchorPoint: "top" 339 1026 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 261 2
+Refer: 620 -1 N 1 0 0 1 147 269 2
 Refer: 278 710 N 1 0 0 1 11 185 2
 Refer: 38 69 N 1 0 0 1 0 1 2
 Ligature2: "marks_compose" Ecircumflex gravecomb
@@ -37193,13 +37193,13 @@ Encoding: 7873 7873 1174
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 90<236.128 381.49> 407 87<256.113 371.053> 635 97<273.002 342.352> 650 199
-VStem: 324 274
+HStem: -33 90<236.128 381.49> 407 87<256.113 371.053> 635 97<273.002 342.352> 659 199
+VStem: 309 274
 AnchorPoint: "bottom" 336 0 basechar 0
 AnchorPoint: "top" 336 853 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 87 2
+Refer: 620 -1 N 1 0 0 1 147 96 2
 Refer: 278 710 N 1 0 0 1 7 14 2
 Refer: 70 101 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" ecircumflex gravecomb
@@ -37211,13 +37211,13 @@ Encoding: 7888 7888 1175
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 93<220.985 354.659> 589 90<250.542 374.618> 806 97<267.002 336.352> 905 201
-VStem: 48 124<129.077 472.137> 324 276 418 132<126.445 471.109> 432 124<154.421 520.997>
+HStem: -29 93<220.985 354.659> 589 90<250.542 374.618> 806 97<267.002 336.352> 912 201
+VStem: 48 124<129.077 472.137> 309 276 418 132<126.445 471.109> 432 124<154.421 520.997>
 AnchorPoint: "bottom" 325 0 basechar 0
 AnchorPoint: "top" 325 1109 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 342 2
+Refer: 108 180 N 1 0 0 1 147 349 2
 Refer: 48 79 N 1 0 0 1 0 1 2
 Refer: 278 710 N 1 0 0 1 1 185 2
 Ligature2: "marks_compose" Ocircumflex acutecomb
@@ -37229,13 +37229,13 @@ Encoding: 7889 7889 1176
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -32 93<226.718 360.352> 409 87<235.663 362.536> 635 97<265.002 334.352> 733 201
-VStem: 54 131<107.203 337.359> 324 276 410 130<122.886 356.415>
+HStem: -32 93<226.718 360.352> 409 87<235.663 362.536> 635 97<265.002 334.352> 740 201
+VStem: 54 131<107.203 337.359> 309 276 410 130<122.886 356.415>
 AnchorPoint: "bottom" 328 0 basechar 0
 AnchorPoint: "top" 328 936 basechar 0
 LayerCount: 2
 Fore
-Refer: 108 180 N 1 0 0 1 162 170 2
+Refer: 108 180 N 1 0 0 1 147 177 2
 Refer: 278 710 N 1 0 0 1 -1 14 2
 Refer: 80 111 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" ocircumflex acutecomb
@@ -37247,13 +37247,13 @@ Encoding: 7890 7890 1177
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -29 93<220.985 354.659> 589 90<250.542 374.618> 806 97<267.002 336.352> 818 199
-VStem: 48 124<129.077 472.137> 324 274 418 132<126.445 471.109> 432 124<154.421 520.997>
+HStem: -29 93<220.985 354.659> 589 90<250.542 374.618> 806 97<267.002 336.352> 826 199
+VStem: 48 124<129.077 472.137> 309 274 418 132<126.445 471.109> 432 124<154.421 520.997>
 AnchorPoint: "bottom" 325 0 basechar 0
 AnchorPoint: "top" 325 1020 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 255 2
+Refer: 620 -1 N 1 0 0 1 147 263 2
 Refer: 48 79 N 1 0 0 1 0 1 2
 Refer: 278 710 N 1 0 0 1 1 185 2
 Ligature2: "marks_compose" Ocircumflex gravecomb
@@ -37265,13 +37265,13 @@ Encoding: 7891 7891 1178
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -32 93<226.718 360.352> 409 87<235.663 362.536> 635 97<265.002 334.352> 646 199
-VStem: 54 131<107.203 337.359> 324 274 410 130<122.886 356.415>
+HStem: -32 93<226.718 360.352> 409 87<235.663 362.536> 635 97<265.002 334.352> 654 199
+VStem: 54 131<107.203 337.359> 309 274 410 130<122.886 356.415>
 AnchorPoint: "bottom" 328 0 basechar 0
 AnchorPoint: "top" 328 846 basechar 0
 LayerCount: 2
 Fore
-Refer: 620 -1 N 1 0 0 1 162 83 2
+Refer: 620 -1 N 1 0 0 1 147 91 2
 Refer: 278 710 N 1 0 0 1 -1 14 2
 Refer: 80 111 N 1 0 0 1 0 0 2
 Ligature2: "marks_compose" ocircumflex gravecomb

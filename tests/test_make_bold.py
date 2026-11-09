@@ -13,7 +13,6 @@ import unicodedata
 import unittest
 
 import fontforge
-import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 # the tests' shared SFD comparison
@@ -114,10 +113,12 @@ class GeneratorTest(unittest.TestCase):
         font = fontforge.open(str(SFD))
         acute, tonos = font["acute"].foreground, font["tonos"].foreground
         turn = slant(tonos) - slant(acute)
-        # Rounding moves each end of the tonos at most ROUNDING across its stroke, which turns
-        # its axis by at most this.
-        x0, y0, x1, y1 = tonos.boundingBox()
-        delta = math.degrees(math.atan2(ROUNDING, math.hypot(x1 - x0, y1 - y0) / 2))
+        # Rounding moves each end of a stroke at most ROUNDING across it, which turns its axis
+        # by at most atan(ROUNDING / half its length); both strokes are rounded.
+        delta = 0
+        for layer in (tonos, acute):
+            x0, y0, x1, y1 = layer.boundingBox()
+            delta += math.degrees(math.atan2(ROUNDING, math.hypot(x1 - x0, y1 - y0) / 2))
         self.assertAlmostEqual(turn, math.degrees(make_bold.TURNED["tonos"]), delta=delta)
 
     def test_middle_stroke_exits_on_two_strokes(self):

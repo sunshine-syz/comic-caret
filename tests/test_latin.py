@@ -271,6 +271,7 @@ class LookalikeTest(unittest.TestCase):
         # bar's reach past the stem's side.
         for slashed, plain in (("lslash", "l"), ("Lslash", "L")):
             bar, letter = self.font[slashed].foreground, self.font[plain].foreground
+            self.assertGreater(measure.covered(letter, bar), 0.99, f"{slashed} isn't {plain}")
             reach = [0, 0]
             for y in range(0, int(letter.boundingBox()[3]), 2):
                 spans, stem = measure.spans_at_y(bar, y), measure.spans_at_y(letter, y)
