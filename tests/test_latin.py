@@ -154,6 +154,10 @@ class LookalikeTest(unittest.TestCase):
     # The floors the tests below take from the references, which they name.
     sharp_s_foot, sharp_s_waist, capital_sharp_s_foot, capital_sharp_s_middle = 69, 75, 68, 79
     slash_short = 0  # how much less than half a stroke Ø's slash may run past O
+    # (left, right): how far the narrowest reference's bar reaches past the stem, x scaled to
+    # our cell. ł: Fira Code's (Maple Mono 119, 160; Intel One Mono 145, 159). Ł: Intel One
+    # Mono's left and Maple Mono's right (Fira Code 95, 200; Intel One Mono's right 221).
+    bar_reach = {"lslash": (105, 124), "Lslash": (55, 170)}
 
     @classmethod
     def setUpClass(cls):
@@ -260,6 +264,22 @@ class LookalikeTest(unittest.TestCase):
         self.assertEqual(len(bottoms), 1, "no ink at 540 half a stroke in from the bar's left end")
         rising = measure.spans_at_y(layer, bottoms[0] - 1)[-1]
         self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
+
+    def test_lslash_bar_crosses_well_past_the_stem(self):
+        # A bar that barely passes the stem reads as l and L at 11-16 px. ł and Ł are l and L
+        # with the bar drawn in, so at each height their ink past the plain letter's is the
+        # bar's reach past the stem's side.
+        for slashed, plain in (("lslash", "l"), ("Lslash", "L")):
+            bar, letter = self.font[slashed].foreground, self.font[plain].foreground
+            reach = [0, 0]
+            for y in range(0, int(letter.boundingBox()[3]), 2):
+                spans, stem = measure.spans_at_y(bar, y), measure.spans_at_y(letter, y)
+                if spans and stem:
+                    reach = [max(reach[0], stem[0][0] - spans[0][0]),
+                             max(reach[1], spans[-1][1] - stem[-1][1])]
+            for side, found, floor in zip(("left", "right"), reach, self.bar_reach[slashed]):
+                with self.subTest(glyph=slashed, side=side):
+                    self.assertGreaterEqual(round(found), floor)
 
     def test_per_mille_rings_and_slash_stay_apart(self):
         contours = list(self.font["perthousand"].foreground)
@@ -546,6 +566,9 @@ def bold_stems():
 class BoldLookalikeTest(LookalikeTest):
     sfd = BOLD_SFD
     per_mille_clearance = BOLD_PER_MILLE_CLEARANCE
+    # ł: Fira Code Bold's (Maple Mono Bold 106, 139; Intel One Mono Bold 134, 166). Ł: Intel One
+    # Mono Bold's left and Maple Mono Bold's right (Fira Code Bold 84, 193).
+    bar_reach = {"lslash": (100, 121), "Lslash": (55, 145)}
     # The reference bolds' narrowest. ß's per 1000 em, as the regular's: Fira Code's 34.2 at
     # its foot (Maple Mono's 65.6, Intel One Mono's 94.9) and 48.2 at its waist (65.0, 85.0).
     # ẞ's at the bold's cap height, as the regular's: Fira Code's 47.9 at its foot (Maple

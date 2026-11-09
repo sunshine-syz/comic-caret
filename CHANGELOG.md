@@ -9,6 +9,7 @@
 - Accents read at 11–16 px. The acute and grave are 240 units wide, as long as Intel One Mono's, and the circumflex and caron 345, within the references' range; the acute was as wide as `i`'s dot, so `í` read as `i` and `Łódź` as `Łódż`. Each mark stands as far above its letter as in the narrowest reference: the marks sat on their letters, and `ź ż`, `é ė` and `é è ê ě` blurred together. Capitals take the same marks as the lowercase. `è` and `é` stand at one height.
 - The ring of `å ů Å Ů` and `˚` is 196 units across, with a counter 112 wide. It was 161 across and closed into a dot at small sizes, so `på` read as `pȧ`.
 - In the bold, marks keep the regular's white from their letters, and a mark typed after its letter, as `o` + U+030A, lands where an accented letter puts it. The bold pen grew each mark into its letter, so the dots of `ä ö ü` merged into them, and the ring of a typed `o̊` came within 7 units of the `o`.
+- The bars of `ł` and `Ł` cross well past the stem, as far as the references' do, so `był` doesn't read as `byl` at small sizes. They passed the stem by about 60 units.
 
 ## 2.2 (2026-10)
 

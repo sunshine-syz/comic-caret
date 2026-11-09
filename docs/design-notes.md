@@ -101,6 +101,10 @@ them. The exceptions:
 - **˚.** 196 across, with a 42 stroke, so its counter is 112 across (Fira Code's 108 at its
   middle). The old ring, 161 wide, kept a counter of 41 × 51, which closed into a dot at
   12 px. å ů Å Ů and U+030A take the same ring; Å tops at 897.
+- **ł Ł.** Their bars pass the stem as far as the references' do, so ł doesn't read as l at
+  12 px: ł's reaches 111 left and 129 right (Fira Code 105 and 124), Ł's 108 and 173 (the
+  references' right: 170–221). The ends move out along the bar's slant, so the bar keeps its
+  weight and round ends. Ł is 526 wide, within `WIDTHS`.
 
 ## Greek
 
