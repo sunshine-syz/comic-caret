@@ -11,6 +11,7 @@
 - In the bold, marks keep the regular's white from their letters, and a mark typed after its letter, as `o` + U+030A, lands where an accented letter puts it. The bold pen grew each mark into its letter, so the dots of `ä ö ü` merged into them, and the ring of a typed `o̊` came within 7 units of the `o`.
 - The bars of `ł` and `Ł` cross well past the stem, as far as the references' do, so `był` doesn't read as `byl` at small sizes. They passed the stem by about 60 units.
 - `« »` keep their two chevrons apart, as in the references: `‹ ›` are steeper, and `« »` set them further apart. At small sizes `«` ran into one shape.
+- New: `Ấ ấ Ầ ầ Ế ế Ề ề Ố ố Ồ ồ`, with the acute or grave beside the circumflex, at its upper right, as Intel One Mono and Maple Mono draw them. Typed as a letter, a circumflex and an accent, they showed the accent centred over the circumflex, a stack as tall as two marks; terminals drew them from a fallback font. The rest of Vietnamese still comes from a fallback font.
 
 ## 2.2 (2026-10)
 

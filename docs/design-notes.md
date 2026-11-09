@@ -110,6 +110,14 @@ them. The exceptions:
   240 apart, so their white is 86 (Fira Code 80) and the bold's 59 (Fira Code Bold 54).
   Moved apart with the old arms, the white grew by 0.6 of the move, and reached 80 only 7
   from the bold cell's edge. Intel One Mono draws its « chevrons narrower than its ‹ too.
+- **Ấ ầ ế ề ố ồ.** The acute or grave stands at the circumflex's upper right, its right end
+  `SYMBOL_SIDE` (15) from the cell's edge, lowered until `MARK_CLEARANCE` (20) stands between
+  it and the circumflex: Ấ tops at 1061, ấ 891, Ầ 972, ầ 803 (Intel One Mono 1029 and 866,
+  Maple Mono 1020 and 900). Centred over the circumflex, Ấ would top at 1160. HarfBuzz composes
+  a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A combined mark
+  for ◌̂ ◌́, as the references also draw for other bases, would not: the shaper composes Â
+  first and centres the acute over it. The hook above, the dot below and the horn are not
+  drawn, so the rest of Vietnamese comes from a fallback font.
 
 ## Greek
 
@@ -665,6 +673,9 @@ are in `build/cache/reference/bold/`.
     closest marks and over the reference bolds' closest, Maple Mono Bold's Å ring at 15.
   - The anchors carry over, so each combining mark rises as far as its accent does over the
     lowercase letters, and a shaped mark lands where the precomposed letter puts it.
+  - A mark beside another (ấ's acute and its circumflex) rises on until it clears
+    `MARK_CLEARANCE` from it. The pens close the two across, by a full pen, so the accent
+    rises 40, 26 more than the circumflex.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:

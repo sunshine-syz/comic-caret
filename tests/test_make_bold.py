@@ -22,6 +22,7 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from add_marks import MARKS
+from helpers import CIRCUMFLEX_STACKS
 from make_bold import BOLDER, PEN, SHARED
 from measure import (
     area,
@@ -44,6 +45,7 @@ from project import (
     SFD,
     SYMBOL_SIDE,
     is_alphanumeric,
+    is_letter,
 )
 from sfd_files import differences
 
@@ -449,6 +451,7 @@ class BoldTest(unittest.TestCase):
         # DOUBLES glyph the part's own pen, as the neighbour is a copy of the part. Up or down,
         # the part's pen's reach and a full pen's (make_bold.reach()).
         pens = make_bold.pens(self.regular)
+        stacks = {self.regular[ord(char)].glyphname for char in CIRCUMFLEX_STACKS}
 
         def listed(glyph):
             return sorted((name, tuple(matrix)) for name, matrix, *_ in glyph.references)
@@ -456,11 +459,17 @@ class BoldTest(unittest.TestCase):
         def moved_too_far(glyph, found, kept):
             # Sorted by name and matrix, a DOUBLES mark's copies pair left with left: spread()
             # moves them apart, never past each other.
+            rises = {part: m[5] - e[5] for (part, m), (_, e) in zip(found, kept, strict=True)}
             for (part, m), (_, e) in zip(found, kept, strict=True):
                 pen = make_bold.pen_of(part, pens)
                 up = make_bold.reach(pen)[1] + PEN[1] / 2
                 if (glyph, part) in MOVED_FURTHER:
                     up = PEN[0]
+                elif glyph in stacks and part != "circumflex" and not is_letter(
+                        self.regular[part].unicode):
+                    # The accent stands beside the circumflex, so it rises with it and clears
+                    # what the pens grew the two toward each other across: a full pen.
+                    up = rises["circumflex"] + PEN[0]
                 copies = glyph in make_bold.TIGHT or glyph in make_bold.DOUBLES
                 across = pen[0] if copies else (pen[0] + PEN[0]) / 2
                 if abs(m[4] - e[4]) > across + ROUNDING or abs(m[5] - e[5]) > up + ROUNDING:

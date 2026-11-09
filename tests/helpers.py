@@ -7,6 +7,9 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 from project import FORMATS, STYLES, nerd_fonts, stale_build
 
+# The Vietnamese letters whose acute or grave stands at the circumflex's upper right.
+CIRCUMFLEX_STACKS = "ẤấẦầẾếỀềỐốỒồ"
+
 # How far a glyph may stray from its row's median: round letters overshoot by up to 25 (C, 9).
 ROW_TOLERANCE = 30
 

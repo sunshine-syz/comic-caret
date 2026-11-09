@@ -19,10 +19,12 @@ import unittest
 import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 import lig_geometry as geo
 import make_bold
 import measure
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, WOBBLE, is_letter
+from helpers import CIRCUMFLEX_STACKS
+from project import ADVANCE, BOLD_SFD, MARK_CLEARANCE, ROUNDING, SFD, WOBBLE, is_letter
 
 
 def offsets(glyph, name):
@@ -304,6 +306,23 @@ class MarkTest(unittest.TestCase):
                     target += contour
             with self.subTest(glyph=name):
                 self.assertGreaterEqual(round(measure.gap(mark, letter)), floor)
+
+    def test_stacked_accent_stands_beside_the_circumflex(self):
+        # As in Intel One Mono and Maple Mono: centred on top, the stack stands 160 taller and
+        # reads as one tall mark at 11-16 px. A mark over the apex, MARK_CLEARANCE clear of it,
+        # starts at least that far above the circumflex's top; one beside it starts lower.
+        for char in CIRCUMFLEX_STACKS:
+            marks = {name: geo.transformed(measure.ink(self.font, name), matrix)
+                     for name, matrix, *_ in self.font[ord(char)].references
+                     if not is_letter(self.font[name].unicode)}
+            roof = marks.pop("circumflex")
+            [accent] = marks.values()
+            r0, _, r1, roof_top = roof.boundingBox()
+            a0, accent_foot, a1, _ = accent.boundingBox()
+            with self.subTest(char=char):
+                self.assertGreater(a0 + a1, r0 + r1)  # right of the circumflex's middle
+                self.assertLess(accent_foot, roof_top + MARK_CLEARANCE)
+                self.assertGreaterEqual(round(measure.gap(accent, roof)), MARK_CLEARANCE)
 
     def test_ring_counter_stays_open(self):
         # At 11-16 px a narrower counter closes and the ring reads as a dot: på as pȧ.

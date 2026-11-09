@@ -25,7 +25,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import add_box_drawing
 import lig_geometry as geo
 import measure
-from helpers import ROW_TOLERANCE
+from helpers import CIRCUMFLEX_STACKS, ROW_TOLERANCE
 from measure import outline
 from project import (
     ADVANCE,
@@ -301,9 +301,13 @@ class CompositionTest(unittest.TestCase):
             if letter is None:
                 continue
             x0, _, x1, top = letter.boundingBox()
+            # A stack's acute or grave stands beside its circumflex (test_legibility.py).
+            stacked = chr(glyph.unicode) in CIRCUMFLEX_STACKS
             for name, mark in marks:
                 m0, bottom, m1, _ = mark.boundingBox()
                 offset = (m0 + m1) / 2 - (x0 + x1) / 2
+                if stacked and name != "circumflex":
+                    continue
                 if bottom >= top and abs(offset) > WOBBLE:
                     off[(glyph.glyphname, name)] = round(offset)
         self.assertEqual(off, {})

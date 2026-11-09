@@ -26,7 +26,7 @@ import project
 import sfnt
 from add_marks import MARKS, is_top
 from bump_version import font_version, sfd_version
-from helpers import NerdBuilds, require_current_build
+from helpers import CIRCUMFLEX_STACKS, NerdBuilds, require_current_build
 from make_italic import SLANT, UPRIGHT, encoded_style
 from measure import gap, ink
 from project import (
@@ -565,8 +565,11 @@ class MarkShapingTest(unittest.TestCase):
     def test_a_shaped_mark_keeps_its_clearance(self):
         # A mark above a lowercase letter the font has no precomposed form of lands through the
         # anchors, and keeps the clearance the precomposed letters' marks keep. The bold grows
-        # the letter up and the mark down, so its marks must rise with its accents.
-        lower = [base for base in self.bases if unicodedata.category(base) == "Ll"]
+        # the letter up and the mark down, so its marks must rise with its accents. Not over a
+        # circumflex stack: the bold raises its accent further, clear of the circumflex, than
+        # the anchor it carries over allows for, and no language sets a third mark above it.
+        lower = [base for base in self.bases
+                 if unicodedata.category(base) == "Ll" and base not in CIRCUMFLEX_STACKS]
         pairs = set()
         for font in self.fonts:
             for mark in (code for code in MARKS if is_top(code)):
@@ -587,6 +590,17 @@ class MarkShapingTest(unittest.TestCase):
             if (white := gap(mark, rest)) < MARK_CLEARANCE:
                 close[letter, name] = round(white)
         self.assertEqual(close, {})
+
+    def test_circumflex_stacks_compose(self):
+        # Typed as a letter, a circumflex and an acute or grave, the stack composes into the
+        # precomposed letter, which stands the accent beside the circumflex. Without one, the
+        # shaper composes the letter with the circumflex and centres the accent over it.
+        for font in self.fonts:
+            for char in CIRCUMFLEX_STACKS:
+                for text in (char, unicodedata.normalize("NFD", char)):
+                    with self.subTest(font=font.name, text=ascii(text)):
+                        self.assertEqual([g["g"] for g in shaped(font, text)],
+                                         [self.names[ord(char)]])
 
     def test_stacked_marks_stay_apart(self):
         # Two marks above, or two below, one over the other without touching. Canonical order

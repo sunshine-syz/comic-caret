@@ -919,8 +919,9 @@ def raise_clear(font, letters, heights, grows_by):
     """Raise each mark above a letter by as much as the pen grew the two toward each other, the
     mark's pen's reach up and the letter's, so it keeps the regular's white; and the same mark
     as far on every letter where the regular places it as high, so a row of them stays level
-    (the tonos over έ ό, and so over ά ή ί). Each mark must then clear MARK_CLEARANCE.
-    `heights` holds how high the regular places each (letter, mark). One row breaks on
+    (the tonos over έ ό, and so over ά ή ί). A mark over another mark (ấ's acute beside its
+    circumflex) rises on until it clears MARK_CLEARANCE from it, which the pens closed. Each
+    mark must then clear MARK_CLEARANCE from its letter. `heights` holds how high the regular places each (letter, mark). One row breaks on
     purpose: ΐ ΰ's dieresis, which ΅ takes down below its tonos (APART). A part APART moves
     keeps its white there (i's dot). Returns {(mark, height): rise}."""
     def above(glyph):
@@ -938,6 +939,24 @@ def raise_clear(font, letters, heights, grows_by):
         for name, _ in marks:
             row = (name, heights[glyph.glyphname, name])
             needs[row] = max(needs[row], math.ceil(grew + reach(pen_of(name, grows_by))[1]))
+    # A row's rise can raise a mark beneath another in some other letter, so repeat until no
+    # mark needs more.
+    rising = True
+    while rising:
+        rising = False
+        for glyph in letters:
+            marks, _ = above(glyph)
+            for (upper, high), (lower, low) in itertools.permutations(marks, 2):
+                if high.boundingBox()[1] <= low.boundingBox()[1]:
+                    continue
+                up, down = ((name, heights[glyph.glyphname, name]) for name in (upper, lower))
+                steps = clearance(geo.moved(high, 0, needs[up]), geo.moved(low, 0, needs[down]),
+                                  (0, 1), MARK_CLEARANCE)
+                if steps is None:
+                    sys.exit(f"{glyph.glyphname}: its {upper} can't rise clear of its {lower}")
+                if steps:
+                    needs[up] += steps
+                    rising = True
     for glyph in letters:
         marks, letter = above(glyph)
         moves = {name: (0, needs[name, heights[glyph.glyphname, name]]) for name, _ in marks}
