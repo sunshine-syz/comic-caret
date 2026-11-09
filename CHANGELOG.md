@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5 (unreleased)
+## 2.5 (2026-11)
 
 - `//=` is pulled together, as `&&=` and `||=` are. So Python's `n //= 2` reads like `a // b`, as in Maple Mono. It showed as typed. `///=` and the `//` of a comment rule such as `//=====` still show as typed.
 - `!!` and `;;` are pulled together, as `::` is: Haskell's `xs !! 2`, Kotlin's `x!!.y`, the shell's `sudo !!` and `;;`, OCaml's `;;` and C's `for (;;)`. So are `+++`, whose bars join as `++`'s do, as in a diff's `+++ b/f`, and Haskell's `<+>`, as `<*>` is. They showed as typed, where Fira Code and Maple Mono pull them together. Beside another operator, as in `!!!`, `;;;` and `+++=`, they still show as typed.
