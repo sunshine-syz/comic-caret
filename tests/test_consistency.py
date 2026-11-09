@@ -448,6 +448,27 @@ class MarkTest(unittest.TestCase):
                 off[(glyph.glyphname, mark.glyphname)] = (round(ax0 - px0), round(ay0 - py0))
         self.assertEqual(off, {})
 
+    def test_marks_centre_on_their_letter(self):
+        # A mark typed after an accented letter centres as on the letter, not on an accent
+        # beside it: ď's caron, Έ's tonos, ấ's acute beside its circumflex. Within WOBBLE, as
+        # marks above centre on their letter. Not over a stem base, whose marks sit over the
+        # stem (ĵ).
+        off = {}
+        for glyph in self.font.glyphs():
+            if glyph.unicode < 0 or not is_letter(glyph.unicode) or len(glyph.foreground):
+                continue
+            letters = [(name, matrix) for name, matrix, *_ in glyph.references
+                       if is_letter(self.font[name].unicode)]
+            if len(letters) != 1 or letters[0][0] in STEM_BASES:
+                continue
+            [(name, matrix)] = letters
+            x0, _, x1, _ = geo.transformed(measure.ink(self.font, name), matrix).boundingBox()
+            for side in ("top", "bottom"):
+                x, _ = anchor(glyph, side, "base")
+                if abs(x - (x0 + x1) / 2) > WOBBLE:
+                    off[(glyph.glyphname, side)] = round(x - (x0 + x1) / 2)
+        self.assertEqual(off, {})
+
     def test_marks_above_clear_every_letter(self):
         # Letters without a precomposed form too, and ones that already have a mark.
         acute = self.font[0x301]

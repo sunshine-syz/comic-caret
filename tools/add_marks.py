@@ -11,7 +11,8 @@ lookups are named marks_*.
 
 Each mark is a reference to its spacing accent, placed as on the lowercase letters. A letter's
 anchors put a mark where the font's own accented forms of it do; other letters center it over
-their ink, and other glyphs over the cell, as high above the ink as on the capitals.
+their ink, an accented letter over its letter and not an accent beside it, and other glyphs
+over the cell, as high above the ink as on the capitals.
 
 Replaces everything an earlier run made, so running it again changes nothing but
 ModificationTime. Rerun it after adding or redrawing glyphs, then tools/add_ligatures.py, since
@@ -27,6 +28,8 @@ import unicodedata
 import fontforge
 import psMat
 
+import lig_geometry as geo
+import measure
 from project import ADVANCE, SFD, is_letter, save_checked, validation_errors
 
 # Combining mark -> the spacing accent it is drawn from.
@@ -171,7 +174,10 @@ def base_anchors(font, placements, offsets, top_y):
 
     A letter's come from its accented forms, the median over them. The rest sit STACK_GAP
     above the ink and at the baseline, over the middle of a letter's ink and of any other
-    glyph's cell: marks over the ink of ▏ would stick out of the cell.
+    glyph's cell: marks over the ink of ▏ would stick out of the cell. A letter built on
+    another centres them on that letter and the lowest mark above it, as â on a and its
+    circumflex, and ĵ on ȷ and its circumflex over the stem; not on a mark beside it: ď's
+    caron, Έ's tonos, ŀ's dot, or ấ's acute beside its circumflex.
     """
     by_accent = {accent: code for code, accent in MARKS.items()}
     found = {}
@@ -192,6 +198,15 @@ def base_anchors(font, placements, offsets, top_y):
         if glyph.unicode in MARKS:
             continue
         x0, _, x1, top = glyph.boundingBox()
+        parts = [(name, geo.transformed(measure.ink(font, name), matrix).boundingBox())
+                 for name, matrix, *_ in glyph.references]
+        letters = [box for name, box in parts if is_letter(font[name].unicode)]
+        if not len(glyph.foreground) and len(letters) == 1:
+            [(x0, _, x1, letter_top)] = letters
+            above = [box for _, box in parts if box is not letters[0] and box[1] >= letter_top]
+            if above:
+                a0, _, a1, _ = min(above, key=lambda box: box[1])
+                x0, x1 = min(x0, a0), max(x1, a1)
         letter = unicodedata.category(chr(glyph.unicode)).startswith("L")
         middle = round((x0 + x1) / 2) if letter and x1 > x0 else MIDDLE
         above = found.get((glyph.glyphname, True))

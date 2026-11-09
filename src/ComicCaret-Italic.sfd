@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794256380
+ModificationTime: 1794260127
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -10300,8 +10300,8 @@ UnlinkRmOvrlpSave: 1
 Flags: W
 HStem: -13 83<143.964 270.732> 396 82<206.315 340.263> 580 154<540.141 583.811> 699 20G<522.5 533>
 VStem: 18 90<107.625 286.093> 332 100<7.42334 59.6257> 494 120
-AnchorPoint: "bottom" 266 0 basechar 0
-AnchorPoint: "top" 432 784 basechar 0
+AnchorPoint: "bottom" 199 0 basechar 0
+AnchorPoint: "top" 365 784 basechar 0
 LayerCount: 2
 Fore
 Refer: 613 -1 N 1 0 0 1 1 0 2
@@ -11186,8 +11186,8 @@ GlyphClass: 2
 Flags: W
 HStem: -302 240 -20 20G<80.5 94 408.5 424.5> 698 20G<246.5 258.5>
 VStem: 221 135
-AnchorPoint: "bottom" 258 0 basechar 0
-AnchorPoint: "top" 421 768 basechar 0
+AnchorPoint: "bottom" 259 0 basechar 0
+AnchorPoint: "top" 422 768 basechar 0
 LayerCount: 2
 Fore
 Refer: 76 107 N 1 0 0 1 0 0 2
@@ -11872,8 +11872,8 @@ GlyphClass: 2
 Flags: W
 HStem: -26 80<243.577 420.976> 375 76<411.642 511.67> 378 81<110.804 191.446 300 511.67> 560 154<459.141 502.811>
 VStem: 129 94<74.1299 227.602> 239 92<494.973 632.457> 413 120
-AnchorPoint: "bottom" 248 0 basechar 0
-AnchorPoint: "top" 410 764 basechar 0
+AnchorPoint: "bottom" 235 0 basechar 0
+AnchorPoint: "top" 397 764 basechar 0
 LayerCount: 2
 Fore
 Refer: 613 -1 N 1 0 0 1 -80 -20 2
@@ -19484,8 +19484,8 @@ Width: 600
 Flags: W
 HStem: -26 80<314.929 430.956> 234 145<432.115 459.859> 627 82<172.943 312>
 VStem: 200 94<74.1299 230.502> 396 156<270.999 344.727>
-AnchorPoint: "bottom" 253 0 basechar 0
-AnchorPoint: "top" 414 760 basechar 0
+AnchorPoint: "bottom" 244 0 basechar 0
+AnchorPoint: "top" 405 760 basechar 0
 LayerCount: 2
 Fore
 Refer: 623 183 N 1 0 0 1 164 0 2
@@ -34473,8 +34473,8 @@ GlyphClass: 2
 Flags: W
 HStem: -19 82<152.348 439.04> -6 85<202.219 470.361> 291 81<207 499.48> 310 74<243.341 518.714> 536 151 575 78<260.406 589.715> 638 20G<219.5 245>
 VStem: 5 138 52 100<63.5622 165.921>
-AnchorPoint: "bottom" 178 0 basechar 0
-AnchorPoint: "top" 335 739 basechar 0
+AnchorPoint: "bottom" 255 0 basechar 0
+AnchorPoint: "top" 412 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 927 917 N 1 0 0 1 0 0 2
@@ -34489,8 +34489,8 @@ GlyphClass: 2
 Flags: W
 HStem: -20 21G<60.5 75 385.5 400> 291 81<207 365.963> 320 76<271.961 430> 536 151 648 20G<219.5 233.5 544.5 558.5>
 VStem: 0 138
-AnchorPoint: "bottom" 167 0 basechar 0
-AnchorPoint: "top" 324 739 basechar 0
+AnchorPoint: "bottom" 243 0 basechar 0
+AnchorPoint: "top" 400 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 929 919 N 1 0 0 1 0 0 2
@@ -34505,8 +34505,8 @@ GlyphClass: 2
 Flags: W
 HStem: -6 72<79.8936 212.731 302 445.717> 536 151 584 80<183.482 324 413.052 535.859>
 VStem: 5 138
-AnchorPoint: "bottom" 168 0 basechar 0
-AnchorPoint: "top" 325 739 basechar 0
+AnchorPoint: "bottom" 243 0 basechar 0
+AnchorPoint: "top" 400 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 930 921 N 1 0 0 1 0 0 2
@@ -34521,8 +34521,8 @@ GlyphClass: 2
 Flags: W
 HStem: -23 79<169.044 322.188> 536 151 595 76<304.608 450.659>
 VStem: 48 95<79.3762 287.3> 60 138 487 88<341.464 555.584>
-AnchorPoint: "bottom" 210 0 basechar 0
-AnchorPoint: "top" 367 739 basechar 0
+AnchorPoint: "bottom" 245 0 basechar 0
+AnchorPoint: "top" 402 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 934 927 N 1 0 0 1 0 0 2
@@ -34537,8 +34537,8 @@ GlyphClass: 2
 Flags: W
 HStem: -37 21G<231 237> 536 151 644 20G<187.5 194 582 588>
 VStem: -21 138
-AnchorPoint: "bottom" 173 0 basechar 0
-AnchorPoint: "top" 330 739 basechar 0
+AnchorPoint: "bottom" 245 0 basechar 0
+AnchorPoint: "top" 402 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 937 933 N 1 0 0 1 0 0 2
@@ -34553,8 +34553,8 @@ GlyphClass: 2
 Flags: W
 HStem: -8 78<8.875 94 422 489.625> 536 151 592 79<308.936 418.338>
 VStem: 55 138 67 93<117.801 380.831> 472 93<308.633 539.783>
-AnchorPoint: "bottom" 212 0 basechar 0
-AnchorPoint: "top" 369 739 basechar 0
+AnchorPoint: "bottom" 243 0 basechar 0
+AnchorPoint: "top" 400 739 basechar 0
 LayerCount: 2
 Fore
 Refer: 947 937 N 1 0 0 1 0 0 2
@@ -36165,12 +36165,12 @@ StartChar: gradient
 Encoding: 8711 8711 1053
 Width: 600
 Flags: W
-HStem: -2 20G<228.5 242.5> 600 80<218 518> 660 21G<576.5 590>
+HStem: -8 20G<226.5 240.5> 594 80<216 516> 654 21G<574.5 588>
 AnchorPoint: "bottom" 243 0 basechar 0
-AnchorPoint: "top" 398 731 basechar 0
+AnchorPoint: "top" 397 725 basechar 0
 LayerCount: 2
 Fore
-Refer: 1044 8710 N -1 0 0 -1 629 673 2
+Refer: 1044 8710 N -1 0 0 -1 627 667 2
 EndChar
 
 StartChar: second
@@ -40578,8 +40578,8 @@ GlyphClass: 2
 Flags: W
 HStem: -4 21G<35.5 41 452 457.5> 236 75<213.638 383> 659 20G<378.5 391.5> 731 73<244.648 314.028 566.046 577.925> 862 20G<433.5 438.5> 874 187
 VStem: 482 264
-AnchorPoint: "bottom" 264 0 basechar 0
-AnchorPoint: "top" 500 1111 basechar 0
+AnchorPoint: "bottom" 249 0 basechar 0
+AnchorPoint: "top" 485 1111 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 230 304 2
@@ -40596,8 +40596,8 @@ GlyphClass: 2
 Flags: W
 HStem: -37 21G<403.5 428> -29 76<148.442 298.19> 204 76<194.356 394.043> 410 76<240.765 383.589> 560 73<210.648 280.028 532.046 543.925> 691 20G<399.5 404.5> 704 187
 VStem: 35 97<64.6312 150.322> 406 96<270.326 386.994> 445 264
-AnchorPoint: "bottom" 271 0 basechar 0
-AnchorPoint: "top" 471 941 basechar 0
+AnchorPoint: "bottom" 242 0 basechar 0
+AnchorPoint: "top" 442 941 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 193 134 2
@@ -40614,8 +40614,8 @@ GlyphClass: 2
 Flags: W
 HStem: -4 21G<35.5 41 452 457.5> 236 75<213.638 383> 659 20G<378.5 391.5> 731 73<244.648 314.028 566.046 577.925> 787 185 862 20G<433.5 438.5>
 VStem: 486 216
-AnchorPoint: "bottom" 264 0 basechar 0
-AnchorPoint: "top" 481 1022 basechar 0
+AnchorPoint: "bottom" 249 0 basechar 0
+AnchorPoint: "top" 466 1022 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 211 217 2
@@ -40632,8 +40632,8 @@ GlyphClass: 2
 Flags: W
 HStem: -37 21G<403.5 428> -29 76<148.442 298.19> 204 76<194.356 394.043> 410 76<240.765 383.589> 560 73<210.648 280.028 532.046 543.925> 618 185 691 20G<399.5 404.5>
 VStem: 35 97<64.6312 150.322> 406 96<270.326 386.994> 450 216
-AnchorPoint: "bottom" 271 0 basechar 0
-AnchorPoint: "top" 452 853 basechar 0
+AnchorPoint: "bottom" 242 0 basechar 0
+AnchorPoint: "top" 423 853 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 175 48 2
@@ -40650,8 +40650,8 @@ GlyphClass: 2
 Flags: W
 HStem: -18 82<152.348 439.04> -5 85<202.219 470.361> 292 81<207 499.48> 311 74<243.341 518.714> 576 78<260.406 589.715> 639 20G<219.5 245> 731 73<250.648 320.028 572.046 583.925> 862 20G<439.5 444.5> 878 187
 VStem: 52 100<64.5622 166.921> 482 264
-AnchorPoint: "bottom" 282 0 basechar 0
-AnchorPoint: "top" 519 1115 basechar 0
+AnchorPoint: "bottom" 255 0 basechar 0
+AnchorPoint: "top" 492 1115 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 230 308 2
@@ -40668,8 +40668,8 @@ GlyphClass: 2
 Flags: W
 HStem: -26 76<181.318 347.69> 414 73<271.235 405.734> 560 73<210.648 280.028 532.046 543.925> 691 20G<399.5 404.5> 704 187
 VStem: 66 91<74.2224 162.255> 445 264
-AnchorPoint: "bottom" 279 0 basechar 0
-AnchorPoint: "top" 479 941 basechar 0
+AnchorPoint: "bottom" 251 0 basechar 0
+AnchorPoint: "top" 451 941 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 193 134 2
@@ -40686,8 +40686,8 @@ GlyphClass: 2
 Flags: W
 HStem: -18 82<152.348 439.04> -5 85<202.219 470.361> 292 81<207 499.48> 311 74<243.341 518.714> 576 78<260.406 589.715> 639 20G<219.5 245> 731 73<250.648 320.028 572.046 583.925> 791 185 862 20G<439.5 444.5>
 VStem: 52 100<64.5622 166.921> 487 216
-AnchorPoint: "bottom" 282 0 basechar 0
-AnchorPoint: "top" 500 1026 basechar 0
+AnchorPoint: "bottom" 255 0 basechar 0
+AnchorPoint: "top" 473 1026 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 212 221 2
@@ -40704,8 +40704,8 @@ GlyphClass: 2
 Flags: W
 HStem: -26 76<181.318 347.69> 414 73<271.235 405.734> 560 73<210.648 280.028 532.046 543.925> 618 185 691 20G<399.5 404.5>
 VStem: 66 91<74.2224 162.255> 450 216
-AnchorPoint: "bottom" 279 0 basechar 0
-AnchorPoint: "top" 460 853 basechar 0
+AnchorPoint: "bottom" 251 0 basechar 0
+AnchorPoint: "top" 432 853 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 175 48 2
@@ -40722,8 +40722,8 @@ GlyphClass: 2
 Flags: W
 HStem: -22 79<169.044 322.188> 596 76<304.608 450.659> 731 73<240.648 310.028 562.046 573.925> 862 20G<429.5 434.5> 872 187
 VStem: 48 95<80.3762 288.3> 481 264 487 88<342.464 556.584>
-AnchorPoint: "bottom" 268 0 basechar 0
-AnchorPoint: "top" 504 1109 basechar 0
+AnchorPoint: "bottom" 245 0 basechar 0
+AnchorPoint: "top" 481 1109 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 229 302 2
@@ -40740,8 +40740,8 @@ GlyphClass: 2
 Flags: W
 HStem: -25 79<175.535 334.22> 416 73<251.433 400.117> 560 73<200.648 270.028 522.046 533.925> 691 20G<389.5 394.5> 699 187
 VStem: 55 95<79.1576 267.362> 61 96<157.937 285.484> 431 95<196.024 385.011> 444 264
-AnchorPoint: "bottom" 271 0 basechar 0
-AnchorPoint: "top" 470 936 basechar 0
+AnchorPoint: "bottom" 240 0 basechar 0
+AnchorPoint: "top" 439 936 basechar 0
 LayerCount: 2
 Fore
 Refer: 108 180 N 1 0 0 1 192 129 2
@@ -40758,8 +40758,8 @@ GlyphClass: 2
 Flags: W
 HStem: -22 79<169.044 322.188> 596 76<304.608 450.659> 731 73<240.648 310.028 562.046 573.925> 785 185 862 20G<429.5 434.5>
 VStem: 48 95<80.3762 288.3> 486 216 487 88<342.464 556.584>
-AnchorPoint: "bottom" 268 0 basechar 0
-AnchorPoint: "top" 485 1020 basechar 0
+AnchorPoint: "bottom" 245 0 basechar 0
+AnchorPoint: "top" 462 1020 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 211 215 2
@@ -40776,8 +40776,8 @@ GlyphClass: 2
 Flags: W
 HStem: -25 79<175.535 334.22> 416 73<251.433 400.117> 560 73<200.648 270.028 522.046 533.925> 611 185 691 20G<389.5 394.5>
 VStem: 55 95<79.1576 267.362> 61 96<157.937 285.484> 431 95<196.024 385.011> 449 216
-AnchorPoint: "bottom" 271 0 basechar 0
-AnchorPoint: "top" 451 846 basechar 0
+AnchorPoint: "bottom" 240 0 basechar 0
+AnchorPoint: "top" 420 846 basechar 0
 LayerCount: 2
 Fore
 Refer: 620 -1 N 1 0 0 1 174 41 2

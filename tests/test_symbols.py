@@ -624,6 +624,11 @@ class BuiltFromTest(unittest.TestCase):
                 self.assertEqual(name, self.font[ord(base)].glyphname)
                 self.assertEqual(linear(matrix), linear(psMat.rotate(math.radians(degrees))))
 
+    def test_nabla_stands_on_the_rows_of_delta(self):
+        # ∇ is ∆ turned in place, as in Fira Code and Monaspace: ∆'s foot becomes its top.
+        (_, y0, _, y1), (_, z0, _, z1) = (self.font[ord(c)].boundingBox() for c in "∇∆")
+        self.assertEqual((round(y0), round(y1)), (round(z0), round(z1)))
+
     def test_double_marks_are_the_single_mark_twice(self):
         for char, (single, floor) in self.doubles.items():
             with self.subTest(glyph=char):

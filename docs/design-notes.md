@@ -117,6 +117,8 @@ them. The exceptions:
   its right end `SYMBOL_SIDE` (15) from the cell's edge, lowered until `MARK_CLEARANCE` (20)
   stands between it and the circumflex: Ấ tops at 1061, ấ 891, Ầ 972, ầ 803 (Intel One Mono
   1029 and 866, Maple Mono 1020 and 900). Centred over the circumflex, Ấ would top at 1160.
+  In the italic the acute leans 109–147 past the cell, within the reference italics' 75–226
+  (Intel One Mono 127–173). A mark typed after a stack centres on its letter, as after â.
   HarfBuzz composes a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A combined mark
   for ◌̂ ◌́, as the references also draw for other bases, would not: the shaper composes Â
   first and centres the acute over it. The hook above, the dot below and the horn are not
@@ -734,7 +736,10 @@ are in `build/cache/reference/bold/`.
     side, so it moves 18 left, where the pen grew it, and rises on until it clears
     `MARK_CLEARANCE` from the circumflex. The pens close the two across, by a full pen, so the
     accent rises 44–50 (Ấ's 46), 30–36 more than the circumflex's 14: Ấ tops at 1114, ấ at
-    943.
+    943. So the acute's foot stands 8–12 over the circumflex's top, above its arm, where the
+    reference bolds keep it 5–26 under (Intel One Mono Bold 5–18). Keeping the regular's
+    step would take the circumflex 29–41 left of its letter's middle, against Intel One Mono
+    Bold's 11 at most.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:
