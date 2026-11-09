@@ -95,6 +95,9 @@ them. The exceptions:
   - Capitals take the same marks, which fit under the 1000 line top (Á 908, Ö 863), and rise
     to their floors: Ê +14, Š +9, Ö +26, Ā +28. ĥ and ĺ stand their marks over the ascender,
     81 and 93 above it (the references' floors: 63 and 72).
+  - Greek's marks rise to Fira Code's and Maple Mono's floors. Over the lowercase the tonos
+    rises 43, ώ's diagonal white setting it, and the dieresis of ϊ ϋ 7 more than Latin's. ΐ ΰ
+    raise their ΅ 50, so their dieresis stands level with ϊ ϋ's.
   - The dots stay 152: `.` `·` `∙` `:` and `i`'s dot are one glyph, and at 152 `i`'s dot is
     within the references' (129–156). A period at Maple Mono's 170 would make it wider than
     every reference's `i` dot, and nearer the acute. The acute grows apart from it instead.
@@ -140,7 +143,7 @@ Greek's feet follow Latin's the same way. Its capitals' baseline zone took its f
 from `Δ` `Ξ` (−2), Latin's from `E` `Z` `L` (−14), so the round capitals stood a row low at
 24 px; `Δ` `Ξ` reach `Z`'s −8. Latin's small letters take theirs from `z`'s bar (−8). Greek's
 small letters have no level foot, so the zone fell to their round feet's −25 and they stood a
-row low from 20 px (15 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
+row low from 20 px (16 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
 `tools/generate.py` (`level_foot()`) cuts each curve that leaves it within 5 units at 5 and 7
 units up, joined by a line: the left one in the regular and italic, both in the bold. The
 autohinter reads a foot as level when the points within 5 units of it begin and end on the
@@ -243,7 +246,7 @@ fonts, in units of a 1000 em:
 | Comic Caret 2.0 | 600 | 473 | 1.27 |
 
 The 600 cell with the same letters sits between Source Code Pro and Intel One Mono, so text
-reads more open. Half-block pixels ▀ ▄ become almost square, 600 × 625. Our letters fill more
+reads more open. Half-block pixels ▀ ▄ become almost square, 600 × 675. Our letters fill more
 of the cell than the references' do: `n` filled 75% of the 550 cell, theirs fill 67–70%. So
 the `n` family fits the 600 cell as it is, moved to the middle.
 
@@ -730,7 +733,8 @@ are in `build/cache/reference/bold/`.
   - A mark beside another (ấ's acute and its circumflex) keeps `SYMBOL_SIDE` from the cell's
     side, so it moves 18 left, where the pen grew it, and rises on until it clears
     `MARK_CLEARANCE` from the circumflex. The pens close the two across, by a full pen, so the
-    accent rises 46, 32 more than the circumflex: Ấ tops at 1114, ấ at 943.
+    accent rises 44–50 (Ấ's 46), 30–36 more than the circumflex's 14: Ấ tops at 1114, ấ at
+    943.
 
 Where the pen alone would break a rule the regular keeps, `make_bold.py` names the glyphs and
 what it does to them:
@@ -775,8 +779,8 @@ what it does to them:
   - ŀ's dot and the carons of ď ľ Ľ move right.
   - The tonos beside a capital moves left.
   - ΅'s dieresis and ª º's bar move down.
-  - ΐ ΰ's dieresis then sits 29 below ϊ ϋ's. This is a row break that letters as rare as these
-    may take.
+  - ΐ ΰ's dieresis then sits 30 below ϊ ϋ's, level in the regular. This is a row break that
+    letters as rare as these may take.
   - ĳ, one outline, keeps its dots 14 lower than i j's.
 - `DOUBLES`: both copies of “ ” „ ″ ‖ ‼ move apart, each as far. So the mark stays on the
   cell's middle and keeps the regular's white between its copies.

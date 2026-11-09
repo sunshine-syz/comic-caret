@@ -245,8 +245,8 @@ class CounterTest(unittest.TestCase):
 
 
 # The narrowest white between a top mark and its letter in Fira Code, Intel One Mono and Maple
-# Mono, x scaled to our cell and y to our cap height, rounded. At 11-16 px a mark any closer
-# merges into its letter.
+# Mono, x scaled to our cell and y to our cap height, rounded; Greek's in Fira Code and Maple
+# Mono, as Intel One Mono has no Greek. At 11-16 px a mark any closer merges into its letter.
 MARK_FLOORS = {
     "aacute": 75, "eacute": 72, "oacute": 72, "cacute": 72, "nacute": 77, "sacute": 72,
     "zacute": 78, "iacute": 78, "uacute": 102, "yacute": 125, "Eacute": 65, "Oacute": 63,
@@ -264,6 +264,10 @@ MARK_FLOORS = {
     "amacron": 99, "emacron": 99, "omacron": 99, "Amacron": 90,
     "ohungarumlaut": 80, "uhungarumlaut": 78, "Ohungarumlaut": 60,
     "hcircumflex": 63, "lacute": 72, "Lacute": 63,
+    "alphatonos": 61, "epsilontonos": 58, "etatonos": 58, "iotatonos": 67, "omicrontonos": 58,
+    "upsilontonos": 108, "omegatonos": 127, "iotadieresis": 107, "upsilondieresis": 85,
+    "iotadieresistonos": 97, "upsilondieresistonos": 85, "Iotadieresis": 77,
+    "Upsilondieresis": 89,
 }
 # The same from Fira Code Bold, Intel One Mono Bold and Maple Mono Bold.
 BOLD_MARK_FLOORS = {
@@ -283,6 +287,10 @@ BOLD_MARK_FLOORS = {
     "amacron": 89, "emacron": 89, "omacron": 89, "Amacron": 78,
     "ohungarumlaut": 78, "uhungarumlaut": 78, "Ohungarumlaut": 43,
     "hcircumflex": 44, "lacute": 74, "Lacute": 59,
+    "alphatonos": 47, "epsilontonos": 39, "etatonos": 39, "iotatonos": 54, "omicrontonos": 40,
+    "upsilontonos": 56, "omegatonos": 79, "iotadieresis": 100, "upsilondieresis": 76,
+    "iotadieresistonos": 67, "upsilondieresistonos": 67, "Iotadieresis": 67,
+    "Upsilondieresis": 67,
 }
 
 

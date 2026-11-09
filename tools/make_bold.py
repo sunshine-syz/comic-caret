@@ -177,7 +177,7 @@ RAISED = ("Hbar",)
 # (move_apart()). ŀ's dot and the carons of ď ľ Ľ move right, and the tonos beside a capital
 # moves left; ď's caron and the tonos pass the cell already and go further still, where
 # test_sanity.py holds them, so fit_references() leaves them out. ΅'s dieresis moves down,
-# below its tonos, which the turned pen grows into the dieresis. ΐ ΰ's dieresis then sits 27
+# below its tonos, which the turned pen grows into the dieresis. ΐ ΰ's dieresis then sits 30
 # below ϊ ϋ's, a row break that letters as rare as these may take (tests/test_make_bold.py
 # names it).
 # The dots of i j rise, so they stay as far above the stem as the regular's, and the bar of

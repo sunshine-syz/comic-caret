@@ -64,7 +64,7 @@ DASH_COUNT = {"DOUBLE": 2, "TRIPLE": 3, "QUADRUPLE": 4}
 
 ARC_RADIUS = ADVANCE // 2  # of the centre line, as in Intel One Mono: arcs span half a cell
 
-# Shades are a grid of pixels 55 x 62.5, which repeats in every cell so shaded areas tile.
+# Shades are a grid of pixels 60 x 67.5, which repeats in every cell so shaded areas tile.
 SHADE_GRID = (10, 20)
 # Which pixel (column, row) of every 2 x 2 is ink. Each shade holds the lighter ones' pixels.
 SHADES = {"LIGHT": {(1, 1)}, "MEDIUM": {(1, 1), (0, 0)}, "DARK": {(1, 1), (0, 0), (1, 0)}}

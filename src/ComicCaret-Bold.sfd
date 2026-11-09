@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794248242
+ModificationTime: 1794256378
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -30226,7 +30226,7 @@ Flags: W
 HStem: -33 94<368.423 427> 385 95<65.3018 219>
 VStem: 216 124<92.2504 307.999 308 387>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 305 529 basechar 0
+AnchorPoint: "top" 305 536 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -30691,7 +30691,7 @@ Flags: W
 HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474>
 VStem: 70 128<103.105 260 260.044 465.436> 406 128<118.739 438.974>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 300 529 basechar 0
+AnchorPoint: "top" 300 536 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -31030,14 +31030,14 @@ Encoding: 940 940 977
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -26 21G<501.5 536> -17 92<215.687 339.69> 393 94<215.315 337.91> 524 173
+HStem: -26 21G<501.5 536> -17 92<215.687 339.69> 393 94<215.315 337.91> 567 173
 VStem: 42 128<126.54 339.323> 394 128<134.154 333.344>
 AnchorPoint: "bottom" 310 0 basechar 0
-AnchorPoint: "top" 310 720 basechar 0
+AnchorPoint: "top" 310 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 10 60 2
 Refer: 950 945 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 10 17 2
 Ligature2: "marks_compose" alpha acutecomb
 EndChar
 
@@ -31046,14 +31046,14 @@ Encoding: 941 941 978
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -35 92<218.249 402.208> 16 91<458.687 533.581> 216 92<239.239 430.638> 404 92<285 397.371> 524 173
+HStem: -35 92<218.249 402.208> 16 91<458.687 533.581> 216 92<239.239 430.638> 404 92<285 397.371> 567 173
 VStem: 58 128<92.9793 194.612> 94 126<321.541 399.285>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 720 basechar 0
+AnchorPoint: "top" 300 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 0 60 2
 Refer: 954 949 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 0 17 2
 Ligature2: "marks_compose" epsilon acutecomb
 EndChar
 
@@ -31062,14 +31062,14 @@ Encoding: 942 942 979
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -285 21G<453.5 473.5> -28 21G<141.5 156> 383 101<277.096 360.664> 524 173
+HStem: -285 21G<453.5 473.5> -28 21G<141.5 156> 383 101<277.096 360.664> 567 173
 VStem: 73 127<30.6884 304.036> 387 125<-223.597 268.946> 398 128<-268.528 66.4163>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 720 basechar 0
+AnchorPoint: "top" 300 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 0 60 2
 Refer: 956 951 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 0 17 2
 Ligature2: "marks_compose" eta acutecomb
 EndChar
 
@@ -31078,14 +31078,14 @@ Encoding: 943 943 980
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 94<368.423 427> 385 95<65.3018 219> 524 173
+HStem: -33 94<368.423 427> 385 95<65.3018 219> 567 173
 VStem: 216 124<92.2504 307.999 308 387>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 720 basechar 0
+AnchorPoint: "top" 301 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 0 60 2
 Refer: 958 953 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 0 17 2
 Ligature2: "marks_compose" iota acutecomb
 EndChar
 
@@ -31094,14 +31094,14 @@ Encoding: 972 972 981
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 524 173
+HStem: -25 79<226.67 364.283> 416 73<234.575 363.895> 567 173
 VStem: 82 96<107.614 339.452> 417 95<119.098 360.071>
 AnchorPoint: "bottom" 297 0 basechar 0
-AnchorPoint: "top" 297 720 basechar 0
+AnchorPoint: "top" 297 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 -3 60 2
 Refer: 963 959 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 -3 17 2
 Ligature2: "marks_compose" omicron acutecomb
 EndChar
 
@@ -31110,14 +31110,14 @@ Encoding: 973 973 982
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 524 173
+HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 567 173
 VStem: 70 128<103.105 260 260.044 465.436> 406 128<118.739 438.974>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 720 basechar 0
+AnchorPoint: "top" 302 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 2 60 2
 Refer: 969 965 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 2 17 2
 Ligature2: "marks_compose" upsilon acutecomb
 EndChar
 
@@ -31126,14 +31126,14 @@ Encoding: 974 974 983
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -35 21G<157 218.5 395 443> 463 20G<119.5 165.5 434.5 465.5> 524 173
+HStem: -35 21G<157 218.5 395 443> 463 20G<119.5 165.5 434.5 465.5> 567 173
 VStem: 26 128<85.4941 320.526> 446 128<85.2017 318.608>
 AnchorPoint: "bottom" 300 0 basechar 0
-AnchorPoint: "top" 300 720 basechar 0
+AnchorPoint: "top" 300 763 basechar 0
 LayerCount: 2
 Fore
+Refer: 975 900 N 1 0 0 1 0 60 2
 Refer: 973 969 N 1 0 0 1 0 0 2
-Refer: 975 900 N 1 0 0 1 0 17 2
 Ligature2: "marks_compose" omega acutecomb
 EndChar
 
@@ -31253,14 +31253,14 @@ Encoding: 970 970 991
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 94<368.423 427> 385 95<65.3018 219> 580 134<141.043 198 357.527 468.832>
-VStem: 121 152<602.656 692.996> 216 124<92.2504 307.999 308 387> 337 152<600.599 692.969>
+HStem: -33 94<368.423 427> 385 95<65.3018 219> 587 134<141.043 198 357.527 468.832>
+VStem: 121 152<609.656 699.996> 216 124<92.2504 307.999 308 387> 337 152<607.599 699.969>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 743 basechar 0
+AnchorPoint: "top" 301 750 basechar 0
 LayerCount: 2
 Fore
+Refer: 102 168 N 1 0 0 1 7 -58 2
 Refer: 958 953 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 7 -65 2
 Ligature2: "marks_compose" iota uni0308
 EndChar
 
@@ -31269,14 +31269,14 @@ Encoding: 971 971 992
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 580 134<136.043 193 352.527 463.832>
-VStem: 70 128<103.105 260 260.044 465.436> 116 152<602.656 692.996> 332 152<600.599 692.969> 406 128<118.739 438.974>
+HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 587 134<136.043 193 352.527 463.832>
+VStem: 70 128<103.105 260 260.044 465.436> 116 152<609.656 699.996> 332 152<607.599 699.969> 406 128<118.739 438.974>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 743 basechar 0
+AnchorPoint: "top" 302 750 basechar 0
 LayerCount: 2
 Fore
+Refer: 102 168 N 1 0 0 1 2 -58 2
 Refer: 969 965 N 1 0 0 1 0 0 2
-Refer: 102 168 N 1 0 0 1 2 -65 2
 Ligature2: "marks_compose" upsilon uni0308
 EndChar
 
@@ -31317,14 +31317,14 @@ Encoding: 912 912 995
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -33 94<368.423 427> 385 95<65.3018 219> 507 134<134.043 191 350.527 461.832> 666 173
-VStem: 114 152<529.656 619.996> 216 124<92.2504 307.999 308 387> 330 152<527.599 619.969>
+HStem: -33 94<368.423 427> 385 95<65.3018 219> 557 134<134.043 191 350.527 461.832> 716 173
+VStem: 114 152<579.656 669.996> 216 124<92.2504 307.999 308 387> 330 152<577.599 669.969>
 AnchorPoint: "bottom" 301 0 basechar 0
-AnchorPoint: "top" 301 865 basechar 0
+AnchorPoint: "top" 301 915 basechar 0
 LayerCount: 2
 Fore
+Refer: 976 901 N 1 0 0 1 0 -15 2
 Refer: 958 953 N 1 0 0 1 0 0 2
-Refer: 976 901 N 1 0 0 1 0 -65 2
 Ligature2: "marks_compose" iotadieresis acutecomb
 Ligature2: "marks_compose" iota uni0308 acutecomb
 EndChar
@@ -31334,14 +31334,14 @@ Encoding: 944 944 996
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 507 134<136.043 193 352.527 463.832> 666 173
-VStem: 70 128<103.105 260 260.044 465.436> 116 152<529.656 619.996> 332 152<527.599 619.969> 406 128<118.739 438.974>
+HStem: -32 92<239.281 339.809> 460 20G<116 158 434 474> 557 134<136.043 193 352.527 463.832> 716 173
+VStem: 70 128<103.105 260 260.044 465.436> 116 152<579.656 669.996> 332 152<577.599 669.969> 406 128<118.739 438.974>
 AnchorPoint: "bottom" 302 0 basechar 0
-AnchorPoint: "top" 302 865 basechar 0
+AnchorPoint: "top" 302 915 basechar 0
 LayerCount: 2
 Fore
+Refer: 976 901 N 1 0 0 1 2 -15 2
 Refer: 969 965 N 1 0 0 1 0 0 2
-Refer: 976 901 N 1 0 0 1 2 -65 2
 Ligature2: "marks_compose" upsilondieresis acutecomb
 Ligature2: "marks_compose" upsilon uni0308 acutecomb
 EndChar

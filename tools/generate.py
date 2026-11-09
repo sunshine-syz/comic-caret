@@ -195,7 +195,7 @@ def level_foot(glyph):
     points within LEVEL_REACH of the lowest begins and ends on the curve, and a script's
     baseline zone takes its height from its level feet. Latin's small letters have z's bar;
     Greek's have none, so Greek's zone came from the round feet, half a pixel under Latin's,
-    and its small letters stood a row low from 20 px (15 in the bold). π's hook bottom is drawn
+    and its small letters stood a row low from 20 px (16 in the bold). π's hook bottom is drawn
     at z's height; read as level, it gives Greek Latin's zone.
     """
     layer = glyph.foreground.dup()

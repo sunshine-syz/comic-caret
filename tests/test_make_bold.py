@@ -55,7 +55,7 @@ GENERATOR = ROOT / "tools" / "make_bold.py"
 THROUGH_PIECES = ("hyphen.mid", "equal.mid", "greater.shaft", "less.shaft", "uni23AF")
 # Known exception to how far a part may move up or down: ΅'s dieresis moves 30 down, below
 # the tonos that the turned pen grows into it. ΐ ΰ, built on ΅, are rare enough that their
-# dieresis may sit 27 below ϊ ϋ's.
+# dieresis may sit 30 below ϊ ϋ's in the bold.
 MOVED_FURTHER = {("dieresistonos", "dieresis")}
 # Known exceptions to an outline keeping the regular's counters: the pen is wider than the
 # narrow wedges of ₦ (39 and 47 wide in the regular) and of ₩'s V's (24 to 29), and shuts them;
