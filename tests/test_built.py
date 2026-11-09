@@ -210,9 +210,9 @@ for name in ["equal"] + json.loads(sys.argv[3]):
                              min(hinted[c][k][1] for c, k in upper) / 64]
 print(json.dumps(edges))
 """
-# Prints {char: [sizes]}: the pixel sizes, 8 to 24, where the hinted top of a Greek letter in
-# sys.argv[3] lands half a pixel or more off the Latin letter sys.argv[4] names for it, under
-# the hinting the HINTING flag sys.argv[2] names.
+# Prints {"<greek> <end>": [sizes]}: the pixel sizes, 8 to 24, where the hinted end ("top" or
+# "foot") of a Greek letter lands half a pixel or more off the Latin letter named for it in
+# sys.argv[3], {end: {greek: latin}}, under the hinting the HINTING flag sys.argv[2] names.
 GREEK_ROWS = """
 import json, sys
 import freetype

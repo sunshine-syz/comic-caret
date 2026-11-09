@@ -141,9 +141,10 @@ from `Δ` `Ξ` (−2), Latin's from `E` `Z` `L` (−14), so the round capitals s
 24 px; `Δ` `Ξ` reach `Z`'s −8. Latin's small letters take theirs from `z`'s bar (−8). Greek's
 small letters have no level foot, so the zone fell to their round feet's −25 and they stood a
 row low from 20 px (15 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
-`tools/generate.py` (`level_foot()`) cuts the curves leaving it 5 and 7 units up, joined by a
-line: the autohinter reads a foot as level when the points within 5 units of it begin and end
-on the curve. In the OTF, whose zones all letters share, `Σ` `Ω` `Φ` `Ψ` stood with their
+`tools/generate.py` (`level_foot()`) cuts each curve that leaves it within 5 units at 5 and 7
+units up, joined by a line: the left one in the regular and italic, both in the bold. The
+autohinter reads a foot as level when the points within 5 units of it begin and end on the
+curve. In the OTF, whose zones all letters share, `Σ` `Ω` `Φ` `Ψ` stood with their
 feet at 1, over the baseline zone, and `ξ` `δ` at 723 and 722, over the ascender zone; their
 feet reach −8 and their tops `d`'s 719. `GreekRowTest` in `tests/test_built.py` checks the
 tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
@@ -424,15 +425,20 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   letters a stem crossing the one a zone holds, as `ε`'s upper end (357–443) beside its top
   (411–489). The two take turns under hint masks, and the top's points handed to the end's
   stem rounded with it: `ε` stood a row over `o` at 13 and 20–22 px. A stem that crosses a
-  zone's by half a stroke or more goes. One nearer, as at `T`'s bar, hints the same wobbly
-  stroke: without them the bold `T` and `Œ` blurred. Rows off `H` and `x` at 8–24 px,
+  zone's by more than half a stroke goes, from the letter and its composites: `a`'s, `ą`'s
+  and `ε`'s in the regular, `ε`'s in the bold. `a`'s top then ends on `x`'s row at 9–12 and
+  18 px, where it stood up to 0.4 px over it, and `ε`'s foot on the baseline. One nearer, as
+  at `T`'s bar, hints the same wobbly stroke: without them the bold `T` and `Œ` blurred. Only
+  one outline's stems are compared: a mark's stem can cross its letter's by chance, as at
+  `ñ`'s tilde and `ľ`'s caron, and dropping it blurred the mark. Rows off `H` and `x` at 8–24 px,
   native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
   5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
-  at 0 it stood a row high at 11 and 14 px. FontForge's autohinter gave `⇔` a stem from each bar out
-  to its heads' ends, the upper one's top at 486, in the x-height zone; the hinter aligned it
-  there and set the bar from it, a row off `=`'s at 9, 11 and 18–24 px. `tools/generate.py`
-  leaves ≠ ⇐ ⇒ ⇔ only the stems that lie on `=`'s. Taller heads took the ends out of the zone
-  but closed the bold's bars into one band at 8 px, in both formats.
+  at 0 it stood a row high at 11 and 14 px. FontForge's autohinter gave `⇔` a stem from each
+  bar out to its heads' ends, the upper one's top at 486, in the x-height zone; the hinter
+  aligned it there and set the bar from it, a row off `=`'s at 9, 11 and 18–24 px in the
+  italic, and at most of those sizes in the regular and the bold. `tools/generate.py` leaves
+  ≠ ⇐ ⇒ ⇔ only the stems that lie on `=`'s. Taller heads took the ends out of the zone but
+  closed the bold's bars into one band at 8 px, in both formats.
 - **`=`'s gap.** The white between `=`'s bars is 126, Intel One Mono's, between Fira Code's
   114 and Maple Mono's 135 at our cap height. At 106 the fonts' own hints merged the bars
   into one band at 8 px in every style and format (contrast 0; 0.55–0.75 at 126). Each

@@ -104,13 +104,25 @@ def hint_zones(font):
     and draws no ghost there, so a ghost marks each extreme a zone holds without an edge. It
     also writes some stems top first, with a negative width the spec leaves undefined; FreeType
     then aligned none of their edges to a zone (the bold U's top), so they are written bottom
-    first. Without these, a letter stood a row off the rest at some sizes.
+    first. A letter's stem that crosses one a zone holds, by more than half a stroke, is
+    dropped, in the letter and in its composites. Without these, a letter stood a row off the
+    rest at some sizes.
     """
     blues, other = font.private["BlueValues"], font.private["OtherBlues"]
     fuzz = 1  # the CFF default; the SFDs set no BlueFuzz
     tops = list(zip(blues[2::2], blues[3::2]))
     feet = [tuple(blues[:2]), *zip(other[::2], other[1::2])]
-    for glyph in font.glyphs():
+    lost = {}  # each simple letter's dropped stems
+
+    def dropped_in(glyph):
+        """The stems the letters drawn in `glyph` dropped, where it places them."""
+        if not glyph.references:
+            return lost.get(glyph.glyphname, set())
+        return {(y + transform[5], w) for name, transform, *_ in glyph.references
+                for y, w in dropped_in(font[name])}
+
+    # Simple glyphs first, so a composite finds what its letters dropped.
+    for glyph in sorted(font.glyphs(), key=lambda glyph: bool(glyph.references)):
         letter = is_alphanumeric(glyph.unicode)
         if letter and glyph.references:
             glyph.autoHint()
@@ -133,17 +145,24 @@ def hint_zones(font):
         # are hinted and throw the points between them past the baseline.
         hints = [hint for hint in hints
                  if hint[1] not in (-20, -21) or not any(overlap(hint, g) for g in ghosts)]
-        if letter:
-            # A stem crossing one whose edge a zone holds, by half a stroke or more, hints another
-            # stroke, as ε's upper end (357-443) beside its top (411-489). The two take turns
-            # under hint masks, and the top's points handed to the end's stem round with it, not
-            # the zone: ε's top stood a row over o's at 13 and 20-22 px. A stem less than half
-            # a stroke off hints the same wobbly stroke, as at T's bar, and keeps it sharp.
+        if letter and glyph.references:
+            hints = [hint for hint in hints if hint not in dropped_in(glyph)]
+        elif letter:
+            # A stem crossing one whose edge a zone holds, by more than half a stroke, hints
+            # another stroke, as ε's upper end (357-443) beside its top (411-489). The two take
+            # turns under hint masks, and the top's points handed to the end's stem round with
+            # it, not the zone: ε's top stood a row over o's at 13 and 20-22 px. A stem less
+            # than half a stroke off hints the same wobbly stroke, as at T's bar, and keeps it
+            # sharp. Only one outline's stems are compared: a mark's stems cross its letter's
+            # by chance, and dropping them blurred ñ's tilde and ľ's caron, so a composite
+            # drops only what its letters did.
             held = [(y, w) for y, w in hints if w not in (-20, -21)
                     and any(low - fuzz <= edge <= high + fuzz
                             for edge, zones in ((y + w, tops), (y, feet)) for low, high in zones)]
-            hints = [hint for hint in hints if hint[1] in (-20, -21) or hint in held or not any(
-                overlap(hint, h) and abs(hint[0] - h[0]) > h[1] / 2 for h in held)]
+            lost[glyph.glyphname] = {
+                hint for hint in hints if hint[1] not in (-20, -21) and hint not in held
+                and any(overlap(hint, h) and abs(hint[0] - h[0]) > h[1] / 2 for h in held)}
+            hints = [hint for hint in hints if hint not in lost[glyph.glyphname]]
         hints = sorted((*hints, *ghosts), key=lambda hint: min(hint[0], sum(hint)))
         if tuple(hints) != glyph.hhints:
             glyph.hhints = hints  # from the bottom up, or FontForge drops a hint out of order
@@ -155,8 +174,8 @@ def hint_bars_as_equal(font):
 
     FontForge's autohinter also gives ⇔ a stem from each bar out to its heads' ends, and the
     upper one's top (486) lies in the x-height zone. The CFF hinter aligned that edge to the
-    zone and set the bar from it, a row off ='s at 9-24 px. With only ='s stems, the bars
-    round as ='s do and the heads follow them.
+    zone and set the bar from it, a row off ='s at sizes from 9 to 24 px. With only ='s
+    stems, the bars round as ='s do and the heads follow them.
     """
     stems = font["equal"].hhints
     for name in EQUAL_BARS:
@@ -213,9 +232,10 @@ def level_foot(glyph):
                 continue
             if j - k == 3 and run[k + 1][1] <= height:  # a curve whose run ends off it
                 # Cut at the height and 2 above, joined by a line: on a flat curve FontForge's
-                # quadratic control point after a single cut still lies within reach.
+                # quadratic control point after a single cut still lies within reach. A curve
+                # ending within the 2 ends in that line.
                 first, rest = split(run[k:j + 1], height)
-                _, last = split(rest, height + 2)
+                last = split(rest, height + 2)[1] if run[j][1] > height + 2 else [run[j][:2]]
                 run[k + 1:j] = [(round(x), round(y), i in (2, 3), None)
                                 for i, (x, y) in enumerate([*first[1:], *last[:-1]])]
             break
