@@ -13,7 +13,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import proof_sheet
-from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD, font_file
+from project import ADVANCE, ROOT, SFD, font_file
 
 SCRIPT = ROOT / "tools" / "proof_sheet.py"
 TTF, OTF = font_file("Regular", "ttf"), font_file("Regular", "otf")
@@ -132,14 +132,12 @@ class ProofSheetTest(unittest.TestCase):
             self.assertEqual(png_size(image)[1], 2 * 1.5 * 64 + 2 * MARGIN, image.name)
 
     def test_splits_the_line_height_change_between_top_and_bottom(self):
-        # The line box at a size of one pixel per unit. Apps add or take the difference evenly
-        # above and below.
-        font = proof_sheet.Font(TTF, "", "", 1000, LINE_TOP, LINE_BOTTOM)
-        for line_height in (1.5, 1.0):
-            half = round((line_height * 1000 - (LINE_TOP - LINE_BOTTOM)) / 2)
+        # A 900/−350 line box (1.25 em), at a size of one pixel per unit. Apps add or take the
+        # difference evenly above and below.
+        font = proof_sheet.Font(TTF, "", "", 1000, 900, -350)
+        for line_height, expected in ((1.5, "1025,475,0"), (1.0, "775,225,0")):
             with self.subTest(line_height=line_height):
-                self.assertEqual(proof_sheet.extents(font, 1000, line_height),
-                                 f"{LINE_TOP + half},{-LINE_BOTTOM + half},0")
+                self.assertEqual(proof_sheet.extents(font, 1000, line_height), expected)
 
     def test_shows_each_line_height(self):
         _, page = self.sheet(TTF, "--text=a", "--line-height=1", "--line-height=1.5")

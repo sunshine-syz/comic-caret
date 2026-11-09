@@ -424,9 +424,9 @@ class BoldTest(unittest.TestCase):
         # the pen. A dropped part is drawn into the glyph's own outline, which covers its
         # regular ink.
         #
-        # A part may move, out of the line box's top, into the cell, or clear of a part or a
-        # letter the pen grew it into, by no more than the pens grew the two toward each other,
-        # and a unit of rounding. Across, a part grows toward its neighbour by half its own pen
+        # A part may move into the cell, or clear of a part or a letter the pen grew it into,
+        # by no more than the pens grew the two toward each other, and a unit of rounding.
+        # Across, a part grows toward its neighbour by half its own pen
         # and the neighbour toward it by half the neighbour's: a full pen, or in a TIGHT or
         # DOUBLES glyph the part's own pen, as the neighbour is a copy of the part. Up or down,
         # the part's pen's reach and a full pen's (make_bold.reach()).

@@ -125,7 +125,8 @@ README's images in `docs/images/` are out of date.
   two side by side don't touch.
 - Keep ink inside the line box. Only a letter's marks may pass it, as in Fira Code, Intel One
   Mono and Monaspace Neon; the letter itself stays inside. GDI apps and terminals that clip to
-  the cell cut off what passes.
+  the cell cut off what passes. Box drawing and block elements run past it on purpose, under
+  their own rules. `tests/test_sanity.py` holds both.
 - Center symmetric ink in the cell; turned glyphs such as ¡ ¿ are references rotated 180°
   about the cell center.
 - `docs/design-notes.md` records how the scaled parts, heavy marks, shapes and Greek were

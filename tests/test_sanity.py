@@ -93,12 +93,18 @@ def only_marks_pass(font, glyph, past):
     past(bounding box). GDI apps and terminals that clip to the cell cut off what passes, so
     only marks may, as in Fira Code, Intel One Mono and Monaspace Neon (accented capitals,
     stacked marks, the comma below)."""
+    def is_letter_part(name):
+        # An unencoded part is a letter when the glyph its name starts with is: ª's a.small,
+        # but not circumflex.case or bar.ordinal.
+        stem = name.split(".")[0]
+        return is_letter(font[name].unicode) or stem in font and is_letter(font[stem].unicode)
+
     if not is_letter(glyph.unicode) or not glyph.references:
         return False
     if len(glyph.foreground) and past(glyph.foreground.boundingBox()):
         return False
     return not any(past(geo.transformed(ink(font, name), matrix).boundingBox())
-                   for name, matrix, *_ in glyph.references if is_letter(font[name].unicode))
+                   for name, matrix, *_ in glyph.references if is_letter_part(name))
 
 
 class SanityTest(unittest.TestCase):
@@ -258,7 +264,8 @@ class ItalicSanityTest(SanityTest):
 
 
 class BoldSanityTest(SanityTest):
-    """The same rules for the bold, whose strokes grow within the regular's cell and line box."""
+    """The same rules for the bold, whose strokes grow within the regular's cell and line box;
+    only a letter's marks may pass it."""
 
     sfd = BOLD_SFD
     outside_cell, validate_flags = BOLD_INK_OUTSIDE_CELL, BOLD_VALIDATE_FLAGS

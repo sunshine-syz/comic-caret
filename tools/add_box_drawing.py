@@ -237,8 +237,9 @@ def lines(sides):
 def dashes(count, weight, orientation):
     """`count` dashes per cell, evenly spaced across cells. A row's cells take half a gap at
     each side. A column's take half a dash at the top and the bottom and run it on into the
-    overlap, so lines spaced up to 1.5 em apart still meet in one dash; it stops at half a dash,
-    where at the font's own 1.35 em the next line's first gap starts."""
+    overlap as far as the verticals reach (REACH), so lines spaced up to 1.5 em apart still
+    meet in one dash; it never runs past half a dash, where at the font's own line height the
+    next line's first gap starts."""
     half, gap = HALF[weight], DASH_GAP[count]
     if orientation == "HORIZONTAL":
         period = ADVANCE / count

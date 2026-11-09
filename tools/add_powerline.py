@@ -60,7 +60,7 @@ FORK_HANDLE = 300 / 370
 LETTER_SCALE = 0.79
 LETTER_GAP = 54
 # How far N's foot stands above the line box's bottom: Fira Code's 243, Intel One Mono's 130,
-# Maple Mono's 38. L's top then stands 83 under the line box's top: Fira Code's 89, Intel One
+# Maple Mono's 38. L's top then stands 183 under the line box's top: Fira Code's 89, Intel One
 # Mono's 288, Maple Mono's 25.
 LINE_NUMBER_INSET = 50
 

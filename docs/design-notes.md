@@ -110,16 +110,17 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   below, as in Fira Code (57 letters, up to 112 past its top), Intel One Mono (up to 12) and
   Monaspace Neon (up to 262, with a line gap behind it); Maple Mono keeps everything inside.
   The letter itself stays inside, and so does every other glyph but those that join their
-  neighbours. Keeping every accent inside 900 cost the capitals flattened marks and the bold
-  marks pushed down to the top, so the line top rose to 1000 (1.35 em rows) and the bold keeps
-  its marks where the pen leaves them.
+  neighbours (`test_only_marks_rise_above_the_line` and `test_only_marks_hang_below_the_line`
+  in `tests/test_sanity.py`). Keeping every accent inside 900 would have needed flattened marks
+  on capitals and kept the bold's marks pushed down to the top, so the line top rose to 1000
+  (1.35 em rows) and the bold keeps its marks where the pen leaves them.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.35 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
   long gap marks each seam. Picked by proof 2026-10-06. Lines closer than 1.35 em lose the
-  rhythm: at 1.25 em ┊ ┋'s seam dash is 270 long, 22 short of the others, and at 1.2 em their
-  half dash runs on past the next line's first gap, so the seam turns into one dash about
-  three long. A dashed row takes half a gap at each side, as in the references.
+  rhythm. At 1.25 em the seam's dash is 100 short in ╎ ╏ ┆ ┇, and in ┊ ┋ the gaps beside it
+  close from 46 to 7, so their seam reads as one dash about three long. At 1.2 em ┊ ┋'s seam
+  is one dash 816 long, and ┆ ┇'s gaps beside it close to 24. A dashed row takes half a gap at each side, as in the references.
 - `⎯` (U+23AF) is the `--` line's middle piece and runs `OVERLAP` into each neighbour, as the
   line's pieces do, so a row of them joins as one line, as Vitest's dividers need; a single one
   beside text touches its neighbour's cell. Its seams keep the line's faint notch at 11, 16 and
@@ -140,8 +141,8 @@ stands to the left, reaching into the cell before (all but Ά) no further than t
   whose dots stand 1.5 times closer inside a cell across and 3.2 times down.
 - `|` stands on the cell's middle, on │'s line, so a table drawn with both meets; ‖ is two `|`,
   and ¦ is `|` broken: each piece is `|`'s stroke, shortened, with its round ends.
-- `( [ {` span −145…800, 945 tall, within the references' 927–971. The descenders hang 133–152
-  below them (`p` −278, `y` −297), where the references leave 17–85, because ours keep Comic
+- `( [ {` span −145…800, 945 tall, within the references' 927–971. The descenders hang 133
+  below them (`p` `y` −278), where the references leave 17–85, because ours keep Comic
   Shanns' depth (the references' reach −172…−244). The brackets stay: lengthened to the
   descenders, they would stand taller than every reference's and drag `⟨ ⟩` and `/ \` with
   them.
@@ -326,7 +327,8 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
 - **Alignment zones.** The OTF's hints put the extremes inside one zone on one pixel row, so
   each zone runs from the lowest to the highest of its letters' extremes, the hand's wobble
   included: the baseline −37…−5, the x-height 461…493, the capitals and figures 658…692, the
-  ascenders 710…719, and the descenders −297…−268 (`OtherBlues`). The bold's move out by
+  ascenders 710…719, and the descenders −297…−268 (`OtherBlues`), which runs 19 below its
+  letters' lowest foot (`p` `y` −278) and so holds χ's (−284) too. The bold's move out by
   half the pen's height, 7, but its baseline zone keeps its top at −5: FreeType pulls that
   flat edge down by up to 0.6 px at small sizes, and from −12 it sank every bold letter a
   row at 9–12 px. Its BlueScale shrinks with that taller zone. `tests/test_metadata.py`
@@ -424,8 +426,9 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
 - **˚.** It is 161 against Fira Code's 222. In Å, the ring stands 20 above the apex (678) and
-  ends at 849, 151 under the line box's top (1000). A round ring 222 wide is 61 taller; it
-  fits inside the line box, in the bold too, where Å ends at 870.
+  ends at 849, 151 under the line box's top (1000). A round ring 222 wide is 61 taller and
+  fits inside the line box, in the bold too (Å ends at 870), so the line box no longer keeps
+  ˚ under the floor; its width is open.
 - **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,
   and ⁺ ⁻ ⁼ ₊ ₋ ₌ (208–218) against Fira Code's 233–235. Monaspace gives them no share of a
   wider cell (the table above).
@@ -623,10 +626,9 @@ are in `build/cache/reference/bold/`.
   - A bolder glyph's shared part grows as its own outline.
   - A bolder glyph's part turned a quarter or scaled (⋮ on …, ⇦ ⇨ on ⇧) grows as its own
     outline, since the reference would turn or scale the pen too.
-- **Mirrors and marks.** The pen alone would break three things the regular keeps.
+- **Mirrors and marks.** The pen alone would break two things the regular keeps.
   - A left glyph the regular draws as its right one mirrored (⇤ ⇥, ↩ ↪) is the bold right one
     mirrored, so the two stay exact mirrors.
-  - An accent the pen grows out of the line box moves down into it (ĥ's circumflex).
   - A mark the pen grows within `MARK_CLEARANCE` of its letter rises clear. It rises as far on
     every letter where it stands as high, so a row of them stays level.
 
