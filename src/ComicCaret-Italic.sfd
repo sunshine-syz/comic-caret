@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794125577
+ModificationTime: 1794205242
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -7757,7 +7757,7 @@ StartChar: y
 Encoding: 121 121 90
 Width: 600
 Flags: W
-HStem: -297 21G<46 52> 453 20G<156.5 163 541 547>
+HStem: -278 21G<60 66> 453 20G<156.5 163 541 547>
 AnchorPoint: "bottom" 251 0 basechar 0
 AnchorPoint: "top" 363 530 basechar 0
 LayerCount: 2
@@ -7765,14 +7765,14 @@ Fore
 SplineSet
 565 397 m 0
  526 336 468 250 391 142 c 0
- 314 34 216 -104 95 -271 c 0
- 88 -282 77 -290 63 -295 c 0
- 59 -297 54 -297 50 -297 c 0
- 42 -297 34 -294 28 -288 c 0
- 20 -281 16 -273 14 -262 c 0
- 14 -258 14 -253 15 -249 c 0
- 17 -241 20 -234 27 -225 c 0
- 57 -182 87 -142 115 -102 c 0
+ 314 34 230 -85 109 -252 c 0
+ 102 -263 91 -271 77 -276 c 0
+ 73 -278 68 -278 64 -278 c 0
+ 56 -278 48 -275 42 -269 c 0
+ 34 -262 30 -254 28 -243 c 0
+ 28 -239 28 -234 29 -230 c 0
+ 31 -222 34 -215 41 -206 c 0
+ 71 -163 87 -142 115 -102 c 0
  144 -62 172 -24 198 12 c 1
  176 84 155 153 139 219 c 0
  123 285 112 343 103 392 c 0
@@ -9882,7 +9882,7 @@ Encoding: 253 253 166
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -297 21G<46 52> 453 20G<156.5 163 541 547> 530 128
+HStem: -278 21G<60 66> 453 20G<156.5 163 541 547> 530 128
 VStem: 294 165
 AnchorPoint: "bottom" 251 0 basechar 0
 AnchorPoint: "top" 401 708 basechar 0
@@ -9898,7 +9898,7 @@ Encoding: 255 255 167
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -297 21G<46 52> 453 20G<156.5 163 541 547> 530 120<232.292 303.462 448.292 520.667>
+HStem: -278 21G<60 66> 453 20G<156.5 163 541 547> 530 120<232.292 303.462 448.292 520.667>
 VStem: 208 121<555.549 625.945> 424 121<554.264 625.945>
 AnchorPoint: "bottom" 251 0 basechar 0
 AnchorPoint: "top" 400 700 basechar 0
@@ -12274,7 +12274,7 @@ Encoding: 375 375 265
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -297 21G<46 52> 453 20G<156.5 163 541 547> 530 73<160.188 222.697 393.303 455.714> 640 20G<305.5 310.5>
+HStem: -278 21G<60 66> 453 20G<156.5 163 541 547> 530 73<160.188 222.697 393.303 455.714> 640 20G<305.5 310.5>
 VStem: 156 303<562 602.323>
 AnchorPoint: "bottom" 251 0 basechar 0
 AnchorPoint: "top" 402 710 basechar 0
@@ -12950,7 +12950,7 @@ Encoding: 7923 7923 293
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: -297 21G<46 52> 453 20G<156.5 163 541 547> 530 128<286.934 316.261>
+HStem: -278 21G<60 66> 453 20G<156.5 163 541 547> 530 128<286.934 316.261>
 VStem: 231 154
 AnchorPoint: "bottom" 251 0 basechar 0
 AnchorPoint: "top" 401 708 basechar 0
