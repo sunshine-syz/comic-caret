@@ -69,13 +69,13 @@ CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕�
             "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪↦"
             "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼⣿"
-            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ"
+            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ◻◼◈⏹"
             "\uE0A0\uE0A1\uE0A2")  # the Powerline branch, line number and padlock
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
            "✕✖➜○●◉∅▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⋯⋮"
            "✢✳✶✻✽⏵⏸⏺⧉※◯■□▪▫⌘⌥⇧⌫⌦⎋⏎↹⇥⇤⇦⇨⇩"
-           "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙–—∞")
+           "◐◑◒◓◴◵◶◷◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙–—∞◻◼◈⏹")
 # The <= >= ligatures, by glyph name: centred on the axis like ≤ ≥, as the references' are.
 ON_AXIS_GLYPHS = ("less_equal.liga", "greater_equal.liga")
 # The superscript and subscript signs, on the middle of their small figures, as in both

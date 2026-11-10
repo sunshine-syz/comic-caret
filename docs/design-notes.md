@@ -34,7 +34,14 @@ them. The exceptions:
 - ▫ and ◦ are ☐'s and ○'s shapes, 250 across, scaled so their rings come out light too: 41
   and 46.
 - ⧉'s squares are the hyphen's stroke at 0.79, so the one behind keeps clear of the one in
-  front; ⏺ ⏵ are ● ▶ scaled to ⏸'s height.
+  front; ⏺ ⏵ ⏹ are ● ▶ ■ scaled to ⏸'s height.
+- ◻ ◼ are ☐ ■ at 0.75, 376 across: midway between ▫ ▪ (250) and □ ■ (502). No reference
+  has them; Iosevka's medium squares stand midway too, and Menlo's a little over. ◈ is ◇ with
+  ◆ at 0.38 inside, 49 clear of the ring: over twice `SYMBOL_SIDE`, under ◉'s 70, as ◇'s ring
+  leaves less room than ○'s (Maple Mono's ◈, the only reference's, keeps 64 in a lighter
+  ring).
+- ↯ is a bolt in ↓'s stroke that runs into ↓'s own shaft and head, so it stands and weighs as
+  the arrows beside it do. No reference has it.
 - The keyboard symbols ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ take the same 0.79 stroke, for their detail, so key
   hints such as ⌃⌥⌘⇧ read at one weight.
 

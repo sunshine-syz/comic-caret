@@ -102,10 +102,10 @@ SHARED_BLOCKS = (range(0x2500, 0x2600), range(0x2800, 0x2900), range(0xE000, 0xF
 # Outside them: the spinner frames but ‼, which is two ! and grows with them, as the italic
 # slants it; the other frames of a spinner, so none grows and the spinner doesn't pulse: Claude
 # Code's ✢ ✳ ✶ ✻ ✽, ✶ being also the star spinner's first frame, which add_shapes.py draws
-# ✷ ✸ ✹ ✺ from; the media controls ⏵ ⏸ ⏺, which status lines show side by side at one height;
+# ✷ ✸ ✹ ✺ from; the media controls ⏵ ⏸ ⏹ ⏺, which status lines show side by side at one height;
 # and ☐, which □ and ■ are (tests/test_symbols.py), and ☑ ☒, ☐ marked, so the three boxes stay
 # alike.
-SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✢✳✶✻✽⏵⏸⏺☐☑☒")
+SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✢✳✶✻✽⏵⏸⏹⏺☐☑☒")
 
 # The heavy marks, each drawn as its light glyph pushed out (docs/design-notes.md), and that
 # glyph: ✔ ✘ ✖ for ✓ ✗ ✕, ❯ ❮ ❱ ❰ for > <, and ➜ for →. Each grows by the pen scaled by how

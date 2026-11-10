@@ -49,7 +49,7 @@ SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
 
 SLANTED, UPRIGHT, CURSIVE = "slanted", "upright", "cursive"
 
-# The blocks that stay upright: Miscellaneous Technical (⏺ ⏵ ⏸ ⎿ ⌘ ⌥ ⌃ ⌫ ⌦ ⎋ ⏎), Box Drawing
+# The blocks that stay upright: Miscellaneous Technical (⏺ ⏵ ⏸ ⏹ ⎿ ⌘ ⌥ ⌃ ⌫ ⌦ ⎋ ⏎), Box Drawing
 # through Dingbats (the block elements, geometric shapes, ☐ ☑ ☒ ⚠ and ✓ ✗ ✶), Braille,
 # Miscellaneous Mathematical Symbols-B (⧉ ⦾ ⦿ ⧇ ⧆), the Powerline symbols and �.
 UPRIGHT_BLOCKS = (range(0x2300, 0x2400), range(0x2500, 0x27C0), range(0x2800, 0x2900),

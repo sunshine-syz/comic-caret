@@ -27,7 +27,7 @@ from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
            "◐◑◒◓◴◵◶◷◜◝◞◟◠◡◰◱◲◳◢◣◤◥▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼"
-           "↑↓≤≥−∀∃∄•†‡…‰™€–—‘’‚“”„‹›«»")
+           "↑↓≤≥−∀∃∄•†‡…‰™€–—‘’‚“”„‹›«»◻◼◈⏹↯")
 # Typed arrow -> the ligature head it is as tall as, so → beside -> reads as the same arrow.
 LIGATURE_HEADS = {"→": "greater.arrow", "⇒": "greater.darrow", "←": "less.arrow",
                   "⇐": "less.darrow"}
@@ -73,7 +73,10 @@ BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "
 # Claude Code's spinner cycles through the first, cli-spinners' star spinner through the
 # second; frames of different sizes would make them pulse.
 SPINNERS = ("✢✳✶✻✽", "✶✷✸✹✺")
-MEDIA = "⏵⏸⏺"  # media controls, which status lines show side by side
+MEDIA = "⏵⏸⏹⏺"  # media controls, which status lines show side by side
+# Smaller shape -> the shape it is, as one scaled reference: the media controls at ⏸'s height,
+# and the medium squares of Claude Code's task list between ▫ ▪ and □ ■.
+SCALED = {"⏺": "●", "⏵": "▶", "⏹": "■", "◻": "☐", "◼": "■"}
 # Keyboard symbols, which key hints string together (⌃⌥⌘⇧⏎): one band on the math axis, and
 # ⌃, the up arrowhead, at its top. Not ⇪, ⇧ lifted over a bar, which rises past the band.
 KEYS = "⌘⌥⇧⎋⏎⇦⇨⇩"
@@ -661,8 +664,8 @@ class BuiltFromTest(unittest.TestCase):
         # So a row of ⎯ joins into the line -- draws, as Vitest's dividers need.
         self.assertEqual(self.only_reference("⎯"), ("hyphen.mid", psMat.identity()))
 
-    def test_media_shapes_are_the_black_shapes_smaller(self):
-        for char, base in (("⏺", "●"), ("⏵", "▶")):
+    def test_smaller_shapes_are_their_shapes_scaled(self):
+        for char, base in SCALED.items():
             with self.subTest(glyph=char):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
@@ -706,6 +709,26 @@ class BuiltFromTest(unittest.TestCase):
         for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
             self.assertAlmostEqual(a, b, delta=WOBBLE)
         self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
+
+    def test_diamond_with_a_dot_is_a_small_diamond_centered_in_the_diamond(self):
+        glyph = self.font[ord("◈")]
+        self.assertEqual(len(glyph.foreground), 0)
+        parts = {name: geo.transformed(measure.ink(self.font, name), matrix)
+                 for name, matrix, *_ in glyph.references}
+        self.assertEqual(len(parts), 2)
+        ring, dot = (parts[self.font[ord(char)].glyphname] for char in "◇◆")
+        for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
+            self.assertAlmostEqual(a, b, delta=WOBBLE)
+        # Apart as a symbol's pieces are (ApartTest).
+        self.assertGreaterEqual(measure.gap(ring, dot), 2 * SYMBOL_SIDE)
+
+    def test_zigzag_arrow_ends_in_the_down_arrow(self):
+        # ↯'s bolt runs into ↓'s own shaft and head, so the lower half of each is one shape.
+        _, y0, _, y1 = self.font[ord("↓")].boundingBox()
+        bolt, down = (geo.trim(self.font[ord(char)].foreground, y1=(y0 + y1) / 2)
+                      for char in "↯↓")
+        self.assertGreaterEqual(measure.covered(bolt, down), 0.99)
+        self.assertGreaterEqual(measure.covered(down, bolt), 0.99)
 
 
 class LetterlikeTest(unittest.TestCase):
