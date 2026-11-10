@@ -213,7 +213,7 @@ TIGHT = ({f"{name}.{side}": (way, 0.5) for name in TIGHT_KEEP
 # The outlines condensed to keep their own regular box, where the pen would grow them into
 # their neighbours or wider than the reference bolds draw them: ™'s T and M, 23 apart, which
 # the small pen would grow until they all but touch, so ™ stays a composite of the two; Θ's
-# bar, which would come 21 from the ring, under the reference bolds' 38, and keeps 39; ⌥,
+# bar, which would come 29 from the ring, under the reference bolds' 38, and keeps 47; ⌥,
 # which Fira Code Bold, the one reference bold that draws it, draws as wide as its regular
 # (tests/test_legibility.py); and ď ľ Ľ's caron, which in ď runs on into the next cell, where
 # grown 35 wider it would run into an l's flag. It keeps 32 from it (tests/test_latin.py), as
@@ -256,7 +256,7 @@ SLASHES = ("perthousand",)
 
 # Of those, the ones whose pieces but the tallest the regular draws as light as the small
 # figures, which grow by the small pen, so they stay as light: ℃ ℉'s ring and №'s o and bar,
-# º's. The full pen would close ℃ ℉'s ring to 42 across, where the small pen leaves 54.
+# º's. The small pen closes ℃ ℉'s ring from 75 across to 43; the full pen would close it further.
 LIGHT_PIECES = ("uni2103", "uni2109", "uni2116")
 
 # Outlines whose pieces the pen grows within twice SYMBOL_SIDE of each other, where condensing

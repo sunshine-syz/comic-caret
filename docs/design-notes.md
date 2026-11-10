@@ -5,11 +5,11 @@ reference fonts live in `build/cache/reference/`: `FiraCode-Regular.ttf` from th
 6.2 release, Maple Mono 7.9 Regular (the Nerd Font build works too) and
 `IntelOneMono-Regular.ttf` from the Intel One Mono 1.4.0 release (`ttf.zip`). All three are
 OFL: copy measurements, never outlines. `tools/compare_glyphs.py` puts our glyph positions
-next to theirs, and `tools/proof_sheet.py` renders ours beside them; with `--italic`, both use
-the italic references in `build/cache/reference/italic/` and `--bold`, the bold references in
-`build/cache/reference/bold/`: `FiraCode-Bold.ttf` (Fira Code 6.2), `IntelOneMono-Bold.ttf`
-(Intel One Mono 1.4.0, `ttf.zip`), `MapleMono-NF-Bold.ttf` (Maple Mono 7.9, the Nerd Font
-build) and `MonaspaceNeon-Bold.otf` and `MonaspaceRadon-Bold.otf` (Monaspace 1.400,
+next to theirs, and `tools/proof_sheet.py` renders ours beside them. With `--italic`, both use
+the italic references in `build/cache/reference/italic/`. With `--bold`, both use the bold
+references in `build/cache/reference/bold/`: `FiraCode-Bold.ttf` (Fira Code 6.2),
+`IntelOneMono-Bold.ttf` (Intel One Mono 1.4.0, `ttf.zip`), `MapleMono-NF-Bold.ttf` (Maple Mono 7.9,
+the Nerd Font build) and `MonaspaceNeon-Bold.otf` and `MonaspaceRadon-Bold.otf` (Monaspace 1.400,
 `monaspace-static-v1.400.zip`).
 
 ## Scaled parts
@@ -21,18 +21,18 @@ them. The exceptions:
 - ∞ is 8's loop, scaled to fit, then its top and bottom strokes moved apart so its holes are
   as tall as Maple Mono's at our cap height; every reference draws ∞ lighter than its letters.
 - The `*.small` components of superscripts, subscripts, fractions and signs are the regular
-  glyph at 0.45 (figures, ⁱ ⁿ and the signs), 0.52 (the small parentheses, which reach past
-  the figures as far as the references' do), 0.55 (ª º) or 0.41 (™ © ®), thickened with
-  `changeWeight(…, "CJK", …)` (the default picks a method that pushes all the weight down and
-  right) so stems measure 54 ± 4, or 56 in ™ © ®; the fraction and ordinal bars are thinned
-  to match.
+  glyph scaled: 0.45 for the figures, ⁱ ⁿ and the signs, 0.52 for the small parentheses, which
+  reach past the figures as far as the references' do, 0.55 for ª º and 0.41 for ™ © ®.
+  `changeWeight(…, "CJK", …)` thickens them until stems measure 54 ± 4, or 56 in ™ © ®; the
+  default picks a method that pushes all the weight down and right. The fraction and ordinal
+  bars are thinned to match.
 - ▹ is a 41 outline, lighter than ▷'s, since at the full stroke its counter fills in at
   16 px; ▸ ▴ ▵ ▾ ▿ ◂ ◃ follow it. It is 310 wide, Maple Mono's, the only reference's, and the
   white across its middle, 199, stays above Maple Mono's, whose lighter 37 outline leaves 159
   at our cap height. ‣, a text bullet beside •, is ▸'s triangle 278 wide, near Maple Mono's
   ‣ (258).
-- ▫ (☐ at 0.52) and ◦ (a ring of ○'s shape, 250 across) are scaled so their rings come out
-  about 41 too.
+- ▫ and ◦ are ☐'s and ○'s shapes, 250 across, scaled so their rings come out light too: 41
+  and 46.
 - ⧉'s squares are the hyphen's stroke at 0.79, so the one behind keeps clear of the one in
   front; ⏺ ⏵ are ● ▶ scaled to ⏸'s height.
 - The keyboard symbols ⌘ ⌥ ⌃ ⇧ ⌫ ⌦ ⎋ ⏎ take the same 0.79 stroke, for their detail, so key
@@ -44,10 +44,10 @@ them. The exceptions:
   then squeezed at the ends to at most 510 wide; ✗'s and ✘'s arms then run out to Maple
   Mono's 538 and 550, turning flatter and keeping their weight. ⏸'s bars are `|` pushed out
   40, to weigh as much as ⏵ ⏺.
-- ❯ ❮ are no heavy `>` but the tall angle ornament that every coding font drawing them
-  (JetBrains Mono, Cascadia Code, Maple Mono, DejaVu Sans Mono, Menlo, Iosevka) draws: `>`
-  with its arms lengthened and each turned 25° steeper, pushed out 23, standing on the
-  baseline as tall as the capitals. The arms turn about the centre of the point's round end,
+- ❯ ❮ are not a heavy `>`. They are the tall angle ornament, as every coding font that has
+  them draws it (JetBrains Mono, Cascadia Code, Maple Mono, DejaVu Sans Mono, Menlo, Iosevka):
+  `>` with its arms lengthened, each turned 25° steeper and pushed out 23. It stands on the
+  baseline, as tall as the capitals. The arms turn about the centre of the point's round end,
   since turned about the tip it splits into two bumps, and each arm takes its own length, as
   the hand-drawn arms differ, so the point stays at mid-height. ❯ is 0.78 as wide as `>` and
   carries 1.43 times its ink, between Cascadia Code's 1.39 and Maple Mono's 1.46.
@@ -56,7 +56,8 @@ them. The exceptions:
   fonts that draw them apart (DejaVu Sans Mono's ❱ 1.39 times its ❯'s ink, JetBrains Mono's
   and Maple Mono's 1.50).
 - No symbol comes closer to the cell's edges than `project.SYMBOL_SIDE` (15), so two side by
-  side don't touch.
+  side don't touch. Letters and figures may, the fractions among them (¼ stands 12 from each
+  edge).
 - Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white shapes are
   rings of the hyphen's stroke, or of `o`'s for ○.
 - The spinner frames are cut, stacked and turned from ○ ● ☐ ■ ◦ ✶ `*` and `!`, so the frames
@@ -80,21 +81,21 @@ them. The exceptions:
   centrelines with an elliptical pen 95 wide and 76 tall, `o`'s sides and top. Its top stays
   at 486, the old `a`'s. `æ`'s a half is the same centrelines
   at 0.62 across with the old `æ`'s pen (72 × 80), and `ª`'s small a is `a` at 0.55.
-- **Accents.** At 11–16 px the old acute (153 × 128) was as wide as `i`'s dot and read as one,
-  and every mark sat 40–60 above its letter, where the references keep at least 72 over é and
-  85 over ä.
-  - The acute and grave lengthen along their own 34° slant to 240 × 187, Intel One Mono's
-    width (246); the acute is 1.59 times the dot's width, over Intel One Mono's 1.45, the
-    widest of the references' (Fira Code 1.34, Maple Mono 0.97). The circumflex and caron
-    lengthen both arms along their slants to 345 wide (the references' 312–362).
-  - Each mark rises over the lowercase letters until its white to each letter reaches the
-    narrowest reference's (`MARK_FLOORS`, `tests/test_legibility.py`): the acute and grave
-    +40, the dieresis +43, the dot above +40, the tilde +35, the circumflex +30, the caron and
-    breve +28, the ring +19, the macron +58 and the double acute +39. ý's diagonal white sets
-    the acute's; the grave stands as high, so è é match.
-  - Capitals take the same marks, which fit under the 1000 line top (Á 908, Ö 863), and rise
-    to their floors: Ê +14, Š +9, Ö +26, Ā +28. ĥ and ĺ stand their marks over the ascender,
-    81 and 93 above it (the references' floors: 63 and 72).
+- **Accents.** The marks were redrawn in 2.5 for 11–16 px. Until then the acute (153 × 128)
+  was as wide as `i`'s dot and read as one, and every mark sat 40–60 above its letter, where
+  the references keep at least 72 over é and 85 over ä.
+  - The acute and grave run along their own 34° slant, 240 × 187, Intel One Mono's width
+    (246); the acute is 1.59 times the dot's width, over Intel One Mono's 1.45, the widest of
+    the references' (Fira Code 1.34, Maple Mono 0.97). The circumflex and caron run both arms
+    along their slants to 345 wide (the references' 312–362).
+  - Each mark stands over the lowercase letters where its white to each letter reaches the
+    narrowest reference's (`MARK_FLOORS`, `tests/test_legibility.py`). For that, 2.5 raised
+    the acute and grave 40, the dieresis 43, the dot above 40, the tilde 35, the circumflex 30,
+    the caron and breve 28, the ring 19, the macron 58 and the double acute 39. ý's diagonal
+    white sets the acute's; the grave stands as high, so è é match.
+  - Capitals take the same marks, which fit under the 1000 line top (Á 908, Ö 863), at their
+    floors too: 2.5 raised Ê 13, Š 9, Ö 25 and Ā 28. ĥ and ĺ stand their marks over the
+    ascender, 81 and 93 above it (the references' floors: 63 and 72).
   - Greek's marks rise to Fira Code's and Maple Mono's floors. Over the lowercase the tonos
     rises 43, ώ's diagonal white setting it, and the dieresis of ϊ ϋ 7 more than Latin's. ΐ ΰ
     raise their ΅ 50, so their dieresis stands level with ϊ ϋ's.
@@ -111,17 +112,18 @@ them. The exceptions:
 - **‹ › « ».** ‹ ›'s arms are 5° steeper than Comic Shanns drew them, turned about the tip and
   shortened back to their height: 250 wide (the references' 223–307). « » place two of them
   240 apart, so their white is 86 (Fira Code 80) and the bold's 59 (Fira Code Bold 54).
-  Moved apart with the old arms, the white grew by 0.6 of the move, and reached 80 only 7
-  from the bold cell's edge. Intel One Mono draws its « chevrons narrower than its ‹ too.
+  With Comic Shanns' flatter arms, moving the two apart grows the white by only 0.6 of the
+  move, and it reaches 80 only 7 from the bold cell's edge. Intel One Mono draws its « chevrons
+  narrower than its ‹ too.
 - **Ấ ấ Ầ ầ Ế ế Ề ề Ố ố Ồ ồ.** The acute or grave stands at the circumflex's upper right,
   its right end `SYMBOL_SIDE` (15) from the cell's edge, lowered until `MARK_CLEARANCE` (20)
   stands between it and the circumflex: Ấ tops at 1061, ấ 891, Ầ 972, ầ 803 (Intel One Mono
   1029 and 866, Maple Mono 1020 and 900). Centred over the circumflex, Ấ would top at 1160.
   In the italic the acute leans 109–147 past the cell, within the reference italics' 75–226
   (Intel One Mono 127–173). A mark typed after a stack centres on its letter, as after â.
-  HarfBuzz composes a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A combined mark
-  for ◌̂ ◌́, as the references also draw for other bases, would not: the shaper composes Â
-  first and centres the acute over it. The hook above, the dot below and the horn are not
+  HarfBuzz composes a typed A ◌̂ ◌́ into U+1EA4, so the precomposed letters reach typed text too. A
+  combined mark for ◌̂ ◌́, as the references also draw for other bases, would not: the shaper
+  composes Â first and centres the acute over it. The hook above, the dot below and the horn are not
   drawn, so the rest of Vietnamese comes from a fallback font.
 
 ## Greek
@@ -137,21 +139,22 @@ mode and ttfautohint's TTF hints give each script its own zones, from its own le
 zone's flat height is the middle of its flat tops, its round height the middle of its round
 ones, and FreeType scales each script so its round x-height lands on a pixel. Greek's come
 from ΓΒΕΖΘΟΩ and αειοπστω, Latin's from THEZOCQS and uvxzoesc. So `ι` `τ` stand at `x`'s 473,
-`π` at `v`'s 471, `α` at `s`'s 485, and `Γ` `Ω` at `O`'s 671; they stood at 459, 456, 480,
-479 and 668, and every Greek capital stood a row over `H` at 18–19 px. `Γ`'s bar rises to
-its stem's top, so `Γ` reads flat in both styles: in the bold, `Β`'s level top, 671, was
-Greek's only flat one, and the capitals stood a row under `H` at 8 and 24 px.
-Greek's feet follow Latin's the same way. Its capitals' baseline zone took its flat height
-from `Δ` `Ξ` (−2), Latin's from `E` `Z` `L` (−14), so the round capitals stood a row low at
-24 px; `Δ` `Ξ` reach `Z`'s −8. Latin's small letters take theirs from `z`'s bar (−8). Greek's
-small letters have no level foot, so the zone fell to their round feet's −25 and they stood a
-row low from 20 px (16 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
+`π` at `v`'s 471, `α` at `s`'s 485, and `Γ` `Ω` at `O`'s 671. Until 2.5 they stood at 459,
+456, 480, 479 and 668, and every Greek capital stood a row over `H` at 18–19 px. `Γ`'s bar
+rises to its stem's top, so `Γ` reads flat in both styles. With a lower bar, `Β`'s level
+top, 671, was the bold Greek's only flat one, and the capitals stood a row under `H` at 8 and
+24 px.
+Greek's feet follow Latin's the same way. Latin's capitals take their baseline zone's flat
+height from `E` `Z` `L` (−14), so `Δ` `Ξ` reach `Z`'s −8: at −2 they set Greek's zone, and
+the round capitals stood a row low at 24 px. Latin's small letters take theirs from `z`'s bar
+(−8). Greek's small letters had no level foot, so the zone fell to their round feet's −25 and
+they stood a row low from 20 px (16 in the bold). `π`'s hook bottom is drawn at −8, and in the TTF
 `tools/generate.py` (`level_foot()`) cuts each curve that leaves it within 5 units at 5 and 7
 units up, joined by a line: the left one in the regular and italic, both in the bold. The
 autohinter reads a foot as level when the points within 5 units of it begin and end on the
-curve. In the OTF, whose zones all letters share, `Σ` `Ω` `Φ` `Ψ` stood with their
-feet at 1, over the baseline zone, and `ξ` `δ` at 723 and 722, over the ascender zone; their
-feet reach −8 and their tops `d`'s 719. `GreekRowTest` in `tests/test_built.py` checks the
+curve. In the OTF, whose zones all letters share, the feet of `Σ` `Ω` `Φ` `Ψ` reach −8 and
+the tops of `ξ` `δ` stand at `d`'s 719: feet at 1 lay over the baseline zone, and tops at 723
+and 722 over the ascender zone. `GreekRowTest` in `tests/test_built.py` checks the
 tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
 
 ## Placement
@@ -162,31 +165,34 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   semicolon, brackets and letter widths; read it before changing them.
 - Box-drawing strokes overlap their neighbours: verticals span −435…1085 (they meet up to
   1.5 em line height), horizontals −20…620, as in Intel One Mono and Maple Mono (Fira Code's
-  run 5). At 10, which the ligatures' lines keep, as Fira Code's and Maple Mono's do, a grid
-  that rounds the cell up to whole pixels showed a light notch at every seam of ─ at 11, 16
-  and 21 px; at 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they reach 148 past the
-  line box: the font's furthest ink. The win ascent and descent are the line box, as in Fira
-  Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space lines 1.35 em apart
-  and clip the overlap; set to that ink (1148/498), they would space lines 1.65 em apart. They
-  clip the top of two marks stacked on a capital too (Ấ at 1061, and Ǜ, which HarfBuzz builds
-  from Ü and a grave, at 1139; the bold's 1114 and 1160), as with Fira Code and Maple Mono,
-  whose win ascent is their line box as well and whose own stacked marks reach 61 and 127
-  units past it. The Nerd Fonts builds take the same values.
-- Only a letter's marks may pass the line box: accented capitals, stacked marks and the comma
-  below, as in Fira Code (57 letters, up to 112 past its top), Intel One Mono (up to 12) and
-  Monaspace Neon (up to 262, with a line gap behind it); Maple Mono keeps everything inside.
+  run 5). The ligatures' lines run 10 into each neighbour, as Fira Code's and Maple Mono's do.
+  With 10, on a grid that rounds the cell up to whole pixels, ─ showed a light notch at every
+  seam at 11, 16 and 21 px; with 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they
+  reach 148 past the line box: the font's furthest ink. The win ascent and descent are the
+  line box, as in Fira Code, JetBrains Mono, Intel One Mono and Maple Mono, so GDI apps space
+  lines 1.35 em apart and clip the overlap; set to that ink (1148/498), they would space lines
+  1.65 em apart. GDI apps clip the upper of two marks stacked on a capital too: Ấ reaches 1061,
+  and Ǜ, which HarfBuzz builds from Ü and a grave, 1139 (the bold's 1114 and 1160). Fira Code
+  and Maple Mono clip the same way: their win ascent is their line box as well, and their own
+  stacked marks reach 61 and 127 units past it. The Nerd Fonts builds take the same values.
+- Only a letter's marks may pass the line box, as in Fira Code (57 letters, up to 112 past
+  its top), Intel One Mono (up to 12) and Monaspace Neon (up to 262, with a line gap behind
+  it); Maple Mono keeps everything inside. Of the letters drawn, only Ấ Ế Ố pass it
+  (1059–1065, the bold's 1113–1116), and in the bold Ầ Ề Ồ (1025–1031) and ĺ (1008) too.
+  Nothing hangs below it.
   The letter itself stays inside, and so does every other glyph but those that join their
   neighbours (`test_only_marks_rise_above_the_line` and `test_only_marks_hang_below_the_line`
-  in `tests/test_sanity.py`). Keeping every accent inside 900 would have needed flattened marks
-  on capitals and kept the bold's marks pushed down to the top, so the line top rose to 1000
-  (1.35 em rows) and the bold's marks rise clear of their letters.
+  in `tests/test_sanity.py`). The line top is 1000 (1.35 em rows) for the marks' sake: a top
+  at 900 needs flattened marks on capitals and pushes the bold's marks down onto their
+  letters.
 - A dashed column puts half a dash at the line box's top and bottom and runs it on into the
   overlap, so lines 1.35 em apart keep the rhythm and lines 1.5 em apart meet in one longer
   dash; Intel One Mono and Maple Mono keep their dashes inside the line box, so at 1.5 em a
   long gap marks each seam. Picked by proof 2026-10-06. Lines closer than 1.35 em lose the
   rhythm. At 1.25 em the seam's dash is 100 short in ╎ ╏ ┆ ┇, and in ┊ ┋ the gaps beside it
   close from 46 to 7, so their seam reads as one dash about three long. At 1.2 em ┊ ┋'s seam
-  is one dash 816 long, and ┆ ┇'s gaps beside it close to 24. A dashed row takes half a gap at each side, as in the references.
+  is one dash 816 long, and ┆ ┇'s gaps beside it close to 24. A dashed row takes half a gap at each
+  side, as in the references.
 - `⎯` (U+23AF) is the `--` line's middle piece and runs `OVERLAP` into each neighbour, as the
   line's pieces do, so a row of them joins as one line, as Vitest's dividers need; a single one
   beside text touches its neighbour's cell. Its seams keep the line's faint notch at 11, 16 and
@@ -218,8 +224,8 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   520. `//` `/*` keep their pitch through `TIGHT_KEEP` (−41.5), and the `!=` slash, the `/` at
   83 %, stands 726 tall, between Maple Mono's 662 and Fira Code's 786.
 - ∄ is ∃ and the `/` turned 6° steeper, so it is no wider than ∃, as Fira Code's and Maple
-  Mono's are: 421 against Maple Mono's 420. Its foot stays at Fira Code's −121. A turned part
-  can't stay a reference under the italic's shear or the bold's pen, so the italic draws ∄'s
+  Mono's are: both are 437 (Maple Mono's ∄ is 420). Its foot stays at Fira Code's −121. A turned
+  part can't stay a reference under the italic's shear or the bold's pen, so the italic draws ∄'s
   two parts as outlines and the bold merges them (`make_bold.MERGED`).
 - `‘` is `’` mirrored about the cell's middle, so the two lean toward the quoted word; `“` is
   `”` mirrored and ʻ is `‘`. Every reference draws a 6 and a 9, but `’` keeps no head, and a
@@ -277,7 +283,7 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   turn or lengthen.
 - **Round letters and figures.** Each bowl lengthens at its top and bottom, where its strokes
   run level, and a stem moves with its side. `o` is 450, `O` 474, `0` 451, `e` 442, `g` 438,
-  `a` 452 and `3` 450. `b` `d` `p` `q` are one width, 441, as each reference draws them at one
+  `a` 458 and `3` 450. `b` `d` `p` `q` are one width, 449, as each reference draws them at one
   width. `c` (425) and `5` (432) take Fira Code's widths, so `c` keeps in step with `e` and `o`,
   and `5` with `3`, as in the three references. `Q` widens with `O`, to 482. `0`'s slash and
   `e`'s bar turn a little. ø Ø þ ƿ đ ą ę, ρ δ σ ∂ on `o`'s bowl, ç ¢ ς and the accented letters
@@ -361,15 +367,15 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   widens `<` `>` into `<=` `>=` shrank as `<` `>` grew 64 wider, so the angle keeps its
   reference size: `ANGLE_WIDTH_GAIN` (94) widens it to 519, Fira Code's 1.10 x-heights (Maple
   Mono's is 1.13), its arms as tall as `<` `>`. `<=` is `>=` mirrored, as in Fira Code and
-  Maple Mono: `<` is `>` turned, so each built from its own angle, the bar would hang under a
-  different hand-drawn arm and stand the two 9 apart.
+  Maple Mono. `<` is `>` turned, so a `<=` built from its own angle would hang its bar under a
+  different hand-drawn arm, and the two bars would stand 9 apart.
 - **Seams under light hinting.** FreeType's light autohinter, the default on Linux desktops,
   hints each glyph alone, so the pieces of a ligature meet on one pixel row only where each
   piece's bar rounds the same way. Two things moved a bar a row off. A bar edge that strays
   from its profile toward a cap or a head's point rounds with that stray: `level()` moves
   every point within the wobble of a profile height onto it. And an arm end within reach of
-  a zone, which the autohinter aligns first and then places the bar from: → ⇒ and their
-  heads reach 21…531 and ← ⇐ 21…527. A lower end at 15 or under, 8 or under in the bold, is
+  a zone, which the autohinter aligns first and then places the bar from: → ⇒ ← ⇐ and their
+  heads reach 21…527. A lower end at 15 or under, 8 or under in the bold, is
   aligned to the baseline; an upper end at 509 to the x-height; and ← reaching 529 or more
   moves the bars of `<<-` and `<=<`. Measured with freetype-py 2.5.1 (FreeType 2.13.2) at
   8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The autohinter
@@ -395,18 +401,18 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   of its zones to it and places the bars from there: ≠'s slash foot, at −18, put its bars a
   row off `=`'s at 9–12 px, so the slash runs 40 further each way, to −58 and 602, Maple
   Mono's length (Fira Code's and Intel One Mono's are shorter). The double arrows still stand
-  off `=`'s rows at some sizes: ttfautohint places `⇔`'s bars from its heads' ends (11–12, 16–17
-  and 20–21 px in the regular), which its control file can keep out of the edges only by point
-  number, and `⇐` `⇒` `⇔` at 22–23 px (12 in the bold) and the bold `≠` at 11 for a cause not
-  found. FreeType's light hinting sets `≠` `⇐` `⇒` `⇔` off `=`'s at many sizes: its Latin style
-  covers only Latin's Unicode ranges and hints Arrows and Mathematical Operators in a fallback
-  style, which leaves their bars near their unhinted rows. Mapped from a Latin character too,
-  `≠` stood on `=`'s rows at every size; a font can't change that coverage. At 9 px the
-  italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round stem ends fill only
-  half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep` keeps the
-  smart dropout control the SFD's own `prep` carried. ttfautohint hints a component alone and
-  then turns it, so the TTF draws every turned reference as an outline: turned, `)` stood a
-  row below `(` at 11 px, and `∀` `∃` a row under the baseline.
+  off `=`'s rows at some sizes. ttfautohint places `⇔`'s bars from its heads' ends, which puts
+  them off at 11–12, 16–17 and 20–21 px in the regular; its control file can keep those ends
+  out of the edges only by point number. `⇐` `⇒` `⇔` are off at 22–23 px too (12 in the bold),
+  and the bold `≠` at 11, for a cause not found. FreeType's light hinting sets `≠` `⇐` `⇒` `⇔` off
+  `=`'s at many sizes: its Latin style covers only Latin's Unicode ranges and hints Arrows and
+  Mathematical Operators in a fallback style, which leaves their bars near their unhinted rows.
+  Mapped from a Latin character too, `≠` stood on `=`'s rows at every size; a font can't change that
+  coverage. At 9 px the italic `H`'s top stands on the row of `E` `T` `I`, but its slanted round
+  stem ends fill only half that row (0.50, `N` 0.51), so it can look a row low. ttfautohint's `prep`
+  keeps the smart dropout control the SFD's own `prep` carried. ttfautohint hints a component alone
+  and then turns it, so the TTF draws every turned reference as an outline: turned, `)` stood a row
+  below `(` at 11 px, and `∀` `∃` a row under the baseline.
 - **Alignment zones.** The OTF's hints put the extremes inside one zone on one pixel row, so
   each zone runs from the lowest to the highest of its letters' extremes, the hand's wobble
   included: the baseline −37…−5, the x-height 461…493, the capitals and figures 658…692, the
@@ -424,18 +430,18 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   neither of their edges: the bold `U`'s top was one. Each stood a row off at 8–24 px.
   `tools/generate.py` hints the letter composites again, writes every stem bottom first and
   adds a ghost at each extreme a zone holds without an edge; `tests/test_built.py` checks the
-  built OTFs. A ghost the autohinter drew across the new one's span goes: the italic `m`'s top
-  ghost at −1 crossed the new one over its feet at −21 as both were hinted, and threw the
-  foot half a row below the baseline at 20 and 22 px. FontForge's autohinter also gives some
-  letters a stem crossing the one a zone holds, as `ε`'s upper end (357–443) beside its top
-  (411–489). The two take turns under hint masks, and the top's points handed to the end's
-  stem rounded with it: `ε` stood a row over `o` at 13 and 20–22 px. A stem that crosses a
-  zone's by more than half a stroke goes, from the letter and its composites: `a`'s, `ą`'s
-  and `ε`'s in the regular, `ε`'s in the bold. `a`'s top then ends on `x`'s row at 9–12 and
-  18 px, where it stood up to 0.4 px over it, and `ε`'s foot on the baseline. One nearer, as
-  at `T`'s bar, hints the same wobbly stroke: without them the bold `T` and `Œ` blurred. Only
-  one outline's stems are compared: a mark's stem can cross its letter's by chance, as at
-  `ñ`'s tilde and `ľ`'s caron, and dropping it blurred the mark. Rows off `H` and `x` at 8–24 px,
+  built OTFs. It removes a ghost the autohinter drew across the span of one it adds: in the
+  italic `m`, a top ghost at −1 crossed the new ghost over its feet at −21, and with both
+  hinted the foot fell half a row below the baseline at 20 and 22 px. FontForge's autohinter also
+  gives some letters a stem crossing the one a zone holds, as `ε`'s upper end (357–443) beside its
+  top (411–489). The two take turns under hint masks, and the top's points handed to the end's stem
+  rounded with it: `ε` stood a row over `o` at 13 and 20–22 px. A stem that crosses a zone's by more
+  than half a stroke goes, from the letter and its composites: `a`'s, `ą`'s and `ε`'s in the
+  regular, `ε`'s in the bold. `a`'s top then ends on `x`'s row at 9–12 and 18 px, where it stood up
+  to 0.4 px over it, and `ε`'s foot on the baseline. A stem that crosses a zone's by less stays, as
+  at `T`'s bar: it hints the same wobbly stroke, and without such stems the bold `T` and `Œ`
+  blurred. Only one outline's stems are compared: a mark's stem can cross its letter's by chance, as
+  at `ñ`'s tilde and `ľ`'s caron, and dropping it blurred the mark. Rows off `H` and `x` at 8–24 px,
   native hinting: regular 139 → 112, italic 118 → 112, bold 155 → 85. `Λ`, `V` turned, stands
   5 lower, so its feet reach the baseline zone as `A`'s do; with its top aligned and its feet
   at 0 it stood a row high at 11 and 14 px. FontForge's autohinter gave `⇔` a stem from each
@@ -466,7 +472,7 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   run of its middle line, 315, times the change in the slope's cotangent; the triangle comes
   out 589 wide, 1.245 x-heights. Mirrored about the axis instead, the foot of `>`'s upper arm
   would stand inside the point as a notch, and the point's round end would come 15 short and
-  blunt. In the 550 cell it was 1.27 by 0.88. The bar's outer edge stays 295 into its own
+  blunt. The bar's outer edge stays 295 into its own
   cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
 - **`->>`.** `HEAD_PITCH` (369) leaves 171 of white between the two heads, near the 550
   cell's, since the heads kept their size; Fira Code, the one reference that draws `->>`,
@@ -478,12 +484,12 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   piece's at 8 to 35 px. The bold's pen grows the heads to 143 apart, under Fira Code Bold's
   155, so there the inner head moves along its shaft until the white is Fira Code Bold's
   (`make_bold.HEADS_APART`); a pitch that wide, about 387, would take the regular's white to
-  184, past 1.7.0's 173.
+  184, further from Fira Code's 145.
 - **Tight pairs.** `TIGHT_KEEP` states, for each glyph of a tightened pair (`::` `&&` `++`
   `//` `<<` …), the side bearing it keeps toward its partner, not how far it moves. The white
   between the pair is the sum of the two kept side bearings, so it stays when the cell grows or
   the glyph widens; a shift stated as a number would let the white grow 50 with the cell and
-  shrink as `&` `+` `<` `>` `?` widen. `&&` keeps 46 of white, about Maple Mono's 45 (Fira
+  shrink as `&` `+` `<` `>` `?` widen. `&&` keeps 45 of white, Maple Mono's (Fira
   Code joins its two); much less, and the two read as touching at 12–16 px. `!!` keeps 226,
   Fira Code's (Maple Mono 287). `;` moves as far as `:`, so the dots of `;;` line up with
   those of `::` and keep 214 (Maple Mono 189, Fira Code 238). No pair or three but `++`
@@ -494,16 +500,17 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   pair's shifts. `/**` opens as `/*` does, its second asterisk moved with the first, so its
   asterisks keep a plain `**`'s white. So a doc comment opens as tightly as a plain one.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
-  have 25 more room on each side. So the pen no longer pushes @ # ∞ « » Æ œ K ✔ ➜ past their
-  side room, and `fitted()` keeps them at full width, where 1.7.0 condensed them.
+  have 25 more room on each side. So the pen pushes none of @ # ∞ « » Æ œ K ✔ ➜ past its side
+  room, and `fitted()` keeps them at full width; in the 550 cell it condensed them.
 
 Where a glyph stays under the width rule's floor, the reason and the measurement:
 
 - **`2` and `P`.** The regular `2` (436) and `P` (441) are at their floors. The bold `2` is 472,
   8 under Monaspace Neon Bold's 480, and the bold `P` 476, 6 under its 482: within `WOBBLE`.
-- **The fractions ⅓ ⅔ ⅕ … ⅞.** They are 571–580. Intel One Mono's fill the cell (600), Fira
-  Code's pass it (611–682), and Maple Mono has none. The bold grows a fraction by about 22, so
-  a regular wider than about 578 puts the bold past the cell. The bolds are 593–598.
+- **The fractions ⅓ ⅔ ⅕ … ⅞.** They are 569–580. Intel One Mono's fill the cell (600), Fira
+  Code's pass it (611–682), and Maple Mono has none. The bold grows a fraction by 18–22, to
+  591–598, and the widest then end at the cell's edge (⅛ at 600): a wider regular puts the
+  bold past the cell.
 - **¾.** It is 576, 3 under Maple Mono's 579. At 579, the bold ¾ passes the cell.
 - **đ and ₫.** đ is 503, 7 under Fira Code's 510, and the bold đ 539, 1 under Monaspace Neon
   Bold's 540. ₫ is 505, 10 under Maple Mono's 515. ₫ holds đ, and in the bold a letter that a
@@ -517,8 +524,8 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
 - **Ą.** It is 499, `A`'s width, against Maple Mono's 527. Maple Mono's and Intel One Mono's
   ogoneks reach 31 and 29 past their `A`, and Fira Code's 0. Only the mark's place sets their
   width.
-- **ĵ Ĵ.** ĵ is 395 against Fira Code's 436: the references' circumflex reaches 83 to 122 past
-  their `j`, ours 30. Ĵ is 425 against Fira Code's 440: the references' circumflex reaches 16
+- **ĵ Ĵ.** ĵ is 416 against Fira Code's 435: the references' circumflex reaches 83 to 122 past
+  their `j`, ours 51. Ĵ is 425 against Fira Code's 440: the references' circumflex reaches 16
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
 - **˚.** It is 196 against Fira Code's 222: a proof of both, round, chose 196. The 1000 line
@@ -615,19 +622,22 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
 `build/cache/reference/italic/`:
 
 - **12°**, between Maple Mono's 10° and Intel One Mono's 16°, next to Monaspace's 11°. It
-  reads as italic at 14 px, and the worst text glyphs leave the cell by about 45 units, as
-  the references' do; 10° stayed close to the regular in a comment, and 14° and 16° pushed
-  the capitals' tops and the tails further out.
+  reads as italic at 14 px, and the worst slashes and tails leave the cell by 49–64 units
+  (`/` χ № 49, ⁄ 64), as the references' do. Only a mark at its letter's upper right leans
+  further: ď's caron 106, the circumflex stacks' accent up to 147 (see Latin). 10° stayed close to
+  the regular in a comment, and 14° and 16° pushed the capitals' tops and the tails further out.
 - **One shear for every slanted glyph**, x += (y − 269) × tan 12°, pivoting on the hyphen's
   middle. A stroke at any height moves the same in every glyph, so the ligature pieces still
   meet at the cell seams, `-` `=` and the arrow shafts stay where they are, and the lowercase
   stays centred. Composites keep their references with the matrix conjugated by the shear,
   and anchors move with it, so accents and the mark lookups need nothing of their own.
 - **What slants**: letters, figures, the combining marks, punctuation, brackets, quotes,
-  currency, superscripts, operators, arrows and the ligatures. Both references slant all of
-  these, Maple Mono its arrows included; keeping → upright while `->` slants (Monaspace's
-  choice) makes a typed arrow differ from the ligature's head, which the regular built → from.
-- **What stays upright**: what is drawn as a picture, which both references leave identical:
+  currency, superscripts, operators, arrows and the ligatures. Maple Mono and Intel One Mono
+  slant all of these, Maple Mono its arrows included; keeping → upright while `->` slants
+  (Monaspace's choice) makes a typed arrow differ from the ligature's head, which the regular built
+  → from.
+- **What stays upright**: what is drawn as a picture, which Maple Mono and Intel One Mono
+  leave as their regulars draw it:
   Box Drawing, Block Elements, Braille, Powerline, the geometric shapes and spinner frames,
   the status marks ✓ ✗ ⚠ ℹ, ⏺ ⏵ ⏸ ⎿ ⧉ and �. Two choices go against Maple Mono, which slants
   them: ☐ ☑ ☒ stay upright because ours are squares of the hyphen's stroke like □ ■, and the
@@ -638,8 +648,9 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   move with the slant looked the same at 14 px and would need a special case.
 - **Cursive letters**: only f. The regular's single-storey g already reads as an italic
   form. a slants double-storey, as Intel One Mono's and Monaspace's italics keep theirs, so
-  a and o stay apart in italic comments; Maple Mono's looped l made "all" and "full" busy at 15 px and turned l into ℓ; a
-  plain stem lost the tail that keeps l apart from I and 1. f drops its foot and runs its
+  a and o stay apart in italic comments. l keeps the regular's form: Maple Mono's looped l
+  made "all" and "full" busy at 15 px and turned l into ℓ, and a plain stem lost the tail that
+  keeps l apart from I and 1. f drops its foot and runs its
   stem 268 below the baseline, as deep as j, ending in a flick 70 left of the stem in the
   stem's own stroke, chosen over ƒ's hook (Maple Mono's f), which reached 72 units left of
   the cell, and over a plain straight descender. The descender takes the stem's width where
@@ -662,12 +673,12 @@ are in `build/cache/reference/bold/`.
   and a level stroke by its height, half on each side, so a bold letter keeps the regular's
   rows. Its tops rise by half the pen's height, so the bold declares its own x-height and cap
   height, 480 and 675.
-  - In the 550 cell, ink in a–z fills 57.5% of the x-height band. The reference bolds fill
-    51–59%.
-  - That is a step of 13.5 points from the regular's 44.0%. Maple Mono's step, the smallest
+  - When the pen was chosen, in 1.7.0's 550 cell, ink in a–z filled 57.5% of the x-height
+    band. The reference bolds fill 51–59%.
+  - That was a step of 13.5 points from the regular's 44.0%. Maple Mono's step, the smallest
     reference step, is 14.
-  - In the 550 cell, the counters at our x-height, `n` 172, `o` 199 and `e` 109, are each at
-    or above the narrowest reference bold's.
+  - The counters at our x-height, `n` 172, `o` 199 and `e` 109, were each at or above the
+    narrowest reference bold's. The 600 cell's wider letters keep more: `n` 180 and `o` 224.
 - **An offset, not `changeWeight()`.** The offset grows every edge alike, so `-` stays centred
   on the math axis.
   - The ligature pieces grow by the same pen as the `-` `=` `<` `>` `~` `|` they continue, so
@@ -803,7 +814,7 @@ what it does to them:
 - `OWN_BOX`: ™'s T and M, Θ's bar, ⌥ and the caron of ď ľ Ľ are condensed to keep their own
   regular box.
   - ™'s letters, 23 apart, would all but touch.
-  - Θ's bar would come 21 from its ring, under the reference bolds' 38. It keeps 39.
+  - Θ's bar would come 29 from its ring, under the reference bolds' 38. It keeps 47.
   - Fira Code Bold, the one reference bold with ⌥, draws it as wide as its regular, 541. Grown,
     ours would be 569.
   - ď's caron runs on into the next cell. Grown 35 wider, it would run into an l's flag. It
@@ -817,7 +828,8 @@ what it does to them:
   - Each keeps its far end where the pen grows it, or at the side room. So the bold ‰ stays at
     least as wide as the bold % (569). It is 570, and centred.
   - The small pieces of ℃ ℉ № grow by the small pen, so they stay as light as the small
-    figures. The full pen would close ℃'s ring to 42 across. The small pen leaves 54.
+    figures. ℃'s ring stays between the side room and its letter, so its counter closes from
+    75 across to 43. The full pen would close it further.
   - A glyph the list misses fails a test. `test_bolder_glyphs_keep_their_pieces_and_counters`
     catches ⇥ ↹ № and a rule in `tests/test_symbols.py` or `tests/test_make_bold.py` catches
     ‰ ℃ ℉.

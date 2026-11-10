@@ -87,7 +87,7 @@ Each generator owns a range of glyphs and redraws it in place, so a rerun change
 rerun test (`tests/test_add_<what>.py`; `test_add_marks.py` holds `add_ligatures`' too, as the
 two must run in order) fails while the SFD is out of date. Change those glyphs only in the
 generator, rerun it, then `./build.sh`. Each generator's docstring has the details. A new
-generator's rerun test compares with `tests/sfd_files.differences()`; see
+generator's rerun test compares with `tests/sfd_files.rerun_differences()`; see
 `docs/fontforge-pitfalls.md`.
 
 - `tools/add_ligatures.py`: the ligatures from `src/ligatures.fea` and ⎯; it owns every glyph
@@ -182,7 +182,7 @@ deliberate change, and only until it is regenerated.
 - Shared helpers have one home: font-wide constants and code-point classes in `tools/project.py`
   (the line box, `AXIS`, `ROUNDING`, `WOBBLE`, `is_letter()`), font-table reading and writing in
   `tools/sfnt.py`, outline measurements in `tools/measure.py`, the outline builders the
-  generators share (`polygon`, `stroked`, `clip`, ...) in `tools/lig_geometry.py`, and test-only
-  helpers in `tests/helpers.py`. A generator never borrows another generator's helpers (a
-  constant such as a stroke weight is fine), and a test module never imports from another test
-  module.
+  generators share (`polygon`, `stroked`, `clip`, ...) in `tools/lig_geometry.py`, SFD
+  comparing in `tests/sfd_files.py`, and other test-only helpers in `tests/helpers.py`. A generator
+  never borrows another generator's helpers (a constant such as a stroke weight is fine), and a test
+  module never imports from another test module.

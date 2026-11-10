@@ -10,6 +10,15 @@ around. Read this before writing code that edits the SFD.
   back.
 - Assigning `glyph.anchorPoints` or `glyph.references` marks the glyph's hints stale (`H` in
   its `Flags:` line), a composite's too; `glyph.autoHint()` afterwards clears it on both.
+  Don't add anchors to every glyph that way: `autoHint()` on every glyph leaves a few with
+  different hints. Add them through a merged feature file, which doesn't set the flag.
+  `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge keeps an anchor a
+  glyph already has; remove the anchor classes first.
+- Redrawing a base glyph leaves its composites' saved hints as they were and sets no `H` on
+  them, so `test_hints_are_current` in `tests/test_sanity.py` passes over them. Hint the
+  composites of a redrawn glyph again, from a fresh process (below). `tools/generate.py`
+  hints the letter composites again when it builds the OTF; every other composite ships the
+  hints the SFD holds.
 - FontForge derives the family, subfamily, full and PostScript names, the style bits and the
   caret slope from `fontname`, `fullname`, `italicangle` and `os2_stylemap`; `tools/make_italic.py`
   sets only those. It writes the italic's caret slope in hundredths (100/21 for 12°).
@@ -37,10 +46,6 @@ around. Read this before writing code that edits the SFD.
 - `validate()` flags a mirrored reference (0x10, and 0x8 for its reversed contours) and a
   glyph whose own outline overlaps its reference (0x4). Mirror into an outline with
   `geo.mirrored_x`, and merge a mark that crosses its base into one outline.
-- Adding an anchor from Python marks the glyph's hints stale, and so does `autoHint()` on
-  every glyph (a few come out different); add anchors through a merged feature file, which
-  doesn't. `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge keeps an
-  anchor a glyph already has; remove the anchor classes first.
 - Where a contour starts can make the autohinter write a `nan` into a stem's range. Reading
   the SFD back drops the stems after it but not the hint masks that count them, and FontForge
   then warns of a "Hint mask … with too many hints" whenever it opens the built OTF, which
@@ -109,10 +114,11 @@ around. Read this before writing code that edits the SFD.
   `tools/generate.py` drops.
 - Homebrew's FontForge 20251009 on macOS and the Linux build of the same version write some
   outlines differently: a curve split into more segments, or a control point a unit away,
-  rehinted to match. A generator test that reruns a generator should compare with
-  `tests/sfd_files.differences()`, which allows 2 units of outline drift, unless its output
-  doesn't drift: only `add_box_drawing` compares exactly, with `without_timestamp()`.
-  `add_marks`' test reruns `add_ligatures` too, which drifts (`less.dtail`).
+  rehinted to match. A test that reruns a generator should compare with
+  `tests/sfd_files.rerun_differences()`, which reruns it on a copy and allows 2 units of
+  outline drift (`differences()`), unless its output doesn't drift: only `add_box_drawing`
+  compares exactly, with `without_timestamp()`. `add_marks`' test reruns `add_ligatures` too,
+  which drifts (`less.dtail`).
 - A font made with `fontforge.font()` saves with `OnlyBitmaps: 1` until it is reopened with a
   glyph drawn in; the fixture in `tests/test_sfd_files.py` draws its base in a reopened copy.
 - Ignore the Nerd Fonts patcher's "Fontforge 20251009 produces unusable fonts" warning; it
