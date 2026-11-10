@@ -98,8 +98,9 @@ def hint_zones(font):
     foot, and every glyph hints the CFF spec defines.
 
     The CFF hinter aligns hint edges, not the outline's extremes, to the zones. A composite
-    keeps the hints its parts had when it was last hinted, which may predate the zones or the
-    parts, so letter composites are hinted again. FontForge's autohinter can end a stem just
+    keeps the hints its parts had when it was last hinted, and FontForge does not mark it when
+    a part is redrawn, so every composite is hinted again, parts first: Braille's dots kept
+    the stems of rows they had left. FontForge's autohinter can end a stem just
     outside the zone that holds the extreme, as at the bold E's bar (660 under its 665 top),
     and draws no ghost there, so a ghost marks each extreme a zone holds without an edge. It
     also writes some stems top first, with a negative width the spec leaves undefined; FreeType
@@ -121,10 +122,14 @@ def hint_zones(font):
         return {(y + transform[5], w) for name, transform, *_ in glyph.references
                 for y, w in dropped_in(font[name])}
 
-    # Simple glyphs first, so a composite finds what its letters dropped.
-    for glyph in sorted(font.glyphs(), key=lambda glyph: bool(glyph.references)):
+    def depth(glyph):
+        """How many references deep the glyph's parts lie."""
+        return 1 + max((depth(font[name]) for name, *_ in glyph.references), default=-1)
+
+    # Parts first: a composite takes its parts' hints, and finds what its letters dropped.
+    for glyph in sorted(font.glyphs(), key=depth):
         letter = is_alphanumeric(glyph.unicode)
-        if letter and glyph.references:
+        if glyph.references:
             glyph.autoHint()
         # FontForge gives a top ghost as (edge, -20) and a bottom one as (edge + 21, -21).
         hints = [(y + w, -w) if w < 0 and w not in (-20, -21) else (y, w)

@@ -278,11 +278,13 @@ class LookalikeTest(unittest.TestCase):
 
     def test_per_mille_rings_and_slash_stay_apart(self):
         contours = list(self.font["perthousand"].foreground)
+        tallest = max(contours, key=lambda c: c.boundingBox()[3] - c.boundingBox()[1])
         slash = fontforge.layer()
-        slash += max(contours, key=lambda c: c.boundingBox()[3] - c.boundingBox()[1])
-        rings = [c for c in contours if c.isClockwise() and c.boundingBox()[3] < 300]
-        self.assertEqual(len(rings), 2)  # the lower two, side by side
-        left, right = sorted((c.boundingBox() for c in rings), key=lambda b: b[0])
+        slash += tallest
+        rings = [c for c in contours if c.isClockwise() and c is not tallest]
+        lower = [c for c in rings if c.boundingBox()[3] < 300]
+        self.assertEqual(len(lower), 2)  # side by side
+        left, right = sorted((c.boundingBox() for c in lower), key=lambda b: b[0])
         # Apart beyond both rings' rounding; Maple Mono's join, Fira Code's keep 14.
         self.assertGreater(right[0] - left[2], 2 * ROUNDING)
         for contour in rings:

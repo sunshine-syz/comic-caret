@@ -450,6 +450,25 @@ class BuiltFontTest(unittest.TestCase):
         otf = font_file(self.style, "otf")
         self.assertEqual([line for line in opening_warnings(otf) if "Hint mask" in line], [])
 
+    def test_otf_takes_no_hints_from_the_composites(self):
+        # FontForge keeps a composite's hints when a part is redrawn, and does not mark them
+        # stale: Braille's dots shipped with the stems of the rows they had left. So the build
+        # hints every composite again, and the SFD's composites without their hints build the
+        # same glyphs.
+        head, *glyphs = project.STYLES[self.style].read_text(encoding="utf-8").split(
+            "\nStartChar: ")
+        bare = [glyph if "\nRefer: " not in glyph else "\n".join(
+            line for line in glyph.split("\n") if not line.startswith(("HStem: ", "VStem: ")))
+            for glyph in glyphs]
+        self.assertNotEqual(bare, glyphs)
+        with tempfile.TemporaryDirectory() as tmp:
+            copy, out = pathlib.Path(tmp) / "bare.sfd", pathlib.Path(tmp) / "bare.otf"
+            copy.write_text("\nStartChar: ".join([head, *bare]), encoding="utf-8")
+            subprocess.run(["fontforge", "-quiet", "-script", str(GENERATE), str(copy), str(out)],
+                           check=True, capture_output=True)
+            same = sfnt.tables(out)[b"CFF "] == sfnt.tables(font_file(self.style, "otf"))[b"CFF "]
+            self.assertTrue(same, "the OTF's glyphs change with the composites' saved hints")
+
     def test_letters_have_a_hint_edge_in_each_zone_that_holds_them(self):
         # The CFF hinter aligns hint edges, not the outline's extremes, to the alignment zones:
         # a letter or figure whose top or foot lies in a zone where none of its stems or ghosts

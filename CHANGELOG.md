@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6 (unreleased)
+
+- Under the OTF's own hints, Braille's dots come out alike on every row at small sizes, and `□` `◯` `‼` keep sharp edges. Their hints still marked where their parts stood before 2.5: a glyph built from other glyphs kept its hints when a part moved or was redrawn. In the bold, about 60 more follow, `!` `:` `;` `« »` `±` `÷` `™` `©` `®` among them. The build hints every such glyph again.
+- In the bold, the ring of `℃` `℉` keeps the regular's counter, 75 units across. It had closed to 43, under Maple Mono Bold's 62. The ring grows outward only, as that of `©` `®` does, and the letter gives way.
+- In the bold, the slash of `‰` stands 39 units from the upper zero, where it came 28; the regular keeps 48. It moved 14 units right, to the side room.
+
 ## 2.5 (2026-11)
 
 - `//=` is pulled together, as `&&=` and `||=` are. So Python's `n //= 2` reads like `a // b`, as in Maple Mono. It showed as typed. `///=` and the `//` of a comment rule such as `//=====` still show as typed.

@@ -428,9 +428,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   the zones, so the Greek capitals had the Latin ones' old edges or none. It also writes some
   stems top first, with a negative width the CFF spec leaves undefined, and FreeType aligns
   neither of their edges: the bold `U`'s top was one. Each stood a row off at 8–24 px.
-  `tools/generate.py` hints the letter composites again, writes every stem bottom first and
-  adds a ghost at each extreme a zone holds without an edge; `tests/test_built.py` checks the
-  built OTFs. It removes a ghost the autohinter drew across the span of one it adds: in the
+  `tools/generate.py` hints every composite again, parts first, writes every stem bottom
+  first and adds a ghost at each extreme a zone holds without an edge; `tests/test_built.py` checks
+  the built OTFs. It removes a ghost the autohinter drew across the span of one it adds: in the
   italic `m`, a top ghost at −1 crossed the new ghost over its feet at −21, and with both
   hinted the foot fell half a row below the baseline at 20 and 22 px. FontForge's autohinter also
   gives some letters a stem crossing the one a zone holds, as `ε`'s upper end (357–443) beside its
@@ -822,20 +822,27 @@ what it does to them:
   - It stands steeper and lighter. Across its slant it weighs 0.81 of the stem, as Maple Mono
     Bold's does. Intel One Mono Bold's (0.74) and Fira Code Bold's (0.75) are lighter still,
     and run into the l.
-- `PIECES_APART` and `LIGHT_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰ (its zeros) and
-  ℃ ℉ № (letter and small pieces) grow on their own. The wider is condensed away from the other
-  until the white between them is the regular's.
+- `PIECES_APART`, `LIGHT_PIECES` and `OUTWARD_PIECES`: the pieces of ⇥ ↹ (arrow and bar), ‰
+  (its zeros) and ℃ ℉ № (letter and small pieces) grow on their own. The wider is condensed away
+  from the other until the white between them is the regular's.
   - Each keeps its far end where the pen grows it, or at the side room. So the bold ‰ stays at
     least as wide as the bold % (569). It is 570, and centred.
   - The small pieces of ℃ ℉ № grow by the small pen, so they stay as light as the small
-    figures. ℃'s ring stays between the side room and its letter, so its counter closes from
-    75 across to 43. The full pen would close it further.
+    figures.
+  - ℃ ℉'s ring grows outward only, across by the small pen's whole width, as © ®'s does, and
+    up by as much as its letter, and moves in from the side room; the letter gives way. So its
+    counter stays the regular's 75 across, over Maple Mono Bold's 62 at our cap height. Grown both
+    ways and condensed into the side room, it closed to 43. The ring is 193 wide and the letters 347
+    and 315, between Maple Mono Bold's (179; 432 and 359) and Monaspace Neon Bold's (223; 346 and
+    294).
   - A glyph the list misses fails a test. `test_bolder_glyphs_keep_their_pieces_and_counters`
     catches ⇥ ↹ № and a rule in `tests/test_symbols.py` or `tests/test_make_bold.py` catches
     ‰ ℃ ℉.
 - `SLASHES`: grown, ‰'s slash would come 27 from the zero under it, where the regular keeps
-  46. It shortens at its foot, along its length, until it keeps the regular's white. Scaled
-  down instead, it would come out 3 lighter than %'s.
+  46, and 28 from the zero beside it, where the regular keeps 48. It first moves right, as far
+  as the side room lets it, 14, which leaves 39 beside it. Then it shortens at its foot, along
+  its length, until it keeps the regular's white below. Scaled down instead, it would come out
+  3 lighter than %'s.
 - `SHRUNK`: ※'s dots, ⧉'s front square, ⌫ ⌦'s × and %'s rings shrink just enough to keep
   twice `SYMBOL_SIDE` from the piece beside them, where condensing can't part the two.
 - `OPENED`: ⎋'s ring opens wider around its arrow. The arrow would have to shrink by a third

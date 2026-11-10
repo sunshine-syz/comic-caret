@@ -14,11 +14,12 @@ around. Read this before writing code that edits the SFD.
   different hints. Add them through a merged feature file, which doesn't set the flag.
   `removeLookup()` leaves the lookup's anchors on the glyphs, and a merge keeps an anchor a
   glyph already has; remove the anchor classes first.
-- Redrawing a base glyph leaves its composites' saved hints as they were and sets no `H` on
-  them, so `test_hints_are_current` in `tests/test_sanity.py` passes over them. Hint the
-  composites of a redrawn glyph again, from a fresh process (below). `tools/generate.py`
-  hints the letter composites again when it builds the OTF; every other composite ships the
-  hints the SFD holds.
+- Redrawing or moving a base glyph leaves its composites' saved hints as they were and sets
+  no `H` on them, so `test_hints_are_current` in `tests/test_sanity.py` passes over them.
+  `autoHint()` gives a composite its parts' hints, moved with them, so a composite of
+  composites needs its parts hinted first. `tools/generate.py` hints every composite again,
+  parts first, when it builds the OTF, so the SFD's composite hints reach no font
+  (`test_otf_takes_no_hints_from_the_composites` in `tests/test_built.py`).
 - FontForge derives the family, subfamily, full and PostScript names, the style bits and the
   caret slope from `fontname`, `fullname`, `italicangle` and `os2_stylemap`; `tools/make_italic.py`
   sets only those. It writes the italic's caret slope in hundredths (100/21 for 12°).

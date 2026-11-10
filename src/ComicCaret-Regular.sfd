@@ -4,7 +4,7 @@ FullName: Comic Caret Regular
 FamilyName: Comic Caret
 Weight: Regular
 Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly, 2026 YZ Sun
-Version: 2.5
+Version: 2.6
 ItalicAngle: 0
 UnderlinePosition: -140
 UnderlineWidth: 80
@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794260068
+ModificationTime: 1794291222
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -38894,8 +38894,8 @@ StartChar: uni203C
 Encoding: 8252 8252 1162
 Width: 600
 Flags: W
-HStem: -24 145<126.255 229.555 372.255 475.555>
-VStem: 102 152<2.65772 96.6643> 142 84<285.187 725.621> 348 152<2.65772 96.6643> 388 84<285.187 725.621>
+HStem: -24 145<126.255 229.555 372.255 475.555> 655 20G<182.5 196.5 428.5 442.5>
+VStem: 102 152<2.6577 96.664> 142 84<316.141 662.621> 348 152<2.6577 96.664> 388 84<316.141 662.621>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 725 basechar 0
 LayerCount: 2

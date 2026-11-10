@@ -712,6 +712,9 @@ class LetterlikeTest(unittest.TestCase):
     """№ ℓ ℮ ℃ ℉: letters, or pieces of letters, drawn together in the cell. Their rows and
     centring are in test_consistency.py."""
     sfd = SFD
+    # How wide the counter of ℃ ℉'s ring is at least: Maple Mono's, the only reference's, 74.0
+    # at our cap height.
+    degree_counter = 74
 
     @classmethod
     def setUpClass(cls):
@@ -756,6 +759,15 @@ class LetterlikeTest(unittest.TestCase):
         bowl = geo.trim(piece, y0=eye.boundingBox()[3] + 20)
         stroke = hyphen_stroke(self.font)
         self.assertGreaterEqual(bowl.boundingBox()[0] - piece.boundingBox()[0], stroke)
+
+    def test_degree_signs_keep_their_ring_open(self):
+        # No narrower than the narrowest reference's, so the ring stays a ring as the size falls.
+        for char in "℃℉":
+            ring = min(self.pieces(char), key=lambda p: p.boundingBox()[0])
+            _, bottom, _, top = ring.boundingBox()
+            with self.subTest(sign=char):
+                self.assertGreaterEqual(round(measure.counter(ring, (bottom + top) / 2)),
+                                        self.degree_counter)
 
     def test_degree_signs_put_a_small_ring_before_the_letter(self):
         # A ring at the top left, its top level with the letter's, before a letter standing
@@ -1032,6 +1044,7 @@ class BoldBuiltFromTest(BuiltFromTest):
 
 class BoldLetterlikeTest(LetterlikeTest):
     sfd = BOLD_SFD
+    degree_counter = 62  # Maple Mono Bold's 62.0 at our cap height (Monaspace Neon Bold's 95.2)
 
 
 class BoldKeyHintTest(KeyHintTest):

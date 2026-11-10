@@ -70,9 +70,15 @@ SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y
 - Build accented and derived glyphs from references to base glyphs, not copied outlines.
 - Give new or changed glyphs integer coordinates and a clean `validate()` (validate again after
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
-- The OTF carries the SFD's hints; `tools/generate.py` hints letter composites again and adds
-  a ghost hint where a letter's top or foot lies in a zone without a hint edge. The TTF gets
-  ttfautohint's, which replace any TrueType instructions the SFD holds, so the SFD holds none.
+- The OTF carries the SFD's hints for outlines only. `tools/generate.py` hints every composite
+  again, parts first (`hint_zones()`): FontForge keeps a composite's hints when a part is
+  redrawn. It adds a ghost hint where a letter's top or foot lies in a zone without a hint
+  edge, drops a letter's stem that crosses a zone's by more than half a stroke, and leaves
+  ≠ ⇐ ⇒ ⇔ only `=`'s stems (`hint_bars_as_equal()`).
+- The TTF gets ttfautohint's hints, which replace any TrueType instructions the SFD holds, so
+  the SFD holds none. Its control file (`TTFAUTOHINT_CONTROL`) hints ≡ ≠ ⇐ ⇒ ⇔ as Latin, and
+  `level_foot()` splits π's hook so Greek's feet take Latin's baseline. The reasons are in
+  `docs/design-notes.md`.
 - Don't hard-code what FontForge derives: OS/2 code pages and Unicode ranges, the shipped
   names and version, `sfntRevision`. `LangName` holds only name IDs 8–14: maker, designer,
   description, URLs and license.

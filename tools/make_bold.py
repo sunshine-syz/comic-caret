@@ -42,7 +42,7 @@ right one mirrored is the bold right one mirrored (mirror_pairs()).
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
 ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
-SLASHES, LIGHT_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
+SLASHES, LIGHT_PIECES, OUTWARD_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
 stems (RAISED) or keeps its ends (BLUNT). A mark rises by as much as the pen grew it and its
 letter toward each other (raise_clear()). Widths, anchors and the lookups carry over as they
 are.
@@ -247,17 +247,27 @@ MERGED = ("Theta", "uni2204")
 # SHRUNK and OPENED explicit: each gives way in its own way.
 PIECES_APART = ("uni21E5", "uni21B9", "perthousand", "uni2103", "uni2109", "uni2116")
 
-# Of those, the ones whose tallest piece is a slash leaning right that the pen grows into a
-# piece below its foot: ‰'s, which would come 27 from the zero under it, where the regular
-# keeps 46 (Maple Mono Bold's ‰ keeps 21.5). The slash shortens along its length, its top end
-# staying, by the fewest units that keep the regular's white, so it ends higher up its slant and
-# keeps the weight the pen gives %'s.
+# Of those, the ones whose tallest piece is a slash leaning right that the pen grows into the
+# pieces round it: ‰'s, which would come 27 from the zero under its foot, where the regular
+# keeps 46 (Maple Mono Bold's ‰ keeps 21.5), and 28 from the zero beside it, where the regular
+# keeps 48. The slash first moves right, away from the piece beside it, as far as the side room
+# lets it, which leaves 39. Then it shortens along its length, its top end staying, by the
+# fewest units that keep the regular's white below, so it ends higher up its slant and keeps the
+# weight the pen gives %'s.
 SLASHES = ("perthousand",)
 
 # Of those, the ones whose pieces but the tallest the regular draws as light as the small
 # figures, which grow by the small pen, so they stay as light: ℃ ℉'s ring and №'s o and bar,
-# º's. The small pen closes ℃ ℉'s ring from 75 across to 43; the full pen would close it further.
+# º's.
 LIGHT_PIECES = ("uni2103", "uni2109", "uni2116")
+
+# Of those, the ones whose pieces but the tallest are rings that grow outward only, as an
+# OUTWARD ring does, and move in from the side room where a piece is otherwise condensed: ℃ ℉'s
+# ring, whose counter stays the regular's 75 across. Grown both ways and condensed, it closed
+# to 43, under Maple Mono Bold's 62 at our cap height (tests/test_symbols.py). It grows across
+# by twice its pen's width, and up and down by the letter's pen, so its top stays level with
+# the letter's. The letter beside it gives way.
+OUTWARD_PIECES = ("uni2103", "uni2109")
 
 # Outlines whose pieces the pen grows within twice SYMBOL_SIDE of each other, where condensing
 # them apart can't help: ※'s dots in the notches of its X, ⧉'s front square before its back one,
@@ -562,8 +572,9 @@ def grew_within_pen(outline, layer, pen, cuts):
     return all(abs(grown[side] - box[side]) <= limit[side % 2] for side in range(4))
 
 
-def emboldened(name, outline, scratch, pen):
-    """The outline of glyph `name` offset by `pen`, its cut ends trimmed back, on whole units.
+def emboldened(name, outline, scratch, pen, outward=False):
+    """The outline of glyph `name` offset by `pen`, its cut ends trimmed back, on whole units;
+    with the outline's own counters for an OUTWARD glyph or an `outward` piece.
 
     FontForge's overlap removal fails on a few outlines (an open contour at v's crotch, a
     crossing in ↵), different ones whether or not the stroke removes its own overlaps first and
@@ -575,7 +586,7 @@ def emboldened(name, outline, scratch, pen):
     cuts = cut_ends(name, outline)
     for overlap in ("layer", "none"):
         layer = notches_filled(offset(outline, overlap, pen), outline)
-        if name in OUTWARD:
+        if name in OUTWARD or outward:
             layer = with_counters(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
             layer = geo.trim(layer, x0=cuts[0] + HAIR, x1=cuts[1] - HAIR)
@@ -592,12 +603,12 @@ def emboldened(name, outline, scratch, pen):
     sys.exit(f"{name}: no offset of its outline passes validate() and stays within the pen")
 
 
-def fitted(name, outline, bound, scratch, pen, anchor=None, held=False):
+def fitted(name, outline, bound, scratch, pen, anchor=None, held=False, outward=False):
     """emboldened(), condensed first just enough that the bold ink stays within `bound`,
     (x0, x1): the outline scaled horizontally about x = `anchor`, or else its ink centre, so
     every stem still grows by the full pen. A `held` letter, one a symbol holds, exits instead:
     condensed to the symbol's side room, the letter itself would narrow wherever it is typed."""
-    layer = emboldened(name, outline, scratch, pen)
+    layer = emboldened(name, outline, scratch, pen, outward)
     x0, _, x1, _ = outline.boundingBox()
     centre = (x0 + x1) / 2 if anchor is None else anchor
     span = max(x1 - centre, centre - x0)  # how far the further side lies from the centre
@@ -613,7 +624,7 @@ def fitted(name, outline, bound, scratch, pen, anchor=None, held=False):
             sys.exit(f"{name}: condensed three times, its ink still passes {bound}")
         taken += excess
         narrow = geo.transformed(outline, geo.about(psMat.scale(1 - taken / span, 1), centre, 0))
-        layer = emboldened(name, narrow, scratch, pen)
+        layer = emboldened(name, narrow, scratch, pen, outward)
 
 
 def least(clears, most):
@@ -630,15 +641,29 @@ def least(clears, most):
 
 def pieces_apart(name, outline, bound, scratch, pen, light):
     """The outline's pieces (PIECES_APART) each fitted() within `bound`, by `pen`, or the ones
-    but the tallest by `light` for LIGHT_PIECES; and of two side by side, the wider condensed
-    away from the other, or both by half when they are as wide, until the white between their
-    boxes is the regular's. A SLASHES slash then shortens along its length, its top end
-    staying, until it keeps the regular's white to the pieces below."""
+    but the tallest by `light` for LIGHT_PIECES, and those outward only, moved in from the side
+    room, for OUTWARD_PIECES; and of two side by side, the wider condensed away from the other,
+    or both by half when they are as wide, until the white between their boxes is the
+    regular's. A SLASHES slash then moves right, toward the regular's white to the pieces
+    beside it, and shortens along its length, its top end staying, until it keeps the
+    regular's white to the pieces below."""
     parts = pieces(outline)
     boxes = [part.boundingBox() for part in parts]
     tallest = max(range(len(parts)), key=lambda k: boxes[k][3] - boxes[k][1])
     own = [light if name in LIGHT_PIECES and k != tallest else pen for k in range(len(parts))]
-    grown = [fitted(name, part, bound, scratch, own[k]) for k, part in enumerate(parts)]
+    ring = [name in OUTWARD_PIECES and k != tallest for k in range(len(parts))]
+    own = [(2 * own[k][0], pen[1], pen[2]) if ring[k] else own[k] for k in range(len(parts))]
+
+    def grow(k, part, within, anchor=None):
+        return fitted(name, part, within, scratch, own[k], anchor, outward=ring[k])
+
+    def moved_in(k):
+        """parts[k] moved in, by whole units, as far as its pen would grow it past `bound`."""
+        out = reach(own[k])[0]
+        return geo.moved(parts[k], math.ceil(max(bound[0] + out - boxes[k][0], 0))
+                         + math.floor(min(bound[1] - out - boxes[k][2], 0)), 0)
+    # Condensed into the side room, a ring's counter would narrow with it.
+    grown = [grow(k, moved_in(k) if ring[k] else part, bound) for k, part in enumerate(parts)]
 
     def far_kept(k, side):
         """(parts[k], the x of its far end on `side`, 0 left or 1 right), moved in first as far
@@ -658,17 +683,27 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
         share = 0.5 if abs(wider) <= ROUNDING else float(wider > 0)  # how much a gives way
         if share:
             part, far = far_kept(a, 0)
-            grown[a] = fitted(name, part, (bound[0], left - share * lack), scratch, own[a], far)
+            grown[a] = grow(a, part, (bound[0], left - share * lack), far)
         if share < 1:
             part, far = far_kept(b, 1)
-            grown[b] = fitted(name, part, (right + (1 - share) * lack, bound[1]), scratch,
-                              own[b], far)
+            grown[b] = grow(b, part, (right + (1 - share) * lack, bound[1]), far)
     if name in SLASHES:
         i = tallest
         x0, y0, x1, y1 = boxes[i]
         below = [k for k in range(len(parts)) if boxes[k][3] <= y0]
         wanted = gap(parts[i], geo.union(*(parts[k] for k in below)))
         rest = geo.union(*(grown[k] for k in below))
+        slash = parts[i]
+        if beside := [k for k in range(len(parts)) if k != i and k not in below]:
+            # The fewest units right that keep the regular's white to the pieces beside it, at
+            # its upper left, or as many as the side room holds.
+            aside, near = (geo.union(*(found[k] for k in beside)) for found in (parts, grown))
+            room = max(min(int(bound[1] - reach(pen)[0] - x1), 2 * PEN[0]), 0)
+            clear = gap(parts[i], aside)
+            units = least(lambda n: gap(fitted(name, geo.moved(parts[i], n, 0), bound, scratch,
+                                               pen), near) >= clear, room)
+            shift = room if units is None else units
+            slash, x0, x1 = geo.moved(parts[i], shift, 0), x0 + shift, x1 + shift
         slant = math.hypot(x1 - x0, y1 - y0)
         # Laid along +x about its top end, where the slash's straight middle lies in the span.
         along = geo.about(psMat.rotate(-math.atan2(y1 - y0, x1 - x0)), x1, y1)
@@ -677,7 +712,7 @@ def pieces_apart(name, outline, bound, scratch, pen, light):
         def shortened(units):
             # Shorter along its length only, so it keeps its weight and both round ends, and
             # its top end stays.
-            flat = geo.stretch_span(geo.transformed(parts[i], along), *span, -units)
+            flat = geo.stretch_span(geo.transformed(slash, along), *span, -units)
             back = psMat.compose(psMat.translate(units, 0), psMat.inverse(along))
             return fitted(name, geo.transformed(flat, back), bound, scratch, pen)
         # The least shortening that clears: every longer one clears too.
@@ -1012,10 +1047,11 @@ def build(font):
     # Most name lists are read only with `in`, so a stale name, or a glyph that two ways claim,
     # would pass unseen. So each list must name bolder glyphs, no two of the ways below may
     # name one glyph, as only the first would grow it, and SLASHES and LIGHT_PIECES must name
-    # glyphs of PIECES_APART, as only pieces_apart() reads them.
+    # glyphs of PIECES_APART, as only pieces_apart() reads them, as must OUTWARD_PIECES.
     for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
-                   "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
+                   "SLASHES", "LIGHT_PIECES", "OUTWARD_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT",
+                   "LIFTED",
                    "HEAVY", "HEADS_APART", "TIGHT", "TICKED"):
         for name in globals()[listed]:
             if classes.get(name) != BOLDER:
@@ -1027,7 +1063,7 @@ def build(font):
     for (a, first), (b, second) in itertools.combinations(ways.items(), 2):
         if both := sorted(set(first) & set(second)):
             sys.exit(f"make_bold: {a} and {b} both name {both}")
-    for listed in ("SLASHES", "LIGHT_PIECES"):
+    for listed in ("SLASHES", "LIGHT_PIECES", "OUTWARD_PIECES"):
         if outside := sorted(set(globals()[listed]) - set(PIECES_APART)):
             sys.exit(f"make_bold.{listed}: {outside} not in PIECES_APART")
     grows_by, light, seam = pens(font), (*small_pen(font), 0), 2 * project.SYMBOL_SIDE
