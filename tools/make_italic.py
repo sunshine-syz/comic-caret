@@ -222,4 +222,4 @@ def invalid(italic):
 
 
 if __name__ == "__main__":
-    run_generator(__file__, __doc__, build, invalid, target=ITALIC_SFD, source=SFD)
+    run_generator(__file__, __doc__, build, invalid, target=ITALIC_SFD, source=SFD, rehint=True)

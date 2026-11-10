@@ -8,7 +8,9 @@ the rules classes of glyphs share, and test_built.py the built fonts', which it 
 ots; test_fontbakery.py runs Font Bakery on them.
 """
 import pathlib
+import shutil
 import sys
+import tempfile
 import unicodedata
 import unittest
 
@@ -239,6 +241,25 @@ class SanityTest(unittest.TestCase):
                     name = line.split(None, 1)[1].strip()
                 elif line.startswith("Flags: ") and "H" in line.split(None, 1)[1]:
                     stale.append(name)
+        self.assertEqual(stale, [])
+
+    def test_outlines_hold_the_hints_a_fresh_autohint_gives(self):
+        # The OTF takes an outline's hints from the SFD. Hinted in the process that drew them,
+        # the italic's sheared C and l and the bold's shared pictures kept hints a fresh
+        # autoHint() does not give, without the H flag, and ŧ ŀ Ć changed pixels at 9-16 px.
+        # A copy: opening a file the process already holds returns this class's font.
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = pathlib.Path(tmp) / self.sfd.name
+            shutil.copy(self.sfd, copy)
+            font = fontforge.open(str(copy))
+            stale = []
+            for glyph in font.glyphs():
+                if len(glyph.foreground) and not glyph.references:
+                    hints = glyph.hhints, glyph.vhints
+                    glyph.autoHint()
+                    if (glyph.hhints, glyph.vhints) != hints:
+                        stale.append(glyph.glyphname)
+            font.close()
         self.assertEqual(stale, [])
 
 

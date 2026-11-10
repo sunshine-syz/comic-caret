@@ -19,7 +19,8 @@ classify() puts every glyph of the regular in one of two sets:
   (HEAVY), | and ¦ a wider one (BAR_WEIGHT), and the glyphs of TURNED, ROUND, NARROW and
   OUTWARD the pen as those lists change it.
 - SHARED: what is drawn as a picture, which the reference bolds keep as their regulars draw
-  them (SHARED_BLOCKS, SHARED_CHARS), and .notdef, a box. Copied unchanged, hints included.
+  them (SHARED_BLOCKS, SHARED_CHARS), and .notdef, a box. Copied unchanged, then hinted again
+  under the bold's zones (run_generator()'s rehint).
 
 The offset grows every edge alike, so - stays centred on the math axis and the ligature
 pieces still match at their seams; a piece's flat cut end past the cell is trimmed back to
@@ -50,9 +51,7 @@ are.
 import collections
 import itertools
 import math
-import pathlib
 import sys
-import tempfile
 import unicodedata
 
 import fontforge
@@ -316,8 +315,6 @@ HEAD_WHITE = 309.7 * ADVANCE / 1200  # Fira Code Bold's, 309.7 of its 1200 cell
 # the stroke, and intersect() then fails, leaving the stroke uncut or the cutting box behind;
 # so the cut runs this far inside it, and rounding puts the end back on the line.
 HAIR = 0.01
-
-RESTARTS = 10  # a start the autohinter writes a nan for is rare: 1 of the first 40 of m's
 
 FONTNAME, FULLNAME = "ComicCaret-Bold", "Comic Caret Bold"
 BOLD_BIT = 0x0020  # OS/2 fsSelection; the regular sets 0x0040, REGULAR
@@ -1016,31 +1013,6 @@ def depth(font, name):
     return max((1 + depth(font, part) for part, *_ in font[name].references), default=0)
 
 
-def nan_hinted(font, path):
-    """The glyphs whose stems the SFD, saved at `path`, gives a nan in their ranges."""
-    font.save(str(path))
-    names, name = set(), None
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if line.startswith("StartChar: "):
-            name = line.removeprefix("StartChar: ")
-        elif line.startswith(("HStem:", "VStem:")) and "nan" in line:
-            names.add(name)
-    return names
-
-
-def restart(glyph):
-    """Start each of the glyph's contours one on-curve point later, and rehint it."""
-    layer = glyph.foreground
-    for contour in layer:
-        later = next((i for i in range(1, len(contour)) if contour[i].on_curve), None)
-        if later is None:
-            sys.exit(f"{glyph.glyphname}: a contour with one on-curve point can't start "
-                     "anywhere else")
-        contour.makeFirst(later)
-    glyph.foreground = layer
-    glyph.autoHint()
-
-
 def build(font):
     """Turn the regular, opened as `font`, into the bold."""
     classes = classify(font)
@@ -1186,20 +1158,6 @@ def build(font):
         if rise := rises.get((accent, matrix[5]), 0):
             reposition(glyph, shifted({accent: (0, rise)}))
             glyph.autoHint()
-    # Where a contour starts can make the autohinter write a nan into a stem's range, which
-    # breaks the hints read back (docs/fontforge-pitfalls.md); so such a glyph's contours start
-    # later until none does.
-    with tempfile.TemporaryDirectory() as tmp:
-        path = pathlib.Path(tmp) / BOLD_SFD.name
-        names = nan_hinted(font, path)
-        for _ in range(RESTARTS):
-            if not names:
-                break
-            for name in sorted(names):
-                restart(font[name])
-            names = nan_hinted(font, path)
-        if names:
-            sys.exit(f"every start tried hints {sorted(names)} with a nan")
     # FontForge derives the subfamily and macStyle's bold bit from these.
     font.fontname, font.fullname = FONTNAME, FULLNAME
     font.weight = "Bold"
@@ -1224,4 +1182,4 @@ def invalid(bold):
 
 
 if __name__ == "__main__":
-    run_generator(__file__, __doc__, build, invalid, target=BOLD_SFD, source=SFD)
+    run_generator(__file__, __doc__, build, invalid, target=BOLD_SFD, source=SFD, rehint=True)

@@ -457,6 +457,32 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   italic, and at most of those sizes in the regular and the bold. `tools/generate.py` leaves
   ≠ ⇐ ⇒ ⇔ only the stems that lie on `=`'s. Taller heads took the ends out of the zone but
   closed the bold's bars into one band at 8 px, in both formats.
+- **Unhinted composites.** FontForge wrote a glyph built from a turned or scaled reference
+  with hint masks that set none of its stems, so the CFF hinter left it unhinted: `) ] }`
+  `¡ ¿ ∀ ∃ ∇ ⏹ ⏺ ◼` and 8 more in the regular, 17 in the italic, 16 in the bold.
+  `tools/generate.py` draws those references as outlines in the OTF too, and hints them.
+- **Picture rows.** No zone holds most of the pictures' edges, and the CFF hinter snaps only
+  one edge of a stem to the grid, so each picture rounded by its own stems: `⏵ ⏸ ⏺` ended on
+  different rows at 10 of 20 sizes from 8 to 36 px, `■` and `☐` at 8. A ghost edge snaps
+  alone, so `tools/generate.py` gives the pictures of a row (`PICTURE_ROWS`) one ghost at
+  the row's foot and one at its top, and no other level hints; they share their rows at every
+  size, and their bars stay sharp. The top of `⏵ ⏸ ⏹ ⏺` (489) lies in the x-height zone, so
+  they end on `x`'s row, as `⏸` did. The TTF's pictures still round each by its own outline:
+  ttfautohint has no edges per glyph, and its control file moves points only by number and
+  size. `--fallback-scaling` levels the boxes but leaves every glyph no script covers
+  unhinted, the box drawing too.
+- **`--` beside `-`.** FontForge hints `-`'s wobbly bar from its level top and right part,
+  235–311, and the pieces and arrows from their profile, 231–310; the CFF hinter snaps one edge
+  of each, and `--` stood a row under `-` at 11 and 24 px. The bold pen grows `-`'s sloping
+  foot (220 at the left end, 228 at the right) into a second stem, and the two took turns under
+  hint masks: the bold `-` stood a row thicker than `--` and `−` there. In the OTF,
+  `tools/generate.py` leaves `-` the stem that reaches its top and gives it to every outline
+  hinted on the profile, so `-` `--` `->` `−` `–` share their rows at every size. Moving the
+  profile to 235–311 instead left the start of `-->` and the bold `->>` off their seams, as
+  `-`'s bar lies near 229 at the cut. The TTF's hints follow each outline: ttfautohint places
+  `-`'s bar a row over the piece's at 13–14 px (14–15 under light hinting), and `=`'s upper
+  bar from its wobbly top edge and the piece's from its foot, so `==`'s upper bar stands a row
+  over `=`'s at 22, 23, 32 and 36 px (12 in the bold, for a cause not found).
 - **`=`'s gap.** The white between `=`'s bars is 126, Intel One Mono's, between Fira Code's
   114 and Maple Mono's 135 at our cap height. At 106 the fonts' own hints merged the bars
   into one band at 8 px in every style and format (contrast 0; 0.55–0.75 at 126). Each
@@ -715,7 +741,7 @@ are in `build/cache/reference/bold/`.
   - The media controls ⏵ ⏸ ⏺ stand side by side at one height in status lines.
   - □ is ☐ and ■ its outer contour, so ☐ stays with them. ☑ ☒ are ☐ marked, so the three
     boxes stay alike.
-  - These glyphs and .notdef are copied unchanged, hints included.
+  - These glyphs and .notdef are copied unchanged, then hinted again under the bold's zones.
 - **Heavy marks** ✔ ✘ ✖ ❯ ❮ ❰ ❱ ➜ grow by the pen scaled by how much heavier the regular
   draws them than ✓ ✗ ✕ > < →. So they stay as much heavier. The full pen would grow the light
   glyphs more for their ink and close the difference. This departs from the reference bolds,

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.7 (unreleased)
+
+- Under the OTF's own hints, the glyphs drawn from turned or scaled glyphs are hinted, `) ] } ∀ ∃ ∇ ⏹ ⏺ ◼` among them (19 in the regular). The OTF stored them with every hint switched off. `] } ∃` now stand on the rows of `[ { E` at every size from 8 to 36 px, where they stood off at 3 to 6 sizes.
+- Under the OTF's own hints, `⏵ ⏸ ⏹ ⏺` share their top and bottom pixel rows at every size, and so do `■ □ ☐ ☒` and `◻ ◼`. Each rounded by its own strokes: `⏵ ⏸ ⏺` ended on different rows at 10 of 20 sizes from 8 to 36 px, `■` and `☐` at 8.
+- Under the OTF's own hints, `--` `->` `<-` and the other ligatures drawn with `-`'s bar, and `←` `→`, stand on `-`'s pixel rows at every size; they stood a row under it at 11 and 24 px. In the bold, `-` is no longer a row thicker than `--` and `−` at those sizes.
+- In the italic and the bold OTF, 17 glyphs drawn by the generators take the hints FontForge gives their outlines, `ŧ ŀ Ć` among them, which changed pixels at 9–16 px.
+
 ## 2.6 (2026-11)
 
 - New: `◻ ◼`, the pending and in-progress marks of Claude Code's task list, which every session shows. They are `☐` and `■` at three quarters, midway between `▫ ▪` and `□ ■`. And `◈`, `◇` with a small `◆` inside, its effort mark beside `○ ◐ ● ◉`; `⏹`, `■` as tall as `⏵ ⏸ ⏺`; and `↯`, a bolt that runs into `↓`'s shaft and head.

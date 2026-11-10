@@ -46,6 +46,9 @@ TTFAUTOHINT_CONTROL = ("latn dflt @ equivalence, notequal, arrowdblleft, arrowdb
                        " arrowdblboth\n")
 # The glyphs drawn with ='s bars, beside which they stand in a line.
 EQUAL_BARS = ("notequal", "arrowdblleft", "arrowdblright", "arrowdblboth")
+# Pictures drawn at one height, which stand side by side in a status line or a task list. The
+# first of each row gives the row's top and foot.
+PICTURE_ROWS = ("⏸⏵⏹⏺", "■□☐☑☒", "◼◻")
 # How far over a glyph's lowest point the autohinter looks for the ends of its foot
 # (af_latin_metrics_init_blues in FreeType, and ttfautohint's copy of it).
 LEVEL_REACH = 5
@@ -81,16 +84,22 @@ def flatten_nested_references(font):
 
 
 def decompose_transformed_references(font):
-    """Draw every reference that turns or scales its glyph as an outline.
+    """Draw every reference that turns or scales its glyph as an outline, and return the
+    glyphs that had one.
 
     ttfautohint hints a component as its own glyph and then transforms it, so one turned 180°,
     as in ¡ ∀ ⇓ ▼, lands off the pixel rows its glyph's hints aligned (Font Bakery
-    transformed_components). Turned, never mirrored, so the outlines keep their direction.
+    transformed_components). In the OTF, FontForge wrote such a glyph's hint mask with none of
+    its stems set, and the CFF hinter left it unhinted: ) ] } ∀ ∃ ⏹ ◼ among 21. Turned, never
+    mirrored, so the outlines keep their direction.
     """
+    decomposed = {}
     for glyph in font.glyphs():
         for name, matrix, *_ in glyph.references:
             if any(abs(a - b) > 1e-6 for a, b in zip(matrix[:4], (1, 0, 0, 1))):
                 glyph.unlinkRef(name)
+                decomposed[glyph.glyphname] = glyph
+    return list(decomposed.values())
 
 
 def hint_zones(font):
@@ -189,6 +198,44 @@ def hint_bars_as_equal(font):
                 if any(abs(y - ey) <= WOBBLE and abs(w - ew) <= WOBBLE for ey, ew in stems)]
         if tuple(kept) != glyph.hhints:
             glyph.hhints = kept
+            glyph.manualHints = True  # else generating hints it again
+
+
+def hint_pieces_as_hyphen(font):
+    """Give the outlines drawn on the hyphen's bar profile -'s stem in place of the profile's,
+    and - only the stem that reaches highest, to its level top.
+
+    FontForge hints -'s bar from its level top and right part (235-311), and the pieces and
+    arrows from the profile (231-310); the CFF hinter snaps one edge of each, and -- stood a
+    row under - at 11 and 24 px. In the bold, - kept a second stem for its sloping foot
+    (220-315), and the two took turns under hint masks: - stood a row thicker than -- and −
+    there. The points past a stem's edges move with the nearer one. Composites built on these
+    take the new stems when hint_zones() hints them. A glyph with stems of its own beside the
+    profile's, as the bold arrows, keeps them.
+    """
+    hyphen, profile = font["hyphen"], font["hyphen.mid"].hhints
+    stems = (max(hyphen.hhints, key=sum),) if hyphen.hhints else ()  # the one up to the top
+    pieces = [glyph for glyph in font.glyphs() if glyph.hhints == profile and not glyph.references]
+    for glyph in (hyphen, *pieces):
+        if stems and glyph.hhints != stems:
+            glyph.hhints = stems
+            glyph.manualHints = True  # else generating hints it again
+
+
+def hint_picture_rows(font):
+    """Give the pictures of each of PICTURE_ROWS one ghost edge at the row's foot and one at its
+    top, and no other horizontal hints.
+
+    No zone holds most of their edges, and the CFF hinter snaps only one edge of a stem to the
+    pixel grid, so each picture rounded by its own stems: ⏵ ⏸ ⏺ ended on different rows at
+    10 of 20 sizes from 8 to 36 px, ■ and ☐ at 8. A ghost edge snaps alone, so pictures with
+    the same two share their rows at every size; the points between them follow.
+    """
+    for row in PICTURE_ROWS:
+        glyphs = [font[ord(char)] for char in row]
+        _, y0, _, y1 = (round(v) for v in glyphs[0].boundingBox())
+        for glyph in glyphs:
+            glyph.hhints = [(y0 + 21, -21), (y1, -20)]  # FontForge's bottom and top ghosts
             glyph.manualHints = True  # else generating hints it again
 
 
@@ -402,16 +449,22 @@ def main(source, output):
     # names the day of the build.
     font.appendSFNTName("English (US)", "UniqueID",
                         f"{font.version};{font.os2_vendor};{font.fontname}")
-    # CFF has no components, so only the TTF needs these, and only the OTF reads the SFD's
-    # hints.
+    # CFF has no components, so only the TTF needs the nested ones flattened, and only the OTF
+    # reads the SFD's hints.
     if output.endswith(".ttf"):
         flatten_nested_references(font)
         decompose_transformed_references(font)
         if "pi" in font:  # not before 1.2, which proof_sheet.py --before can build
             level_foot(font["pi"])
     else:
+        for glyph in decompose_transformed_references(font):
+            glyph.autoHint()  # hint_zones() hints only the glyphs that keep references
+        if "hyphen.mid" in font:  # not in 1.0, which proof_sheet.py --before can build
+            hint_pieces_as_hyphen(font)  # before hint_zones() hints their composites
         hint_zones(font)
         hint_bars_as_equal(font)
+        if all(ord(char) in font for row in PICTURE_ROWS for char in row):  # proof_sheet --before
+            hint_picture_rows(font)
     # Explicit flags replace FontForge's defaults, so "opentype" is needed to keep GDEF.
     # "no-mac-names" drops the platform-1 name records that nothing current reads, and
     # "no-FFTM-table" FontForge's record of when it and the font were made.

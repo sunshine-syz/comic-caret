@@ -72,9 +72,12 @@ SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
 - The OTF carries the SFD's hints for outlines only. `tools/generate.py` hints every composite
   again, parts first (`hint_zones()`): FontForge keeps a composite's hints when a part is
-  redrawn. It adds a ghost hint where a letter's top or foot lies in a zone without a hint
-  edge, drops a letter's stem that crosses a zone's by more than half a stroke, and leaves
-  ≠ ⇐ ⇒ ⇔ only `=`'s stems (`hint_bars_as_equal()`).
+  redrawn. It draws a turned or scaled reference as an outline first, as in the TTF. It adds a
+  ghost hint where a letter's top or foot lies in a zone without a hint edge, drops a letter's
+  stem that crosses a zone's by more than half a stroke, leaves ≠ ⇐ ⇒ ⇔ only `=`'s stems
+  (`hint_bars_as_equal()`) and `-` only its pieces' stems, and gives the pictures of each of
+  `PICTURE_ROWS` the same two ghost edges. `make_italic.py` and `make_bold.py` hint every
+  outline again in a fresh process (`run_generator()`'s `rehint`).
 - The TTF gets ttfautohint's hints, which replace any TrueType instructions the SFD holds, so
   the SFD holds none. Its control file (`TTFAUTOHINT_CONTROL`) hints ≡ ≠ ⇐ ⇒ ⇔ as Latin, and
   `level_foot()` splits π's hook so Greek's feet take Latin's baseline. The reasons are in

@@ -182,10 +182,44 @@ def classify(font, known, of_code, unused):
     return classes
 
 
-def run_generator(script, doc, build, invalid, target=SFD, source=None):
+# A start the autohinter writes a nan for is rare (1 of the first 40 of the bold m's), but they
+# come in runs: the italic r's first clean start is its 14th on-curve point.
+RESTARTS = 20
+
+
+def nan_hinted(font, path):
+    """The glyphs whose stems the SFD, saved at `path`, gives a nan in their ranges."""
+    font.save(str(path))
+    names, name = set(), None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("StartChar: "):
+            name = line.removeprefix("StartChar: ")
+        elif line.startswith(("HStem:", "VStem:")) and "nan" in line:
+            names.add(name)
+    return names
+
+
+def restart(glyph):
+    """Start each of the glyph's contours one on-curve point later, and rehint it."""
+    layer = glyph.foreground
+    for contour in layer:
+        later = next((i for i in range(1, len(contour)) if contour[i].on_curve), None)
+        if later is None:
+            sys.exit(f"{glyph.glyphname}: a contour with one on-curve point can't start "
+                     "anywhere else")
+        contour.makeFirst(later)
+    glyph.foreground = layer
+    glyph.autoHint()
+
+
+def run_generator(script, doc, build, invalid, target=SFD, source=None, rehint=False):
     """A generator's command line: open the SFD it names (`target` by default), run
     build(font) and save the font over that SFD. A generator that derives one SFD from
     another opens `source` and still saves over the named one.
+
+    With `rehint`, a fresh process hints every outline of the saved copy again: in the process
+    that drew them, the italic's sheared C and l and the bold's shared pictures took hints a
+    fresh autoHint() does not give, and the OTF takes an outline's hints from the SFD.
 
     The save happens only once `script --check` passes on the saved copy: --check exits
     non-zero when invalid(font), {glyph name: validate() flags} for the glyphs the generator
@@ -197,10 +231,29 @@ def run_generator(script, doc, build, invalid, target=SFD, source=None):
     parser = argparse.ArgumentParser(description=doc.split("\n\n")[0])
     parser.add_argument("sfd", nargs="?", default=str(target), help="default: %(default)s")
     parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--rehint", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.check:
         if failed := invalid(fontforge.open(args.sfd)):
             sys.exit(f"validate() failed: {({name: hex(flags) for name, flags in failed.items()})}")
+        return
+    if args.rehint:
+        font = fontforge.open(args.sfd)
+        for glyph in font.glyphs():
+            if len(glyph.foreground) and not glyph.references:
+                glyph.autoHint()
+        # Where a contour starts can make the autohinter write a nan into a stem's range, which
+        # breaks the hints read back (docs/fontforge-pitfalls.md); so such a glyph's contours
+        # start later until none does. nan_hinted() saves the font.
+        names = nan_hinted(font, pathlib.Path(args.sfd))
+        for _ in range(RESTARTS):
+            if not names:
+                break
+            for name in sorted(names):
+                restart(font[name])
+            names = nan_hinted(font, pathlib.Path(args.sfd))
+        if names:
+            sys.exit(f"every start tried hints {sorted(names)} with a nan")
         return
 
     sfd = pathlib.Path(args.sfd)
@@ -208,6 +261,8 @@ def run_generator(script, doc, build, invalid, target=SFD, source=None):
     build(font)
     tmp = sfd.with_name(f".{sfd.name}.tmp")
     font.save(str(tmp))
+    if rehint:
+        subprocess.run([sys.executable, str(script), "--rehint", str(tmp)], check=True)
     if subprocess.run([sys.executable, str(script), "--check", str(tmp)], check=False).returncode:
         tmp.unlink()
         sys.exit(f"{sfd} is unchanged.")

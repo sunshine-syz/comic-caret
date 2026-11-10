@@ -233,6 +233,77 @@ for end, rows in json.loads(sys.argv[3]).items():
                 off.setdefault(f"{greek} {end}", []).append(size)
 print(json.dumps(off, ensure_ascii=False))
 """
+# Prints {piece: [sizes]}: the pixel sizes, 8 to 36, where a run piece in sys.argv[2],
+# {piece: plain}, lies off its plain character's rows under the hinting the HINTING flag
+# sys.argv[3] names: in the bitmap's middle column, past the round ends, some pixel row's
+# coverage differs by half or more. Less is an edge left inside a row in both, a few units
+# apart, which reads alike.
+PLAIN_ROWS = """
+import json, sys
+import freetype
+
+face, flag = freetype.Face(sys.argv[1]), getattr(freetype, sys.argv[3])
+
+def column(name):
+    face.load_glyph(face.get_name_index(name.encode()), flag | freetype.FT_LOAD_RENDER)
+    bitmap, top = face.glyph.bitmap, face.glyph.bitmap_top
+    middle = bitmap.width // 2
+    return {top - r: bitmap.buffer[r * bitmap.pitch + middle] for r in range(bitmap.rows)}
+
+off = {}
+for piece, plain in json.loads(sys.argv[2]).items():
+    for size in [*range(8, 25), 28, 32, 36]:
+        face.set_pixel_sizes(0, size)
+        a, b = column(piece), column(plain)
+        if any(abs(a.get(row, 0) - b.get(row, 0)) >= 128 for row in a.keys() | b.keys()):
+            off.setdefault(piece, []).append(size)
+print(json.dumps(off))
+"""
+# Prints [glyph]: the OTF's glyphs that have horizontal stems and hint masks, none of which
+# sets one of those stems, so the CFF hinter leaves the glyph unhinted.
+UNMASKED = """
+import json, sys
+from fontTools.ttLib import TTFont
+
+font = TTFont(sys.argv[1])
+strings = font["CFF "].cff.topDictIndex[0].CharStrings
+off = []
+for name in font.getGlyphOrder():
+    strings[name].decompile()
+    program = strings[name].program
+    first = next(i for i, token in enumerate(program) if isinstance(token, str))
+    if program[first] not in ("hstem", "hstemhm"):
+        continue
+    stems = first // 2  # an odd count of numbers leads with the glyph's width
+    masks = [program[i + 1] for i, token in enumerate(program) if token == "hintmask"]
+    if masks and not any(int.from_bytes(m, "big") >> (8 * len(m) - stems) for m in masks):
+        off.append(name)
+print(json.dumps(off))
+"""
+# Prints {row: [sizes]}: the pixel sizes, 8 to 36, where the pictures of a row in sys.argv[2]
+# don't share their top and foot pixel rows (the outermost rows a pixel of which is at least
+# half covered, or none where no pixel is) under the font's own hints.
+PICTURE_ROWS = """
+import json, sys
+import freetype
+
+face = freetype.Face(sys.argv[1])
+
+def ends(char):
+    face.load_char(char, freetype.FT_LOAD_DEFAULT | freetype.FT_LOAD_RENDER)
+    bitmap, top = face.glyph.bitmap, face.glyph.bitmap_top
+    dark = [r for r in range(bitmap.rows)
+            if max(bitmap.buffer[r * bitmap.pitch:r * bitmap.pitch + bitmap.width]) >= 128]
+    return (top - dark[0], top - dark[-1]) if dark else None
+
+off = {}
+for row in json.loads(sys.argv[2]):
+    for size in [*range(8, 25), 28, 32, 36]:
+        face.set_pixel_sizes(0, size)
+        if len({ends(char) for char in row}) > 1:
+            off.setdefault(row, []).append(size)
+print(json.dumps(off, ensure_ascii=False))
+"""
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 HHEA_LINE = 4  # offset of hhea.ascender, then descender and lineGap
 OS2_LINE = 68  # offset of OS/2.sTypoAscender, then sTypoDescender, sTypoLineGap, usWinAscent
@@ -623,6 +694,65 @@ class LigatureSeamTest(unittest.TestCase):
                         for edge, equal in zip(bars, equals):
                             self.assertLess(abs(edge - equal), 0.5)
 
+    # The middle pieces of the bar runs, which stand in a line beside their plain character,
+    # as -- beside -.
+    BESIDE_PLAIN: ClassVar = {"hyphen.mid": "hyphen", "equal.mid": "equal",
+                              "underscore.mid": "underscore"}
+    # Known exceptions, by format and piece, at these sizes. ttfautohint and FreeType's light
+    # autohinter hint each glyph by its own outline: they place ='s upper bar from its wobbly
+    # top edge and the straight piece's from its foot, a row higher, and -'s bar, whose foot
+    # slopes from 227 to 235, a row over the piece's.
+    off_plain_rows: ClassVar = {"ttf": {"hyphen.mid": {13, 14, 15}, "equal.mid": {22, 23, 32, 36}}}
+
+    def test_pieces_stand_on_their_plain_characters_rows(self):
+        # FreeType's CFF hinter snaps one edge of a stem to the grid, so a piece rounds as
+        # its plain character does where it has the same stems: -- stood a row under - at 11
+        # and 24 px while it kept its profile's stem, 231-310, and - its own, 235-311.
+        for ext in FORMATS:
+            known = self.off_plain_rows.get(ext, {})
+            for hinting, flag in HINTING.items():
+                off = run_freetype(PLAIN_ROWS, font_file(self.style, ext),
+                                   json.dumps(self.BESIDE_PLAIN), flag)
+                off = {piece: sizes for piece, sizes in off.items()
+                       if set(sizes) - known.get(piece, set())}
+                with self.subTest(ext=ext, hinting=hinting):
+                    self.assertEqual(off, {})
+
+
+class OtfHintTest(unittest.TestCase):
+    """The OpenType fonts' own hints, which FreeType's CFF hinter reads under light and native
+    hinting alike. The TrueType fonts' hints are ttfautohint's, which hints each glyph by its
+    own outline. Skips without uvx."""
+
+    style = "Regular"
+    # Pictures drawn at one height, which stand side by side in a status line or a task list.
+    # ☑'s tick rises past the box, so it is left out.
+    PICTURE_ROWS = ("⏸⏵⏹⏺", "■□☐☒", "◼◻")
+
+    @classmethod
+    def setUpClass(cls):
+        require_uvx()
+        require_current_build((cls.style,))
+
+    def test_every_hinted_glyph_masks_in_a_stem(self):
+        # FontForge wrote the glyphs built from a turned or scaled reference with hint masks
+        # that set none of their stems, so ) ] } ∀ ∃ ⏹ ◼ and 12 more went unhinted.
+        self.assertEqual(run_freetype(UNMASKED, font_file(self.style, "otf")), [])
+
+    def test_pictures_of_a_row_share_its_pixel_rows(self):
+        # Each picture rounded by its own stems: ⏵ ⏸ ⏺ ended on different rows at 10 of 20
+        # sizes from 8 to 36 px, ■ and ☐ at 8.
+        rows = json.dumps(self.PICTURE_ROWS, ensure_ascii=False)
+        self.assertEqual(run_freetype(PICTURE_ROWS, font_file(self.style, "otf"), rows), {})
+
+
+class ItalicOtfHintTest(OtfHintTest):
+    style = "Italic"
+
+
+class BoldOtfHintTest(OtfHintTest):
+    style = "Bold"
+
 
 class GlyphBoxTest(unittest.TestCase):
     """In the TTF each glyph's box is its points' box, as tools that recompute it find it: the
@@ -659,6 +789,8 @@ class BoldLigatureSeamTest(LigatureSeamTest):
     # ='s; a longer slash leaves it there, a shorter one brings the foot back into the zone.
     off_equals_rows: ClassVar = {
         "ttf": {**LigatureSeamTest.off_equals_rows["ttf"], "notequal": {11}}}
+    # Known exception: the TTF's == at 12 px, for a cause not found.
+    off_plain_rows: ClassVar = {"ttf": {"equal.mid": {12}}}
 
 
 class GreekRowTest(unittest.TestCase):

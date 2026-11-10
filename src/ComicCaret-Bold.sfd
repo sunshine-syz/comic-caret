@@ -4,7 +4,7 @@ FullName: Comic Caret Bold
 FamilyName: Comic Caret
 Weight: Bold
 Copyright: Copyright (c) 2018 Shannon Miwa, 2023 Jesus Gonzalez, 2023 Rodrigo Batista de Moraes, 2024 Fini Jastrow, 2024 Kyle Beechly, 2026 YZ Sun
-Version: 2.6
+Version: 2.7
 ItalicAngle: 0
 UnderlinePosition: -140
 UnderlineWidth: 80
@@ -21,7 +21,7 @@ OS2Version: 4
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1608751085
-ModificationTime: 1794294441
+ModificationTime: 1794353926
 PfmFamily: 49
 TTFWeight: 700
 TTFWidth: 5
@@ -22119,6 +22119,7 @@ StartChar: uni254E
 Encoding: 9550 9550 743
 Width: 600
 Flags: W
+HStem: 727 21G<258 342>
 VStem: 258 84<-435 -76 52 599 727 1085>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 1135 basechar 0
@@ -22147,6 +22148,7 @@ StartChar: uni254F
 Encoding: 9551 9551 744
 Width: 600
 Flags: W
+HStem: 727 21G<216 384>
 VStem: 216 168<-435 -76 52 599 727 1085>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 1135 basechar 0
@@ -23474,7 +23476,6 @@ StartChar: uni2586
 Encoding: 9606 9606 799
 Width: 600
 Flags: W
-HStem: 643 20G<-36 636>
 VStem: -36 672<-386 663>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 713 basechar 0
@@ -26918,7 +26919,7 @@ StartChar: uni2733
 Encoding: 10035 10035 882
 Width: 600
 Flags: W
-HStem: 235 76<394 541.761> 442 20G<443 453.5>
+HStem: 235 76<394 541.761>
 VStem: 258 76<364 510.761>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 569 basechar 0
@@ -27187,7 +27188,7 @@ StartChar: uni273D
 Encoding: 10045 10045 886
 Width: 600
 Flags: W
-HStem: 209 120<66.5186 132.672 467.328 533.481> 441 20G<154 172.5 427 442.5>
+HStem: 209 120<66.5186 132.672 467.328 533.481>
 VStem: 240 120<35.5186 101.672 436.328 502.481>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 569 basechar 0
@@ -32813,7 +32814,7 @@ StartChar: uniE0A1
 Encoding: 57505 57505 1058
 Width: 600
 Flags: W
-HStem: -298 21G<149.5 160> 286 63<204 435.27>
+HStem: -300 21G<149.5 160 411 422.5> 286 63<204 435.27>
 VStem: 128 76<349 565.471> 128 61<-287.716 126> 148 74<679.055 807.715> 148 66<350.406 777.868> 404 67<119.494 220.715> 411 61<-188 195.906>
 AnchorPoint: "bottom" 300 0 basechar 0
 AnchorPoint: "top" 300 867 basechar 0
