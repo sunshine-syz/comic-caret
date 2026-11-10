@@ -11,7 +11,6 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
-from add_ligatures import GENERATED
 from make_bold import HEAD_WHITE
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
 from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
@@ -397,7 +396,7 @@ class GlyphShapeTest(unittest.TestCase):
         cut = {}
         for glyph in self.font.glyphs():
             name = glyph.glyphname
-            if not GENERATED.fullmatch(name):
+            if not add_ligatures.GENERATED.fullmatch(name):
                 continue
             edges = [e for e in vertical_edges(glyph.foreground)
                      if e[2] - e[1] >= CUT_EDGE and e[0] not in seams]

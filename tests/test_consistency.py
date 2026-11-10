@@ -26,7 +26,7 @@ import add_box_drawing
 import lig_geometry as geo
 import measure
 from helpers import CIRCUMFLEX_STACKS, ROW_TOLERANCE
-from measure import outline
+from measure import area, outline
 from project import (
     ADVANCE,
     AXIS,
@@ -121,10 +121,6 @@ BRAILLE = range(0x2800, 0x2900)
 BRAILLE_DOTS = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (0, 3), (1, 3))  # (column, row)
 
 
-def open_font(path=SFD):
-    return fontforge.open(str(path))
-
-
 def box(font, char):
     return font[ord(char)].boundingBox()
 
@@ -134,7 +130,7 @@ class PlacementTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font(cls.sfd)
+        cls.font = fontforge.open(str(cls.sfd))
 
     def test_letters_and_figures_sit_on_their_rows(self):
         off = {}
@@ -168,15 +164,12 @@ class PlacementTest(unittest.TestCase):
 
     def test_operators_sit_on_the_math_axis(self):
         _, y0, _, y1 = self.font["hyphen"].boundingBox()
+        boxes = {char: box(self.font, char) for char in ON_AXIS}
+        boxes.update((name, self.font[name].boundingBox()) for name in ON_AXIS_GLYPHS)
         off = {}
-        for char in ON_AXIS:
-            _, b0, _, b1 = box(self.font, char)
+        for glyph, (_, b0, _, b1) in boxes.items():
             if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
-                off[char] = round((b0 + b1) / 2 - (y0 + y1) / 2)
-        for name in ON_AXIS_GLYPHS:
-            _, b0, _, b1 = self.font[name].boundingBox()
-            if abs((b0 + b1) / 2 - (y0 + y1) / 2) > WOBBLE:
-                off[name] = round((b0 + b1) / 2 - (y0 + y1) / 2)
+                off[glyph] = round((b0 + b1) / 2 - (y0 + y1) / 2)
         self.assertEqual(off, {})
 
     def test_small_signs_sit_on_their_figures_middle(self):
@@ -216,7 +209,7 @@ class CompositionTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font(cls.sfd)
+        cls.font = fontforge.open(str(cls.sfd))
         cls.accented = [g for g in cls.font.glyphs() if is_letter(g.unicode)
                         and len(unicodedata.normalize("NFD", chr(g.unicode))) > 1]
 
@@ -280,7 +273,7 @@ class CompositionTest(unittest.TestCase):
 
         close = {}
         for glyph in self.font.glyphs():
-            if glyph.unicode < 0 or not is_letter(glyph.unicode):
+            if not is_letter(glyph.unicode):
                 continue
             letter, marks = self.parts(glyph)
             for name, mark in marks:
@@ -390,7 +383,7 @@ class MarkTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font(cls.sfd)
+        cls.font = fontforge.open(str(cls.sfd))
         cls.marks = [g for g in cls.font.glyphs() if is_mark(g.unicode)]
         cls.mark_names = {g.glyphname for g in cls.marks}
         cls.side = {g.glyphname: "top" if anchor(g, "top", "mark") else "bottom"
@@ -426,8 +419,8 @@ class MarkTest(unittest.TestCase):
         # So e + U+0301 looks like é even where nothing composes them.
         accent_marks = {}
         for mark in self.marks:
-            [(accent, matrix, *_)] = mark.references
-            accent_marks[accent] = (mark, matrix)
+            [(accent, *_)] = mark.references
+            accent_marks[accent] = mark
         off = {}
         for glyph in self.font.glyphs():
             refs = {name: matrix for name, matrix, *_ in glyph.references}
@@ -440,7 +433,7 @@ class MarkTest(unittest.TestCase):
             (accent,), (letter,) = accents, letters
             if (letter, accent) in OWN_PLACEMENT:
                 continue
-            mark, _ = accent_marks[accent]
+            mark = accent_marks[accent]
             ax0, ay0, _, _ = self.placed(letter, mark).boundingBox()
             px0, py0, _, _ = geo.transformed(self.font[accent].foreground,
                                              refs[accent]).boundingBox()
@@ -455,7 +448,7 @@ class MarkTest(unittest.TestCase):
         # stem (ĵ).
         off = {}
         for glyph in self.font.glyphs():
-            if glyph.unicode < 0 or not is_letter(glyph.unicode) or len(glyph.foreground):
+            if not is_letter(glyph.unicode) or len(glyph.foreground):
                 continue
             letters = [(name, matrix) for name, matrix, *_ in glyph.references
                        if is_letter(self.font[name].unicode)]
@@ -474,7 +467,7 @@ class MarkTest(unittest.TestCase):
         acute = self.font[0x301]
         close = {}
         for glyph in self.font.glyphs():
-            if glyph.unicode < 0 or not is_letter(glyph.unicode):
+            if not is_letter(glyph.unicode):
                 continue
             mark = self.placed(glyph.glyphname, acute)
             letter = measure.ink(self.font, glyph.glyphname)
@@ -500,16 +493,6 @@ def merged(spans):
     return out
 
 
-def area(layer):
-    """The ink's area, for outlines of straight lines; holes run the other way and subtract."""
-    total = 0
-    for contour in layer:
-        points = [(p.x, p.y) for p in contour]
-        total += sum(x0 * y1 - x1 * y0
-                     for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]))
-    return abs(total) / 2
-
-
 class BoldPlacementTest(PlacementTest):
     sfd = BOLD_SFD
 
@@ -525,11 +508,11 @@ class BoldMarkTest(MarkTest):
 class BoxDrawingTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font()
+        cls.font = fontforge.open(str(SFD))
         cls.bottom, cls.top = cls.font.hhea_descent, cls.font.hhea_ascent
 
     def ink(self, char):
-        return measure.ink(self.font, self.font[ord(char)].glyphname)
+        return measure.ink(self.font, ord(char))
 
     def edges(self, char):
         """The strokes that cross each side of the cell, {side: [(from, to)]}."""
@@ -623,11 +606,11 @@ class BoxDrawingTest(unittest.TestCase):
 class BlockElementTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.font = open_font()
+        cls.font = fontforge.open(str(SFD))
         cls.bottom, cls.top = cls.font.hhea_descent, cls.font.hhea_ascent
 
     def ink(self, code):
-        return measure.ink(self.font, self.font[code].glyphname)
+        return measure.ink(self.font, code)
 
     def test_blocks_fill_the_part_of_the_cell_their_names_give(self):
         # The cell's width and the line box, split exactly, so bars and graphs line up; and

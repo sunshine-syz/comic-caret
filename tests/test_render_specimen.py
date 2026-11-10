@@ -10,7 +10,7 @@ import unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import render_specimen
 from add_ligatures import GENERATED
-from project import ADVANCE, ROOT, stale_build
+from project import ADVANCE, ROOT, shaped, stale_build
 from render_specimen import (
     BOLD,
     CODE,
@@ -27,7 +27,6 @@ from render_specimen import (
     italicized,
     marked,
     ruled,
-    shape,
 )
 
 
@@ -43,7 +42,7 @@ def placed(svg):
 
 
 def ligated(text):
-    return any(GENERATED.fullmatch(glyph["g"]) for glyph in shape(text, "calt"))
+    return any(GENERATED.fullmatch(glyph["g"]) for glyph in shaped(FONT, text, "--features=calt"))
 
 
 class GlyphsTest(unittest.TestCase):

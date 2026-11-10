@@ -8,9 +8,7 @@ test_metadata.py, test_built.py and test_ligatures.py check every style.
 """
 import bisect
 import pathlib
-import subprocess
 import sys
-import tempfile
 import unittest
 
 import fontforge
@@ -20,10 +18,11 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
+from helpers import assert_lookups_carry_over
 from make_italic import CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
 from measure import ink, spans_at_y
 from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
-from sfd_files import differences
+from sfd_files import rerun_differences
 
 GENERATOR = ROOT / "tools" / "make_italic.py"
 
@@ -59,10 +58,7 @@ class GeneratorTest(unittest.TestCase):
     def test_rerunning_changes_nothing(self):
         # Fails when the regular or the generator changed without a rerun, or when the italic
         # was edited by hand, as well as when a run is not repeatable.
-        with tempfile.TemporaryDirectory() as tmp:
-            out = pathlib.Path(tmp) / ITALIC_SFD.name
-            subprocess.run([sys.executable, str(GENERATOR), str(out)], check=True)
-            self.assertEqual(differences(ITALIC_SFD, out), [])
+        self.assertEqual(rerun_differences(ITALIC_SFD, GENERATOR), [])
 
     def test_every_glyph_has_one_style(self):
         font = fontforge.open(str(SFD))
@@ -153,17 +149,7 @@ class ItalicTest(unittest.TestCase):
         self.assertEqual(wrong, {})
 
     def test_lookups_carry_over(self):
-        for kind in ("gsub_lookups", "gpos_lookups"):
-            self.assertEqual(getattr(self.italic, kind), getattr(self.regular, kind))
-            for lookup in getattr(self.regular, kind):
-                with self.subTest(lookup=lookup):
-                    self.assertEqual(self.italic.getLookupInfo(lookup),
-                                     self.regular.getLookupInfo(lookup))
-                    self.assertEqual(self.italic.getLookupSubtables(lookup),
-                                     self.regular.getLookupSubtables(lookup))
-        different = [g.glyphname for g in self.regular.glyphs()
-                     if self.italic[g.glyphname].getPosSub("*") != g.getPosSub("*")]
-        self.assertEqual(different, [])
+        assert_lookups_carry_over(self, self.italic, self.regular)
 
 
 if __name__ == "__main__":

@@ -6,17 +6,14 @@ Where the marks sit is checked in test_consistency.py, and how the built fonts s
 test_built.py.
 """
 import pathlib
-import shutil
-import subprocess
 import sys
-import tempfile
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 # the tests' shared SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from project import ROOT, SFD
-from sfd_files import differences
+from sfd_files import rerun_differences
 
 GENERATORS = [ROOT / "tools" / "add_marks.py", ROOT / "tools" / "add_ligatures.py"]
 
@@ -31,12 +28,7 @@ class GeneratorTest(unittest.TestCase):
         # rerun test of its own. Linux's FontForge writes some of add_ligatures.py's outlines
         # apart from macOS's (less.dtail's level edge as lines, not collinear curves), so the
         # outlines compare within differences()' tolerance.
-        with tempfile.TemporaryDirectory() as tmp:
-            copy = pathlib.Path(tmp) / SFD.name
-            shutil.copy(SFD, copy)
-            for generator in GENERATORS:
-                subprocess.run([sys.executable, str(generator), str(copy)], check=True)
-            self.assertEqual(differences(SFD, copy), [])
+        self.assertEqual(rerun_differences(SFD, *GENERATORS), [])
 
 
 if __name__ == "__main__":

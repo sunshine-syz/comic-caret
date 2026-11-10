@@ -8,7 +8,10 @@ than its tolerance.
 """
 import difflib
 import pathlib
+import shutil
+import subprocess
 import sys
+import tempfile
 
 import fontforge
 
@@ -103,3 +106,18 @@ def differences(expected, found, tolerance=2 * ROUNDING):
         for font in fonts:
             font.close()
     return out
+
+
+def rerun_differences(sfd, *generators):
+    """How a copy of the SFD at `sfd` differs from it once the generators ran on the copy, in
+    order; empty when a rerun changes nothing."""
+    with tempfile.TemporaryDirectory() as tmp:
+        copy = pathlib.Path(tmp) / sfd.name
+        shutil.copy(sfd, copy)
+        for generator in generators:
+            # FontForge reports the overlaps it trips on to stderr; shown only on a failure.
+            run = subprocess.run([sys.executable, str(generator), str(copy)],
+                                 capture_output=True, text=True, check=False)
+            if run.returncode:
+                raise AssertionError(f"{generator.name} failed:\n{run.stderr}")
+        return differences(sfd, copy)

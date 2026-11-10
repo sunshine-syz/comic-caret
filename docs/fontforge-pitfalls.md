@@ -21,7 +21,7 @@ around. Read this before writing code that edits the SFD.
   `font.encoding = "UnicodeBmp"` afterwards. `font.removeGlyph()` keeps the glyph's encoding
   slot; set the encoding again afterwards or re-created glyphs land in new slots.
 - Don't save from a process that validated glyphs; it writes `Validated:` into each one it
-  checked. `project.save_checked()` validates in a fresh process instead.
+  checked. `project.run_generator()` validates in a fresh process instead.
   A saved `Validated:` line survives reopening, width changes and `autoHint()`; assigning the
   glyph a fresh `fontforge.layer()` clears it, and a blank glyph then saves without `Fore`.
 - `glyph.unlinkRef()` unlinks only the first reference, and `glyph.unlinkRef(name)` only

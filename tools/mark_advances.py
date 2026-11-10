@@ -21,28 +21,26 @@ from sfnt import HHEA_METRICS, MAXP_GLYPHS, metrics, packed, read_tables, write_
 
 def zero_mark_advances(path):
     """Rewrite the TTF at `path` so its GDEF mark glyphs and zero-width format characters
-    advance by 0; returns how many did not before."""
+    advance by 0."""
     font = fontforge.open(str(path))
     marks = {glyph.originalgid for glyph in font.glyphs()
              if glyph.glyphclass == "mark" or glyph.unicode in ZERO_WIDTH}
     font.close()
     version, search, in_file = read_tables(path.read_bytes())
-    order = [tag for tag, _ in in_file]
-    tables = dict(in_file)
+    tables = dict(in_file)  # keeps the file's order
     count = struct.unpack_from(">H", tables[b"maxp"], MAXP_GLYPHS)[0]
     long_count = struct.unpack_from(">H", tables[b"hhea"], HHEA_METRICS)[0]
     pairs = metrics(tables[b"hmtx"], count, long_count)
     wrong = [gid for gid in marks if pairs[gid][0]]
     if not wrong:
-        return 0
+        return
     for gid in wrong:
         pairs[gid] = (0, pairs[gid][1])
     tables[b"hmtx"], long_count = packed(pairs)
     hhea = bytearray(tables[b"hhea"])
     hhea[HHEA_METRICS:HHEA_METRICS + 2] = struct.pack(">H", long_count)
     tables[b"hhea"] = bytes(hhea)
-    path.write_bytes(write_tables(version, search, [(tag, tables[tag]) for tag in order]))
-    return len(wrong)
+    path.write_bytes(write_tables(version, search, tables.items()))
 
 
 def main():

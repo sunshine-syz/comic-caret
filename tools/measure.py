@@ -65,38 +65,39 @@ def ink_center(layer):
 
 
 def ink(font, glyph):
-    """The glyph's outline as one layer, its references resolved at any depth."""
+    """The outline of the glyph with this name or code point as one layer, its references
+    resolved at any depth."""
     layer = font[glyph].foreground.dup()
     for name, matrix, *_ in font[glyph].references:
         layer += geo.transformed(ink(font, name), matrix)
     return layer
 
 
-def area(layer, steps=16):
+def area(layer):
     """The ink's area. Outer contours run clockwise and holes counter-clockwise, so holes
     subtract."""
     total = 0
     for contour in layer:
-        points = _polyline(contour, steps)
+        points = _polyline(contour)
         total -= sum(x0 * y1 - x1 * y0
                      for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1])) / 2
     return total
 
 
-def length(layer, steps=16):
+def length(layer):
     """How long the layer's outline is, every contour round."""
     total = 0
     for contour in layer:
-        points = _polyline(contour, steps)
+        points = _polyline(contour)
         total += sum(math.dist(a, b) for a, b in zip(points, points[1:] + points[:1]))
     return total
 
 
-def slant(layer, steps=16):
+def slant(layer):
     """The angle of the ink's long axis, in degrees anticlockwise from level, from its second
     moments of area: a stroke lengthened along its own slant keeps it."""
     mass = mx = my = 0
-    polygons = [_polyline(contour, steps) for contour in layer]
+    polygons = [_polyline(contour) for contour in layer]
     for points in polygons:
         for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]):
             cross = y0 * x1 - y1 * x0  # signed as area()'s: outer contours run clockwise
@@ -167,7 +168,7 @@ def _segments(contour):
     return segments
 
 
-def _polyline(contour, steps):
+def _polyline(contour, steps=16):
     """Points along the closed contour, `steps` to each segment."""
     out = []
     for segment in _segments(contour):
@@ -193,16 +194,16 @@ def _to_segment(point, a, b):
     return math.hypot(px - ax - t * dx, py - ay - t * dy)
 
 
-def distance(point, layer, steps=16):
+def distance(point, layer):
     """How far the point lies from the layer's outline."""
-    lines = [_polyline(contour, steps) for contour in layer]
+    lines = [_polyline(contour) for contour in layer]
     return min(_to_segment(point, a, b) for line in lines for a, b in zip(line, line[1:] + line[:1]))
 
 
-def gap(first, second, steps=16):
+def gap(first, second):
     """The shortest distance between the ink of two outlines that don't overlap; 0 where they
     touch."""
-    lines = [[_polyline(contour, steps) for contour in layer] for layer in (first, second)]
+    lines = [[_polyline(contour) for contour in layer] for layer in (first, second)]
     best = math.inf
     for mine, theirs in (lines, lines[::-1]):
         edges = [(a, b) for line in theirs for a, b in zip(line, line[1:] + line[:1])]
@@ -216,13 +217,12 @@ def gap(first, second, steps=16):
     return best
 
 
-def outline_distance(first, second, steps=16):
+def outline_distance(first, second):
     """How far apart two outlines lie: the farthest any point sampled on one lies from the
-    other's polyline, either way round (their Hausdorff distance), each flattened to `steps`
-    points a segment. Small for two drawings of one path, however their curves are split or
-    where their contours start; 0 for two empty layers and infinite when only one is
-    empty."""
-    lines = [[_polyline(contour, steps) for contour in layer] for layer in (first, second)]
+    other's polyline, either way round (their Hausdorff distance). Small for two drawings of
+    one path, however their curves are split or where their contours start; 0 for two empty
+    layers and infinite when only one is empty."""
+    lines = [[_polyline(contour) for contour in layer] for layer in (first, second)]
     farthest = 0
     for mine, theirs in (lines, lines[::-1]):
         edges = [(min(ax, bx), max(ax, bx), min(ay, by), max(ay, by), (ax, ay), (bx, by))

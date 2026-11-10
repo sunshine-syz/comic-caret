@@ -33,9 +33,7 @@ class TrimTest(unittest.TestCase):
     def test_keeps_separate_contours_and_holes(self):
         self.assertEqual(len(geo.trim(bars((0, 10), (20, 30)), x1=50)), 2)
         ring = geo.rect(0, 0, 100, 100)
-        hole = geo.rect(30, 30, 70, 70)
-        hole[0].reverseDirection()
-        ring += hole
+        ring += geo.holes(geo.rect(30, 30, 70, 70))
         self.assertEqual(len(geo.trim(ring, x1=80)), 2)
 
 
@@ -58,13 +56,7 @@ class StretchTest(unittest.TestCase):
 class StretchSpanTest(unittest.TestCase):
     def arrow(self):
         """A shaft from x 0 to 600 with a pointed end at 700 and a point halfway along."""
-        contour = fontforge.contour()
-        for x, y in ((0, 0), (0, 100), (300, 100), (600, 100), (700, 50), (600, 0)):
-            contour += fontforge.point(x, y)
-        contour.closed = True
-        layer = fontforge.layer()
-        layer += contour
-        return layer
+        return geo.polygon([(0, 0), (0, 100), (300, 100), (600, 100), (700, 50), (600, 0)])
 
     def points(self, layer):
         return [(round(p.x), round(p.y)) for p in layer[0]]
@@ -86,14 +78,7 @@ class StretchSpanTest(unittest.TestCase):
 
 class SnapEdgeTest(unittest.TestCase):
     def test_moves_corners_on_the_edge_to_the_nearest_height(self):
-        contour = fontforge.contour()
-        contour.moveTo(0, 0)
-        contour.lineTo(0, 48)
-        contour.lineTo(100, 52)
-        contour.lineTo(100, 3)
-        contour.closed = True
-        layer = fontforge.layer()
-        layer += contour
+        layer = geo.polygon([(0, 0), (0, 48), (100, 52), (100, 3)])
         geo.snap_edge(layer, 100, (0, 50))
         self.assertEqual(sorted((p.x, p.y) for p in layer[0]),
                          [(0, 0), (0, 48), (100, 0), (100, 50)])
@@ -125,9 +110,7 @@ class WithoutSpecksTest(unittest.TestCase):
     def test_fills_only_the_small_holes(self):
         layer = geo.rect(0, 0, 300, 100)
         for x0, x1 in ((20, 40), (100, 250)):
-            hole = geo.rect(x0, 20, x1, 80)
-            hole[0].reverseDirection()
-            layer += hole
+            layer += geo.holes(geo.rect(x0, 20, x1, 80))
         self.assertEqual(sorted(tuple(round(v) for v in c.boundingBox())
                                 for c in geo.without_specks(layer, 60)),
                          [(0, 0, 300, 100), (100, 20, 250, 80)])

@@ -91,10 +91,9 @@ def git(*args, check=True, text=True):
     return subprocess.run(["git", *args], cwd=ROOT, check=check, capture_output=True, text=text)
 
 
-def resolve(parser, rev, sfd):
+def resolve(parser, rev, sfd_path):
     """The full hash of the commit `rev` names, and how to label its font. Exits through
-    `parser` if there is no such commit or it has no `sfd`."""
-    sfd_path = sfd.relative_to(ROOT).as_posix()  # as git names it
+    `parser` if there is no such commit or it has no `sfd_path` (relative to the repo)."""
     result = git("rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}", check=False)
     if result.returncode:
         parser.error(f"not a commit: {rev}")
@@ -225,8 +224,8 @@ def main():
     missing = [str(path) for path in paths if not path.exists()]
     if missing:
         parser.error(f"no such font: {', '.join(missing)}")
-    sfd = STYLES[args.style or "Regular"]
-    before = resolve(parser, args.before, sfd) if args.before else None
+    sfd_path = STYLES[args.style or "Regular"].relative_to(ROOT).as_posix()  # as git names it
+    before = resolve(parser, args.before, sfd_path) if args.before else None
     blocks = [(text, text, None) for text in args.text] if args.text else BLOCKS
     if args.features is not None:
         blocks = [(title, text, args.features) for title, text, _ in blocks]
@@ -235,7 +234,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         if before:
             commit, note = before
-            built = build_at(commit, pathlib.Path(tmp), sfd.relative_to(ROOT).as_posix())
+            built = build_at(commit, pathlib.Path(tmp), sfd_path)
             fonts.insert(1, load(built, note))
         page = sheet(fonts, blocks, args.line_height or [None], args.outdir)
     (args.outdir / "index.html").write_text(page, encoding="utf-8")

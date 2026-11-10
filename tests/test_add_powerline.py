@@ -4,10 +4,7 @@ Run: python3 -m unittest discover tests
 """
 import math
 import pathlib
-import shutil
-import subprocess
 import sys
-import tempfile
 import unittest
 
 import fontforge
@@ -19,9 +16,8 @@ import add_powerline
 import lig_geometry as geo
 import measure
 from add_box_drawing import LIGHT
-from measure import outline
 from project import ADVANCE, LINE_BOTTOM, LINE_TOP, ROOT, SFD
-from sfd_files import differences
+from sfd_files import rerun_differences
 
 GENERATOR = ROOT / "tools" / "add_powerline.py"
 # How far a solid separator runs past its flat side at least: the Nerd Fonts patcher's round
@@ -31,17 +27,9 @@ SEPARATOR_REACH = 36
 
 class GeneratorTest(unittest.TestCase):
     def test_rerunning_changes_nothing(self):
-        # Fails when the generator changed without a rerun, or a symbol was edited by hand.
-        with tempfile.TemporaryDirectory() as tmp:
-            copy = pathlib.Path(tmp) / SFD.name
-            shutil.copy(SFD, copy)
-            subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(differences(SFD, copy), [])
-
-    def test_the_font_has_every_symbol(self):
-        font = fontforge.open(str(SFD))
-        missing = [f"U+{code:04X}" for code in add_powerline.CODES if code not in font]
-        self.assertEqual(missing, [])
+        # Fails when the generator changed without a rerun, or a symbol is missing or was
+        # edited by hand.
+        self.assertEqual(rerun_differences(SFD, GENERATOR), [])
 
 
 class SeparatorTest(unittest.TestCase):
@@ -78,7 +66,8 @@ class SeparatorTest(unittest.TestCase):
                             (add_powerline.LEFT_THIN, add_powerline.RIGHT_THIN)):
             with self.subTest(left=f"U+{left:04X}"):
                 mirrored = geo.mirrored_x(self.font[right].foreground, ADVANCE / 2)
-                self.assertEqual(outline(mirrored), outline(self.font[left].foreground))
+                self.assertEqual(measure.outline(mirrored),
+                                 measure.outline(self.font[left].foreground))
 
     def test_thin_separators_take_the_box_drawing_stroke(self):
         # The stroke's thickness, measured across the lower arm at right angles to it. The

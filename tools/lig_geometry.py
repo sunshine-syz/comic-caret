@@ -1,6 +1,6 @@
 """Outline operations for drawing glyphs and building them from existing outlines.
 
-The generators (tools/add_*.py) and tools/make_italic.py draw with them.
+The generators (tools/add_*.py, tools/make_*.py) draw with them.
 
 Each function returns a new layer (or matrix) and leaves its inputs alone; snap_edge is the
 exception and edits its argument in place. Outlines are clockwise, as in the SFD.

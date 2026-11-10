@@ -8,7 +8,6 @@ import json
 import math
 import os
 import pathlib
-import shutil
 import struct
 import subprocess
 import sys
@@ -16,6 +15,7 @@ import tempfile
 import unicodedata
 import unittest
 import zipfile
+from typing import ClassVar
 
 import fontforge
 
@@ -26,7 +26,7 @@ import project
 import sfnt
 from add_marks import MARKS, is_top
 from bump_version import font_version, sfd_version
-from helpers import CIRCUMFLEX_STACKS, NerdBuilds, require_current_build
+from helpers import CIRCUMFLEX_STACKS, NerdBuilds, require_current_build, require_uvx
 from make_italic import SLANT, UPRIGHT, encoded_style
 from measure import gap, ink
 from project import (
@@ -322,6 +322,14 @@ def sanitize(font):
     return subprocess.run(command, capture_output=True, text=True, check=False)
 
 
+def run_freetype(script, *args):
+    """The JSON that `script` prints when the pinned FreeType runs it with `args`."""
+    command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
+               script, *map(str, args)]
+    result = subprocess.run(command, capture_output=True, text=True, check=True)
+    return json.loads(result.stdout)
+
+
 class BuiltFontTest(unittest.TestCase):
     style = "Regular"
 
@@ -520,17 +528,14 @@ class LigatureSeamTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         require_current_build((cls.style,))
 
     def test_pieces_meet_on_the_same_pixel_rows(self):
         for hinting, flag in HINTING.items():
-            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
-                       "-c", SEAMS, str(font_file(self.style, "ttf")), json.dumps(SEAMED), flag]
-            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            off = run_freetype(SEAMS, font_file(self.style, "ttf"), json.dumps(SEAMED), flag)
             with self.subTest(hinting=hinting):
-                self.assertEqual(json.loads(result.stdout), {})
+                self.assertEqual(off, {})
 
     def test_equals_keeps_two_bars_under_native_hinting(self):
         # Each font's own hints keep a white row between the bars at text sizes. The unhinted
@@ -541,10 +546,8 @@ class LigatureSeamTest(unittest.TestCase):
         floors = {8: 0.33, **dict.fromkeys(range(9, 17), 0.64)}
         glyphs = ["equal", "equal.sta", "equal.mid", "equal.end"]
         for ext in FORMATS:
-            command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
-                       "-c", EQUALS_BARS, str(font_file(self.style, ext)), json.dumps(glyphs)]
-            result = subprocess.run(command, capture_output=True, text=True, check=True)
-            for glyph, contrasts in json.loads(result.stdout).items():
+            found = run_freetype(EQUALS_BARS, font_file(self.style, ext), json.dumps(glyphs))
+            for glyph, contrasts in found.items():
                 for size, contrast in contrasts.items():
                     with self.subTest(ext=ext, glyph=glyph, size=size):
                         self.assertGreaterEqual(contrast, floors[int(size)])
@@ -554,21 +557,19 @@ class LigatureSeamTest(unittest.TestCase):
     # Bold's 0.71875 at 11 px.
     white_floor = 0.875
     # The glyphs drawn with ='s bars, and those of them that stand alone beside =.
-    DRAWN_BARS = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
-                  "greater.darrow", "less.dtail", "greater.dtail"]
-    BESIDE_EQUAL = ["notequal", "arrowdblleft", "arrowdblright", "arrowdblboth"]
+    DRAWN_BARS = ("notequal", "arrowdblleft", "arrowdblright", "arrowdblboth", "less.darrow",
+                  "greater.darrow", "less.dtail", "greater.dtail")
+    BESIDE_EQUAL = ("notequal", "arrowdblleft", "arrowdblright", "arrowdblboth")
     # Known exceptions, by format and glyph, at the sizes given or at every size (None): the
     # TTF's double arrows, which ttfautohint places from their heads' ends where it links them
     # to the bars (⇔ at 11-12, 16-17 and 20-21 px in the regular), and from a cause not found
     # at 22-23 px (12 in the bold).
-    off_equals_rows = {"ttf": dict.fromkeys(["arrowdblleft", "arrowdblright", "arrowdblboth"])}
+    off_equals_rows: ClassVar = {
+        "ttf": dict.fromkeys(["arrowdblleft", "arrowdblright", "arrowdblboth"])}
 
     def bar_edges(self, ext, glyphs):
-        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
-                   BAR_EDGES, str(font_file(self.style, ext)), HINTING["native"],
-                   json.dumps(glyphs), str(project.WOBBLE)]
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        return json.loads(result.stdout)
+        return run_freetype(BAR_EDGES, font_file(self.style, ext), HINTING["native"],
+                            json.dumps(glyphs), project.WOBBLE)
 
     def test_drawn_bars_keep_a_white_row_under_native_hinting(self):
         # ttfautohint hinted ≠ and ⇔, outside its Latin ranges, with stem widths of their own
@@ -613,15 +614,11 @@ class GlyphBoxTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         require_current_build((cls.style,))
 
     def test_boxes_are_their_points_boxes(self):
-        command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python", "-c",
-                   BOXES, str(font_file(self.style, "ttf"))]
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        self.assertEqual(json.loads(result.stdout), {})
+        self.assertEqual(run_freetype(BOXES, font_file(self.style, "ttf")), {})
 
 
 class ItalicGlyphBoxTest(GlyphBoxTest):
@@ -641,7 +638,8 @@ class BoldLigatureSeamTest(LigatureSeamTest):
     white_floor = 0.71875
     # Known exception: the TTF's ≠ at 11 px, whose upper bar ttfautohint rounds a row under
     # ='s; a longer slash leaves it there, a shorter one brings the foot back into the zone.
-    off_equals_rows = {"ttf": {**LigatureSeamTest.off_equals_rows["ttf"], "notequal": {11}}}
+    off_equals_rows: ClassVar = {
+        "ttf": {**LigatureSeamTest.off_equals_rows["ttf"], "notequal": {11}}}
 
 
 class GreekRowTest(unittest.TestCase):
@@ -657,28 +655,25 @@ class GreekRowTest(unittest.TestCase):
     style = "Regular"
     # Each Greek letter by the Latin letter whose row its top shares: H for the capitals, O for
     # the round ones, d for the ascenders; x for the x-height letters, o for the round ones.
-    TOPS = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
-            **dict.fromkeys("βδζθλξ", "d"), **dict.fromkeys("γικμνπρτυχψ", "x"),
-            **dict.fromkeys("αεηοσςφω", "o")}
+    TOPS: ClassVar = {**dict.fromkeys("ΑΒΓΔΕΖΗΙΚΛΜΝΞΠΡΣΤΥΦΧΨ", "H"), **dict.fromkeys("ΘΟΩ", "O"),
+                      **dict.fromkeys("βδζθλξ", "d"), **dict.fromkeys("γικμνπρτυχψ", "x"),
+                      **dict.fromkeys("αεηοσςφω", "o")}
     # Each Greek letter that stands on the baseline: every Latin one's foot, round or flat,
     # shares H's row at these sizes.
     FEET = dict.fromkeys("ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω", "H")
 
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         require_current_build((cls.style,))
 
     def test_greek_stands_on_the_latin_rows(self):
         rows = json.dumps({"top": self.TOPS, "foot": self.FEET}, ensure_ascii=False)
         for ext in FORMATS:
             for hinting, flag in HINTING.items():
-                command = ["uvx", "--exclude-newer", FREETYPE_EXCLUDE_NEWER, *FREETYPE, "python",
-                           "-c", GREEK_ROWS, str(font_file(self.style, ext)), flag, rows]
-                result = subprocess.run(command, capture_output=True, text=True, check=True)
+                off = run_freetype(GREEK_ROWS, font_file(self.style, ext), flag, rows)
                 with self.subTest(ext=ext, hinting=hinting):
-                    self.assertEqual(json.loads(result.stdout), {})
+                    self.assertEqual(off, {})
 
 
 class ItalicGreekRowTest(GreekRowTest):
@@ -822,8 +817,7 @@ class SanitizerTest(NerdBuilds, unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         require_current_build()
         nerd, cls.stale = nerd_fonts()
         cls.fonts = [font for fonts in FONTS.values() for font in fonts] + nerd

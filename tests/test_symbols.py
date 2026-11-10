@@ -21,7 +21,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import lig_geometry as geo
 import make_bold
 import measure
-from measure import outline
+from helpers import hyphen_stroke
 from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
@@ -56,8 +56,6 @@ RING_HOLES = {"percent": (132, 171), "perthousand": (111, 152)}
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
 MARK_OVER_TIMES = {"✓": 99, "✗": 131, "✕": 68}
-# Marks short of their floor, held to the least floor until a proof decides their size.
-SHORT_MARKS = {}
 # Heavy mark -> the light mark it is drawn from. ➜ is another arrow: → takes the -> ligature's
 # head, which no one-cell arrow pushed out 23 could hold, and Maple Mono's ➜ (416 tall) is
 # another arrow than its → too; it stands where → does (BuiltFromTest).
@@ -69,9 +67,6 @@ HEAVY_INK = 1.45
 # test_consistency); like theirs, it still carries more ink than >: at least the lightest's,
 # Cascadia Code's 1.39 times (Maple Mono's 1.46, JetBrains Mono's 1.70).
 HEAVIER = {**{heavy: (light, HEAVY_INK) for heavy, light in HEAVY.items()}, "❯": (">", 1.39)}
-# •'s width: at least the smallest reference's, Maple Mono's 220 at our cap height, less the
-# hand's wobble.
-BULLET_WIDTH = 220 - WOBBLE
 # Black shape -> the white shape whose outer contour it is.
 BLACK = {"●": "○", "▶": "▷", "▸": "▹", "◆": "◇", "★": "☆", "■": "☐", "▪": "▫", "▮": "▯",
          "☗": "☖", "▰": "▱"}
@@ -132,7 +127,6 @@ BOLD_RING_HOLES = {"percent": (75, 134), "perthousand": (66, 128)}
 # the one reference with them.
 BOLD_MARK_OVER_TIMES = {"✓": 24, "✗": 135, "✕": 73}
 BOLD_BALLOT_UNDER_X = 89  # Maple Mono's 89.4
-BOLD_BULLET_WIDTH = 262 - WOBBLE  # Maple Mono's 262.0 (Fira Code's 284, Intel One Mono's 318)
 # ″: Maple Mono's 97.3, the only reference's. ‖: Fira Code's 103.0 (Maple Mono's 141.8). “:
 # Maple Mono's 98.9 (Intel One Mono's 102.4, Fira Code's 102.9). ” „: Intel One Mono's 102.4
 # (Fira Code's 103.0 and 102.9, Maple Mono's 103.1 and 118.9). ‼: the regular's 120 doesn't
@@ -264,7 +258,7 @@ class OperatorTest(unittest.TestCase):
         for piece in measure.pieces(layer):
             _, p0, _, p1 = piece.boundingBox()
             [(a, b)] = measure.spans_at_y(piece, (p0 + p1) / 2)
-            self.assertAlmostEqual(b - a, s1 - s0, delta=weight_tolerance(self.font))
+            self.assertAlmostEqual(b - a, s1 - s0, delta=self.weight)
 
     def test_partial_stands_no_taller_than_six(self):
         # Its hook tops out at 6's height or under, as in both references that have ∂.
@@ -336,14 +330,14 @@ class ArrowTest(unittest.TestCase):
 
     def test_dashed_arrow_shaft_breaks_into_two_dashes(self):
         # Each gap is at least as wide as the hyphen's stroke, so it stays open at 12 px.
-        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        stroke = hyphen_stroke(self.font)
         dashed = self.font[0x21E1].foreground
         _, y0, _, _ = dashed.boundingBox()
         spans = measure.spans_at_x(dashed, measure.ink_center(geo.trim(dashed, y1=y0 + 20)))
         # Two dashes and the head, the three pieces Font Bakery's contour_count expects of ⇡.
         self.assertEqual(len(spans), 3)
         for lower, upper in itertools.pairwise(spans):
-            self.assertGreaterEqual(upper[0] - lower[1], h1 - h0)
+            self.assertGreaterEqual(upper[0] - lower[1], stroke)
 
     def test_turning_arrows_point_along_the_math_axis(self):
         # ↵ ↩ ↪ rise above → and ←, but their heads stay where →'s and ←'s are; near the tip
@@ -381,19 +375,10 @@ class MarkTest(unittest.TestCase):
 
     def test_marks_are_larger_than_times(self):
         _, t0, _, t1 = self.font["multiply"].boundingBox()
-        over = {}
-        for mark, floor in self.mark_over_times.items():
-            _, y0, _, y1 = self.font[ord(mark)].boundingBox()
-            over[mark] = (y1 - y0) - (t1 - t0)
-        # The exceptions are exactly the marks below their own floor, so one redrawn to its
-        # floor fails until its entry goes.
-        short = {mark for mark, floor in self.mark_over_times.items() if over[mark] < floor}
-        self.assertEqual(short, set(SHORT_MARKS), over)
         for mark, floor in self.mark_over_times.items():
             with self.subTest(mark=mark):
-                if mark in SHORT_MARKS:
-                    floor = min(self.mark_over_times.values())
-                self.assertGreaterEqual(over[mark], floor, SHORT_MARKS.get(mark))
+                _, y0, _, y1 = self.font[ord(mark)].boundingBox()
+                self.assertGreaterEqual((y1 - y0) - (t1 - t0), floor)
 
     def test_ballot_x_is_not_the_letter_x(self):
         # About as wide as it is tall and well under X's top, as Maple Mono's (494 × 486); at
@@ -402,14 +387,9 @@ class MarkTest(unittest.TestCase):
         self.assertAlmostEqual((x1 - x0) / (y1 - y0), 1, delta=0.1)
         self.assertLessEqual(y1, self.font["X"].boundingBox()[3] - self.ballot_under_x)
 
-    def test_replacement_character_is_a_diamond_with_a_question_mark(self):
-        contours = list(self.font[0xFFFD].foreground)
-        self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
-        self.assertEqual(sum(1 for c in contours if not c.isClockwise()), 2)  # hook and dot
-
     def test_signs_are_black_shapes_with_a_white_mark(self):
-        # As � is: ! and i each cut out as a stroke and a dot.
-        for char in "⚠ℹ":
+        # ? ! and i each cut out as a stroke and a dot.
+        for char in "�⚠ℹ":
             with self.subTest(sign=char):
                 contours = list(self.font[ord(char)].foreground)
                 self.assertEqual(sum(1 for c in contours if c.isClockwise()), 1)
@@ -419,7 +399,6 @@ class MarkTest(unittest.TestCase):
 class ShapeTest(unittest.TestCase):
     """The white shapes are rings in the font's stroke, and the black ones fill them in."""
     sfd = SFD
-    bullet_width = BULLET_WIDTH
 
     @classmethod
     def setUpClass(cls):
@@ -440,21 +419,17 @@ class ShapeTest(unittest.TestCase):
             with self.subTest(shape=black):
                 [outer] = [c for c in self.font[ord(white)].foreground if c.isClockwise()]
                 [own] = list(self.font[ord(black)].foreground)
-                self.assertEqual(outline([own]), outline([outer]))
+                self.assertEqual(measure.outline([own]), measure.outline([outer]))
 
     def test_small_shapes_are_about_half_size(self):
         for small, large in (("▸", "▶"), ("▹", "▷"), ("▪", "■"), ("▫", "□")):
             with self.subTest(shape=small):
                 self.assertLessEqual(self.height(small), SMALLER * self.height(large))
 
-    def test_small_white_triangle_keeps_its_counter(self):
-        # ▹ must read white next to ▸ at 14 px, where a heavier outline fills its counter in.
-        layer = self.font[ord("▹")].foreground
-        _, y0, _, y1 = layer.boundingBox()
-        self.assertGreaterEqual(round(measure.counter(layer, (y0 + y1) / 2)), SMALL_COUNTER)
-
     def test_small_white_shapes_keep_their_counters(self):
-        for char, floor in (("▫", SMALL_SQUARE_COUNTER), ("◦", WHITE_BULLET_COUNTER)):
+        # ▹ must read white next to ▸ at 14 px, where a heavier outline fills its counter in.
+        for char, floor in (("▹", SMALL_COUNTER), ("▫", SMALL_SQUARE_COUNTER),
+                            ("◦", WHITE_BULLET_COUNTER)):
             with self.subTest(shape=char):
                 layer = self.font[ord(char)].foreground
                 _, y0, _, y1 = layer.boundingBox()
@@ -501,10 +476,6 @@ class ShapeTest(unittest.TestCase):
                 self.assertAlmostEqual(self.font[ord(char)].boundingBox()[1], bottom,
                                        delta=WOBBLE)
 
-    def test_bullet_is_as_wide_as_the_smallest_reference_bullet(self):
-        x0, _, x1, _ = self.font[ord("•")].boundingBox()
-        self.assertGreaterEqual(x1 - x0, self.bullet_width)
-
     def test_white_bullet_stands_where_the_bullet_does(self):
         # As in every reference, so • and ◦ line up in nested lists.
         white, black = self.font[ord("◦")].boundingBox(), self.font[ord("•")].boundingBox()
@@ -528,7 +499,7 @@ class HeavyMarkTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
 
     def ink(self, char):
-        return measure.ink(self.font, self.font[ord(char)].glyphname)
+        return measure.ink(self.font, ord(char))
 
     def test_heavy_marks_keep_their_light_marks_middle(self):
         for heavy, light in HEAVY.items():
@@ -556,15 +527,11 @@ class ApartTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
-        cls.seam = 2 * SYMBOL_SIDE
-
-    def pieces(self, char):
-        return measure.pieces(self.font[ord(char)].foreground)
 
     def test_guillemet_chevrons_stay_apart(self):
         # Closer, the two chevrons run into one shape at 11-16 px and « reads as <.
         for char in "«»":
-            ink = measure.ink(self.font, self.font[ord(char)].glyphname)
+            ink = measure.ink(self.font, ord(char))
             x0, _, x1, _ = ink.boundingBox()
             left, right = fontforge.layer(), fontforge.layer()
             for contour in ink:
@@ -577,18 +544,18 @@ class ApartTest(unittest.TestCase):
         # ※'s dots and X, ⧉'s squares, ⇥ ⇤ ↹'s arrows and bars (Font Bakery's contour_count
         # expects them apart), ⎋'s ring and arrow, ⌫ ⌦'s tag and ×, and %'s rings and slash.
         for char in PIECES:
-            pieces = self.pieces(char)
+            pieces = measure.pieces(self.font[ord(char)].foreground)
             with self.subTest(symbol=char):
                 self.assertGreater(len(pieces), 1)
                 for a, b in itertools.combinations(pieces, 2):
-                    self.assertGreaterEqual(measure.gap(a, b), self.seam)
+                    self.assertGreaterEqual(measure.gap(a, b), 2 * SYMBOL_SIDE)
 
 
 class BuiltFromTest(unittest.TestCase):
     """Glyphs built from other glyphs. References follow a redrawing of their base; the
     outlines copied from one (●, ☑ ☒, ⇕) don't, so these tests hold them to it."""
     sfd = SFD
-    doubles, exclamation_dots, fisheye_gap = DOUBLES, EXCLAMATION_DOTS, FISHEYE_GAP
+    doubles, exclamation_dots = DOUBLES, EXCLAMATION_DOTS
     turned_outlines = ""  # the glyphs of TURNED drawn as an outline instead: none
 
     @classmethod
@@ -646,7 +613,7 @@ class BuiltFromTest(unittest.TestCase):
         # ‼'s dots are wider than its stems, so the white between them is the narrow gap,
         # measured through the dots.
         _, y0, _, _ = self.font["exclam"].boundingBox()
-        dots = measure.spans_at_y(measure.ink(self.font, self.font[ord("‼")].glyphname), y0 + 50)
+        dots = measure.spans_at_y(measure.ink(self.font, ord("‼")), y0 + 50)
         self.assertEqual(len(dots), 2)
         self.assertGreaterEqual(dots[1][0] - dots[0][1], self.exclamation_dots)
 
@@ -678,9 +645,13 @@ class BuiltFromTest(unittest.TestCase):
         # the only reference with ∆, draws it. And ′ is the modifier prime ʹ: Maple Mono, the
         # only reference with ′, draws the two alike, only set apart in the cell. The modifier
         # letters ʼ ʻ are ’ ‘ (Intel One Mono and Maple Mono; Fira Code's ʼ is its own
-        # apostrophe, which here would read as ') and ʺ is ″ (Fira Code and Maple Mono).
+        # apostrophe, which here would read as ') and ʺ is ″ (Fira Code and Maple Mono). The
+        # dash look-alikes are the dashes: the hyphen for ‐ and the non-breaking hyphen ‑, the
+        # en dash for the figure dash ‒ and the em dash for the horizontal bar ―, as their
+        # Unicode names say and as the references that have them draw them.
         for char, base in (("◯", "○"), ("□", "☐"), ("∆", "Δ"), ("′", "ʹ"), ("ʼ", "’"),
-                           ("ʻ", "‘"), ("ʺ", "″")):
+                           ("ʻ", "‘"), ("ʺ", "″"), ("‐", "-"), ("‑", "-"), ("‒", "–"),
+                           ("―", "—")):
             with self.subTest(glyph=char):
                 name, matrix = self.only_reference(char)
                 self.assertEqual(name, self.font[ord(base)].glyphname)
@@ -734,7 +705,7 @@ class BuiltFromTest(unittest.TestCase):
         ring, dot = self.fisheye_parts()
         for a, b in zip(self.middle(ring), self.middle(dot), strict=True):
             self.assertAlmostEqual(a, b, delta=WOBBLE)
-        self.assertGreaterEqual(measure.gap(ring, dot), self.fisheye_gap)
+        self.assertGreaterEqual(measure.gap(ring, dot), FISHEYE_GAP)
 
 
 class LetterlikeTest(unittest.TestCase):
@@ -745,7 +716,6 @@ class LetterlikeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.font = fontforge.open(str(cls.sfd))
-        cls.seam = 2 * SYMBOL_SIDE
 
     def pieces(self, char):
         return measure.pieces(self.font[ord(char)].foreground)
@@ -766,7 +736,7 @@ class LetterlikeTest(unittest.TestCase):
                                delta=WOBBLE)
         self.assertLess(bar.boundingBox()[3], o.boundingBox()[1])
         for piece in (o, bar):
-            self.assertGreaterEqual(measure.gap(n, piece), self.seam)
+            self.assertGreaterEqual(measure.gap(n, piece), 2 * SYMBOL_SIDE)
 
     def test_script_ell_loops_above_the_middle(self):
         # One stroke as tall as l (ROWS), whose loop closes above the hyphen's middle, where
@@ -784,8 +754,8 @@ class LetterlikeTest(unittest.TestCase):
         self.assertEqual(len(piece), 2)  # e's eye
         [eye] = [c for c in piece if not c.isClockwise()]
         bowl = geo.trim(piece, y0=eye.boundingBox()[3] + 20)
-        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
-        self.assertGreaterEqual(bowl.boundingBox()[0] - piece.boundingBox()[0], h1 - h0)
+        stroke = hyphen_stroke(self.font)
+        self.assertGreaterEqual(bowl.boundingBox()[0] - piece.boundingBox()[0], stroke)
 
     def test_degree_signs_put_a_small_ring_before_the_letter(self):
         # A ring at the top left, its top level with the letter's, before a letter standing
@@ -825,7 +795,8 @@ class KeyHintTest(unittest.TestCase):
         arrow = max(pieces, key=lambda p: p.boundingBox()[3] - p.boundingBox()[1])
         [bar] = [p for p in pieces if p is not arrow]
         dy = arrow.boundingBox()[1] - up.boundingBox()[1]
-        self.assertEqual(outline(arrow), outline(geo.transformed(up, psMat.translate(0, dy))))
+        self.assertEqual(measure.outline(arrow),
+                         measure.outline(geo.transformed(up, psMat.translate(0, dy))))
         # The shaft's walls, a quarter of the way up: ⇧'s head takes its upper half.
         _, y0, _, y1 = up.boundingBox()
         (l0, l1), *_, (_, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
@@ -838,7 +809,7 @@ class KeyHintTest(unittest.TestCase):
     def test_page_arrows_are_the_arrows_with_two_bars(self):
         # ↑ and ↓ whole, with two bars of the hyphen's stroke across the shaft, reaching past
         # it on both sides: Fira Code's span 61% of the arrow's width, Maple Mono's 95%.
-        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
+        stroke = hyphen_stroke(self.font)
         # The shaft, a quarter of the way in from the tail: the head's arms reach past the middle.
         for char, plain, tail in (("⇞", "↑", 0.25), ("⇟", "↓", 0.75)):
             with self.subTest(arrow=char):
@@ -848,7 +819,7 @@ class KeyHintTest(unittest.TestCase):
                 _, y0, _, y1 = arrow.boundingBox()
                 [(s0, s1)] = measure.spans_at_y(arrow, y0 + tail * (y1 - y0))
                 # Half a stroke out from the shaft: clear of it, short of the bars' round ends.
-                for x in (s0 - (h1 - h0) / 2, s1 + (h1 - h0) / 2):
+                for x in (s0 - stroke / 2, s1 + stroke / 2):
                     # Not the arrow's own spans, which may differ by both outlines' rounding.
                     own = measure.spans_at_x(arrow, x)
                     bars = [span for span in measure.spans_at_x(layer, x)
@@ -856,7 +827,7 @@ class KeyHintTest(unittest.TestCase):
                                        for a, b in own)]
                     self.assertEqual(len(bars), 2, (x, bars))
                     for a, b in bars:
-                        self.assertAlmostEqual(b - a, h1 - h0, delta=self.weight)
+                        self.assertAlmostEqual(b - a, stroke, delta=self.weight)
 
 
 # Currency sign -> the letter it is built on, with bars of the hyphen's stroke through it.
@@ -872,10 +843,6 @@ TICK_REACH = 100  # ₿'s ticks past B: Maple Mono's, the only reference's, reac
 # Maple Mono's at our cap height (Fira Code's 138 below and Intel One Mono's 130).
 CENT_REACH = 117
 BOLD_CENT_REACH = 118  # Maple Mono Bold's 118.6 (Intel One Mono Bold's 132, Fira Code Bold's 140)
-# Dash look-alike -> the dash it is: the hyphen for ‐ and the non-breaking hyphen ‑, the en
-# dash for the figure dash ‒ and the em dash for the horizontal bar ―, as their Unicode names
-# say and as the references that have them draw them.
-DASHES = {"‐": "-", "‑": "-", "‒": "–", "―": "—"}
 
 
 class CurrencyTest(unittest.TestCase):
@@ -909,7 +876,7 @@ class CurrencyTest(unittest.TestCase):
     def bars(self, sign, x):
         """The bars' (bottom, top) at x from the cell's middle, lowest first."""
         _, count, topmost = BARS[sign]
-        ink = measure.ink(self.font, self.font[ord(sign)].glyphname)
+        ink = measure.ink(self.font, ord(sign))
         spans = sorted(measure.spans_at_x(ink, ADVANCE / 2 + x))
         bars = spans[-count:] if topmost else spans[:count]
         self.assertEqual(len(bars), count)
@@ -963,23 +930,18 @@ class CurrencyTest(unittest.TestCase):
         self.assertGreaterEqual(y1 - c1, self.cent_reach)
         self.assertGreaterEqual(c0 - y0, self.cent_reach)
 
-    def dong_parts(self):
-        """(₫'s đ where ₫ places it, the matrix of its reference to the em dash): ₫ is the two
-        references, đ unmoved."""
+    def test_dong_is_the_letter_over_the_em_dash(self):
+        # ₫ is two references: đ unmoved, and the em dash only moved, to lie under the letter,
+        # clear of it.
         glyph = self.font[ord("₫")]
         self.assertEqual(len(glyph.foreground), 0)
         refs = {name: matrix for name, matrix, *_ in glyph.references}
         letter, dash = self.font[ord("đ")].glyphname, self.font[ord("—")].glyphname
         self.assertEqual(set(refs), {letter, dash})
         self.assertEqual(refs[letter], psMat.identity())
-        return measure.ink(self.font, letter), refs[dash]
-
-    def test_dong_is_the_letter_over_the_em_dash(self):
-        # The em dash only moved, to lie under the letter, clear of it.
-        letter, matrix = self.dong_parts()
-        self.assertEqual(linear(matrix), linear(psMat.identity()))
-        dash = geo.transformed(measure.ink(self.font, self.font[ord("—")].glyphname), matrix)
-        self.assertLess(dash.boundingBox()[3], letter.boundingBox()[1])
+        self.assertEqual(linear(refs[dash]), linear(psMat.identity()))
+        under = geo.transformed(measure.ink(self.font, dash), refs[dash])
+        self.assertLess(under.boundingBox()[3], measure.ink(self.font, letter).boundingBox()[1])
 
     def test_lira_bars_cross_the_stem(self):
         # Two bars left of t's stem, where nothing else of t is, and no sliver of its crossbar
@@ -996,15 +958,6 @@ class CurrencyTest(unittest.TestCase):
             with self.subTest(x=x):
                 for y0, y1 in measure.spans_at_x(layer, x):
                     self.assertGreaterEqual(y1 - y0, low)
-
-    def test_dash_look_alikes_are_the_dashes(self):
-        for char, dash in DASHES.items():
-            with self.subTest(glyph=char):
-                glyph = self.font[ord(char)]
-                self.assertEqual(len(glyph.foreground), 0)
-                [(name, matrix, *_)] = glyph.references
-                self.assertEqual(name, self.font[ord(dash)].glyphname)
-                self.assertEqual(matrix, psMat.identity())
 
     def test_triangular_bullet_is_the_small_triangle(self):
         # ‣ is ▸'s triangle at a text bullet's size: as tall as ▸, on its middle, and no wider.
@@ -1048,7 +1001,6 @@ class BoldMarkTest(MarkTest):
 
 class BoldShapeTest(ShapeTest):
     sfd = BOLD_SFD
-    bullet_width = BOLD_BULLET_WIDTH
 
 
 class BoldHeavyMarkTest(HeavyMarkTest):

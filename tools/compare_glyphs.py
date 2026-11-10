@@ -48,9 +48,6 @@ class Font:
         self.line_top = font.hhea_ascent + (font.ascent if font.hhea_ascent_add else 0)
         self.line_bottom = font.hhea_descent - (font.descent if font.hhea_descent_add else 0)
 
-    def set_target(self, target):
-        self.sy = target / self.anchor
-
     def row(self, char):
         code = ord(char)
         if code not in self.font:
@@ -88,7 +85,7 @@ def main():
         sys.exit(f"No reference fonts in {where}; see \"Designing glyphs\" in CLAUDE.md.")
     fonts = [Font(path, args.anchor) for path in paths]
     for font in fonts:
-        font.set_target(fonts[0].anchor)
+        font.sy = fonts[0].anchor / font.anchor  # y scale: every anchor lands on the first font's
     width = max(len(font.name) for font in fonts)
 
     for font in fonts:

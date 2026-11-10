@@ -1,4 +1,5 @@
 """Paths and font-wide facts that the tools and tests share."""
+import argparse
 import collections
 import json
 import os
@@ -181,12 +182,30 @@ def classify(font, known, of_code, unused):
     return classes
 
 
-def save_checked(font, sfd, script):
-    """Save `font` over the SFD at `sfd` once `script --check` passes on the saved copy.
+def run_generator(script, doc, build, invalid, target=SFD, source=None):
+    """A generator's command line: open the SFD it names (`target` by default), run
+    build(font) and save the font over that SFD. A generator that derives one SFD from
+    another opens `source` and still saves over the named one.
 
-    Validating in this process would write "Validated:" into the saved glyphs, so a fresh
-    process checks the copy before it replaces the SFD.
+    The save happens only once `script --check` passes on the saved copy: --check exits
+    non-zero when invalid(font), {glyph name: validate() flags} for the glyphs the generator
+    owns, is not empty. Validating in this process would write "Validated:" into the saved
+    glyphs, so a fresh process checks the copy before it replaces the SFD.
     """
+    import fontforge  # not at the top: tools that open no SFD import this module too
+
+    parser = argparse.ArgumentParser(description=doc.split("\n\n")[0])
+    parser.add_argument("sfd", nargs="?", default=str(target), help="default: %(default)s")
+    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.check:
+        if failed := invalid(fontforge.open(args.sfd)):
+            sys.exit(f"validate() failed: {({name: hex(flags) for name, flags in failed.items()})}")
+        return
+
+    sfd = pathlib.Path(args.sfd)
+    font = fontforge.open(str(source or sfd))
+    build(font)
     tmp = sfd.with_name(f".{sfd.name}.tmp")
     font.save(str(tmp))
     if subprocess.run([sys.executable, str(script), "--check", str(tmp)], check=False).returncode:

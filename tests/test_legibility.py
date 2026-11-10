@@ -23,7 +23,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import lig_geometry as geo
 import make_bold
 import measure
-from helpers import CIRCUMFLEX_STACKS
+from helpers import CIRCUMFLEX_STACKS, hyphen_stroke
 from project import (
     ADVANCE,
     BOLD_SFD,
@@ -40,12 +40,6 @@ def offsets(glyph, name):
     """(dx, dy) of each of the glyph's references to `name`, sorted."""
     # FontForge gives each reference as (name, matrix, selected).
     return sorted((matrix[4], matrix[5]) for ref, matrix, *_ in glyph.references if ref == name)
-
-
-def center(glyph, dx=0):
-    """The middle of the glyph's ink, moved dx."""
-    x0, _, x1, _ = glyph.boundingBox()
-    return (x0 + x1) / 2 + dx
 
 
 class LookalikeTest(unittest.TestCase):
@@ -108,7 +102,7 @@ class LookalikeTest(unittest.TestCase):
         # ❱ against the prompt's ❯, both tall angles: as in every surveyed font that draws them
         # apart (all but Cascadia Code), ❱ is wider and carries more ink, at least DejaVu Sans
         # Mono's 1.39 times ❯'s (JetBrains Mono's and Maple Mono's 1.50).
-        bracket, quote = (measure.ink(self.font, self.font[ord(c)].glyphname) for c in "❱❯")
+        bracket, quote = (measure.ink(self.font, ord(c)) for c in "❱❯")
         self.assertGreater(measure.ink_width(bracket), measure.ink_width(quote))
         self.assertGreaterEqual(measure.area(bracket) / measure.area(quote), 1.39)
 
@@ -146,8 +140,8 @@ class ColonTest(unittest.TestCase):
         self.assertEqual(dy, 0)
         # The comma's round head, above y 60, sits under the dot.
         head = geo.trim(self.font["comma"].foreground, y0=60)
-        self.assertAlmostEqual(measure.ink_center(head) + dx, center(self.font["period"]),
-                               delta=5)
+        self.assertAlmostEqual(measure.ink_center(head) + dx,
+                               measure.ink_center(self.font["period"].foreground), delta=5)
 
 
 PAIRS = {"parenright": "parenleft", "bracketright": "bracketleft", "braceright": "braceleft",
@@ -622,8 +616,7 @@ class AtSignTest(unittest.TestCase):
 
     def stem_white(self):
         """The white the loop keeps from the a's stem: the hyphen's thickness."""
-        [(h0, h1)] = measure.spans_at_x(self.font["hyphen"].foreground, ADVANCE / 2)
-        return h1 - h0
+        return hyphen_stroke(self.font)
 
     @staticmethod
     def stem_whites(at):
@@ -642,7 +635,7 @@ class AtSignTest(unittest.TestCase):
 
 
 class LetterFollowUpTest(unittest.TestCase):
-    """Ƿ, G and 5, which the legibility pass left for later, set apart from P and 6."""
+    """Ƿ, G and 5 set apart from P and 6."""
     sfd = SFD
     five_top = 100  # the highest 5's lower terminal may reach
     G_bar_white = 138  # Maple Mono's, the narrowest reference's (Fira Code 167, Intel 160)
@@ -652,9 +645,9 @@ class LetterFollowUpTest(unittest.TestCase):
         cls.font = fontforge.open(str(cls.sfd))
 
     def test_G_bar_stands_clear_of_the_left_stroke(self):
-        # Ours reached within 54 of it, closing G's lower half into 6's loop. Measured across
-        # 0.3-0.55 of the cap height, where every reference's bar lies; below the bar the line
-        # crosses the counter, wider still.
+        # Closer, the bar closes G's lower half into 6's loop. Measured across 0.3-0.55 of the
+        # cap height, where every reference's bar lies; below the bar the line crosses the
+        # counter, wider still.
         G = self.font["G"].foreground
         cap = self.font["H"].boundingBox()[3]
         whites = [spans[1][0] - spans[0][1] for i in range(51)
@@ -666,26 +659,26 @@ class LetterFollowUpTest(unittest.TestCase):
         self.assertEqual(len(measure.spans_at_y(self.font["uni01F7"].foreground, 200)), 2)
 
     def test_G_terminal_ends_left_of_the_stroke_below_it(self):
-        # In the references it ends 11-52 left of it; ours ran 25 past, closing G up like 6.
+        # In the references it ends 11-52 left of it; one that runs past closes G up like 6.
         G = self.font["G"].foreground
         _, _, terminal, _ = geo.trim(G, y0=540).boundingBox()
         _, _, side, _ = geo.trim(G, y0=150, y1=250).boundingBox()
         self.assertLessEqual(terminal, side - 11)
 
     def test_five_bowl_ends_low(self):
-        # The references' lower terminals top out at 73-113; ours curled up to 154 and nearly
-        # closed the bowl, like 6.
+        # The references' lower terminals top out at 73-113; one curled higher nearly closes
+        # the bowl, like 6.
         _, _, _, top = geo.trim(self.font["five"].foreground, x1=200, y1=250).boundingBox()
         self.assertLessEqual(top, self.five_top)
 
 
 class DotsTest(unittest.TestCase):
-    """… and ÷ keep dots smaller than `.`, as in all three references; their spacing was off.
-    ? and ! keep their dot clear of the stroke above it, and stand one height."""
+    """… and ÷ keep dots smaller than `.`, as in all three references. ? and ! keep their dot
+    clear of the stroke above it, and stand one height."""
     sfd = SFD
     divide_white = 81  # between ÷'s dots and its bar: the narrowest reference's
     # Between the dot of ? or ! and the stroke above it, at our cap height: Maple Mono's 88, the
-    # narrowest reference's (Fira Code's 102, Intel One Mono's 133). Ours left 69 under ?.
+    # narrowest reference's (Fira Code's 102, Intel One Mono's 133).
     point_white = 88
 
     @classmethod
@@ -697,7 +690,7 @@ class DotsTest(unittest.TestCase):
         return sorted(contour.boundingBox() for contour in self.font[name].foreground)
 
     def test_divide_dots_clear_the_bar(self):
-        # The references leave 81-111 between each dot and the bar; ours left 54-59.
+        # The references leave 81-111 between each dot and the bar.
         _, bar_bottom, _, bar_top = self.font["minus"].boundingBox()
         low, high = sorted(self.dots("divide"), key=lambda box: box[1])
         self.assertGreaterEqual(bar_bottom - low[3], self.divide_white)
@@ -719,7 +712,7 @@ class DotsTest(unittest.TestCase):
 
     def test_question_and_exclamation_stand_one_height(self):
         # As in all three references: Fira Code and Maple Mono at the cap height, Intel One
-        # Mono at its ascender. Ours stood 63 apart.
+        # Mono at its ascender.
         question, exclam = (self.font[name].boundingBox()[3] for name in ("question", "exclam"))
         self.assertAlmostEqual(question, exclam, delta=WOBBLE)
 

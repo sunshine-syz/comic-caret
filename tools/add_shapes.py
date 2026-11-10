@@ -19,17 +19,14 @@ asterisk.small and the square.* quarters), and redraws them in place, so running
 changes nothing but ModificationTime. Run tools/add_marks.py and tools/add_ligatures.py after
 it.
 """
-import argparse
 import math
-import pathlib
-import sys
 
 import fontforge
 import psMat
 
 import lig_geometry as geo
 import measure
-from project import ADVANCE, AXIS, SFD, save_checked, validation_errors
+from project import ADVANCE, AXIS, run_generator, validation_errors
 
 CX = ADVANCE / 2  # the cell's middle; ○ ● ☐ ■ center on it and on AXIS
 DEG = math.pi / 180
@@ -101,7 +98,7 @@ class Ref:
     """A glyph made of references: [(glyph name, matrix)], in the order the SFD lists them."""
 
     def __init__(self, *parts):
-        self.parts = [(name, matrix) for name, matrix in parts]
+        self.parts = parts
 
 
 def glyph_for(font, key):
@@ -351,29 +348,12 @@ def add_glyphs(font, outlines):
     font.encoding = "UnicodeBmp"
 
 
-def check(path):
-    """Exit non-zero if a frame in the SFD at `path` fails validate()."""
-    font = fontforge.open(str(path))
+def invalid(font):
+    """{glyph name: validate() flags} of the frames and components that fail validate()."""
     allowed = {code: OVERLAPPING_REFERENCES for code in SQUARE_QUADRANTS}
-    failed = {font[key].glyphname: hex(flags) for key in (*CODES, *COMPONENTS)
-              if (flags := validation_errors(font[key]) & ~allowed.get(key, 0))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    sfd = pathlib.Path(args.sfd)
-    font = fontforge.open(str(sfd))
-    add_glyphs(font, build(font))
-    save_checked(font, sfd, __file__)
+    return {font[key].glyphname: flags for key in (*CODES, *COMPONENTS)
+            if (flags := validation_errors(font[key]) & ~allowed.get(key, 0))}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, lambda font: add_glyphs(font, build(font)), invalid)

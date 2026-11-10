@@ -47,7 +47,6 @@ stems (RAISED) or keeps its ends (BLUNT). A mark rises by as much as the pen gre
 letter toward each other (raise_clear()). Widths, anchors and the lookups carry over as they
 are.
 """
-import argparse
 import collections
 import itertools
 import math
@@ -86,7 +85,7 @@ from project import (
     SFD,
     is_alphanumeric,
     is_letter,
-    save_checked,
+    run_generator,
     validation_errors,
 )
 
@@ -422,12 +421,11 @@ def side_bounds(font, classes):
     (Δ in ∆, đ in ₫) is never condensed to it (fitted()). A part the bold draws as the glyph's
     own outline (unlinked_parts()), as Θ's O, and a shared glyph's part, which doesn't grow,
     keep their own."""
-    side = project.SYMBOL_SIDE
     bounds = {}
     for glyph in font.glyphs():
         if (code := glyph.unicode) >= 0:
             x0, _, x1, _ = glyph.boundingBox()
-            room = 0 if is_alphanumeric(code) else side
+            room = 0 if is_alphanumeric(code) else project.SYMBOL_SIDE
             bounds[glyph.glyphname] = (min(x0, room), max(x1, ADVANCE - room))
     # Users first, so a part takes the bound its users took from theirs.
     for glyph in sorted(font.glyphs(), key=lambda g: depth(font, g.glyphname), reverse=True):
@@ -1011,9 +1009,10 @@ def restart(glyph):
 def build(font):
     """Turn the regular, opened as `font`, into the bold."""
     classes = classify(font)
-    # Most name lists are read only with `in`, which passes a stale name or a glyph two ways
-    # claim unseen: each names bolder glyphs, the ways below grow a glyph only one way, and
-    # SLASHES and LIGHT_PIECES are read only inside pieces_apart().
+    # Most name lists are read only with `in`, so a stale name, or a glyph that two ways claim,
+    # would pass unseen. So each list must name bolder glyphs, no two of the ways below may
+    # name one glyph, as only the first would grow it, and SLASHES and LIGHT_PIECES must name
+    # glyphs of PIECES_APART, as only pieces_apart() reads them.
     for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT", "LIFTED",
@@ -1022,7 +1021,7 @@ def build(font):
             if classes.get(name) != BOLDER:
                 sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")
     ways = {"PIECES_APART": PIECES_APART, "SHRUNK": SHRUNK, "OPENED": OPENED, "DASHED": DASHED,
-            "LIFTED": LIFTED, "TICKED": tuple(TICKED),
+            "LIFTED": LIFTED, "TICKED": TICKED,
             "RAISED, MERGED, OWN_BOX, ACROSS_AS_UP, BLUNT, HEADS_APART":
             RAISED + MERGED + OWN_BOX + ACROSS_AS_UP + BLUNT + HEADS_APART}
     for (a, first), (b, second) in itertools.combinations(ways.items(), 2):
@@ -1180,28 +1179,13 @@ def build(font):
     font.os2_capheight = round(font["H"].boundingBox()[3])
 
 
-def check(path):
-    """Exit non-zero if a glyph of the bold at `path` fails a validate() check that the
-    regular's passes (the regular's ∄ overlaps its references; the bold's is one outline)."""
-    bold, regular = fontforge.open(str(path)), fontforge.open(str(SFD))
-    failed = {g.glyphname: hex(flags) for g in bold.glyphs()
-              if (flags := validation_errors(g) & ~validation_errors(regular[g.glyphname]))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(BOLD_SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    font = fontforge.open(str(SFD))
-    build(font)
-    save_checked(font, pathlib.Path(args.sfd), __file__)
+def invalid(bold):
+    """{glyph name: validate() flags} of the bold's glyphs that fail a validate() check the
+    regular's pass (the regular's ∄ overlaps its references; the bold's is one outline)."""
+    regular = fontforge.open(str(SFD))
+    return {g.glyphname: flags for g in bold.glyphs()
+            if (flags := validation_errors(g) & ~validation_errors(regular[g.glyphname]))}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, build, invalid, target=BOLD_SFD, source=SFD)

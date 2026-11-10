@@ -9,9 +9,7 @@ glyphs, since a new glyph lands after the generated ones. Its constants are meas
 `- = _ # ~ < > | : ;`; after redrawing one of those, measure again until
 tests/test_add_ligatures.py's MeasurementTest passes, then rerun it.
 """
-import argparse
 import math
-import pathlib
 import re
 import sys
 from typing import NamedTuple
@@ -20,7 +18,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
-from project import ADVANCE, AXIS, OVERLAP, ROOT, SFD, WOBBLE, save_checked, validation_errors
+from project import ADVANCE, AXIS, OVERLAP, ROOT, WOBBLE, run_generator, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
 LINE_EXTENSION = 0x23AF
@@ -133,8 +131,6 @@ THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "
                            "bar"),
               "tight_l2": ("slash", "period", "ampersand", "plus", "less", "greater", "bar")}
 
-JOIN = 4  # how far a stroke reaches into the one it runs into, so they overlap, never just meet
-
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one. The white
 # between the two, 171, goes with the heads' size, not the cell's: more than Fira Code's (145
 # at our cell), the one reference that draws ->>. The inner head's crotch then lies inside its
@@ -212,11 +208,11 @@ def tilde_pieces(font):
         psMat.scale(TILDE_HALF / (TILDE_TROUGH - TILDE_CREST), 1), TILDE_CREST, 0))
     trough = TILDE_CREST + TILDE_HALF  # where the run's fall ends
     rise = geo.mirrored_x(fall, trough)
-    rise_before = geo.transformed(rise, psMat.translate(-2 * TILDE_HALF, 0))
+    rise_before = geo.moved(rise, -2 * TILDE_HALF, 0)
     start = geo.snap_edge(geo.trim(tilde, x1=TILDE_CREST), TILDE_CREST, CREST_PROFILE)
-    finish = geo.transformed(
+    finish = geo.moved(
         geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE),
-        psMat.translate(trough - TILDE_TROUGH, 0))
+        trough - TILDE_TROUGH, 0)
     first, last = TILDE_CREST - TILDE_HALF, trough + TILDE_HALF  # the outer extremes
 
     def to_edge(layer, x, edge, profile):
@@ -370,11 +366,10 @@ def equal_bars(font, cells):
     """= bars across `cells` cells, ending in the last: two over two cells, three over three,
     as both references draw === and !==."""
     span = ADVANCE * (cells - 1)
-    bars = geo.transformed(geo.stretch(outline(font, "equal"), EQUAL_MIDDLE, span),
-                           psMat.translate(-span, 0))
+    bars = geo.moved(geo.stretch(outline(font, "equal"), EQUAL_MIDDLE, span), -span, 0)
     if cells == 3:
-        third = geo.transformed(geo.trim(bars, y1=AXIS), psMat.translate(0, -EQUAL_PITCH))
-        return geo.transformed(geo.union(bars, third), psMat.translate(0, EQUAL_PITCH / 2))
+        third = geo.moved(geo.trim(bars, y1=AXIS), 0, -EQUAL_PITCH)
+        return geo.moved(geo.union(bars, third), 0, EQUAL_PITCH / 2)
     # Level, so the stretched middle, which the hinter takes the bars' edges from, lies on ='s
     # hint edges: there != kept the upper bar's middle on a pixel edge at 8 px, a tie the
     # hinter rounded down onto the lower bar.
@@ -460,7 +455,7 @@ def or_equal(font, name):
     tight.addExtrema("all")  # else the box reaches to the control points
     x0, y0, x1, y1 = tight.boundingBox()
     # Moved up by whole units, so rounding keeps the angle as tall as < >.
-    return geo.transformed(symbol, psMat.translate(-(x0 + x1) / 2, round(AXIS - (y0 + y1) / 2)))
+    return geo.moved(symbol, -(x0 + x1) / 2, round(AXIS - (y0 + y1) / 2))
 
 
 def squeezed_bar(font, height):
@@ -488,8 +483,7 @@ def pipe_head(font, name):
         meet = max(range(AXIS - HALF_REACH, AXIS + HALF_REACH),
                    key=lambda y: span_at(angle, y)[0])
         lower = geo.trim(longer_angle(font, "greater", (meet - half, meet + half), turn), y1=meet)
-        return geo.transformed(geo.weld_y(lower, geo.mirrored_y(lower, meet), meet),
-                               psMat.translate(0, AXIS - meet))
+        return geo.moved(geo.weld_y(lower, geo.mirrored_y(lower, meet), meet), 0, AXIS - meet)
 
     # Its end's height fixed, the arm reaches across by the run of its middle line, from the
     # end cap's centre up to the point, over the tangent of its slope. Turn it to the slope
@@ -509,7 +503,7 @@ def pipe_bar(font, head):
     """| squeezed to the height of `head` and level with it."""
     _, hy0, _, hy1 = head.boundingBox()
     bar = squeezed_bar(font, hy1 - hy0)
-    return geo.transformed(bar, psMat.translate(0, hy0 - bar.boundingBox()[1]))
+    return geo.moved(bar, 0, hy0 - bar.boundingBox()[1])
 
 
 def against(head, name, x):
@@ -517,7 +511,7 @@ def against(head, name, x):
     (pipe_head()), lies at x. Arm and bar are about equally heavy, so with a bar's edge at x
     their round ends overlap and turn as one."""
     x0, _, x1, _ = head.boundingBox()
-    return geo.transformed(head, psMat.translate(x - (x0 if name == "greater" else x1), 0))
+    return geo.moved(head, x - (x0 if name == "greater" else x1), 0)
 
 
 def pipe(font, name):
@@ -528,7 +522,7 @@ def pipe(font, name):
     # The bar's outer edge goes where the references put it, and the arm ends' outer edge onto it.
     edge = PIPE_BAR_EDGE[name]
     outer = bx0 if name == "greater" else bx1  # |> has its bar on the left, <| on the right
-    bar = geo.transformed(bar, psMat.translate(edge - outer, 0))
+    bar = geo.moved(bar, edge - outer, 0)
     return geo.union(bar, against(arrow, name, edge))
 
 
@@ -541,7 +535,7 @@ def pipes(font):
     left = against(pipe_head(font, "less"), "less", bx1)
     symbol = geo.union(left, bar, against(right, "greater", bx0))
     x0, _, x1, _ = symbol.boundingBox()
-    return geo.transformed(symbol, psMat.translate(-ADVANCE / 2 - (x0 + x1) / 2, 0))
+    return geo.moved(symbol, -ADVANCE / 2 - (x0 + x1) / 2, 0)
 
 
 def end_centre(angle, above):
@@ -588,7 +582,7 @@ def tail(font, name):
 def two_heads(font, name):
     """The end of ->> or <<-: a second head HEAD_PITCH inside the first, where the shaft ends."""
     head = arrowhead(font, name)
-    inner = geo.transformed(head, psMat.translate(OUTWARD[name] * HEAD_PITCH, 0))
+    inner = geo.moved(head, OUTWARD[name] * HEAD_PITCH, 0)
     end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
     shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
              else stroke(font, "hyphen", end, ADVANCE + OVERLAP))
@@ -712,31 +706,18 @@ def merge_features(font):
         sys.exit(f"{FEA.name} did not merge; missing lookups: {', '.join(missing)}")
 
 
-def check(path):
-    """Exit non-zero if a generated glyph in the SFD at `path` fails validate()."""
-    font = fontforge.open(str(path))
-    failed = {glyph.glyphname: hex(flags) for glyph in font.glyphs()
-              if GENERATED.fullmatch(glyph.glyphname) and (flags := validation_errors(glyph))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
+def invalid(font):
+    """{glyph name: validate() flags} of the generated glyphs that fail validate()."""
+    return {glyph.glyphname: flags for glyph in font.glyphs()
+            if GENERATED.fullmatch(glyph.glyphname) and (flags := validation_errors(glyph))}
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    sfd = pathlib.Path(args.sfd)
-    font = fontforge.open(str(sfd))
+def generate(font):
     remove_previous(font)
     add_glyphs(font, build(font))
     add_line_extension(font)
     merge_features(font)
-    save_checked(font, sfd, __file__)
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, generate, invalid)

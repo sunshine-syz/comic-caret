@@ -10,17 +10,14 @@ font's own L and N. The script owns the seven glyphs and redraws them in place, 
 again changes nothing but ModificationTime. The Nerd Fonts patcher keeps them because build.sh
 passes --careful.
 """
-import argparse
 import math
-import pathlib
-import sys
 
 import fontforge
 import psMat
 
 import lig_geometry as geo
 from add_box_drawing import LIGHT
-from project import ADVANCE, CELL_REACH, LINE_BOTTOM, LINE_TOP, SFD, save_checked, validation_errors
+from project import ADVANCE, CELL_REACH, LINE_BOTTOM, LINE_TOP, run_generator, validation_errors
 
 BRANCH, LINE_NUMBER, PADLOCK = 0xE0A0, 0xE0A1, 0xE0A2
 RIGHT_SOLID, RIGHT_THIN, LEFT_SOLID, LEFT_THIN = 0xE0B0, 0xE0B1, 0xE0B2, 0xE0B3
@@ -141,18 +138,18 @@ def branch():
     return geo.cleanup(geo.union(trunk, geo.stroked(fork, LIGHT), *dots))
 
 
-def letter(font, name, scale, bottom):
-    """The letter's outline scaled, centred in the cell, its lowest point at `bottom`."""
-    layer = geo.transformed(font[name].foreground, psMat.scale(scale))
+def letter(font, name, bottom):
+    """The letter's outline at LETTER_SCALE, centred in the cell, its lowest point at `bottom`."""
+    layer = geo.transformed(font[name].foreground, psMat.scale(LETTER_SCALE))
     x0, y0, x1, _ = layer.boundingBox()
-    return geo.transformed(layer, psMat.translate(ADVANCE / 2 - (x0 + x1) / 2, bottom - y0))
+    return geo.moved(layer, ADVANCE / 2 - (x0 + x1) / 2, bottom - y0)
 
 
 def line_number(font):
     """: L over N, each the letter at LETTER_SCALE, N's foot LINE_NUMBER_INSET above the line
     box's bottom."""
-    below = letter(font, "N", LETTER_SCALE, LINE_BOTTOM + LINE_NUMBER_INSET)
-    above = letter(font, "L", LETTER_SCALE, below.boundingBox()[3] + LETTER_GAP)
+    below = letter(font, "N", LINE_BOTTOM + LINE_NUMBER_INSET)
+    above = letter(font, "L", below.boundingBox()[3] + LETTER_GAP)
     out = fontforge.layer()
     out += below.dup()
     out += above.dup()
@@ -199,28 +196,11 @@ def add_glyphs(font, outlines):
         glyph.autoHint()
 
 
-def check(path):
-    """Exit non-zero if a symbol in the SFD at `path` fails validate()."""
-    font = fontforge.open(str(path))
-    failed = {font[code].glyphname: hex(flags) for code in CODES
-              if (flags := validation_errors(font[code]))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    sfd = pathlib.Path(args.sfd)
-    font = fontforge.open(str(sfd))
-    add_glyphs(font, build(font))
-    save_checked(font, sfd, __file__)
+def invalid(font):
+    """{glyph name: validate() flags} of the symbols that fail validate()."""
+    return {font[code].glyphname: flags for code in CODES
+            if (flags := validation_errors(font[code]))}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, lambda font: add_glyphs(font, build(font)), invalid)

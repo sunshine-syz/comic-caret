@@ -6,9 +6,7 @@ Run: python3 -m unittest discover tests
 import math
 import pathlib
 import re
-import subprocess
 import sys
-import tempfile
 import unicodedata
 import unittest
 
@@ -21,7 +19,7 @@ import lig_geometry as geo
 import make_bold
 from add_ligatures import GENERATED
 from add_marks import MARKS
-from helpers import CIRCUMFLEX_STACKS
+from helpers import CIRCUMFLEX_STACKS, assert_lookups_carry_over
 from make_bold import BOLDER, PEN, SHARED
 from measure import (
     area,
@@ -46,7 +44,7 @@ from project import (
     is_alphanumeric,
     is_letter,
 )
-from sfd_files import differences
+from sfd_files import rerun_differences
 
 THREE_END = re.compile(r".+\.tight_[lr]2")  # the outer glyph of a tightened three
 
@@ -82,13 +80,7 @@ class GeneratorTest(unittest.TestCase):
     def test_rerunning_changes_nothing(self):
         # Fails when the regular or the generator changed without a rerun, or when the bold
         # was edited by hand, as well as when a run is not repeatable.
-        with tempfile.TemporaryDirectory() as tmp:
-            out = pathlib.Path(tmp) / BOLD_SFD.name
-            # FontForge reports the overlaps it trips on to stderr; shown only on a failure.
-            run = subprocess.run([sys.executable, str(GENERATOR), str(out)],
-                                 capture_output=True, text=True, check=False)
-            self.assertEqual(run.returncode, 0, run.stderr)
-            self.assertEqual(differences(BOLD_SFD, out), [])
+        self.assertEqual(rerun_differences(BOLD_SFD, GENERATOR), [])
 
     def test_every_glyph_has_one_class(self):
         font = fontforge.open(str(SFD))
@@ -285,12 +277,7 @@ class BoldTest(unittest.TestCase):
         # would leave the bold || thin beside I|l.
         def weights(name):
             """Each piece's stroke across its middle."""
-            found = []
-            for piece in pieces(ink(self.bold, name)):
-                _, y0, _, y1 = piece.boundingBox()
-                [(x0, x1)] = spans_at_y(piece, (y0 + y1) / 2)
-                found.append(x1 - x0)
-            return found
+            return [make_bold.middle_stroke(piece, name) for piece in pieces(ink(self.bold, name))]
         [stem] = weights("I")
         low, high = BAR_TO_STEM
         for name in ("bar", "brokenbar"):
@@ -370,14 +357,13 @@ class BoldTest(unittest.TestCase):
         # symbols, but Ω K Å, which are letters (project.is_alphanumeric()). A letter or figure,
         # as the cell is drawn round its stems, keeps to the cell or its overhang, as
         # tests/test_sanity.py holds it.
-        side = SYMBOL_SIDE
         wrong = {}
         for glyph in self.regular.glyphs():
             if is_alphanumeric(code := glyph.unicode) or code < 0:
                 continue
             x0, _, x1, _ = glyph.boundingBox()
             b0, _, b1, _ = self.bold[glyph.glyphname].boundingBox()
-            if b0 < min(x0, side) or b1 > max(x1, ADVANCE - side):
+            if b0 < min(x0, SYMBOL_SIDE) or b1 > max(x1, ADVANCE - SYMBOL_SIDE):
                 wrong[glyph.glyphname] = ((b0, b1), (x0, x1))
         self.assertEqual(wrong, {})
 
@@ -502,23 +488,7 @@ class BoldTest(unittest.TestCase):
                     or any(undrawn(name, part, m) for part, m in dropped)):
                 wrong[name] = (found, listed(glyph))
         self.assertEqual(wrong, {})
-        for kind in ("gsub_lookups", "gpos_lookups"):
-            self.assertEqual(getattr(self.bold, kind), getattr(self.regular, kind))
-            for lookup in getattr(self.regular, kind):
-                with self.subTest(lookup=lookup):
-                    self.assertEqual(self.bold.getLookupInfo(lookup),
-                                     self.regular.getLookupInfo(lookup))
-                    self.assertEqual(self.bold.getLookupSubtables(lookup),
-                                     self.regular.getLookupSubtables(lookup))
-        different = [g.glyphname for g in self.regular.glyphs()
-                     if self.bold[g.glyphname].getPosSub("*") != g.getPosSub("*")]
-        self.assertEqual(different, [])
-
-    def test_names_and_weight(self):
-        font = self.bold
-        self.assertEqual((font.fontname, font.fullname, font.os2_weight, font.os2_stylemap),
-                         (make_bold.FONTNAME, make_bold.FULLNAME, make_bold.WEIGHT,
-                          make_bold.BOLD_BIT))
+        assert_lookups_carry_over(self, self.bold, self.regular)
 
 
 if __name__ == "__main__":

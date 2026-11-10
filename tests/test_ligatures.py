@@ -31,7 +31,6 @@ from project import (
     style_of,
 )
 
-# Each built font.
 FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
 REGULAR = font_file("Regular", "ttf")
 

@@ -32,9 +32,7 @@ the period) and a slanted glyph whose part is turned a quarter (⋮ on …) are 
 outlines. Anchors move with the shear, so the mark lookups carry over as they are, and so do
 the ligature lookups.
 """
-import argparse
 import math
-import pathlib
 import sys
 
 import fontforge
@@ -43,7 +41,7 @@ import psMat
 import lig_geometry as geo
 import project
 from add_ligatures import GENERATED
-from project import AXIS, ITALIC_SFD, SFD, save_checked, validation_errors
+from project import AXIS, ITALIC_SFD, SFD, run_generator, validation_errors
 
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
 SLANT = math.tan(math.radians(ANGLE))
@@ -167,8 +165,7 @@ def slant(glyph):
         sys.exit(f"{glyph.glyphname} keeps a reference the shear cannot express; "
                  "build() unlinks those first")
     if len(glyph.foreground):
-        layer = glyph.foreground.dup()
-        layer.transform(SHEAR)
+        layer = geo.transformed(glyph.foreground, SHEAR)
         # Rounding can move an extremum off its point, so extrema are added between two
         # roundings; "all" because the default skips short segments validate() still checks.
         layer.round()
@@ -216,28 +213,13 @@ def build(font):
     font.os2_panose = panose
 
 
-def check(path):
-    """Exit non-zero if a glyph of the italic at `path` fails validate() where the regular's
-    doesn't (∄'s parts overlap in both)."""
-    italic, regular = fontforge.open(str(path)), fontforge.open(str(SFD))
-    failed = {g.glyphname: hex(flags) for g in italic.glyphs()
-              if (flags := validation_errors(g)) != validation_errors(regular[g.glyphname])}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(ITALIC_SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    font = fontforge.open(str(SFD))
-    build(font)
-    save_checked(font, pathlib.Path(args.sfd), __file__)
+def invalid(italic):
+    """{glyph name: validate() flags} of the italic's glyphs whose flags differ from the
+    regular's (∄'s parts overlap in both)."""
+    regular = fontforge.open(str(SFD))
+    return {g.glyphname: flags for g in italic.glyphs()
+            if (flags := validation_errors(g)) != validation_errors(regular[g.glyphname])}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, build, invalid, target=ITALIC_SFD, source=SFD)

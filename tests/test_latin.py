@@ -23,10 +23,9 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' s
 import make_bold
 import measure
 import sfnt
-from helpers import require_current_build
+from helpers import hyphen_stroke, require_current_build
 from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE, font_file
 
-TTF = font_file("Regular", "ttf")
 CODE_PAGE_BITS = {"cp1252": 0, "cp1250": 1, "cp1254": 4, "cp1257": 7}  # of ulCodePageRange1
 # As heavy for their height as Intel One Mono's and Maple Mono's superscripts (0.16-0.17 of
 # it); at 74, as Fira Code's, the 4's counter in ¼ ¾ closed up.
@@ -100,15 +99,16 @@ def code_page(codec):
 OS2_CODE_PAGES = 78  # offset of OS/2.ulCodePageRange1
 
 
-def code_page_range(path):
-    """ulCodePageRange1 of the font's OS/2 table, read from the file itself."""
-    return struct.unpack_from(">L", sfnt.tables(path)[b"OS/2"], OS2_CODE_PAGES)[0]
-
-
-def hyphen_stroke(font):
-    """The stroke's weight: the hyphen's, at its middle."""
-    [(h0, h1)] = measure.spans_at_x(font["hyphen"].foreground, ADVANCE / 2)
-    return h1 - h0
+def middle_white(layer):
+    """The least white between a letter's stem and the stroke right of it, from 30 to 70 % of
+    its height."""
+    _, y0, _, y1 = layer.boundingBox()
+    gaps = []
+    for percent in range(30, 71):
+        spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
+        if len(spans) >= 2:
+            gaps.append(spans[1][0] - spans[0][1])
+    return min(gaps)
 
 
 class CoverageTest(unittest.TestCase):
@@ -141,7 +141,8 @@ class CoverageTest(unittest.TestCase):
     def test_built_font_declares_the_code_pages(self):
         # FontForge derives the flags from the cmap; CLAUDE.md keeps them out of the SFD.
         require_current_build(("Regular",), ("ttf",))
-        declared = code_page_range(TTF)
+        os2 = sfnt.tables(font_file("Regular", "ttf"))[b"OS/2"]
+        [declared] = struct.unpack_from(">L", os2, OS2_CODE_PAGES)
         for codec, bit in CODE_PAGE_BITS.items():
             with self.subTest(codec=codec):
                 self.assertTrue(declared >> bit & 1)
@@ -157,7 +158,7 @@ class LookalikeTest(unittest.TestCase):
     # (left, right): how far the narrowest reference's bar reaches past the stem, x scaled to
     # our cell. ł: Fira Code's (Maple Mono 119, 160; Intel One Mono 145, 159). Ł: Intel One
     # Mono's left and Maple Mono's right (Fira Code 95, 200; Intel One Mono's right 221).
-    bar_reach = {"lslash": (105, 124), "Lslash": (55, 170)}
+    lslash_reach, capital_lslash_reach = (105, 124), (55, 170)
 
     @classmethod
     def setUpClass(cls):
@@ -218,14 +219,8 @@ class LookalikeTest(unittest.TestCase):
     def test_sharp_s_waist_is_open(self):
         # The white between the stem and the 3's middle, where B's bowls meet its stem: at
         # least the narrowest reference's (Maple Mono 75; Fira Code 96, Intel One Mono 131).
-        layer = self.font["germandbls"].foreground
-        _, y0, _, y1 = layer.boundingBox()
-        gaps = []
-        for percent in range(30, 71):
-            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
-            if len(spans) >= 2:
-                gaps.append(spans[1][0] - spans[0][1])
-        self.assertGreaterEqual(min(gaps), self.sharp_s_waist)
+        self.assertGreaterEqual(middle_white(self.font["germandbls"].foreground),
+                                self.sharp_s_waist)
 
     def test_capital_sharp_s_stays_open_at_the_bottom(self):
         # The bowl ends short of the stem, or ẞ reads as B: at least as far as the narrowest
@@ -242,14 +237,8 @@ class LookalikeTest(unittest.TestCase):
         # The white between the stem and the diagonal, down to where it meets the bowl: at
         # least the narrowest reference's, at our cap height (Maple Mono 79.5; Fira Code 117.9,
         # Intel One Mono 155.0).
-        layer = self.font["uni1E9E"].foreground
-        _, y0, _, y1 = layer.boundingBox()
-        gaps = []
-        for percent in range(30, 71):
-            spans = measure.spans_at_y(layer, y0 + percent / 100 * (y1 - y0))
-            if len(spans) >= 2:
-                gaps.append(spans[1][0] - spans[0][1])
-        self.assertGreaterEqual(min(gaps), self.capital_sharp_s_middle)
+        self.assertGreaterEqual(middle_white(self.font["uni1E9E"].foreground),
+                                self.capital_sharp_s_middle)
 
     def test_eth_bar_crosses_its_stroke(self):
         # The bar tells ð from ∂: bar and rising stroke make one outline, the bar reaching past
@@ -269,7 +258,8 @@ class LookalikeTest(unittest.TestCase):
         # A bar that barely passes the stem reads as l and L at 11-16 px. ł and Ł are l and L
         # with the bar drawn in, so at each height their ink past the plain letter's is the
         # bar's reach past the stem's side.
-        for slashed, plain in (("lslash", "l"), ("Lslash", "L")):
+        for slashed, plain, floors in (("lslash", "l", self.lslash_reach),
+                                       ("Lslash", "L", self.capital_lslash_reach)):
             bar, letter = self.font[slashed].foreground, self.font[plain].foreground
             self.assertGreater(measure.covered(letter, bar), 0.99, f"{slashed} isn't {plain}")
             reach = [0, 0]
@@ -278,7 +268,7 @@ class LookalikeTest(unittest.TestCase):
                 if spans and stem:
                     reach = [max(reach[0], stem[0][0] - spans[0][0]),
                              max(reach[1], spans[-1][1] - stem[-1][1])]
-            for side, found, floor in zip(("left", "right"), reach, self.bar_reach[slashed]):
+            for side, found, floor in zip(("left", "right"), reach, floors):
                 with self.subTest(glyph=slashed, side=side):
                     self.assertGreaterEqual(round(found), floor)
 
@@ -569,7 +559,7 @@ class BoldLookalikeTest(LookalikeTest):
     per_mille_clearance = BOLD_PER_MILLE_CLEARANCE
     # ł: Fira Code Bold's (Maple Mono Bold 106, 139; Intel One Mono Bold 134, 166). Ł: Intel One
     # Mono Bold's left and Maple Mono Bold's right (Fira Code Bold 84, 193).
-    bar_reach = {"lslash": (100, 121), "Lslash": (55, 145)}
+    lslash_reach, capital_lslash_reach = (100, 121), (55, 145)
     # The reference bolds' narrowest. ß's per 1000 em, as the regular's: Fira Code's 34.2 at
     # its foot (Maple Mono's 65.6, Intel One Mono's 94.9) and 48.2 at its waist (65.0, 85.0).
     # ẞ's at the bold's cap height, as the regular's: Fira Code's 47.9 at its foot (Maple

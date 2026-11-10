@@ -18,7 +18,6 @@ Replaces everything an earlier run made, so running it again changes nothing but
 ModificationTime. Rerun it after adding or redrawing glyphs, then tools/add_ligatures.py, since
 a new glyph lands after the generated ones.
 """
-import argparse
 import pathlib
 import statistics
 import sys
@@ -30,7 +29,7 @@ import psMat
 
 import lig_geometry as geo
 import measure
-from project import ADVANCE, SFD, is_letter, save_checked, validation_errors
+from project import ADVANCE, is_letter, run_generator, validation_errors
 
 # Combining mark -> the spacing accent it is drawn from.
 MARKS = {0x300: "grave.accent", 0x301: "acute", 0x302: "circumflex", 0x303: "tilde",
@@ -116,15 +115,6 @@ def remove_previous(font):
             font.removeLookup(lookup)
 
 
-def add_lookup(font, name, kind, feature, after=None):
-    features = ((feature, SCRIPTS),) if feature else ()
-    if after:
-        font.addLookup(name, kind, (), features, after)
-    else:
-        font.addLookup(name, kind, (), features)
-    font.addLookupSubtable(name, name)
-
-
 def sequences(font, glyph):
     """The sequences of glyphs a precomposed glyph is made of: its full canonical
     decomposition and its one-level one, where every part is in the font and each part after
@@ -146,12 +136,14 @@ def sequences(font, glyph):
 
 def add_compositions(font):
     """ccmp: a letter and its marks become the precomposed letter."""
-    add_lookup(font, f"{PREFIX}compose", "gsub_ligature", "ccmp")
+    compose = f"{PREFIX}compose"
+    font.addLookup(compose, "gsub_ligature", (), (("ccmp", SCRIPTS),))
+    font.addLookupSubtable(compose, compose)
     for glyph in font.glyphs():
         if glyph.unicode < 0 or glyph.unicode in MARKS:
             continue
         for names in sequences(font, glyph):
-            glyph.addPosSub(f"{PREFIX}compose", names)
+            glyph.addPosSub(compose, names)
             # A ligature's result would otherwise count as a ligature in GDEF, where it is a
             # letter that takes marks.
             glyph.glyphclass = "baseglyph"
@@ -160,7 +152,8 @@ def add_compositions(font):
 def add_dotless(font):
     """ccmp: i and j lose their dot before a mark above."""
     single, chain = f"{PREFIX}dotless_single", f"{PREFIX}dotless"
-    add_lookup(font, single, "gsub_single", None, f"{PREFIX}compose")
+    font.addLookup(single, "gsub_single", (), (), f"{PREFIX}compose")
+    font.addLookupSubtable(single, single)
     for letter, dotless in DOTLESS.items():
         font[letter].addPosSub(single, dotless)
     font.addLookup(chain, "gsub_contextchain", (), (("ccmp", SCRIPTS),), single)
@@ -193,9 +186,7 @@ def base_anchors(font, placements, offsets, top_y):
 
     anchors = {}
     for glyph in font.glyphs():
-        if glyph.unicode < 0:
-            continue
-        if glyph.unicode in MARKS:
+        if glyph.unicode < 0 or glyph.unicode in MARKS:
             continue
         x0, _, x1, top = glyph.boundingBox()
         parts = [(name, geo.transformed(measure.ink(font, name), matrix).boundingBox())
@@ -294,28 +285,11 @@ def build(font):
     merge_positioning(font, positioning(anchors, boxes, top_y))
 
 
-def check(path):
-    """Exit non-zero if a mark in the SFD at `path` fails validate()."""
-    font = fontforge.open(str(path))
-    failed = {font[code].glyphname: hex(flags) for code in MARKS
-              if (flags := validation_errors(font[code]))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    sfd = pathlib.Path(args.sfd)
-    font = fontforge.open(str(sfd))
-    build(font)
-    save_checked(font, sfd, __file__)
+def invalid(font):
+    """{glyph name: validate() flags} of the marks that fail validate()."""
+    return {font[code].glyphname: flags for code in MARKS
+            if (flags := validation_errors(font[code]))}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, build, invalid)

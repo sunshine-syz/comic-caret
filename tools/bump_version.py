@@ -40,11 +40,6 @@ def sfd_version(sfd):
     return match.group(1)
 
 
-def headings(text):
-    """[(version, month or "unreleased", match)] of the changelog's headings, newest first."""
-    return [(match.group(1), match.group(2), match) for match in HEADING.finditer(text)]
-
-
 def newest(text, changelog):
     """The first `## ` heading, which must be well formed: a skipped one would let an older
     heading's version be read as the head."""
@@ -90,7 +85,9 @@ def start(version, sfds=SFDS, changelog=CHANGELOG):
         raise VersionError(f"{version!r} is not X.Y with Y below 10")
     text = changelog.read_text(encoding="utf-8")
     _, month, head = newest(text, changelog)
-    released = [v for v, m, _ in headings(text) if m != UNRELEASED]
+    # The changelog's headings run newest first.
+    released = [match.group(1) for match in HEADING.finditer(text)
+                if match.group(2) != UNRELEASED]
     if released and ordered(version) <= ordered(released[0]):
         raise VersionError(f"{version} is not above the last release, {released[0]}")
     heading = f"## {version} ({UNRELEASED})"
@@ -142,17 +139,16 @@ def main(argv=None, sfds=SFDS, changelog=CHANGELOG):
     action.add_argument("--check-tag", metavar="TAG",
                         help="exit non-zero unless TAG is v + the released version")
     args = parser.parse_args(argv)
+    names = ", ".join(sfd.name for sfd in sfds)
     try:
         if args.release:
             tag = release(sfds, changelog)
             print(f"Dated {tag[1:]} in {changelog.name}; commit, build and check, then tag {tag}.")
         elif args.check_tag:
             check_tag(args.check_tag, sfds, changelog)
-            names = ", ".join(sfd.name for sfd in sfds)
             print(f"{args.check_tag} matches {names} and {changelog.name}.")
         else:
             start(args.version, sfds, changelog)
-            names = ", ".join(sfd.name for sfd in sfds)
             print(f"{names} and {changelog.name} are at {args.version}, unreleased.")
     except VersionError as error:
         print(error, file=sys.stderr)

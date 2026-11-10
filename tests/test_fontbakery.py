@@ -8,7 +8,6 @@ the family checks.
 import json
 import pathlib
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -19,7 +18,7 @@ import fontforge
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
 from add_ligatures import GENERATED
-from helpers import NerdBuilds, require_current_build
+from helpers import NerdBuilds, require_current_build, require_uvx
 from project import FORMATS, SFD, STYLES, font_file
 
 # Pinned, so that a release with new checks can't fail the suite; bump it on purpose. It runs
@@ -148,8 +147,7 @@ def known_nerd():
 class FontBakeryTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         require_current_build()
         cls.known = known()
 
@@ -165,8 +163,7 @@ class NerdFontBakeryTest(NerdBuilds, unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if shutil.which("uvx") is None:
-            raise unittest.SkipTest("uvx is not installed")
+        require_uvx()
         super().setUpClass()
         cls.known = known_nerd()
 

@@ -114,23 +114,13 @@ TYPESCRIPT = re.compile("|".join(f"(?P<{name}>{pattern})" for name, pattern in {
 }.items()))
 
 
-def harfbuzz(tool, text, features, *options, font=FONT):
-    command = [tool, str(font), f"--text={text}", f"--features={features}", *options]
-    return subprocess.run(command, capture_output=True, text=True, check=True).stdout  # --text=: text may start with '-'
-
-
-def shape(text, features, font=FONT):
-    """hb-shape's glyphs for one line: dicts with the glyph name "g" and cluster "cl"."""
-    return project.shaped(font, text, f"--features={features}")
-
-
 @functools.cache
 def glyphs(text, calt, font=FONT):
     """(path, cell, cluster) for each glyph with ink that HarfBuzz draws for one line of
     `text`: the path in font units, y down from the glyph's origin on the baseline, the cell it
     starts in, and the character it came from."""
     features = "calt" if calt else "-calt"
-    shaped = shape(text, features, font)
+    shaped = project.shaped(font, text, f"--features={features}")
     if missing := sorted({text[glyph["cl"]] for glyph in shaped if glyph["g"] == ".notdef"}):
         raise ValueError(f"the font has no glyph for {' '.join(missing)}")
     # Cells are whole, so a mark's zero advance or offset would be lost and it would stack on its
@@ -142,8 +132,11 @@ def glyphs(text, calt, font=FONT):
                              "glyph, such as a combining mark, which this tool can't place")
     # --logical: set the line in its own box, not widened to ink beyond it (box drawing's
     # overlap), so glyphs land on their pen positions.
-    svg = harfbuzz("hb-view", text, features, "--font-size=1000", "--margin=0", "--logical",
-                   "--output-format=svg", font=font)
+    svg = subprocess.run(
+        ["hb-view", str(font), f"--text={text}",  # --text=: text may start with '-'
+         f"--features={features}", "--font-size=1000", "--margin=0", "--logical",
+         "--output-format=svg"],
+        capture_output=True, text=True, check=True).stdout
     paths = {glyph_id: re.sub(r"-?\d+\.\d+", lambda n: str(round(float(n.group()))), path)
              for glyph_id, path in re.findall(r'<g id="(glyph-[\d-]+)">\s*<path[^>]*\sd="([^"]*)"',
                                               svg)}

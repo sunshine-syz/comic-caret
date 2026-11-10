@@ -9,11 +9,8 @@ A glyph whose outline would repeat an earlier one's, moved, becomes a reference 
 glyphs are geometric rather than hand-drawn so they tile. Keep the range complete: the Nerd
 Fonts patcher replaces all of it unless every glyph is there.
 """
-import argparse
 import itertools
 import math
-import pathlib
-import sys
 import unicodedata
 
 import fontforge
@@ -27,8 +24,7 @@ from project import (
     LINE_BOTTOM,
     LINE_TOP,
     OVERLAP,
-    SFD,
-    save_checked,
+    run_generator,
     validation_errors,
 )
 
@@ -297,15 +293,8 @@ def diagonal():
     def centre(x):
         return LINE_BOTTOM + slope * x
 
-    contour = fontforge.contour()
-    contour.moveTo(LEFT, centre(LEFT) - rise)
-    contour.lineTo(LEFT, centre(LEFT) + rise)
-    contour.lineTo(RIGHT, centre(RIGHT) + rise)
-    contour.lineTo(RIGHT, centre(RIGHT) - rise)
-    contour.closed = True
-    layer = fontforge.layer()
-    layer += contour
-    return layer
+    return geo.polygon([(LEFT, centre(LEFT) - rise), (LEFT, centre(LEFT) + rise),
+                        (RIGHT, centre(RIGHT) + rise), (RIGHT, centre(RIGHT) - rise)])
 
 
 def box_drawing(words):
@@ -420,28 +409,11 @@ def add_glyphs(font, outlines):
         glyph.autoHint()
 
 
-def check(path):
-    """Exit non-zero if a glyph in the range in the SFD at `path` fails validate()."""
-    font = fontforge.open(str(path))
-    failed = {font[code].glyphname: hex(flags) for code in CODES
-              if (flags := validation_errors(font[code]))}
-    if failed:
-        sys.exit(f"validate() failed: {failed}")
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("sfd", nargs="?", default=str(SFD), help="default: %(default)s")
-    parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.check:
-        return check(args.sfd)
-
-    sfd = pathlib.Path(args.sfd)
-    font = fontforge.open(str(sfd))
-    add_glyphs(font, build())
-    save_checked(font, sfd, __file__)
+def invalid(font):
+    """{glyph name: validate() flags} of the range's glyphs that fail validate()."""
+    return {font[code].glyphname: flags for code in CODES
+            if (flags := validation_errors(font[code]))}
 
 
 if __name__ == "__main__":
-    main()
+    run_generator(__file__, __doc__, lambda font: add_glyphs(font, build()), invalid)

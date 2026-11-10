@@ -162,9 +162,9 @@ if [[ -n $nerd_variants ]]; then
     # outlines instead of converting the TTF.
     for font in "$OUT_DIR"/ComicCaret-*.otf "$OUT_DIR"/ComicCaret-*.ttf; do
       # --careful keeps every glyph the font has: without it --complete replaces the Braille
-      # and the Powerline symbols with the patcher's own. FontForge prints ~100 name-vs-codepoint notes while loading
-      # the icon fonts. Drop them so the patcher's own warnings stay visible; pipefail still
-      # reports a patcher failure.
+      # and the Powerline symbols with the patcher's own. FontForge prints ~100
+      # name-vs-codepoint notes while loading the icon fonts. Drop them so the patcher's own
+      # warnings stay visible; pipefail still reports a patcher failure.
       fontforge -quiet -script "$PATCHER_DIR/font-patcher" --complete --careful ${flag:+"$flag"} \
         --quiet --no-progressbars --outputdir "$NERD_OUT" "$font" 2>&1 |
         { grep -vE '^(The glyph named .* is mapped to|But its name indicates it should be mapped to) U\+' || true; }

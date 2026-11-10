@@ -13,13 +13,13 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import proof_sheet
-from project import ADVANCE, ROOT, SFD, font_file
+from project import ADVANCE, REFERENCE_DIR, ROOT, SFD, font_file
+from proof_sheet import MARGIN
 
 SCRIPT = ROOT / "tools" / "proof_sheet.py"
 TTF, OTF = font_file("Regular", "ttf"), font_file("Regular", "otf")
 # Its own units per em and line box, unlike ours; absent until placed by hand (CLAUDE.md).
-FIRA = ROOT / "build" / "cache" / "reference" / "FiraCode-Regular.ttf"
-MARGIN = 4  # px: the blank border the script asks hb-view for
+FIRA = REFERENCE_DIR / "FiraCode-Regular.ttf"
 # The last commit without ✓ (U+2713); the next one added it.
 WITHOUT_CHECK_MARK = "127f69ef38df7c3b799625898a6b242d9480660d"
 

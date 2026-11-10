@@ -328,8 +328,7 @@ def fit_boxes_to_points(path):
     points, as the Nerd Fonts patcher does, then give the glyph other extents than ours.
     """
     version, search, in_file = read_tables(path.read_bytes())
-    order = [tag for tag, _ in in_file]
-    tables = dict(in_file)
+    tables = dict(in_file)  # keeps the file's order
     count = struct.unpack_from(">H", tables[b"maxp"], MAXP_GLYPHS)[0]
     long_loca = struct.unpack_from(">h", tables[b"head"], HEAD_LOCA_FORMAT)[0]
     loca = struct.unpack_from(f">{count + 1}{'L' if long_loca else 'H'}", tables[b"loca"])
@@ -363,7 +362,7 @@ def fit_boxes_to_points(path):
                      max(box[2] for box in boxes.values()))
     struct.pack_into(">H", hhea, HHEA_METRICS, long_count)
     tables[b"hhea"] = bytes(hhea)
-    path.write_bytes(write_tables(version, search, [(tag, tables[tag]) for tag in order]))
+    path.write_bytes(write_tables(version, search, tables.items()))
 
 
 def autohint(path):

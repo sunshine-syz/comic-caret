@@ -8,10 +8,7 @@ every other glyph in test_consistency.py and test_symbols.py.
 import itertools
 import math
 import pathlib
-import shutil
-import subprocess
 import sys
-import tempfile
 import unicodedata
 import unittest
 
@@ -25,7 +22,7 @@ import add_shapes
 import lig_geometry as geo
 import measure
 from project import ADVANCE, AXIS, ROOT, ROUNDING, SFD, WOBBLE
-from sfd_files import differences
+from sfd_files import rerun_differences
 
 GENERATOR = ROOT / "tools" / "add_shapes.py"
 # A spinner's frames share one box, so it turns without pulsing (the arcs and the stars have
@@ -46,17 +43,9 @@ def box(font, char):
 
 class GeneratorTest(unittest.TestCase):
     def test_rerunning_changes_nothing(self):
-        # Fails when the generator changed without a rerun, or a frame was edited by hand.
-        with tempfile.TemporaryDirectory() as tmp:
-            copy = pathlib.Path(tmp) / SFD.name
-            shutil.copy(SFD, copy)
-            subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
-            self.assertEqual(differences(SFD, copy), [])
-
-    def test_the_font_has_every_frame(self):
-        font = fontforge.open(str(SFD))
-        missing = [f"U+{code:04X}" for code in add_shapes.CODES if code not in font]
-        self.assertEqual(missing, [])
+        # Fails when the generator changed without a rerun, or a frame is missing or was
+        # edited by hand.
+        self.assertEqual(rerun_differences(SFD, GENERATOR), [])
 
 
 class FrameTest(unittest.TestCase):
