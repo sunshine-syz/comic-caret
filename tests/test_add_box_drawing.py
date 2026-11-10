@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 import fontforge
 
@@ -15,7 +16,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools")
 # the tests' shared SFD comparison
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import add_box_drawing
-from project import ROOT, SFD
+from project import ROOT, SFD, run_generator
 from sfd_files import without_timestamp
 
 GENERATOR = ROOT / "tools" / "add_box_drawing.py"
@@ -30,6 +31,27 @@ class GeneratorTest(unittest.TestCase):
             shutil.copy(SFD, copy)
             subprocess.run([sys.executable, str(GENERATOR), str(copy)], check=True)
             self.assertEqual(without_timestamp(copy), without_timestamp(SFD))
+
+    def test_a_build_that_fails_validation_is_not_saved(self):
+        # What every generator relies on (project.run_generator): the saved copy is checked in
+        # a fresh process, and the SFD stays as it was when a glyph fails validate().
+        def crossed(font):
+            pen = font[0x2500].glyphPen()  # a bow tie, whose edges cross
+            pen.moveTo((0, 0))
+            for point in ((600, 300), (600, 0), (0, 300)):
+                pen.lineTo(point)
+            pen.closePath()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = pathlib.Path(tmp) / SFD.name
+            shutil.copy(SFD, copy)
+            with (mock.patch.object(sys, "argv", [GENERATOR.name, str(copy)]),
+                  self.assertRaises(SystemExit) as stopped):
+                run_generator(GENERATOR, add_box_drawing.__doc__, crossed,
+                              add_box_drawing.invalid)
+            self.assertIn("unchanged", str(stopped.exception))
+            self.assertEqual(list(pathlib.Path(tmp).iterdir()), [copy])
+            self.assertEqual(copy.read_bytes(), SFD.read_bytes())
 
     def test_the_font_has_every_character_in_the_range(self):
         # The Nerd Fonts patcher swaps in its own set unless the font has all of U+2500–U+259F.

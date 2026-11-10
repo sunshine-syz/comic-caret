@@ -240,7 +240,7 @@ class CompositionTest(unittest.TestCase):
             if len(glyph.foreground):
                 own = geo.trim(glyph.foreground, y0=MERGED_BELOW).boundingBox()
                 letter = geo.trim(self.font[base].foreground, y0=MERGED_BELOW).boundingBox()
-                if any(abs(a - b) > 2 for a, b in zip(own, letter, strict=True)):
+                if any(abs(a - b) > 2 * ROUNDING for a, b in zip(own, letter, strict=True)):
                     wrong[glyph.glyphname] = f"not {base} above y {MERGED_BELOW}"
             elif base not in {name for name, *_ in glyph.references}:
                 wrong[glyph.glyphname] = f"no reference to {base}"

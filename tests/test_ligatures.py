@@ -2,9 +2,12 @@
 
 Run python3 tools/add_ligatures.py and ./build.sh first; see CLAUDE.md.
 """
+import functools
 import itertools
+import json
 import pathlib
 import re
+import subprocess
 import sys
 import unittest
 
@@ -35,9 +38,23 @@ FONTS = [font_file(style, ext) for style in STYLES for ext in FORMATS]
 REGULAR = font_file("Regular", "ttf")
 
 
+@functools.cache
+def shaped_tables(font, calt):
+    """{text: hb-shape's glyphs} for every text of LIGATED and PLAIN, shaped with `font` in one
+    hb-shape run, a line each: a process for each text takes the suite two minutes longer."""
+    texts = [*LIGATED, *PLAIN]
+    result = subprocess.run(
+        ["hb-shape", "--output-format=json", f"--features={'+' if calt else '-'}calt", str(font)],
+        input="\n".join(texts), capture_output=True, text=True, check=True)
+    return dict(zip(texts, map(json.loads, result.stdout.splitlines()), strict=True))
+
+
 def shape(font, text, calt=True):
     """[(glyph name, advance)] for `text` shaped with `font`."""
-    glyphs = shaped(font, text, f"--features={'+' if calt else '-'}calt")
+    if text in LIGATED or text in PLAIN:
+        glyphs = shaped_tables(font, calt)[text]
+    else:
+        glyphs = shaped(font, text, f"--features={'+' if calt else '-'}calt")
     return [(g["g"], g["ax"]) for g in glyphs]
 
 
@@ -589,10 +606,14 @@ class TightPairTest(unittest.TestCase):
     def setUpClass(cls):
         require_current_build()
         cls.font = fontforge.open(str(cls.sfd))
+        cls.whites = {}  # most pairs come up in many texts
 
     def white(self, left, right):
         """The white between `left` and `right` side by side."""
-        return gap(ink(self.font, left), geo.moved(ink(self.font, right), ADVANCE, 0))
+        if (left, right) not in self.whites:
+            self.whites[left, right] = gap(ink(self.font, left),
+                                           geo.moved(ink(self.font, right), ADVANCE, 0))
+        return self.whites[left, right]
 
     def test_tightened_glyphs_keep_white_toward_their_neighbours(self):
         for text in LIGATED:

@@ -8,6 +8,7 @@ The floors the font gives (the hyphen's stroke, the pen) hold for it as they sta
 regular's: ð's bar reaching 100 past its stroke, as the pen grows the bar's length and the
 stroke's width alike, and ™'s 15 between T and M, a margin of our own (Fira Code's ™ joins them).
 """
+import itertools
 import math
 import pathlib
 import struct
@@ -20,6 +21,7 @@ import psMat
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # the tests' shared helpers
+import lig_geometry as geo
 import make_bold
 import measure
 import sfnt
@@ -159,6 +161,10 @@ class LookalikeTest(unittest.TestCase):
     # our cell. ł: Fira Code's (Maple Mono 119, 160; Intel One Mono 145, 159). Ł: Intel One
     # Mono's left and Maple Mono's right (Fira Code 95, 200; Intel One Mono's right 221).
     lslash_reach, capital_lslash_reach = (105, 124), (55, 170)
+    # (left, right): how far ð's bar passes its stroke, as the run of upright lines that cross
+    # both, x scaled to our cell: Maple Mono's, the narrowest reference's (Fira Code 81, 62;
+    # Intel One Mono 95, 74).
+    eth_bar_reach = (39, 25)
 
     @classmethod
     def setUpClass(cls):
@@ -241,18 +247,16 @@ class LookalikeTest(unittest.TestCase):
                                 self.capital_sharp_s_middle)
 
     def test_eth_bar_crosses_its_stroke(self):
-        # The bar tells ð from ∂: bar and rising stroke make one outline, the bar reaching past
-        # the stroke both sides.
-        layer = self.font["eth"].foreground
-        crossing = measure.spans_at_y(layer, 540)
-        self.assertEqual(len(crossing), 1)
-        # The rising stroke alone, just under the bar: below the bar's bottom, half a stroke in
-        # from its left end.
-        bottoms = [y0 for y0, y1 in measure.spans_at_x(layer, crossing[0][0] + self.stroke / 2)
-                   if y0 < 540 < y1]
-        self.assertEqual(len(bottoms), 1, "no ink at 540 half a stroke in from the bar's left end")
-        rising = measure.spans_at_y(layer, bottoms[0] - 1)[-1]
-        self.assertGreater(crossing[0][1] - crossing[0][0], rising[1] - rising[0] + 100)
+        # The bar tells ð from ∂. Over the bowl an upright line crosses two strokes, the bar
+        # and the rising stroke, on each side of where they cross; ∂'s hook has one such run.
+        layer = geo.trim(self.font["eth"].foreground, y0=self.font.os2_xheight)
+        x0, _, x1, _ = layer.boundingBox()
+        strokes = [len(measure.spans_at_x(layer, x)) for x in range(round(x0) + 1, round(x1))]
+        reach = [len(list(run)) for count, run in itertools.groupby(strokes) if count == 2]
+        self.assertEqual(len(reach), 2, reach)
+        for side, found, floor in zip(("left", "right"), reach, self.eth_bar_reach):
+            with self.subTest(side=side):
+                self.assertGreaterEqual(found, floor)
 
     def test_lslash_bar_crosses_well_past_the_stem(self):
         # A bar that barely passes the stem reads as l and L at 11-16 px. ł and Ł are l and L
@@ -399,7 +403,10 @@ class SmallFigureTest(unittest.TestCase):
             return (y1 - y0) / (b1 - b0)
 
         # The figures with the superscript letters and signs; ( ) are larger, to reach past
-        # the figures as far as the references' do, and - = too thin to compare.
+        # the figures as far as the references' do, and - = too thin to compare. Within a set
+        # the ratios lie 0.012 apart at most, as one thickening adds more to a shorter glyph;
+        # a second scale would show: the two tried for the figures, 0.41 and 0.49, lie 0.08
+        # apart.
         figures = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
                    "nine", "i", "n", "plus")
         for group in (figures, ("a", "o"), ("T", "C", "R")):
@@ -560,6 +567,9 @@ class BoldLookalikeTest(LookalikeTest):
     # ł: Fira Code Bold's (Maple Mono Bold 106, 139; Intel One Mono Bold 134, 166). Ł: Intel One
     # Mono Bold's left and Maple Mono Bold's right (Fira Code Bold 84, 193).
     lslash_reach, capital_lslash_reach = (100, 121), (55, 145)
+    # Maple Mono Bold's (Monaspace Radon Bold 37, 49; Fira Code Bold 58, 54; Intel One Mono
+    # Bold 63, 59).
+    eth_bar_reach = (28, 26)
     # The reference bolds' narrowest. ß's per 1000 em, as the regular's: Fira Code's 34.2 at
     # its foot (Maple Mono's 65.6, Intel One Mono's 94.9) and 48.2 at its waist (65.0, 85.0).
     # ẞ's at the bold's cap height, as the regular's: Fira Code's 47.9 at its foot (Maple

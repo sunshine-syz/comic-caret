@@ -110,6 +110,15 @@ class AreaTest(unittest.TestCase):
         self.assertAlmostEqual(measure.length(layer), 2 * (100 + 50) + 4 * 10)
 
 
+class SlantTest(unittest.TestCase):
+    def test_slant_is_the_long_axis_however_long_the_stroke(self):
+        for length in (300, 600):
+            bar = geo.rect(0, 0, length, 60)
+            self.assertAlmostEqual(measure.slant(bar), 0)
+            turned = geo.transformed(bar, psMat.rotate(math.radians(20)))
+            self.assertAlmostEqual(measure.slant(turned), 20, places=3)  # FontForge's floats
+
+
 class DistanceTest(unittest.TestCase):
     def test_distance_is_to_the_nearest_edge_inside_or_out(self):
         layer = geo.rect(0, 0, 100, 100)
