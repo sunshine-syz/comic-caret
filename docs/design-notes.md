@@ -461,6 +461,10 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   with hint masks that set none of its stems, so the CFF hinter left it unhinted: `) ] }`
   `¡ ¿ ∀ ∃ ∇ ⏹ ⏺ ◼` and 8 more in the regular, 17 in the italic, 16 in the bold.
   `tools/generate.py` draws those references as outlines in the OTF too, and hints them.
+  FontForge then hinted the italic `(` at its foot alone and `)`, `(` turned, at its top
+  alone, and the two stood a row apart at 11, 12, 23 and 24 px; a glyph turned about its
+  base's middle and that base now take each other's stems where none of their own cross them
+  (`share_turned_stems()`), so `( )` `[ ]` `{ }` share their rows at every size.
 - **Picture rows.** No zone holds most of the pictures' edges, and the CFF hinter snaps only
   one edge of a stem to the grid, so each picture rounded by its own stems: `⏵ ⏸ ⏺` ended on
   different rows at 10 of 20 sizes from 8 to 36 px, `■` and `☐` at 8. A ghost edge snaps

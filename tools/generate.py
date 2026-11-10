@@ -84,8 +84,8 @@ def flatten_nested_references(font):
 
 
 def decompose_transformed_references(font):
-    """Draw every reference that turns or scales its glyph as an outline, and return the
-    glyphs that had one.
+    """Draw every reference that turns or scales its glyph as an outline, and return
+    [(glyph, name, matrix)] for each such reference.
 
     ttfautohint hints a component as its own glyph and then transforms it, so one turned 180°,
     as in ¡ ∀ ⇓ ▼, lands off the pixel rows its glyph's hints aligned (Font Bakery
@@ -93,13 +93,41 @@ def decompose_transformed_references(font):
     its stems set, and the CFF hinter left it unhinted: ) ] } ∀ ∃ ⏹ ◼ among 21. Turned, never
     mirrored, so the outlines keep their direction.
     """
-    decomposed = {}
+    decomposed = []
     for glyph in font.glyphs():
         for name, matrix, *_ in glyph.references:
             if any(abs(a - b) > 1e-6 for a, b in zip(matrix[:4], (1, 0, 0, 1))):
                 glyph.unlinkRef(name)
-                decomposed[glyph.glyphname] = glyph
-    return list(decomposed.values())
+                decomposed.append((glyph, name, matrix))
+    return decomposed
+
+
+def share_turned_stems(font, decomposed):
+    """Give a glyph turned 180° about its base's middle, as ) is (, and that base each other's
+    stems, where a stem crosses none of their own.
+
+    The two stand side by side in a line and span the same rows, and the CFF hinter snaps one
+    edge of each stem, so they round alike only where they have stems at the same ends.
+    FontForge hints the italic ( at its foot alone, so ), ( turned, took a stem at its top
+    alone, and the two stood on different rows at 7 of 20 sizes. A letter keeps its own stems
+    (hint_zones() sets them).
+    """
+    for glyph, name, matrix in decomposed:
+        base = font[name]
+        _, y0, _, y1 = base.boundingBox()
+        if (matrix[:4] != (-1, 0, 0, -1) or abs(y0 + y1 - matrix[5]) > 1
+                or is_alphanumeric(base.unicode)):
+            continue
+        shared = {}
+        for target, other in ((base, glyph), (glyph, base)):
+            shared[target.glyphname] = [*target.hhints, *(
+                hint for hint in other.hhints
+                if not any(overlap(hint, own) for own in target.hhints))]
+        for target in (base, glyph):
+            hints = sorted(shared[target.glyphname], key=lambda hint: min(hint[0], sum(hint)))
+            if tuple(hints) != target.hhints:
+                target.hhints = hints  # from the bottom up, or FontForge drops a hint
+                target.manualHints = True  # else generating hints it again
 
 
 def hint_zones(font):
@@ -457,8 +485,10 @@ def main(source, output):
         if "pi" in font:  # not before 1.2, which proof_sheet.py --before can build
             level_foot(font["pi"])
     else:
-        for glyph in decompose_transformed_references(font):
+        decomposed = decompose_transformed_references(font)
+        for glyph in {glyph.glyphname: glyph for glyph, *_ in decomposed}.values():
             glyph.autoHint()  # hint_zones() hints only the glyphs that keep references
+        share_turned_stems(font, decomposed)  # before hint_zones() hints their composites
         if "hyphen.mid" in font:  # not in 1.0, which proof_sheet.py --before can build
             hint_pieces_as_hyphen(font)  # before hint_zones() hints their composites
         hint_zones(font)

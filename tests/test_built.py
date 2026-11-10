@@ -304,6 +304,30 @@ for row in json.loads(sys.argv[2]):
             off.setdefault(row, []).append(size)
 print(json.dumps(off, ensure_ascii=False))
 """
+# Prints {pair: [sizes]}: the pixel sizes, 8 to 36, where the two characters of a pair in
+# sys.argv[2] stand on different pixel rows under the font's own hints: some row's darkest
+# pixel differs by half or more. Less is a round end a few units apart, which reads alike.
+PAIR_ROWS = """
+import json, sys
+import freetype
+
+face = freetype.Face(sys.argv[1])
+
+def rows(char):
+    face.load_char(char, freetype.FT_LOAD_DEFAULT | freetype.FT_LOAD_RENDER)
+    bitmap, top = face.glyph.bitmap, face.glyph.bitmap_top
+    return {top - r: max(bitmap.buffer[r * bitmap.pitch:r * bitmap.pitch + bitmap.width])
+            for r in range(bitmap.rows)}
+
+off = {}
+for pair in json.loads(sys.argv[2]):
+    for size in [*range(8, 25), 28, 32, 36]:
+        face.set_pixel_sizes(0, size)
+        a, b = rows(pair[0]), rows(pair[1])
+        if any(abs(a.get(row, 0) - b.get(row, 0)) >= 128 for row in a.keys() | b.keys()):
+            off.setdefault(pair, []).append(size)
+print(json.dumps(off, ensure_ascii=False))
+"""
 OPEN = "import fontforge, sys; fontforge.open(sys.argv[1])"
 HHEA_LINE = 4  # offset of hhea.ascender, then descender and lineGap
 OS2_LINE = 68  # offset of OS/2.sTypoAscender, then sTypoDescender, sTypoLineGap, usWinAscent
@@ -738,6 +762,13 @@ class OtfHintTest(unittest.TestCase):
         # FontForge wrote the glyphs built from a turned or scaled reference with hint masks
         # that set none of their stems, so ) ] } ∀ ∃ ⏹ ◼ and 12 more went unhinted.
         self.assertEqual(run_freetype(UNMASKED, font_file(self.style, "otf")), [])
+
+    def test_turned_brackets_stand_on_their_pairs_rows(self):
+        # ) ] } are ( [ { turned, and the CFF hinter snaps one edge of each stem: FontForge
+        # hinted the italic ( at its foot alone and ) at its top alone, and the two stood on
+        # different rows at 7 of 20 sizes from 8 to 36 px.
+        pairs = json.dumps(["()", "[]", "{}"])
+        self.assertEqual(run_freetype(PAIR_ROWS, font_file(self.style, "otf"), pairs), {})
 
     def test_pictures_of_a_row_share_its_pixel_rows(self):
         # Each picture rounded by its own stems: ⏵ ⏸ ⏺ ended on different rows at 10 of 20

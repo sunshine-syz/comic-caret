@@ -72,7 +72,8 @@ SFD's `Version:` and the heading together. The fonts carry it as the decimal X.Y
   `glyph.round()`), then run `glyph.autoHint()` so no glyph keeps the `H` flag.
 - The OTF carries the SFD's hints for outlines only. `tools/generate.py` hints every composite
   again, parts first (`hint_zones()`): FontForge keeps a composite's hints when a part is
-  redrawn. It draws a turned or scaled reference as an outline first, as in the TTF. It adds a
+  redrawn. It draws a turned or scaled reference as an outline first, as in the TTF, and gives
+  a glyph turned about its base's middle, as `)` is `(`, its base's stems too. It adds a
   ghost hint where a letter's top or foot lies in a zone without a hint edge, drops a letter's
   stem that crosses a zone's by more than half a stroke, leaves ≠ ⇐ ⇒ ⇔ only `=`'s stems
   (`hint_bars_as_equal()`) and `-` only its pieces' stems, and gives the pictures of each of
