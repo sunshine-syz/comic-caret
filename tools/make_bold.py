@@ -104,8 +104,9 @@ SHARED_BLOCKS = (range(0x2500, 0x2600), range(0x2800, 0x2900), range(0xE000, 0xF
 # Code's ✢ ✳ ✶ ✻ ✽, ✶ being also the star spinner's first frame, which add_shapes.py draws
 # ✷ ✸ ✹ ✺ from; the media controls ⏵ ⏸ ⏹ ⏺, which status lines show side by side at one height;
 # and ☐, which □ and ■ are (tests/test_symbols.py), and ☑ ☒, ☐ marked, so the three boxes stay
-# alike.
-SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✢✳✶✻✽⏵⏸⏹⏺☐☑☒")
+# alike; and ★ ☆, which stand with ● ■ ◆ ▲: grown, they were 538 wide to ●'s 548 and ◆'s 503,
+# and ☆'s counter closed until it held 95% of ★'s ink.
+SHARED_CHARS = (frozenset(map(chr, CODES)) - {"‼"}) | frozenset("✢✳✶✻✽⏵⏸⏹⏺☐☑☒★☆")
 
 # The heavy marks, each drawn as its light glyph pushed out (docs/design-notes.md), and that
 # glyph: ✔ ✘ ✖ for ✓ ✗ ✕, ❯ ❮ ❱ ❰ for > <, and ➜ for →. Each grows by the pen scaled by how

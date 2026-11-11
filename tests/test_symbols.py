@@ -113,6 +113,7 @@ BALLOT_UNDER_X = 100
 EXCLAMATION_DOTS = 93
 # The white between ⇪'s arrow and its bar: Maple Mono's 73.2 at our cap height (Fira Code's 97.4).
 CAPS_LOCK_WHITE = 73
+WHITE_SHARE = 0.72  # how much of its black shape's ink a white shape holds at most
 
 # The bold's floors, measured from the reference bolds as the ones above were from the
 # regulars, scaled as tools/compare_glyphs.py scales: x to our advance, y to the bold's cap
@@ -458,6 +459,15 @@ class ShapeTest(unittest.TestCase):
             with self.subTest(shape=white):
                 clockwise = sorted(bool(c.isClockwise()) for c in self.font[ord(white)].foreground)
                 self.assertEqual(clockwise, [False, True])  # an outline and its counter
+
+    def test_white_shapes_read_white(self):
+        # A white shape whose ring holds more of its black shape's ink reads as it at 12-16
+        # px: ☆ did at 0.87. The ceiling is ▱'s 0.712, the heaviest that reads white at 12 px.
+        for black, white in BLACK.items():
+            with self.subTest(shape=white):
+                share = (measure.area(measure.ink(self.font, self.font[ord(white)].glyphname))
+                         / measure.area(measure.ink(self.font, self.font[ord(black)].glyphname)))
+                self.assertLessEqual(share, WHITE_SHARE)
 
     def test_black_shapes_are_their_white_shapes_filled(self):
         for black, white in BLACK.items():

@@ -66,7 +66,10 @@ them. The exceptions:
   side don't touch. Letters and figures may, the fractions among them (¼ stands 12 from each
   edge).
 - Black shapes (● ◆ ▶ ▸ ★ ■ ▪) are their white shape's outer contour; the white shapes are
-  rings of the hyphen's stroke, or of `o`'s for ○.
+  rings of the hyphen's stroke, or of `o`'s for ○. ☆'s ring is 55: a star's arms are narrow,
+  and at the hyphen's 78 ☆ held 87% of ★'s ink and read as ★ at 12–13 px, where the other
+  white shapes hold 53–71% (Monaspace Neon Bold's ☆ 59%). Its counter is ★ inset by 55, the
+  inner edge of ★ stroked 110 wide. The bold keeps ★ ☆ as drawn, with ● ■ ◆ ▲.
 - The spinner frames are cut, stacked and turned from ○ ● ☐ ■ ◦ ✶ `*` and `!`, so the frames
   of one spinner share a center and size; `tools/add_shapes.py` says how each is made.
 
