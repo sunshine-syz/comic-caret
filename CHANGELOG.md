@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `Y` stands on the baseline row: its stem ended 17 units under the feet of `H` `T` `X` beside it. `6` and `9` top out with `2` and `3`: they rose 14 and 16 units over them, a pixel at some sizes in a column of figures. `∂` follows `6`.
 - `<` `>` are lighter: their stroke is 84 units, where it was 95, heavier than any letter and a quarter heavier than `=` and `-` beside them in `<=` `>=` `->` `=>`. They keep their width and place. The heads of the arrow ligatures (`->` `=>` `<-` `<=` `>=` `|>` and the rest), which are drawn from them, follow, so a head sits closer to its shaft's weight. So do the heads of the arrows `→ ← ⇒ ⇐ ↑ ↓ ⇑ ⇓ ⇞ ⇟ ⇡ ⇣ ↯ ⇤ ⇥`, so `→` beside `->` still reads as the same arrow.
 - `f` loses its foot. The bar under it came from Comic Shanns Mono and made it the one letter with a slab beside the plain `r` and `t`; Fira Code, Intel One Mono and Maple Mono draw `f` without one. The stem now ends round on the baseline, and the crossbar is 7 units longer to the left, so the letter keeps its width. The bold follows; the italic's `f`, which already ran below the baseline, keeps its form.
 - Under the OTF's own hints, the glyphs drawn from turned or scaled glyphs are hinted, `) ] } ∀ ∃ ∇ ⏹ ⏺ ◼` among them (19 in the regular). The OTF stored them with every hint switched off. `] } ∃` now stand on the rows of `[ { E` at every size from 8 to 36 px, where they stood off at 3 to 6 sizes.

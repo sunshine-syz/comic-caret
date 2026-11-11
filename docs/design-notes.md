@@ -322,6 +322,11 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   and `5` with `3`, as in the three references. `Q` widens with `O`, to 482. `0`'s slash and
   `e`'s bar turn a little. ø Ø þ ƿ đ ą ę, ρ δ σ ∂ on `o`'s bowl, ç ¢ ς and the accented letters
   follow through references or outline copies.
+- **`Y` `6` `9` on their rows.** `Y`'s stem ended at −37, 17 under `H`'s foot, and `6` `9`
+  topped at 689 and 691 where `2` `3` top at 675; each end moved to its row (2026-11-10), the
+  move easing in along the stroke before it, since a level cut across `6`'s slanting arm left
+  a jog. `∂` tops out with `6`. `a`'s stem still ends at −37, 12 under `o`: `ą`'s ogonek and
+  `ª` are built on that foot, and the user chose this `a` on proof.
 - **Open letters.** Bars, arms and tails lengthen along their straight part: `f` 461, `t` 441,
   `r` 427, `T` 490, `l` 444. `m`'s arches open at the crown, as do `n`'s and `h`'s; `u`'s bowl
   opens at its foot. `n` `h` `u` are one width, 417: Intel One Mono Bold's 452 less the pen's
