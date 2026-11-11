@@ -19,7 +19,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
 from helpers import assert_lookups_carry_over
-from make_italic import CURSIVE, CURSIVE_LETTERS, FOOT_TOP, SHEAR, SLANT, SLANTED, UPRIGHT
+from make_italic import CURSIVE, CURSIVE_LETTERS, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
 from measure import ink, spans_at_y
 from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import rerun_differences
@@ -130,11 +130,11 @@ class ItalicTest(unittest.TestCase):
                                self.regular["j"].boundingBox()[1], delta=ROUNDING)
 
     def test_cursive_f_descender_is_as_wide_as_the_stem_where_they_meet(self):
-        # No ledge or notch where the descender joins the stem at FOOT_TOP: rows 2 below and 2
+        # No ledge or notch where the descender joins the stem at STEM_CUT: rows 2 below and 2
         # above it, clear of the 1-unit band either side that spans_at_y reads, cross strokes
         # of the same width, but for the points' rounding.
         f = ink(self.italic, "f")
-        (below,), (above,) = (spans_at_y(f, FOOT_TOP + dy) for dy in (-2, 2))
+        (below,), (above,) = (spans_at_y(f, STEM_CUT + dy) for dy in (-2, 2))
         self.assertAlmostEqual(below[1] - below[0], above[1] - above[0], delta=ROUNDING)
 
     def test_anchors_move_with_the_shear(self):

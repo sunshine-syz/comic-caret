@@ -79,6 +79,13 @@ them. The exceptions:
 
 ## Latin
 
+- **`f`** has no foot. Comic Shanns Mono drew a bar 425 wide under it; Fira Code, Intel One
+  Mono and Maple Mono draw none, and the user chose the plain stem on proof (2026-11-10) over
+  a short serif, a descender and the same letter 25 further right. The stem ends round at
+  −20, where `h` `n` `r` `t` end, and stays 50 left of the cell's middle (the references'
+  stand 32–40 left): moved 25 right, `fn` closed to 159 and `fl` to 123, and `if` came 132
+  wider than `fi` (the references: 60–76). The crossbar is 7 longer to the left, since it and
+  the hook now set the width, at Fira Code's 460.
 - **`a`** is double-storey, after a hand-drawn reference, so it reads apart from `o` and `α`
   at 12 px; the single-storey one blurred into `o` there. Its head rises nearly straight from
   a terminal at 0.87 of the x-height to a tight shoulder, the stem leans out as the old one
@@ -295,7 +302,7 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   and `5` with `3`, as in the three references. `Q` widens with `O`, to 482. `0`'s slash and
   `e`'s bar turn a little. ø Ø þ ƿ đ ą ę, ρ δ σ ∂ on `o`'s bowl, ç ¢ ς and the accented letters
   follow through references or outline copies.
-- **Open letters.** Bars, arms and tails lengthen along their straight part: `f` 460, `t` 441,
+- **Open letters.** Bars, arms and tails lengthen along their straight part: `f` 461, `t` 441,
   `r` 427, `T` 490, `l` 444. `m`'s arches open at the crown, as do `n`'s and `h`'s; `u`'s bowl
   opens at its foot. `n` `h` `u` are one width, 417: Intel One Mono Bold's 452 less the pen's
   35, so their bolds reach the narrowest reference bold. η ŋ ħ µ ų follow as outline copies.
@@ -687,11 +694,11 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   form. a slants double-storey, as Intel One Mono's and Monaspace's italics keep theirs, so
   a and o stay apart in italic comments. l keeps the regular's form: Maple Mono's looped l
   made "all" and "full" busy at 15 px and turned l into ℓ, and a plain stem lost the tail that
-  keeps l apart from I and 1. f drops its foot and runs its
+  keeps l apart from I and 1. f runs its
   stem 268 below the baseline, as deep as j, ending in a flick 70 left of the stem in the
   stem's own stroke, chosen over ƒ's hook (Maple Mono's f), which reached 72 units left of
   the cell, and over a plain straight descender. The descender takes the stem's width where
-  the foot is cut away, 80 above the baseline, and is welded on along that cut (`geo.weld_y`),
+  the stem's round end is cut away, 80 above the baseline, and is welded on along that cut (`geo.weld_y`),
   so the joint has no ledge and no overlap for `removeOverlap()` to merge. ƒ keeps its own
   outline.
 - The italic's f, and any glyph the shear cannot express (∙ built on the period, ⋮ on the

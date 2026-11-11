@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `f` loses its foot. The bar under it came from Comic Shanns Mono and made it the one letter with a slab beside the plain `r` and `t`; Fira Code, Intel One Mono and Maple Mono draw `f` without one. The stem now ends round on the baseline, and the crossbar is 7 units longer to the left, so the letter keeps its width. The bold follows; the italic's `f`, which already ran below the baseline, keeps its form.
 - Under the OTF's own hints, the glyphs drawn from turned or scaled glyphs are hinted, `) ] } ∀ ∃ ∇ ⏹ ⏺ ◼` among them (19 in the regular). The OTF stored them with every hint switched off. `] } ∃` now stand on the rows of `[ { E` at every size from 8 to 36 px, where they stood off at 3 to 6 sizes.
 - Under the OTF's own hints, `⏵ ⏸ ⏹ ⏺` share their top and bottom pixel rows at every size, and so do `■ □ ☐ ☒` and `◻ ◼`. Each rounded by its own strokes: `⏵ ⏸ ⏺` ended on different rows at 10 of 20 sizes from 8 to 36 px, `■` and `☐` at 8.
 - Under the OTF's own hints, `--` `->` `<-` and the other ligatures drawn with `-`'s bar, and `←` `→`, stand on `-`'s pixel rows at every size; they stood a row under it at 11 and 24 px. In the bold, `-` is no longer a row thicker than `--` and `−` at those sizes.

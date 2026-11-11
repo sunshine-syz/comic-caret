@@ -21,7 +21,7 @@ Every glyph of the regular falls in one of three sets, decided by classify():
   ⌘ ⌥ ⌃ ⇧ ↹ ⇥ ⇤, which Maple Mono slants (docs/design-notes.md says why they stay). Copied
   unchanged, hints included.
 - CURSIVE: letters given a cursive form, drawn from the regular's own strokes and then
-  sheared. f drops its foot and runs its stem below the baseline, as deep as j, ending in a
+  sheared. f runs its stem below the baseline, as deep as j, ending in a
   short flick to the left (proofed against ƒ's hook, which Maple Mono's f has, and against
   a plain straight descender).
 
@@ -63,11 +63,11 @@ SLANTED_CHARS = frozenset("❮❯❰❱➜⎯⍽")
 # them, and has no ⌘). ↵ ↩ are arrows and slant.
 UPRIGHT_CHARS = frozenset("∙⊙⊶⊷•‣ℹ⇧⇪⇦⇨⇩⇞⇟↹⇥⇤")
 
-# f's descender, in the stem's own stroke. The regular's foot ends at 70, so from FOOT_TOP up
-# the outline is the stem alone. The foot is cut away there and a stroke as wide as the cut is
+# f's descender, in the stem's own stroke. From STEM_CUT up the regular's outline is the stem
+# alone, above its round end. The end is cut away there and a stroke as wide as the cut is
 # welded on along it, so no removeOverlap() decides the joint; the stroke runs down as far as
 # j reaches and bends left by FLICK, a quarter ellipse FLATNESS as high as it is wide.
-FOOT_TOP = 80
+STEM_CUT = 80
 FLICK = 70  # how far the end reaches left of the stem's middle; 90 and 100 read busier
 FLATNESS = 0.9
 
@@ -89,15 +89,15 @@ def oblique_panose(panose):
 
 
 def descending_f(font):
-    """The regular's f with its foot dropped and its stem run below the baseline, ending in
-    a short flick to the left."""
-    stem = geo.trim(font["f"].foreground, y0=FOOT_TOP)
+    """The regular's f with its stem run below the baseline, ending in a short flick to the
+    left."""
+    stem = geo.trim(font["f"].foreground, y0=STEM_CUT)
     # The cut's own ends: the stroke, trimmed at the same height, then ends in the same edge,
     # and the weld leaves no step.
     cut = sorted(p.x for contour in stem for p in contour
-                 if p.on_curve and abs(p.y - FOOT_TOP) < 0.5)
+                 if p.on_curve and abs(p.y - STEM_CUT) < 0.5)
     if len(cut) != 2:
-        sys.exit(f"f is not a single stem at y = {FOOT_TOP}; measure its foot again")
+        sys.exit(f"f is not a single stem at y = {STEM_CUT}; measure its stem again")
     x0, x1 = cut
     middle, width = (x0 + x1) / 2, x1 - x0
     depth = -font["j"].boundingBox()[1]  # the descender row
@@ -105,12 +105,12 @@ def descending_f(font):
     ry = rx * FLATNESS
     bend = -depth + width / 2 + ry  # where the stem starts to bend
     path = fontforge.contour()
-    path.moveTo(middle, FOOT_TOP + width)  # above the cut, which trims the round cap away
+    path.moveTo(middle, STEM_CUT + width)  # above the cut, which trims the round cap away
     path.lineTo(middle, bend)
     path.cubicTo((middle, bend - geo.KAPPA * ry), (middle - rx + geo.KAPPA * rx, bend - ry),
                  (middle - rx, bend - ry))
     stroke = geo.stroked(path, width)
-    return geo.weld_y(geo.trim(stroke, y1=FOOT_TOP), stem, FOOT_TOP)
+    return geo.weld_y(geo.trim(stroke, y1=STEM_CUT), stem, STEM_CUT)
 
 
 # The cursive letters: name -> the upright outline to shear, drawn from the regular.
