@@ -22,7 +22,7 @@ import lig_geometry as geo
 import make_bold
 import measure
 from helpers import hyphen_stroke
-from project import ADVANCE, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE
+from project import ADVANCE, AXIS, BOLD_SFD, ROUNDING, SFD, SYMBOL_SIDE, WOBBLE
 
 SYMBOLS = ("≠≈≡∞←→↔↕↖↗↘↙⇐⇒⇔↦✓✗�✕✖✔✘❯❮➜○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☑☒⚠ℹ⋯⋮⇡⇣⇕"
            "⎿⏺✢✳✶✻✽⏵⏸⧉∴※◯■□▪▫◦❰❱⏎↵⇥⇤↹␣⍽⌘⌥⌃⇧⌫⌦⎋↳↰↱↲↩↪⇑⇓∂∆∇∏∑√∫◊∅′″‖⟨⟩₹₺₽₩₫‣‐‑‒―₦₱₿ʼʻʺ№ℓ℮℃℉⇞⇟⇪⇦⇨⇩"
@@ -335,6 +335,26 @@ class ArrowTest(unittest.TestCase):
                 _, h0, _, h1 = self.font[head].boundingBox()
                 self.assertAlmostEqual(y0, h0, delta=2 * ROUNDING)
                 self.assertAlmostEqual(y1, h1, delta=2 * ROUNDING)
+
+    def upper_arm_weight(self, char, index):
+        """The mean weight of the upper arm of the head of `char`, square to its slant: the
+        index-th stroke across each height between the shaft and the arm's end."""
+        heights = range(AXIS + 60, AXIS + 141, 20)
+        spans = [measure.spans_at_y(self.font[ord(char)].foreground, y)[index] for y in heights]
+        middles = [(x0 + x1) / 2 for x0, x1 in spans]
+        slant = math.atan2(heights[-1] - heights[0], middles[-1] - middles[0])
+        return sum(x1 - x0 for x0, x1 in spans) / len(spans) * abs(math.sin(slant))
+
+    def test_typed_arrow_heads_are_as_heavy_as_the_angle(self):
+        # A head drawn as > scaled down has thinner arms than the one beside it in → or ->: a
+        # fifth thinner in 2.6. A shortened arm drawn smooth loses the hand's swell, 11% and 13%
+        # of >'s arms' widest, so the heads stay within a tenth of >.
+        # ⇤ is ⇥ mirrored; the arm is the stroke beside ⇥'s bar and right of ↦'s.
+        angle = self.upper_arm_weight(">", 0)
+        for char, index in (("→", 0), ("⇥", 0), ("↦", -1)):
+            with self.subTest(arrow=char):
+                self.assertAlmostEqual(self.upper_arm_weight(char, index), angle,
+                                       delta=0.1 * angle)
 
     def test_vertical_arrows_share_one_height(self):
         # ⇡'s two dashes set it; the solid and two-headed arrows match it.

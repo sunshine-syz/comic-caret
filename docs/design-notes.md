@@ -280,11 +280,14 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   the excess, and the head's points then back out to the old box, so each arrow keeps its
   place and length (96 to 84 in `↑`). `↓` is `↑` turned, as before, and `⇟` is now a reference
   to `⇞` turned, as `⇣` is to `⇡`: as an outline its bold came out with a doubled segment a
-  unit long. `⇥` moves only where a stroke is 92 or more across, and `⇤` is it mirrored: on its
-  shaft and tail, a little over 84, neighbouring points moved a unit or two apart and crossed
-  a curve's handles, so the curve turned twice between its points, which `validate()` flags
-  as missing extrema (0x20) and `addExtrema()` cannot mend; such curves' handles are set
-  evenly between their ends.
+  unit long. `⇥ ↦` carried `>` drawn small, its stroke shrunk with it to 67. Their heads are
+  now `>`'s arms at its own stroke, turned 10–11° steeper about the point and shortened until
+  the head fills the old one's box, as `add_ligatures.longer_angle()` turns and lengthens them
+  for `->`, their straight part and point redrawn smooth as the ligatures' are (see the
+  ligatures below). The arms lose about 220 of their straight units, so `ARM_STRAIGHT` starts
+  at 140, just past the halves' reach over the axis. The glyph's own shaft, with its round cap
+  or bar, runs level from where it is about 84 across into the head's point. `⇤` is `⇥`
+  mirrored.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
@@ -435,7 +438,24 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   `>` (`TIP`, `ARM_ENDS`, `HYPHEN_SPAN`); `ARM_ENDS` holds the centres of `>`'s round ends,
   and `<`'s are those turned. `longer_angle()` lengthens each arm until its ink reaches the
   height its caller asks: the arrowheads →'s and ←'s, so `->` reads as →, and the heads of
-  `|>` `<|` `<|>` a triangle as tall as Fira Code's, centred on the axis. The gain that
+  `|>` `<|` `<|>` a triangle as tall as Fira Code's, centred on the axis. An arrowhead's arms
+  come out 100–120 shorter than `>`'s. Squeezed into the 170 of `ARM_SPAN`, the hand's gentle
+  bends along the arm (up to 8°) steepened to 15–20° corners, which showed as bumps from about
+  150 px; a piece cut out and the ends welded left a corner at the weld. So `reaching()`
+  redraws a shortened arm's straight part, `ARM_STRAIGHT`, as one cubic per edge, leaving and
+  entering in each side's own slope. The hand's swell along the arm goes with it: the heads
+  weigh 0.93–0.97 of the angle there. A swell put back as a bump at the middle made the edges
+  wave. Turned apart about the tip, the two halves of `>`'s round point part at the axis in a
+  notch; `rounded_point()` runs the outer edges on straight from `POINT_BACK` and joins them
+  with one arc that reaches the tip where it was, radius 67 (`>`'s point is 51). Turning the
+  halves about the point's own centre instead left small steps where the hand's not quite
+  round point met the arms, and easing the turn (`eased()`) kept `>`'s wide point on the
+  steeper arms as a bulb. `open_crotch()` cuts the spike along each turned arm's own inner
+  edge, from `>`'s inner corner as the arm carries it to where the edge stands 60 off the
+  axis. Lines through two sections of `>`'s unturned edge missed the bent arms by up to 5 and
+  left a tick beside the crotch, seen inside `⇒ =>`. Their apex now lies 79 in from the tip,
+  so a `-` shaft runs 70 in (`SHAFT_INTO_HEAD`, 80 before), past it: at 80 the shaft stopped a
+  unit short and left a pinhole of white. The gain that
   widens `<` `>` into `<=` `>=` shrank as `<` `>` grew 64 wider, so the angle keeps its
   reference size: `ANGLE_WIDTH_GAIN` (94) widens it to 519, Fira Code's 1.10 x-heights (Maple
   Mono's is 1.13), its arms as tall as `<` `>`. `<=` is `>=` mirrored, as in Fira Code and

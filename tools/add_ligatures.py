@@ -69,9 +69,16 @@ TILDE_MIDDLE = (TROUGH_PROFILE[0] + CREST_PROFILE[1]) / 2  # mirroring about it 
 # The point of > and < sits on the axis at these x, and their arms run from it this way.
 TIP = {"greater": 513, "less": ADVANCE - 513}
 OUTWARD = {"greater": -1, "less": 1}
-SHAFT_INTO_HEAD = 80   # a - shaft ends this far inside the point, where the arms have met
+SHAFT_INTO_HEAD = 70   # a - shaft ends this far inside the point, past where the arms' inner edges meet (79)
 BARS_INTO_HEAD = 120   # = bars end this far inside the point, within both arms
 ARM_SPAN = (200, 370)  # along an arm from the point: straight, clear of the join and cap
+# Along an arm from the point: the straight part reaching() redraws to shorten it, from past
+# the halves' reach over the axis (it ends 131 out along the lower arm) to where the cap starts
+# to narrow. Longer than ARM_SPAN, so ⇥'s small head can lose 220 and keep a 50-unit curve.
+ARM_STRAIGHT = (140, 410)
+# Along an arrow head's axis from its tip: rounded_point() redraws the point from here, where
+# both arms' outer edges already run straight (their slopes vary by 3° from 80 in to the tip).
+POINT_BACK = 60
 HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_halves)
 # A flatter arm's turn eases in between these distances from the point of < or >: none within
 # 60, which takes in the round point (55 from its tip), so the two arms keep it as drawn; all of
@@ -264,15 +271,51 @@ def turned(layer, name, angle):
 
 
 def reaching(flat, name, direction, goal):
-    """The arm `flat`, laid along +x from the point of < or >, lengthened along its straight
-    part so that, turned to `direction`, its ink reaches the height `goal`. The end cap moves
-    along the arm, so its height changes by the gain times the sine."""
+    """The arm `flat`, laid along +x from the point of < or >, lengthened or shortened along its
+    straight part so that, turned to `direction`, its ink reaches the height `goal`. The end cap
+    moves along the arm, so its height changes by the gain times the sine.
+
+    Lengthening stretches the straight part, which flattens the hand's gentle bends in it.
+    Squeezed, those bends would steepen into corners, and a piece cut out would leave one at
+    the weld; so a shortened arm's straight part, ARM_STRAIGHT, is redrawn: each edge runs as
+    one curve from the point's side to the cap's, leaving and entering each in its direction.
+    The arm loses the hand's swell there, so it is a little lighter than the angle's.
+    """
     tip = TIP[name]
     arm = turned(flat, name, direction)
     arm.addExtrema("all")  # else the box reaches to the control points
     _, low, _, high = arm.boundingBox()
     gain = (goal - (high if goal > AXIS else low)) / math.sin(direction)
-    return geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+    if gain >= 0:
+        return geo.stretch_span(flat, tip + ARM_SPAN[0], tip + ARM_SPAN[1], gain)
+
+    def crossing(piece, x):  # the (bottom, top) corners of a piece cut flat at x
+        ys = [p.y for c in piece for p in c if p.on_curve and abs(p.x - x) < 0.5]
+        return min(ys), max(ys)
+
+    def across(x):
+        return crossing(geo.trim(flat, x1=x), x)
+
+    start, stop = (tip + x for x in ARM_STRAIGHT)
+    end = stop + gain
+    if end - start < 1:
+        raise ValueError(f"{name}'s arm can't lose {-gain:.0f}: its straight part is shorter")
+    near, far = geo.trim(flat, x1=start), geo.moved(geo.trim(flat, x0=stop), gain, 0)
+    (n0, n1), (f0, f1) = crossing(near, start), crossing(far, end)
+    (a0, a1), (b0, b1) = across(start + 10), across(stop - 10)
+    # Each edge leaves and enters in its slope over the 10 units inside the straight part.
+    third = (end - start) / 3
+    bridge = fontforge.contour()
+    bridge.moveTo(start, n0)
+    bridge.cubicTo((start + third, n0 + (a0 - n0) * third / 10),
+                   (end - third, f0 - (f0 - b0) * third / 10), (end, f0))
+    bridge.lineTo(end, f1)
+    bridge.cubicTo((end - third, f1 - (f1 - b1) * third / 10),
+                   (start + third, n1 + (a1 - n1) * third / 10), (start, n1))
+    bridge.closed = True
+    middle = fontforge.layer()
+    middle += bridge
+    return geo.weld(geo.weld(near, geo.clockwise(middle), start), far, end)
 
 
 def arm_axis(half, end_y):
@@ -293,26 +336,34 @@ def longer_angle(font, name, reach, steeper=0.0):
     Unlike scaling the glyph, lengthening and turning the arms keeps their stroke weight."""
     tip = TIP[name]
     inner = 0 if name == "greater" else 1  # which end of a span faces into the angle
+    # The angle's inner corner: of the outline points near the axis, the one furthest from the
+    # point. Each turned arm's inner edge ends where its half carries it.
+    corner = max(((p.x, p.y) for c in outline(font, name) for p in c
+                  if p.on_curve and abs(p.y - AXIS) < WOBBLE), key=lambda q: abs(q[0] - tip))
     arms, inner_edges = [], []
     for (_, end_y), half, goal in zip(ARM_ENDS[name], arm_halves(font, name), reversed(reach),
                                       strict=True):
-        direction, sections = arm_axis(half, end_y)
+        direction, _ = arm_axis(half, end_y)
         # Upright is up for the upper arm and down for the lower, whichever way the point faces.
         toward_upright = math.copysign(1, math.cos(direction) * math.sin(direction))
         new_direction = direction + toward_upright * steeper
         # Lay the arm along +x from the point, lengthen it, then turn it into place.
         flat = reaching(turned(half, name, -direction), name, new_direction, goal)
-        arms.append(turned(flat, name, new_direction))
+        arm = turned(flat, name, new_direction)
+        arms.append(arm)
+        # The inner edge as the arm now runs: from the corner, turned with it, to where it
+        # stands twice the halves' reach off the axis.
         m = geo.about(psMat.rotate(new_direction - direction), tip, AXIS)
-        inner_edges.append([(m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5])
-                            for x, y in ((span_at(half, y)[inner], y) for y in sections)])
+        y = AXIS + math.copysign(2 * HALF_REACH, end_y - AXIS)
+        inner_edges.append([(m[0] * corner[0] + m[2] * corner[1] + m[4],
+                             m[1] * corner[0] + m[3] * corner[1] + m[5]), (span_at(arm, y)[inner], y)])
     angle = geo.union(*arms)
     return open_crotch(angle, name, *inner_edges) if steeper else angle
 
 
 def open_crotch(angle, name, upper, lower):
     """`angle` cleared inside its point out to where its arms' inner edges, each given as two
-    points on its straight part, meet.
+    points on it, meet.
 
     Each half reaches past the axis over the old inner corner; once the arms are turned apart,
     that reach shows inside the angle as a spike.
@@ -325,15 +376,14 @@ def open_crotch(angle, name, upper, lower):
     slopes = [x_at(edge, AXIS + 1) - x_at(edge, AXIS) for edge in (upper, lower)]
     meet_y = AXIS + (x_at(lower, AXIS) - x_at(upper, AXIS)) / (slopes[0] - slopes[1])
     meet = (x_at(upper, meet_y), meet_y)
-    # Along each edge to twice the halves' reach from the axis, then 2 off it into the angle,
-    # so the cut never runs along the edge itself.
+    # Along each edge to twice the halves' reach from the axis, then level into the angle.
     clear = 2 * HALF_REACH
     ux, lx = x_at(upper, AXIS + clear), x_at(lower, AXIS - clear)
     arm_side, point_side = OUTWARD[name] * geo.FAR, -OUTWARD[name] * geo.FAR
     opened = geo.clip(angle, geo.polygon([
         (point_side, -geo.FAR), (point_side, geo.FAR), (arm_side, geo.FAR),
-        (arm_side, AXIS + clear - 2), (ux, AXIS + clear - 2), meet,
-        (lx, AXIS - clear + 2), (arm_side, AXIS - clear + 2),
+        (arm_side, AXIS + clear), (ux, AXIS + clear), meet,
+        (lx, AXIS - clear), (arm_side, AXIS - clear),
         (arm_side, -geo.FAR)]))
     # The cut can pass within a unit of an outline point. Rounded now, the two merge in the
     # cleanup that follows instead of leaving a zero-length segment that validate() flags.
@@ -341,11 +391,68 @@ def open_crotch(angle, name, upper, lower):
     return opened
 
 
+def rounded_point(angle, name):
+    """`angle`, < or > with its arms turned steeper, with its point redrawn as one round end.
+
+    Each arm turns about the tip with its half of the round point, so the halves part at the
+    axis in a notch. From POINT_BACK in, each arm's outer edge runs on straight in its own
+    direction to an arc that meets both and reaches the tip where it was.
+    """
+    if name == "less":  # drawn as > and mirrored back
+        mirrored = geo.mirrored_x(angle, ADVANCE / 2)
+        return geo.mirrored_x(rounded_point(mirrored, "greater"), ADVANCE / 2)
+    tight = angle.dup()
+    tight.addExtrema("all")  # else the box reaches to the control points
+    tip = tight.boundingBox()[2]
+    x = tip - POINT_BACK
+
+    def crossing(at):  # the (bottom, top) corners of the angle cut flat at `at`
+        ys = [p.y for c in geo.trim(angle, x1=at) for p in c if p.on_curve and abs(p.x - at) < 0.5]
+        if len(ys) != 2:
+            raise ValueError(f"{name}: the line {POINT_BACK} in from the tip crosses more than the point")
+        return ys
+
+    (low, high), (low_in, high_in) = crossing(x), crossing(x - 10)
+    slopes = (low - low_in) / 10, (high - high_in) / 10
+    # The edges run on meet at the apex. The arc's centre lies on the line halving their angle,
+    # where its circle touches both and reaches the tip.
+    run = (high - low) / (slopes[0] - slopes[1])
+    apex = (x + run, low + slopes[0] * run)
+    back = [(-1 / math.hypot(1, m), -m / math.hypot(1, m)) for m in slopes]  # from the apex
+    halving = (back[0][0] + back[1][0], back[0][1] + back[1][1])
+    halving = tuple(v / math.hypot(*halving) for v in halving)
+    sin_half = abs(back[0][0] * halving[1] - back[0][1] * halving[0])
+    out = (tip - apex[0]) / (halving[0] + sin_half)  # from the apex to the centre
+    radius = out * sin_half
+    centre = (apex[0] + out * halving[0], apex[1] + out * halving[1])
+    along = out * math.sqrt(1 - sin_half**2)  # from the apex to where the circle touches each edge
+    touches = [(apex[0] + along * bx, apex[1] + along * by) for bx, by in back]
+    turns = [math.atan2(ty - centre[1], tx - centre[0]) for tx, ty in touches]
+
+    def arc(contour, a0, a1):  # one cubic along the circle from angle a0 to a1
+        k = 4 / 3 * math.tan((a1 - a0) / 4) * radius
+        (x0, y0), (x1, y1) = ((centre[0] + radius * math.cos(a), centre[1] + radius * math.sin(a))
+                              for a in (a0, a1))
+        contour.cubicTo((x0 - k * math.sin(a0), y0 + k * math.cos(a0)),
+                        (x1 + k * math.sin(a1), y1 - k * math.cos(a1)), (x1, y1))
+
+    point = fontforge.contour()
+    point.moveTo(x, low)
+    point.lineTo(*touches[0])
+    arc(point, turns[0], 0)
+    arc(point, 0, turns[1])
+    point.lineTo(x, high)
+    point.closed = True
+    layer = fontforge.layer()
+    layer += point
+    return geo.weld(geo.trim(angle, x1=x), geo.clockwise(layer), x)
+
+
 def arrowhead(font, name):
     """> or < as the head of → or ←: its arms turned HEAD_TURN steeper and reaching as high and
     low as that arrow, so → beside -> reads as the same arrow."""
     _, y0, _, y1 = font["arrowright" if name == "greater" else "arrowleft"].boundingBox()
-    return longer_angle(font, name, (y0, y1), HEAD_TURN)
+    return rounded_point(longer_angle(font, name, (y0, y1), HEAD_TURN), name)
 
 
 def arrowheads(font):

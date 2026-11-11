@@ -225,6 +225,15 @@ class SanityTest(unittest.TestCase):
         self.assertEqual({n: hex(x) for n, x in flags.items() if x},
                          {n: hex(x) for n, x in self.validate_flags.items()})
 
+    def test_no_specks(self):
+        # A contour within the hand's wobble both ways is no stroke or counter but a speck,
+        # left where two pieces just miss each other: a pinhole of white or a dot of ink. The
+        # smallest drawn contour, a counter of the bold's ₦, is 59 across.
+        specks = sorted({g.glyphname for g in self.glyphs for c in g.foreground
+                         if max(c.boundingBox()[2] - c.boundingBox()[0],
+                                c.boundingBox()[3] - c.boundingBox()[1]) <= WOBBLE})
+        self.assertEqual(specks, [])
+
     def test_reference_offsets_are_whole_units(self):
         # validate() holds the points to whole units; a reference's offset places every point
         # of the glyph it shows, so it is a whole unit too (project.ROUNDING).

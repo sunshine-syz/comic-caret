@@ -12,6 +12,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
+import lig_geometry as geo
 from make_bold import HEAD_WHITE, PEN
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
 from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
@@ -163,6 +164,25 @@ class MeasurementTest(unittest.TestCase):
                 for end, above in zip(al.ARM_ENDS[name], (True, False), strict=True):
                     for constant, found in zip(end, al.end_centre(angle, above), strict=True):
                         self.assertAlmostEqual(constant, found, delta=ROUNDING)
+
+    def test_arm_straight_lies_between_the_halves_reach_and_the_cap(self):
+        # reaching() welds a shortened arm at both ends of ARM_STRAIGHT, so a line across each
+        # end must cross the arm alone, past the sliver each half keeps over the axis, and the
+        # far end must lie short of the round cap, half a stroke from the arm's end.
+        al = add_ligatures
+        tip = al.TIP["greater"]
+        for (_, end_y), half in zip(al.ARM_ENDS["greater"], al.arm_halves(self.font, "greater"),
+                                    strict=True):
+            flat = al.turned(half, "greater", -al.arm_axis(half, end_y)[0])
+            ends = []
+            for x in (tip + d for d in al.ARM_STRAIGHT):
+                with self.subTest(arm=end_y, x=x - tip):
+                    piece = geo.trim(flat, x1=x)
+                    ys = sorted(p.y for c in piece for p in c if p.on_curve and abs(p.x - x) < 0.5)
+                    self.assertEqual(len(ys), 2, f"the line crosses more than the arm: {ys}")
+                    ends.append(ys[-1] - ys[0])
+            arm_end = flat.boundingBox()[2]
+            self.assertGreaterEqual(arm_end - (tip + al.ARM_STRAIGHT[1]), ends[-1] / 2)
 
     def test_colon_lift_centres_the_colon_on_the_equal_sign(self):
         _, c0, _, c1 = self.font["colon"].boundingBox()
@@ -357,14 +377,17 @@ class GlyphShapeTest(unittest.TestCase):
         return weights
 
     def test_enlarged_heads_are_no_heavier_than_the_angles(self):
-        # Scaling > up would thicken its arms past the shaft or bar they join.
+        # Scaling > up would thicken its arms past the shaft or bar they join. reaching()
+        # redraws a shortened arm without the hand's swell, which takes up 11% and 13% of >'s
+        # arms' widest along their straight part, so a head may be up to a tenth lighter.
         for glyph, angle in {"greater.arrow": "greater", "less.arrow": "less",
                              "less_bar_greater.liga": "less", **PIPES}.items():
             with self.subTest(glyph=glyph):
                 [arm] = self.mean_weights(angle)
                 strokes = self.mean_weights(glyph)
                 head = strokes[-1] if angle == "greater" else strokes[0]
-                self.assertAlmostEqual(head, arm, delta=0.05 * arm)
+                self.assertLessEqual(head, 1.05 * arm)
+                self.assertGreaterEqual(head, 0.9 * arm)
                 (_, y0, _, y1), (_, a0, _, a1) = (self.font[name].boundingBox()
                                                   for name in (glyph, angle))
                 self.assertGreater(y1 - y0, a1 - a0)
