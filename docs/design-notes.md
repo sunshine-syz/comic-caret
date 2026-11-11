@@ -296,7 +296,11 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   ligatures below). The arms lose about 220 of their straight units, so `ARM_STRAIGHT` starts
   at 140, just past the halves' reach over the axis. The glyph's own shaft, with its round cap
   or bar, runs level from where it is about 84 across into the head's point. `⇤` is `⇥`
-  mirrored.
+  mirrored. `↔ ⇔` carried `>` drawn small too, arms 76–80, but `>`'s arms at their own stroke
+  don't fit `↔`'s 348-unit head. Their arms' edges move out instead, each point by half what its
+  stroke lacks of 84, at most 5; the shaft's and bars' edges keep their rows, so `⇔`'s bars stay
+  on `=`'s, and each crotch slides along its row to meet the moved arm. The heads then move back
+  until each glyph has its old box. `↕ ⇕` are `↔ ⇔` turned again, their shafts lengthened.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's

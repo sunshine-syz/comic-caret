@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `↔ ⇔ ↕ ⇕` have heads as heavy as `→ ⇒ ↑ ⇑`'s. Their arms were `>` drawn small, 76–80 units across where the other arrows' are 84, so they looked lighter beside them at large sizes. Each arm is now 84 across, in the same place and size. In 2.6 too.
 - `◢ ◣ ◤ ◥` are round at every corner, as `■ ▲ ▶ ◆` are. Two of their corners were sharp, and they were 491 units across where `■` is 502; they now fill `■`'s box. In 2.6 too.
 - In the bold, `⚠ ℹ �` keep their white marks open: the bold grew the black into them, and `⚠`'s white `!` closed to a stroke 46 units wide, so it read as a solid triangle at 12–16 px. They are now drawn as in the regular, as Maple Mono Bold keeps its `⚠`. In 2.6 too.
 - `☆` reads as a white star: its ring was as heavy as `-`, which filled the star's narrow arms, so it held 87% of `★`'s ink and read as `★` at 12–13 px (bold 12–16). Its ring is now 55 units, 68% of `★`'s ink, as the other white shapes hold 53–71%. The bold keeps `★ ☆` as drawn, as it keeps `● ■ ◆ ▲`, where it grew them wider than those and left a spike in `☆`'s counter. In 2.6 too.

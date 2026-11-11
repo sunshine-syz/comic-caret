@@ -353,9 +353,10 @@ class ArrowTest(unittest.TestCase):
         # A head drawn as > scaled down has thinner arms than the one beside it in → or ->: a
         # fifth thinner in 2.6. A shortened arm drawn smooth loses the hand's swell, 11% and 13%
         # of >'s arms' widest, so the heads stay within a tenth of >.
-        # ⇤ is ⇥ mirrored; the arm is the stroke beside ⇥'s bar and right of ↦'s.
+        # ⇤ is ⇥ mirrored; the arm is the stroke beside ⇥'s bar and right of ↦'s, and ↔'s
+        # right head's (↕ ⇕ are ↔ ⇔ turned).
         angle = self.upper_arm_weight(">", 0)
-        for char, index in (("→", 0), ("⇥", 0), ("↦", -1)):
+        for char, index in (("→", 0), ("⇥", 0), ("↦", -1), ("↔", -1)):
             with self.subTest(arrow=char):
                 self.assertAlmostEqual(self.upper_arm_weight(char, index), angle,
                                        delta=0.1 * angle)
