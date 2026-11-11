@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- The tails of `→ ← ⇒ ⇐ ↑ ↓ ⇑ ⇓ ⇞ ⇟` end in the round end of `-` and `=`, as `-->` and `==>` do. Their own ends were narrower than the shaft, with square shoulders 3–10 units across, seen from about 100 px.
 - The arrow heads are smooth: `→ ← ⇒ ⇐ ⇥ ⇤ ↦` and the arrow ligatures (`->` `=>` `<-` `->>` `~~>` `<!--` and the rest). Their heads are `>`'s arms, shortened. Shortening squeezed the hand's gentle bends along each arm into bumps, and turning the arms apart left a notch in the point, both seen from about 150 px. Each arm's straight part is now one smooth curve, a little lighter where the hand swelled, and the point is one round end. Inside the head, the white comes to one clean point, where a tick stood beside it in `⇒ ⇐ =>` (in 2.6 too).
 - `⇥ ⇤ ↦` have heads as heavy as `→`'s. Their heads were `>` drawn small, its stroke shrunk with it to 67 units where `→`'s arms are 84, so they looked lighter beside the other arrows. Each head is now `>`'s own arms, turned steeper and shortened, in the same place and size. Their shafts run level into the head.
 - In the bold, the wave arrows `~~>` `<~` `~~~>` have no crack between the wave and the head: the wave runs into the head along one arm, and the bold's heavier strokes left a hairline of white between the two, seen from about 32 px. `~~~>` had it in 2.6 too.

@@ -276,7 +276,11 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   showed beside it, a flat of 10 and a barb.
   The arrows follow, so `→` beside `->` stays one arrow: `→ ⇒` are their ligature heads again,
   moved 61 to the arrow's point and welded to the arrow's own shaft end, and `← ⇐` are those
-  mirrored; in `↑ ↔ ↕ ⇑ ⇞ ⇡ ↯` the points of every stroke heavier than 84 moved inward by half
+  mirrored. That shaft end, and those of `↑ ⇑ ⇞`, were narrower round ends below shafts that ran
+  on past their start, which left square tabs 3–10 units at the shoulders. They are now the
+  start pieces of `-` and `=` the ligatures use (`stroke()`), as `-->` begins, turned upright
+  for `↑ ⇑ ⇞`, each bar laid on the arrow's bar and welded 100 from the cell's side (56 under
+  `⇞`'s lower crossbar); in `↑ ↔ ↕ ⇑ ⇞ ⇡ ↯` the points of every stroke heavier than 84 moved inward by half
   the excess, and the head's points then back out to the old box, so each arrow keeps its
   place and length (96 to 84 in `↑`). `↓` is `↑` turned, as before, and `⇟` is now a reference
   to `⇞` turned, as `⇣` is to `⇡`: as an outline its bold came out with a doubled segment a
