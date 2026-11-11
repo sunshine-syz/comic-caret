@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `§` has an open middle. It was two `s` shapes, one over the other, whose bowls overlapped: the middle counter was a sliver and the sign read as a black knot at every size, in all three styles. It is redrawn as two hooks around one round counter, 162 units across where the sliver held 64 (Fira Code 145, Maple Mono 198), and stands 40 units taller, from 140 under the baseline to 700, inside the brackets' height.
 - `5` has tidier ends at large sizes: its bar ends round, where it ended in a cut, it starts flush with the stem, where it stood out as a bump at the top left, and the bottom end is one smooth curve. Text sizes look the same.
 - `S` reads apart from `5`: its top end hangs down, where it ran level and ended at the height of `5`'s bar. It now ends a quarter of the cap height under the top, as in Maple Mono (Fira Code and Intel One Mono hang it less, and none leaves it level). The top arm takes the bottom arm's weight and ends round. `Ś` `Ŝ` `Š` `Ș` follow.
 - In the italic, `/` and `\` are closer in weight. Slanting thinned every stroke that leans right and thickened every one that leans left: `/` was 76 units and `\` 90, 18% apart. They are now 79 and 86, 9% apart, as in the italics of Intel One Mono (8%) and Maple Mono (12%). The arms of `x` `v` `w` `k` `A` `V` `W` `X` `Y` follow.

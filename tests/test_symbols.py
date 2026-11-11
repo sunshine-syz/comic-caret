@@ -52,6 +52,10 @@ INFINITY_HOLE = (169, 203)
 # One Mono's 156.4 by 245.8). ‰: Maple Mono's 111.0 by 152.6 (Fira Code's 125.0 by 165.9; Intel
 # One Mono has none).
 RING_HOLES = {"percent": (132, 171), "perthousand": (111, 152)}
+# How wide and tall §'s middle counter is at least: Fira Code's, the narrowest reference's, 219
+# wide at our advance and 198 tall at our cap height (Maple Mono's 253 by 201, Intel One Mono's
+# 315 by 287).
+SECTION_HOLE = (219, 198)
 # How much taller each mark stands than ×: at least the least of the references that have it,
 # measured at our cap height. ✓: Intel One Mono's 99 (Maple Mono 103, Fira Code 327); ✗: Maple
 # Mono's 131, the one reference with it; ✕: Maple Mono's 68, the one reference with it.
@@ -124,6 +128,9 @@ BOLD_INFINITY_HOLE = (134, 172)
 # 147.8, Fira Code's 153.9, Intel One Mono's 207.1). ‰: Fira Code's 66.5 by 128.6 (Monaspace
 # Radon's 86.1 by 130.0, Monaspace Neon's 86.1 by 134.1, Maple Mono's 96.0 by 160.5).
 BOLD_RING_HOLES = {"percent": (75, 134), "perthousand": (66, 128)}
+# §: Fira Code's 167 by 154 (Monaspace Radon's 214 by 154, Monaspace Neon's 214 by 158, Maple
+# Mono's 224 by 178, Intel One Mono's 228 by 211).
+BOLD_SECTION_HOLE = (167, 154)
 # The mark's ink height less ×'s, as for the regular's. ✓: Intel One Mono's 24.73 (Maple Mono's
 # 121.3, Fira Code's 280.5); its bold keeps the regular's ✓, 543 tall, while its × grows from 446
 # to 519, so the 98.9 its regular gives drops to a quarter. ✗ and ✕: Maple Mono's 135.0 and 73.9,
@@ -178,6 +185,7 @@ class OperatorTest(unittest.TestCase):
     sfd = SFD
     not_equal_reach, approx_gap, broken_bar_gap = NOT_EQUAL_REACH, APPROX_GAP, BROKEN_BAR_GAP
     infinity_hole, slash_height, ring_holes = INFINITY_HOLE, SLASH_HEIGHT, RING_HOLES
+    section_hole = SECTION_HOLE
 
     @classmethod
     def setUpClass(cls):
@@ -294,6 +302,17 @@ class OperatorTest(unittest.TestCase):
                 for x0, y0, x1, y1 in holes:
                     self.assertGreaterEqual(x1 - x0, wide)
                     self.assertGreaterEqual(y1 - y0, tall)
+
+    def test_section_keeps_an_open_middle(self):
+        # Two S shapes whose bowls overlap close § into a knot at every text size; its middle
+        # counter is at least the narrowest reference's.
+        holes = [c.boundingBox() for c in self.font["section"].foreground
+                 if not c.isClockwise()]
+        self.assertEqual(len(holes), 1)
+        [(x0, y0, x1, y1)] = holes
+        wide, tall = self.section_hole
+        self.assertGreaterEqual(x1 - x0, wide)
+        self.assertGreaterEqual(y1 - y0, tall)
 
 
 class ArrowTest(unittest.TestCase):
@@ -1020,7 +1039,7 @@ class BoldOperatorTest(OperatorTest):
     sfd = BOLD_SFD
     not_equal_reach, approx_gap = BOLD_NOT_EQUAL_REACH, BOLD_APPROX_GAP
     broken_bar_gap, infinity_hole = BOLD_BROKEN_BAR_GAP, BOLD_INFINITY_HOLE
-    ring_holes = BOLD_RING_HOLES
+    ring_holes, section_hole = BOLD_RING_HOLES, BOLD_SECTION_HOLE
     slash_height = BOLD_SLASH_HEIGHT
 
 

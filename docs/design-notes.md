@@ -103,6 +103,16 @@ them. The exceptions:
   corner `E` and `F` have; the bottom end, an outline of small bumps, is one curve that tops
   out at 94, under the 100 that keeps the bowl open. Text sizes show no difference. The small
   5 of `⁵` `₅` and the fractions is its own outline and keeps its ends.
+- **`§`** is two hooks, the lower one turned (2026-11-10, picked on proof). Each is an end, a
+  bowl, a level spine across the cell and the far side of the middle counter, and ends inside
+  the other's spine. Comic Shanns Mono drew it as two copies of `s`, whose bowls overlapped:
+  the largest circle in the middle counter was 64 across (Fira Code 145, Maple Mono 198, Intel
+  One Mono 246) and the stroke doubled to 168 there, so § read as a knot at every size. The
+  counter now holds a circle of 162 (bold 144; Monaspace Neon Bold 108, the narrowest). It
+  stands −140…700, 840 tall, 1.19 of `S`'s height as Maple Mono's (Fira Code 1.08, Intel One
+  Mono 1.33), and its stroke is 80, 0.97 of `S`'s (the references' 0.90–0.97). The picked
+  form has level spines and a round counter, after `S` and `8`, over slanted spines at 800 and
+  at 840 tall.
 - **`a`** is double-storey, after a hand-drawn reference, so it reads apart from `o` and `α`
   at 12 px; the single-storey one blurred into `o` there. Its head rises nearly straight from
   a terminal at 0.87 of the x-height to a tight shoulder, the stem leans out as the old one
