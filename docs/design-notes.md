@@ -86,6 +86,17 @@ them. The exceptions:
   stand 32–40 left): moved 25 right, `fn` closed to 159 and `fl` to 123, and `if` came 132
   wider than `fi` (the references: 60–76). The crossbar is 7 longer to the left, since it and
   the hook now set the width, at Fira Code's 460.
+- **`S`**'s top end hangs down, to set it apart from `5`. Its top arm ran level and ended
+  in a cut: its lowest ink lay 0.13 of the cap height under the top,
+  where `5`'s bar ends (0.13), and the user read the two as alike. Every font compared hangs
+  `S`'s end lower than `5`'s bar: Intel One Mono 0.16 against 0.11, Fira Code 0.20 against
+  0.10, Maple Mono 0.26 against 0.12 (Menlo and SF Mono too). The arm's end is now a stroke
+  of the bottom arm's weight (79; the arm was 74–79) that bends down from under `S`'s highest
+  point and ends round 0.25 under the top; the user picked it on proof (2026-11-10) over
+  0.18. The opening under the end is 0.259, just over Maple Mono's 0.256, the narrowest; the
+  bold's is 0.216 (Maple Mono Bold 0.204). `5` keeps its round corner, as `E` and `F` have,
+  where Fira Code and Intel One Mono draw a square one. `$` is its own outline and keeps its
+  level end.
 - **`a`** is double-storey, after a hand-drawn reference, so it reads apart from `o` and `α`
   at 12 px; the single-storey one blurred into `o` there. Its head rises nearly straight from
   a terminal at 0.87 of the x-height to a tight shoulder, the stem leans out as the old one

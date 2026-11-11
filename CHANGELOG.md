@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `S` reads apart from `5`: its top end hangs down, where it ran level and ended at the height of `5`'s bar. It now ends a quarter of the cap height under the top, as in Maple Mono (Fira Code and Intel One Mono hang it less, and none leaves it level). The top arm takes the bottom arm's weight and ends round. `Ś` `Ŝ` `Š` `Ș` follow.
 - In the italic, `/` and `\` are closer in weight. Slanting thinned every stroke that leans right and thickened every one that leans left: `/` was 76 units and `\` 90, 18% apart. They are now 79 and 86, 9% apart, as in the italics of Intel One Mono (8%) and Maple Mono (12%). The arms of `x` `v` `w` `k` `A` `V` `W` `X` `Y` follow.
 - `Y` stands on the baseline row: its stem ended 17 units under the feet of `H` `T` `X` beside it. `6` and `9` top out with `2` and `3`: they rose 14 and 16 units over them, a pixel at some sizes in a column of figures. `∂` follows `6`.
 - `<` `>` are lighter: their stroke is 84 units, where it was 95, heavier than any letter and a quarter heavier than `=` and `-` beside them in `<=` `>=` `->` `=>`. They keep their width and place. The heads of the arrow ligatures (`->` `=>` `<-` `<=` `>=` `|>` and the rest), which are drawn from them, follow, so a head sits closer to its shaft's weight. So do the heads of the arrows `→ ← ⇒ ⇐ ↑ ↓ ⇑ ⇓ ⇞ ⇟ ⇡ ⇣ ↯ ⇤ ⇥`, so `→` beside `->` still reads as the same arrow.

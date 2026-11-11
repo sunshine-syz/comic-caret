@@ -635,10 +635,14 @@ class AtSignTest(unittest.TestCase):
 
 
 class LetterFollowUpTest(unittest.TestCase):
-    """Ƿ, G and 5 set apart from P and 6."""
+    """Ƿ, G and 5 set apart from P and 6, and S from 5."""
     sfd = SFD
     five_top = 100  # the highest 5's lower terminal may reach
     G_bar_white = 138  # Maple Mono's, the narrowest reference's (Fira Code 167, Intel 160)
+    # In cap heights. How much further under its top S's upper end hangs than 5's bar: Intel
+    # One Mono's, the least of the references' (Fira Code 0.099, Maple Mono 0.139).
+    S_end_under_bar = 0.053
+    S_opening = 0.256  # under that end: Maple Mono's, the narrowest (Fira 0.326, Intel 0.414)
 
     @classmethod
     def setUpClass(cls):
@@ -664,6 +668,30 @@ class LetterFollowUpTest(unittest.TestCase):
         _, _, terminal, _ = geo.trim(G, y0=540).boundingBox()
         _, _, side, _ = geo.trim(G, y0=150, y1=250).boundingBox()
         self.assertLessEqual(terminal, side - 11)
+
+    def top_end(self, name):
+        """(hang, opening) of the right end of the glyph's upper stroke, in cap heights: how
+        far under the glyph's top its lowest ink lies, and the white under that."""
+        cap = self.font["H"].boundingBox()[3]
+        layer = measure.ink(self.font, name)
+        top = layer.boundingBox()[3]
+        _, _, right, _ = geo.trim(layer, y0=top - 0.3 * cap).boundingBox()
+        # The end's columns, a stroke wide; the upper stroke is the first ink from the top.
+        columns = [spans for k in range(int(hyphen_stroke(self.font)))
+                   if (spans := sorted(measure.spans_at_x(layer, right - 1 - k), reverse=True))
+                   and spans[0][1] > top - 0.3 * cap]
+        end, below, *_ = min(columns, key=lambda spans: spans[0][0])
+        return (top - end[0]) / cap, (end[0] - below[1]) / cap
+
+    def test_S_top_end_hangs_under_the_height_of_fives_bar(self):
+        # 5's top is a level bar. An S whose top arm ends level at the bar's height reads as
+        # 5 at small sizes; in every reference S's end hangs lower.
+        self.assertGreaterEqual(self.top_end("S")[0] - self.top_end("five")[0],
+                                self.S_end_under_bar)
+
+    def test_S_stays_open_under_its_top_end(self):
+        # An end that hangs too far closes S's upper half into 8's.
+        self.assertGreaterEqual(self.top_end("S")[1], self.S_opening)
 
     def test_five_bowl_ends_low(self):
         # The references' lower terminals top out at 73-113; one curled higher nearly closes
@@ -786,6 +814,9 @@ class BoldLetterFollowUpTest(LetterFollowUpTest):
     # terminals top out higher still, at 130-165.
     five_top = LetterFollowUpTest.five_top + make_bold.PEN[1] / 2
     G_bar_white = 98  # Monaspace Radon Bold's, the narrowest reference bold's (Intel 106)
+    # Intel One Mono Bold's, the least (Fira Code 0.065, Maple Mono 0.114, Monaspace 0.134).
+    S_end_under_bar = 0.043
+    S_opening = 0.204  # Maple Mono Bold's, the narrowest (Monaspace Neon 0.218, Fira 0.277)
 
 
 class BoldDotsTest(DotsTest):
