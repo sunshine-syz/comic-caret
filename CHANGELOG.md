@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `≠`'s slash is as heavy as `/`'s middle. `/` swells toward its ends, and only those ends show past `≠`'s bars, so the slash looked heavier than `/` and than its own bars at 13–16 px (in 2.6 too). It is now thinned 8% across.
 - `~~` `~~~` and longer tilde runs stand centred, as `~` does: the run ended 26 units further right than `~`, 38 from its cell's edge where it began 61 from the other (in 2.6 too). Its last fall is now `~`'s own.
 - `>=>` and `<=<` stand where `>` and `<` do, so they no longer read with a space on one side: the tail stood in the far half of its cell, and `a>=>b` had 289 units of white before the arrow and 176 after it. It is now 160 and 176, as for `a==>b` (in 2.6 too).
 - `<-` `<==` `<~` `<<-` `<=<` carry `←`'s head, `->` `==>` `~>` `->>` `>=>`'s mirrored. They were built from `<`, which is `>` turned, so the hand-drawn arms swapped places: 11–13% of the head differed from `←`'s, seen from about 100 px (in 2.6 too).

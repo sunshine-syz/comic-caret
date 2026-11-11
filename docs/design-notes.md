@@ -501,7 +501,10 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   rehints every glyph no script covers. The Latin style snaps an edge within 25 units of one
   of its zones to it and places the bars from there: ≠'s slash foot, at −18, put its bars a
   row off `=`'s at 9–12 px, so the slash runs 40 further each way, to −58 and 602, Maple
-  Mono's length (Fira Code's and Intel One Mono's are shorter). The double arrows still stand
+  Mono's length (Fira Code's and Intel One Mono's are shorter). The slash is `/`'s stroke,
+  shortened along its straight middle and thinned 8% across: `/` swells toward its ends, 92
+  across in the middle and up to 107 near them, and only those ends show past the bars, so
+  `≠`'s slash read 13% heavier than `/` and 35% heavier than its bars. The double arrows still stand
   off `=`'s rows at some sizes. ttfautohint places `⇔`'s bars from its heads' ends, which puts
   them off at 11–12, 16–17 and 20–21 px in the regular; its control file can keep those ends
   out of the edges only by point number. `⇐` `⇒` `⇔` are off at 22–23 px too (12 in the bold),
