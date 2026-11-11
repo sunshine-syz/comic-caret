@@ -247,7 +247,11 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   the excess, and the head's points then back out to the old box, so each arrow keeps its
   place and length (96 to 84 in `↑`). `↓` is `↑` turned, as before, and `⇟` is now a reference
   to `⇞` turned, as `⇣` is to `⇡`: as an outline its bold came out with a doubled segment a
-  unit long. `⇤ ⇥` keep their 94: moved, `⇥` kept an extremum off its points.
+  unit long. `⇥` moves only where a stroke is 92 or more across, and `⇤` is it mirrored: on its
+  shaft and tail, a little over 84, neighbouring points moved a unit or two apart and crossed
+  a curve's handles, so the curve turned twice between its points, which `validate()` flags
+  as missing extrema (0x20) and `addExtrema()` cannot mend; such curves' handles are set
+  evenly between their ends.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
