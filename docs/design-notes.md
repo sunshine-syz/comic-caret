@@ -433,7 +433,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   is a third of the cell: 200 units. The pieces spread `~`'s own fall across 200 about its
   crest, keeping its height, so every seam meets at the crest's or the trough's height. In the
   550 cell three of `~`'s 174-unit half-waves left 28 units of flat at the seams. A single `~`
-  keeps its own 174-unit half-waves. `asciitilde.mid` and `.end` are the low pieces mirrored
+  keeps its own 174-unit half-waves, and so does a run's last fall, so the run ends where `~`
+  does: after a 200-unit fall it ended 26 further right, 61 from its first cell's edge and 38
+  from its last's (bold 44 and 20). `asciitilde.mid` and `.end` are the low pieces mirrored
   about the wave's middle. The crest's profile is a unit thicker than the trough's, so the
   mirror leaves each cut corner a unit off its profile. `snap_edge(level=True)` moves the level
   run that ends at the corner with it. Moving the corner alone leaves a short slant, which the

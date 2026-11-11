@@ -207,19 +207,21 @@ def run_pieces(font):
 
 
 def tilde_pieces(font):
+    """The pieces of a ~ run. It begins with ~'s own start and ends with ~'s own last fall and
+    end, so it stands as far from the cell's edges as ~: with a fall spread to TILDE_HALF
+    before it, the end stood 26 further right."""
     tilde = outline(font, "asciitilde")
-    fall = geo.snap_edge(geo.snap_edge(geo.trim(tilde, TILDE_CREST, TILDE_TROUGH),
-                                       TILDE_CREST, CREST_PROFILE), TILDE_TROUGH, TROUGH_PROFILE)
+    own_fall = geo.snap_edge(geo.snap_edge(geo.trim(tilde, TILDE_CREST, TILDE_TROUGH),
+                                           TILDE_CREST, CREST_PROFILE),
+                             TILDE_TROUGH, TROUGH_PROFILE)
     # Spread across to TILDE_HALF about the crest: the flat edges keep their heights.
-    fall = geo.transformed(fall, geo.about(
+    fall = geo.transformed(own_fall, geo.about(
         psMat.scale(TILDE_HALF / (TILDE_TROUGH - TILDE_CREST), 1), TILDE_CREST, 0))
     trough = TILDE_CREST + TILDE_HALF  # where the run's fall ends
     rise = geo.mirrored_x(fall, trough)
     rise_before = geo.moved(rise, -2 * TILDE_HALF, 0)
     start = geo.snap_edge(geo.trim(tilde, x1=TILDE_CREST), TILDE_CREST, CREST_PROFILE)
-    finish = geo.moved(
-        geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE),
-        trough - TILDE_TROUGH, 0)
+    finish = geo.snap_edge(geo.trim(tilde, x0=TILDE_TROUGH), TILDE_TROUGH, TROUGH_PROFILE)
     first, last = TILDE_CREST - TILDE_HALF, trough + TILDE_HALF  # the outer extremes
 
     def to_edge(layer, x, edge, profile):
@@ -233,7 +235,8 @@ def tilde_pieces(font):
     sta = to_edge(waves(start, rise), last, ADVANCE + OVERLAP, CREST_PROFILE)
     mid_low = to_edge(to_edge(waves(rise_before, rise), first, -OVERLAP, TROUGH_PROFILE),
                       last, ADVANCE + OVERLAP, CREST_PROFILE)
-    end_low = to_edge(waves(rise_before, finish), first, -OVERLAP, TROUGH_PROFILE)
+    end_low = to_edge(geo.weld(geo.weld(rise_before, own_fall, TILDE_CREST), finish,
+                               TILDE_TROUGH), first, -OVERLAP, TROUGH_PROFILE)
     # Mirrored, a trough is a crest a unit thicker, as the profiles differ by one; each cut
     # edge moves back onto its profile with the level run leading to it, so the stroke meets
     # the seam level, as the piece across it does.
