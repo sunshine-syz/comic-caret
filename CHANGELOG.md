@@ -4,7 +4,7 @@
 
 - In the italic, `‘ “` lean left as far as `’ ”` lean right, as in the regular. Slanting leaned `‘` only 11°, so `“` stood near upright beside `”` and quoted text looked lopsided. `` ` `` now leans a little flatter, against the slant, so it stays apart from `‘`. In 2.6 too.
 - `!=` and `!==` have a slash as heavy as `≠`'s. It was `/` scaled down, 70 units across beside bars of 78, and the italic thinned it to 68. It is now `/`'s own stroke, shortened, in the same place and length. In 2.6 too.
-- In the italic, the two arms of `< >` are closer in weight: 14% apart, where slanting left them 18% (Maple Mono's italic 14%). The arrow heads and `<= >=` gain a little. In 2.6 too.
+- In the italic, the two arms of `< >` and of the arrow heads are closer in weight: slanting thins the arm that leans with it and thickens the other, and the italic only partly made up for that in flatter strokes. `< >` were 18% apart and are now 12%; the heads of `->` `=>` `→ ⇒` were 23–24% and are now 17–18%, as Maple Mono's italic heads are. In 2.6 too.
 - `↔ ⇔ ↕ ⇕` have heads as heavy as `→ ⇒ ↑ ⇑`'s. Their arms were `>` drawn small, 76–80 units across where the other arrows' are 84, so they looked lighter beside them at large sizes. Each arm is now 84 across, in the same place and size. In 2.6 too.
 - `◢ ◣ ◤ ◥` are round at every corner, as `■ ▲ ▶ ◆` are. Two of their corners were sharp, and they were 491 units across where `■` is 502; they now fill `■`'s box. In 2.6 too.
 - In the bold, `⚠ ℹ �` keep their white marks open: the bold grew the black into them, and `⚠`'s white `!` closed to a stroke 46 units wide, so it read as a solid triangle at 12–16 px. They are now drawn as in the regular, as Maple Mono Bold keeps its `⚠`. In 2.6 too.

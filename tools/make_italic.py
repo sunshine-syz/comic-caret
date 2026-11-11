@@ -61,14 +61,18 @@ SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
 EVEN = 2.5
 # The move by n.x alone shrinks as an edge lies flatter, while the shear's thinning and
 # thickening grow: it left the arms of < > (31° off level) 18% apart and the arrow heads (45°)
-# 23–24%. An edge flatter than 51° moves as one at 51° does for its slant, n.x² = STEEP: < >
-# 14%, the heads 21–22%. From 0.7 on, the italic's <<- has its bar a pixel row off -'s under
-# the TTF's hinting at 15, 18 and 19 px. Level edges get none, easing in over FLAT_FROM
-# degrees, so bars and the tops of letters stay.
-STEEP = 0.6
+# 23–24%. An edge flatter than / \ (70°, n.x² = STEEP) moves as one at 70° does for its slant,
+# so it gets as much of the evening: < > 12%, the heads 17–18%, where the reference italics'
+# heads are 6–19%. Level edges get none, easing in over FLAT_FROM degrees, so bars and the
+# tops of letters stay.
+STEEP = math.sin(math.radians(70)) ** 2
 FLAT_FROM = (10, 25)
-FLAT_REACH = 12
-FLAT_TURN = 30  # degrees: a point where the outline turns more is a corner
+# Only a stroke's straight sides take that move: where the outline turns more than FLAT_TURN
+# between the points FLAT_REACH away on either side, at a corner, a round end or where one
+# starts, a point stays. Moved, a round end's foot lay flatter, and ttfautohint set the italic
+# <<-'s foot on the baseline and its bar a pixel row off -'s at 15, 18 and 19 px.
+FLAT_REACH = 24
+FLAT_TURN = 8  # degrees
 FLAT_NEAR = 0.4  # a point moves at most this share of the way to the next point on its contour
 REACH = 2 * EVEN * STEEP  # no point moves further
 
@@ -229,9 +233,8 @@ def evened(layer):
                           if (m := _edge_move(old[i], old[(i + k) % n])) is not None), None)
             if before is None or after is None:
                 continue
-            # The flat move is for a stroke's straight sides. It takes their angle from points
-            # FLAT_REACH away, as a handle a unit from its point gives none, and leaves a
-            # corner alone: moved by one side only, it folds against a handle left behind.
+            # The flat move is for a stroke's straight sides (FLAT_TURN). It takes their angle
+            # from points FLAT_REACH away, as a handle a unit from its point gives none.
             far_before = next((old[(i - k) % n] for k in range(1, n)
                                if math.dist(old[(i - k) % n], old[i]) >= FLAT_REACH), old[i])
             far_after = next((old[(i + k) % n] for k in range(1, n)

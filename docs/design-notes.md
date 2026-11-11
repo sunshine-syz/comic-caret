@@ -803,12 +803,16 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   capitals a row off `H` at 9 px. From 3 on, the outlines of `æ` and the small `5` cross.
   That move shrinks as an edge lies flatter, while the shear's thinning and thickening grow:
   it left the arms of `< >` (31° off level) 18% apart and the arrow heads (45°) 23–24%. An
-  edge flatter than 51° (n.x² = `STEEP`, 0.6) moves as one at 51° does for its slant, easing
-  in from 10° to 25° off level, so bars and the tops of letters stay: `< >` 14% (Maple Mono's
-  14%), the heads 21–22%. The angle is taken 12 units away along the outline, a corner keeps
-  its place, and a point moves at most 0.4 of the way to its neighbour: else handles a unit
-  from their point folded `æ`, the small `3` and the small `5`. From `STEEP` 0.7 on, the
-  italic's `<<-` has its bar a pixel row off `-`'s under the TTF's hinting at 15, 18 and 19 px.
+  edge flatter than `/ \` (70°, n.x² = `STEEP`) moves as one at 70° does for its slant, so it
+  gets as much of the evening, easing in from 10° to 25° off level so bars and the tops of
+  letters stay: `< >` 12%, the heads 17–18%, where Maple Mono's italic heads are 18–19% and
+  Monaspace's `>` 20%. Only straight sides move so: a point stays where the outline turns more
+  than 8° between the points 24 units away on either side, at a corner, a round end or where
+  one starts. Moved, a round end's foot lay flatter, and ttfautohint set the italic `<<-`'s
+  foot on the baseline and its bar a pixel row off `-`'s at 15, 18 and 19 px. A point also
+  moves at most 0.4 of the way to its neighbour: handles a unit from their point folded `æ`,
+  the small `3` and the small `5`. Where a moved point meets one that stays, a straight side
+  bends by 1–2 units (`k`'s arm), inside the hand's wobble.
 - **Quotes and the backtick.** Sheared, `‘` leaned −11° beside `’`'s +34°, so `“` stood near
   upright beside `”`. The reference italics lean both quotes the same way and part them by a
   6 or 9 shape, which ours don't have. So `‘ “` are `’ ”` mirrored, as in the regular, about
