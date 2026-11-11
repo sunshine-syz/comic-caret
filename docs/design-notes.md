@@ -671,7 +671,11 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   top would hold 222 over Å too.
 - **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,
   and ⁺ ⁻ ⁼ ₊ ₋ ₌ (208–218) against Fira Code's 233–235. Monaspace gives them no share of a
-  wider cell (the table above).
+  wider cell (the table above). At that width no slash fits ⁰ ₀: `0`'s left half-counters of
+  57–59, where Maple Mono's at our figure height are 74 (Intel One Mono's 92), and a 36-wide
+  slash leaves 52. The small zero keeps one counter and a dot of the small stroke, 54, which
+  marks it a zero apart from °; its counter is 87 (bold 71). Fira Code draws ⁰ plain. ⁴'s
+  counter is scaled 1.12 about its incentre to 54, Maple Mono's 53 at our figure height.
 - **■ □.** They are 502 against Fira Code's 540. They follow ☐, Intel One Mono's 502, so the
   boxes stay one size.
 - **▮ ▯.** They are 264 against Fira Code's 285, the one reference with them: ☐'s height
