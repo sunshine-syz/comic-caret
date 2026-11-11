@@ -97,6 +97,12 @@ them. The exceptions:
   bold's is 0.216 (Maple Mono Bold 0.204). `5` keeps its round corner, as `E` and `F` have,
   where Fira Code and Intel One Mono draw a square one. `$` is its own outline and keeps its
   level end.
+- **`5`**'s ends are tidied (2026-11-10, picked on proof over round ends alone). Its bar
+  ended in a cut, a flat underside and a corner, and now ends in a round cap; the bar's left
+  end stood 10 left of the stem as a bump, and the stem now runs straight up into the round
+  corner `E` and `F` have; the bottom end, an outline of small bumps, is one curve that tops
+  out at 94, under the 100 that keeps the bowl open. Text sizes show no difference. The small
+  5 of `⁵` `₅` and the fractions is its own outline and keeps its ends.
 - **`a`** is double-storey, after a hand-drawn reference, so it reads apart from `o` and `α`
   at 12 px; the single-storey one blurred into `o` there. Its head rises nearly straight from
   a terminal at 0.87 of the x-height to a tight shoulder, the stem leans out as the old one
