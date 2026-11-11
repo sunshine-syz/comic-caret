@@ -19,8 +19,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
 from helpers import assert_lookups_carry_over
-from make_italic import CURSIVE, CURSIVE_LETTERS, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
-from measure import ink, spans_at_y
+from make_italic import CURSIVE, CURSIVE_LETTERS, EVEN, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
+from measure import area, ink, spans_at_y
 from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import rerun_differences
 
@@ -95,9 +95,10 @@ class ItalicTest(unittest.TestCase):
         self.assertEqual(changed, [])
 
     def test_slanted_glyphs_are_the_regulars_sheared(self):
-        # Every on-curve point of the regular's outline, sheared, is one of the italic's,
-        # which may add points where the slant moved an extremum; the contours and the
-        # outline's box are the same.
+        # Every on-curve point of the regular's outline, sheared, is one of the italic's
+        # within the reach of evened(), which moves the diagonals' sides. The italic may add
+        # points where the slant moved an extremum. The contours are the same, and the
+        # outline's box within the same reach.
         wrong = {}
         for name, style in self.styles.items():
             if style != SLANTED:
@@ -105,7 +106,7 @@ class ItalicTest(unittest.TestCase):
             expected = geo.transformed(ink(self.regular, name), SHEAR)
             found = ink(self.italic, name)
             # A composite's part is rounded, and then its offset.
-            tolerance = ROUNDING * (2 if self.regular[name].references else 1)
+            tolerance = ROUNDING * (2 if self.regular[name].references else 1) + EVEN
             missing = unmatched(points(expected), points(found), tolerance)
             # FontForge boxes a curve loosely until its extrema are points; where those
             # land along a flat curve shifts with rounding, so they aren't compared.
@@ -115,6 +116,16 @@ class ItalicTest(unittest.TestCase):
                     or any(abs(a - b) > tolerance for a, b in boxes)):
                 wrong[name] = (len(found), len(expected), missing[:3])
         self.assertEqual(wrong, {})
+
+    def test_diagonals_are_evened(self):
+        # A shear keeps a glyph's area but for its points' rounding, which | shows: an
+        # upright stem, which evened() leaves alone. The italic's / gains more ink than that
+        # and its \ loses more.
+        def gain(name):
+            return area(ink(self.italic, name)) / area(ink(self.regular, name)) - 1
+        rounding = abs(gain("bar"))
+        self.assertGreater(gain("slash"), rounding)
+        self.assertLess(gain("backslash"), -rounding)
 
     def test_cursive_letters_differ_from_the_shear(self):
         # So the list can't name a letter the shear alone would give.

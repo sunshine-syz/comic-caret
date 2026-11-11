@@ -15,6 +15,8 @@ Every glyph of the regular falls in one of three sets, decided by classify():
   x += (y - AXIS) * SLANT, one map for every glyph, pivoting on the hyphen's middle: a stroke
   at any height moves the same in every glyph, so the ligature pieces still meet at the cell
   seams, while - = and the arrow shafts stay where they are and the lowercase stays centred.
+  Before the shear, evened() moves the sides of the diagonal strokes a little, so / and \
+  come out closer in weight.
 - UPRIGHT: what is drawn as a picture: Box Drawing, Block Elements, Braille, Powerline, the
   geometric shapes and the spinner frames and the status marks ✓ ✗ ⚠ ℹ, which Maple Mono and
   Intel One Mono leave untouched in their italics, and the checkboxes ☐ ☑ ☒ and the key hints
@@ -46,6 +48,11 @@ from project import AXIS, ITALIC_SFD, SFD, run_generator, validation_errors
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
 SLANT = math.tan(math.radians(ANGLE))
 SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
+
+# The scale of evened()'s moves: an edge goes at most 0.77 of it. 2.5 leaves / and \ 9% apart
+# in weight, where the shear alone left 18% and the reference italics have 8–13%; from 3 on,
+# the outlines of æ and the small 5 cross.
+EVEN = 2.5
 
 SLANTED, UPRIGHT, CURSIVE = "slanted", "upright", "cursive"
 
@@ -159,13 +166,53 @@ def conjugated(matrix):
     return (*(round(v, 4) for v in out[:4]), *(round(v) for v in out[4:]))
 
 
+def _edge_move(a, b):
+    """How far right evened() moves the edge from a to b, or None where the two points
+    coincide: EVEN * -2 * n.x * n.y along its outward normal n, of which only the part along
+    x is kept. Ink lies right of the way a contour runs."""
+    length = math.dist(a, b)
+    if not length:
+        return None
+    nx, ny = (a[1] - b[1]) / length, (b[0] - a[0]) / length
+    return EVEN * -2 * nx * ny * nx
+
+
+def evened(layer):
+    """The regular's outline with the sides of each / stroke moved apart and those of each
+    \\ moved together, to even the two after the shear, which thins a stroke that leans with
+    it and thickens one that leans against it.
+
+    Like the shear, it moves points along x only, so every row stays. The move is nothing for
+    a level or upright edge, so bars, stems and the seams of the ligature pieces stay too,
+    and largest for an edge 55° off level, about where / and the arms of v x A stand. A point
+    moves by the mean of the edges on its two sides, and its handles follow it.
+    """
+    out = layer.dup()
+    for contour in out:
+        old = [(p.x, p.y) for p in contour]
+        n = len(old)
+        for i, point in enumerate(contour):
+            if not point.on_curve:
+                continue
+            before = next((m for k in range(1, n)
+                           if (m := _edge_move(old[(i - k) % n], old[i])) is not None), None)
+            after = next((m for k in range(1, n)
+                          if (m := _edge_move(old[i], old[(i + k) % n])) is not None), None)
+            if before is None or after is None:
+                continue
+            for j in (i - 1, i, i + 1):
+                if j == i or not contour[j % n].on_curve:
+                    contour[j % n].x = old[j % n][0] + (before + after) / 2
+    return out
+
+
 def slant(glyph):
     """Shear the glyph in place: outline, references and anchors, then rehint it."""
     if any(not conjugable(matrix) for _, matrix, *_ in glyph.references):
         sys.exit(f"{glyph.glyphname} keeps a reference the shear cannot express; "
                  "build() unlinks those first")
     if len(glyph.foreground):
-        layer = geo.transformed(glyph.foreground, SHEAR)
+        layer = geo.transformed(evened(glyph.foreground), SHEAR)
         # Rounding can move an extremum off its point, so extrema are added between two
         # roundings; "all" because the default skips short segments validate() still checks.
         layer.round()

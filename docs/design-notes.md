@@ -700,6 +700,16 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   meet at the cell seams, `-` `=` and the arrow shafts stay where they are, and the lowercase
   stays centred. Composites keep their references with the matrix conjugated by the shear,
   and anchors move with it, so accents and the mark lookups need nothing of their own.
+- **Evened diagonals.** A shear thins a stroke that leans with it and thickens one that leans
+  against it: `/` came out 76 and `\` 90, 18% apart, and `x` `X` `v` `A` `k` `W` had one thin
+  arm each. The reference italics keep 8% (Intel One Mono), 12% (Maple Mono) and 13% (Monaspace
+  Radon). Before the shear, `evened()` moves each edge sideways by 2.5 × −2 n.x² n.y, n being its
+  outward normal: `/` 79, `\` 86, 9% apart, chosen on proof over evening them fully (84 and 85,
+  more even than any reference). Level and upright edges do not move, so bars, stems and the
+  ligature pieces' seams stay; a round letter's sides come in by a unit. The move is along x
+  only, as the shear's is, so no row changes. Moved along its normal, `τ`'s top rose a unit,
+  and ttfautohint, which takes Greek's x-height zone from `τ` among others, set the Greek
+  capitals a row off `H` at 9 px. From 3 on, the outlines of `æ` and the small `5` cross.
 - **What slants**: letters, figures, the combining marks, punctuation, brackets, quotes,
   currency, superscripts, operators, arrows and the ligatures. Maple Mono and Intel One Mono
   slant all of these, Maple Mono its arrows included; keeping → upright while `->` slants
