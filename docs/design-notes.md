@@ -599,7 +599,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   out 589 wide, 1.245 x-heights. Mirrored about the axis instead, the foot of `>`'s upper arm
   would stand inside the point as a notch, and the point's round end would come 15 short and
   blunt. The bar's outer edge stays 295 into its own
-  cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
+  cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell. The bar keeps
+  `|`'s wobble, its edges 6–9 further right at the top than at the foot, so `against()` leans
+  the head 0.7° with it: upright, one arm end stood out of the bar's edge as a step.
 - **`->>`.** `HEAD_PITCH` (361) leaves 171 of white between the two heads, near the 550
   cell's, since the heads kept their size; Fira Code, the one reference that draws `->>`,
   leaves 145 at a 600 cell. With the lighter `<` `>` (2026-11-10), the old pitch, 369, left

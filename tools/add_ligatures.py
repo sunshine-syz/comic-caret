@@ -613,12 +613,29 @@ def pipe_bar(font, head):
     return geo.moved(bar, 0, hy0 - bar.boundingBox()[1])
 
 
-def against(head, name, x):
-    """The pipe head of > or < moved so its arm ends' outer edge, the same for both arms
-    (pipe_head()), lies at x. Arm and bar are about equally heavy, so with a bar's edge at x
-    their round ends overlap and turn as one."""
-    x0, _, x1, _ = head.boundingBox()
-    return geo.moved(head, x - (x0 if name == "greater" else x1), 0)
+def against(head, name, bar):
+    """The pipe head of > or < leaned with `bar` and moved so its arm ends' outer edge, the same
+    for both arms (pipe_head()), lies on the bar's outer edge: its left for >, its right for <.
+    Arm and bar are about equally heavy, so their round ends overlap and turn as one. The bar
+    keeps |'s wobble, its edges 6-9 further right at the top than at the foot; an upright head
+    stood one arm end out of the edge there as a step."""
+    sign = 1 if name == "greater" else -1  # how far out an edge stands, + outward
+
+    def outer(layer, y):
+        x0, x1 = span_at(layer, y)
+        return -x0 if name == "greater" else x1
+
+    def end_heights(layer):
+        """The heights where the lower and the upper arm end reach furthest out."""
+        _, y0, _, y1 = layer.boundingBox()
+        return (max(range(math.ceil(y0) + 1, AXIS), key=lambda y: outer(layer, y)),
+                max(range(AXIS, math.floor(y1)), key=lambda y: outer(layer, y)))
+
+    low, high = end_heights(head)
+    lean = -sign * (outer(bar, high) - outer(bar, low)) / (high - low)
+    head = geo.transformed(head, geo.about(psMat.skew(math.atan(lean)), 0, AXIS))
+    out = max(outer(head, y) - outer(bar, y) for y in end_heights(head))
+    return geo.moved(head, sign * out, 0)
 
 
 def pipe(font, name):
@@ -630,17 +647,15 @@ def pipe(font, name):
     edge = PIPE_BAR_EDGE[name]
     outer = bx0 if name == "greater" else bx1  # |> has its bar on the left, <| on the right
     bar = geo.moved(bar, edge - outer, 0)
-    return geo.union(bar, against(arrow, name, edge))
+    return geo.union(bar, against(arrow, name, bar))
 
 
 def pipes(font):
     """<|> as ◁|▷: the heads of <| and |> on either side of one bar, centred on the middle of
     its three cells."""
-    right = pipe_head(font, "greater")
-    bar = pipe_bar(font, right)
-    bx0, _, bx1, _ = bar.boundingBox()
-    left = against(pipe_head(font, "less"), "less", bx1)
-    symbol = geo.union(left, bar, against(right, "greater", bx0))
+    bar = pipe_bar(font, pipe_head(font, "greater"))
+    symbol = geo.union(against(pipe_head(font, "less"), "less", bar), bar,
+                       against(pipe_head(font, "greater"), "greater", bar))
     x0, _, x1, _ = symbol.boundingBox()
     return geo.moved(symbol, -ADVANCE / 2 - (x0 + x1) / 2, 0)
 
