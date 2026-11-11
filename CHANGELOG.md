@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `>=>` and `<=<` stand where `>` and `<` do, so they no longer read with a space on one side: the tail stood in the far half of its cell, and `a>=>b` had 289 units of white before the arrow and 176 after it. It is now 160 and 176, as for `a==>b` (in 2.6 too).
 - `<-` `<==` `<~` `<<-` `<=<` carry `←`'s head, `->` `==>` `~>` `->>` `>=>`'s mirrored. They were built from `<`, which is `>` turned, so the hand-drawn arms swapped places: 11–13% of the head differed from `←`'s, seen from about 100 px (in 2.6 too).
 - `|>` `<|` `<|>` turn their corners as one round end. The bar leans a little, as `|` does, and the head stood upright, so one arm end stood 6–9 units out of the bar's edge as a step, seen from about 150 px (in 2.6 too). The head now leans with the bar.
 - The tails of `→ ← ⇒ ⇐ ↑ ↓ ⇑ ⇓ ⇞ ⇟` end in the round end of `-` and `=`, as `-->` and `==>` do. Their own ends were narrower than the shaft, with square shoulders 3–10 units across, seen from about 100 px.

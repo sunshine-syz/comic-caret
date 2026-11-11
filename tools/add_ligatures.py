@@ -682,8 +682,15 @@ def end_centre(angle, above):
 
 def tail(font):
     """> as the tail of >=>, and mirrored, of <=<: each arm runs into an = bar, and the bars
-    carry on into the next cell, so the point between them stays open."""
+    carry on into the next cell, so the point between them stays open. The head stands where
+    > does, its arm ends' outer edge on >'s: at the head's own place, by its point, the tail
+    began 129 further in than > and >=> stood a space apart from the letter before it."""
     angle = arrowhead(font, "greater")
+    lefts = []
+    for layer in (outline(font, "greater"), angle.dup()):
+        layer.addExtrema("all")  # else the box reaches to the control points
+        lefts.append(layer.boundingBox()[0])
+    angle = geo.moved(angle, lefts[0] - lefts[1], 0)
     parts, joins = [], []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
