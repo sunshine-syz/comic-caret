@@ -53,6 +53,18 @@ SHEAR = geo.about(psMat.skew(math.radians(ANGLE)), 0, AXIS)
 # in weight, where the shear alone left 18% and the reference italics have 8–13%; from 3 on,
 # the outlines of æ and the small 5 cross.
 EVEN = 2.5
+# The move by n.x alone shrinks as an edge lies flatter, while the shear's thinning and
+# thickening grow: it left the arms of < > (31° off level) 18% apart and the arrow heads (45°)
+# 23–24%. An edge flatter than 51° moves as one at 51° does for its slant, n.x² = STEEP: < >
+# 14%, the heads 21–22%. From 0.7 on, the italic's <<- has its bar a pixel row off -'s under
+# the TTF's hinting at 15, 18 and 19 px. Level edges get none, easing in over FLAT_FROM
+# degrees, so bars and the tops of letters stay.
+STEEP = 0.6
+FLAT_FROM = (10, 25)
+FLAT_REACH = 12
+FLAT_TURN = 30  # degrees: a point where the outline turns more is a corner
+FLAT_NEAR = 0.4  # a point moves at most this share of the way to the next point on its contour
+REACH = 2 * EVEN * STEEP  # no point moves further
 
 SLANTED, UPRIGHT, CURSIVE = "slanted", "upright", "cursive"
 
@@ -166,15 +178,21 @@ def conjugated(matrix):
     return (*(round(v, 4) for v in out[:4]), *(round(v) for v in out[4:]))
 
 
-def _edge_move(a, b):
+def _edge_move(a, b, flat=False):
     """How far right evened() moves the edge from a to b, or None where the two points
     coincide: EVEN * -2 * n.x * n.y along its outward normal n, of which only the part along
-    x is kept. Ink lies right of the way a contour runs."""
+    x is kept. Ink lies right of the way a contour runs. With `flat`, what it adds instead for
+    an edge flatter than n.x² = STEEP, so that edge moves as one at STEEP does for its slant."""
     length = math.dist(a, b)
     if not length:
         return None
     nx, ny = (a[1] - b[1]) / length, (b[0] - a[0]) / length
-    return EVEN * -2 * nx * ny * nx
+    if not flat:
+        return EVEN * -2 * nx * ny * nx
+    off_level = math.degrees(math.asin(min(abs(nx), 1)))
+    low, high = FLAT_FROM
+    t = min(max((off_level - low) / (high - low), 0), 1)
+    return -ny * 2 * EVEN * max(STEEP - nx * nx, 0) * t * t * (3 - 2 * t)
 
 
 def evened(layer):
@@ -183,14 +201,15 @@ def evened(layer):
     it and thickens one that leans against it.
 
     Like the shear, it moves points along x only, so every row stays. The move is nothing for
-    a level or upright edge, so bars, stems and the seams of the ligature pieces stay too,
-    and largest for an edge 55° off level, about where / and the arms of v x A stand. A point
-    moves by the mean of the edges on its two sides, and its handles follow it.
+    a level or upright edge, so bars, stems and the seams of the ligature pieces stay too. A
+    point moves by the mean of the edges on its two sides, and its handles follow it.
     """
     out = layer.dup()
     for contour in out:
         old = [(p.x, p.y) for p in contour]
         n = len(old)
+        on = [i for i, p in enumerate(contour) if p.on_curve]
+        beside = {i: (on[k - 1], on[(k + 1) % len(on)]) for k, i in enumerate(on)}
         for i, point in enumerate(contour):
             if not point.on_curve:
                 continue
@@ -200,9 +219,29 @@ def evened(layer):
                           if (m := _edge_move(old[i], old[(i + k) % n])) is not None), None)
             if before is None or after is None:
                 continue
+            # The flat move is for a stroke's straight sides. It takes their angle from points
+            # FLAT_REACH away, as a handle a unit from its point gives none, and leaves a
+            # corner alone: moved by one side only, it folds against a handle left behind.
+            far_before = next((old[(i - k) % n] for k in range(1, n)
+                               if math.dist(old[(i - k) % n], old[i]) >= FLAT_REACH), old[i])
+            far_after = next((old[(i + k) % n] for k in range(1, n)
+                              if math.dist(old[i], old[(i + k) % n]) >= FLAT_REACH), old[i])
+            flat = 0
+            if far_before != old[i] and far_after != old[i]:
+                (ax, ay), (bx, by) = far_before, old[i]
+                cx, cy = far_after
+                turn = ((bx - ax) * (cx - bx) + (by - ay) * (cy - by)) / (
+                    math.dist(far_before, old[i]) * math.dist(old[i], far_after))
+                if turn > math.cos(math.radians(FLAT_TURN)):
+                    flat = (_edge_move(far_before, old[i], flat=True)
+                            + _edge_move(old[i], far_after, flat=True)) / 2
+            # nor past a point beside it, which may not move
+            near = min((math.dist(old[i], old[j]) for j in beside[i] if j != i), default=0)
+            flat = max(min(flat, FLAT_NEAR * near), -FLAT_NEAR * near)
+            move = (before + after) / 2 + flat
             for j in (i - 1, i, i + 1):
                 if j == i or not contour[j % n].on_curve:
-                    contour[j % n].x = old[j % n][0] + (before + after) / 2
+                    contour[j % n].x = old[j % n][0] + move
     return out
 
 

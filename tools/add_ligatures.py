@@ -18,6 +18,7 @@ import fontforge
 import psMat
 
 import lig_geometry as geo
+import measure
 from project import ADVANCE, AXIS, OVERLAP, ROOT, WOBBLE, run_generator, validation_errors
 
 FEA = ROOT / "src" / "ligatures.fea"
@@ -81,9 +82,14 @@ HALF_REACH = 30        # how far past the axis each half of < > reaches (arm_hal
 # reaching() gave it.
 POINT_EASE = (60, 160)
 
-# != !==: the / at 83 %, centred on the bars: 726 tall, between Maple Mono's 662 and Fira
-# Code's 786, with a stroke (70) near the bars' (75).
-SLASH_SCALE = 0.83
+# != !==: /'s own stroke, shortened along its straight middle and centred on the bars: 726
+# tall, between Maple Mono's 662 and Fira Code's 786. / swells toward its ends, and only they
+# show past the bars, so it is thinned across until they weigh what /'s middle does, as ≠'s
+# slash is: scaled down whole, it was 70 across beside the bars' 78, and the italic thinned
+# it to 68.
+SLASH_HEIGHT = 726
+SLASH_END = 40  # each round end, left out where the slash is weighed
+SLASH_MIDDLE = range(160, 400, 10)  # heights across /'s straight middle
 EQUAL_MIDDLE = ADVANCE / 2  # stretch line through the middle of the = bars
 EQUAL_PITCH = 338 - 131  # distance between the two = bars
 
@@ -490,17 +496,40 @@ def equal_bars(font, cells):
 
 
 def not_equal(font, cells):
-    """!= over two cells or !== over three: equal_bars() and a / centred on the span."""
+    """!= over two cells or !== over three: equal_bars() and a / centred on the span,
+    SLASH_HEIGHT tall."""
     span = ADVANCE * (cells - 1)
     bars = equal_bars(font, cells)
-    slash = outline(font, "slash")
-    sx0, sy0, sx1, sy1 = slash.boundingBox()
     _, by0, _, by1 = bars.boundingBox()
     centre = ((ADVANCE - span) / 2, (by0 + by1) / 2)
-    slash = geo.transformed(slash, psMat.compose(
-        geo.about(psMat.scale(SLASH_SCALE), (sx0 + sx1) / 2, (sy0 + sy1) / 2),
-        psMat.translate(centre[0] - (sx0 + sx1) / 2, centre[1] - (sy0 + sy1) / 2)))
-    return geo.union(bars, slash)
+    slash = outline(font, "slash")
+
+    def across(layer, heights):
+        return sum(b - a for y in heights for a, b in measure.spans_at_y(layer, y)) / len(heights)
+
+    middle = across(slash, SLASH_MIDDLE)
+    tight = slash.dup()
+    tight.addExtrema("all")  # else the box reaches to the control points
+    x0, y0, x1, y1 = tight.boundingBox()
+    lie = geo.about(psMat.rotate(-math.radians(measure.slant(slash))), (x0 + x1) / 2, (y0 + y1) / 2)
+    lying = geo.transformed(slash, lie)
+    lying.addExtrema("all")
+    lx0, ly0, lx1, ly1 = lying.boundingBox()
+    shorter, thin = 0.0, 1.0
+    for _ in range(6):
+        cut = geo.transformed(lying, geo.about(psMat.scale(1, thin), 0, (ly0 + ly1) / 2))
+        cut = geo.transformed(geo.stretch_span(cut, lx0 + 150, lx1 - 150, shorter),
+                              psMat.inverse(lie))
+        tight = cut.dup()
+        tight.addExtrema("all")
+        cx0, cy0, cx1, cy1 = tight.boundingBox()
+        cut = geo.moved(cut, centre[0] - (cx0 + cx1) / 2, centre[1] - (cy0 + cy1) / 2)
+        shorter -= (cy1 - cy0 - SLASH_HEIGHT) * (lx1 - lx0) / (y1 - y0)
+        top, bottom = centre[1] + SLASH_HEIGHT / 2, centre[1] - SLASH_HEIGHT / 2
+        ends = (*range(round(bottom + SLASH_END), round(by0), 10),
+                *range(round(by1) + 10, round(top - SLASH_END), 10))
+        thin *= middle / across(cut, ends)
+    return geo.union(bars, cut)
 
 
 def eased(layer, name, angle):

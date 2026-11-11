@@ -304,8 +304,11 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
-  520. `//` `/*` keep their pitch through `TIGHT_KEEP` (−41.5), and the `!=` slash, the `/` at
-  83 %, stands 726 tall, between Maple Mono's 662 and Fira Code's 786.
+  520. `//` `/*` keep their pitch through `TIGHT_KEEP` (−41.5). The `!=` slash stands 726 tall,
+  between Maple Mono's 662 and Fira Code's 786. It is `/`'s own stroke shortened along its
+  straight middle and thinned across until its ends past the bars weigh what `/`'s middle
+  does, as `≠`'s is: as `/` scaled to 83%, it was 70 across beside bars of 78, and the italic
+  thinned it to 68.
 - ∄ is ∃ and the `/` turned 6° steeper, so it is no wider than ∃, as Fira Code's and Maple
   Mono's are: both are 437 (Maple Mono's ∄ is 420). Its foot stays at Fira Code's −121. A turned
   part can't stay a reference under the italic's shear or the bold's pen, so the italic draws ∄'s
@@ -798,6 +801,14 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   only, as the shear's is, so no row changes. Moved along its normal, `τ`'s top rose a unit,
   and ttfautohint, which takes Greek's x-height zone from `τ` among others, set the Greek
   capitals a row off `H` at 9 px. From 3 on, the outlines of `æ` and the small `5` cross.
+  That move shrinks as an edge lies flatter, while the shear's thinning and thickening grow:
+  it left the arms of `< >` (31° off level) 18% apart and the arrow heads (45°) 23–24%. An
+  edge flatter than 51° (n.x² = `STEEP`, 0.6) moves as one at 51° does for its slant, easing
+  in from 10° to 25° off level, so bars and the tops of letters stay: `< >` 14% (Maple Mono's
+  14%), the heads 21–22%. The angle is taken 12 units away along the outline, a corner keeps
+  its place, and a point moves at most 0.4 of the way to its neighbour: else handles a unit
+  from their point folded `æ`, the small `3` and the small `5`. From `STEEP` 0.7 on, the
+  italic's `<<-` has its bar a pixel row off `-`'s under the TTF's hinting at 15, 18 and 19 px.
 - **What slants**: letters, figures, the combining marks, punctuation, brackets, quotes,
   currency, superscripts, operators, arrows and the ligatures. Maple Mono and Intel One Mono
   slant all of these, Maple Mono its arrows included; keeping → upright while `->` slants

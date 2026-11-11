@@ -19,7 +19,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import lig_geometry as geo
 import make_italic
 from helpers import assert_lookups_carry_over
-from make_italic import CURSIVE, CURSIVE_LETTERS, EVEN, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
+from make_italic import CURSIVE, CURSIVE_LETTERS, REACH, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
 from measure import area, ink, spans_at_y
 from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import rerun_differences
@@ -106,7 +106,7 @@ class ItalicTest(unittest.TestCase):
             expected = geo.transformed(ink(self.regular, name), SHEAR)
             found = ink(self.italic, name)
             # A composite's part is rounded, and then its offset.
-            tolerance = ROUNDING * (2 if self.regular[name].references else 1) + EVEN
+            tolerance = ROUNDING * (2 if self.regular[name].references else 1) + REACH
             missing = unmatched(points(expected), points(found), tolerance)
             # FontForge boxes a curve loosely until its extrema are points; where those
             # land along a flat curve shifts with rounding, so they aren't compared.
