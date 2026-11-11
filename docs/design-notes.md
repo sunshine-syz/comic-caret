@@ -873,6 +873,10 @@ are in `build/cache/reference/bold/`.
   - The media controls ⏵ ⏸ ⏺ stand side by side at one height in status lines.
   - □ is ☐ and ■ its outer contour, so ☐ stays with them. ☑ ☒ are ☐ marked, so the three
     boxes stay alike.
+  - ★ ☆ stand with ● ■ ◆ ▲. Grown, they were 538 wide and ☆'s counter closed to 95% of ★'s
+    ink.
+  - The signs ⚠ ℹ � are black shapes with a white mark, as Maple Mono Bold keeps its ⚠. The
+    pen grew the black into the mark: ⚠'s white `!` closed to a stem of 46 and a dot of 44.
   - These glyphs and .notdef are copied unchanged, then hinted again under the bold's zones.
 - **Heavy marks** ✔ ✘ ✖ ❯ ❮ ❰ ❱ ➜ grow by the pen scaled by how much heavier the regular
   draws them than ✓ ✗ ✕ > < →. So they stay as much heavier. The full pen would grow the light
