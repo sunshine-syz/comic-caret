@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="docs/images/logo.png" width="160" alt="Comic Caret, hand-lettered over a terminal window with lines of code, beside a smiling green caret with arms and legs, among stars, squiggles and a heart">
-</p>
+<h1 align="center">
+  <img src="docs/images/header.svg" alt="Comic Caret">
+</h1>
 
 <p align="center">
   A casual monospaced font for code and terminals, in the spirit of Comic Sans,<br>
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/specimen.svg" alt="A large Aa beside the alphabet, digits, look-alike characters, accented letters and symbols, above a terminal with a prompt, a spinner, a progress bar, status marks and a table">
+  <img src="docs/images/specimen.svg" alt="A large Aa beside the alphabet, digits, look-alike characters, accented letters and symbols">
 </p>
 
 ## Why Comic Caret

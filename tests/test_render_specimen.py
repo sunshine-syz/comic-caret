@@ -26,7 +26,6 @@ from render_specimen import (
     highlighted,
     italicized,
     marked,
-    ruled,
 )
 
 
@@ -88,13 +87,36 @@ class LayoutTest(unittest.TestCase):
 
     def test_classes_color_glyphs_by_character(self):
         layout = Layout()
-        layout.spans(0, 20, [("green", "✔"), (None, " ok")], 18)
+        layout.line(0, 20, "✔ ok", 18, classes=["green", None, None, None])
         svg = layout.svg(40)
         self.assertEqual([name for *_, name in placed(svg)], ["green", None, None])
         light, dark = render_specimen.COLORS["green"]
         self.assertIn(f".green{{fill:{light}}}", style(svg))
         self.assertIn(f".green{{fill:{dark}}}", style(svg))
         self.assertNotIn(".red", style(svg))
+
+    def test_a_cursor_stands_inside_its_cell(self):
+        layout = Layout()
+        layout.cursor(100, 50, 20)
+        x, width = map(float, re.search(r'<rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"',
+                                        layout.svg(100)).groups())
+        self.assertEqual(x, 100)
+        self.assertLessEqual(x + width, 100 + ADVANCE * 20 / 1000)
+
+    def test_a_shaded_line_clips_a_gradient_in_the_viewers_colors(self):
+        layout = Layout()
+        layout.shaded(10, 50, "HH", 20, ("green", "blue"))
+        svg = layout.svg(100)
+        clip = re.search(r'<clipPath id="(\w+)">(.*?)</clipPath>', svg)
+        self.assertEqual([x for x, *_ in placed(clip.group(2))], [10, 10 + ADVANCE * 20 / 1000])
+        self.assertEqual(len(placed(svg)), 2)  # drawn only as the clip
+        shade = re.search(r'<linearGradient id="(\w+)"', svg).group(1)
+        self.assertIn(f'fill="url(#{shade})" clip-path="url(#{clip.group(1)})"', svg)
+        light, dark = style(svg).split("@media (prefers-color-scheme:dark)")
+        for scheme, css in enumerate((light, dark)):
+            for hue in ("green", "blue"):
+                self.assertIn(f"stop.{hue}{{stop-color:{render_specimen.COLORS[hue][scheme]}}}",
+                              css)
 
     def test_styled_draws_each_character_in_its_style(self):
         # The italic's H is the regular's slanted, and the bold's the regular's grown: other
@@ -119,9 +141,6 @@ class LayoutTest(unittest.TestCase):
     def test_marks_split_into_spans(self):
         self.assertEqual(marked("{green:❯} cargo {muted:on}"),
                          [("green", "❯"), (None, " cargo "), ("muted", "on")])
-        self.assertEqual(ruled("│ Łódź │ ▂▄ │"),
-                         [("muted", "│"), (None, " Łódź "), ("muted", "│"), (None, " ▂▄ "),
-                          ("muted", "│")])
 
 
 class HighlightTest(unittest.TestCase):

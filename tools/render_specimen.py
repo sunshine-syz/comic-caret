@@ -39,15 +39,27 @@ COLORS = {  # class: (light, dark), GitHub's syntax and terminal colors
     "yellow": ("#9a6700", "#d29922"),
     "blue": ("#0969da", "#58a6ff"),
     "purple": ("#8250df", "#bc8cff"),
+    "orange": ("#bc4c00", "#ffa657"),
+    "pink": ("#bf3989", "#f778ba"),
 }
 PANEL = {"fill": ("#f6f8fa", "#151b23"), "stroke": ("#d1d9e0", "#3d444d")}  # a code block's
+
+# The header: a terminal window with the name in a gradient over a session that lists the three
+# styles, each named in its own, and ends at a cursor (a caret). Its lines mark colored spans
+# as {class:text}.
+NAME = "Comic Caret"
+GRADIENT = ("orange", "pink", "purple")
+SESSION = (
+    "{blue:~/comic-caret} {muted:on} {purple:\ue0a0 main}",
+    '{green:❯} fc-list | grep {yellow:"Comic Caret"}',
+    "{green:✔} Regular  {green:✔} Italic  {green:✔} Bold  {muted:-> != >= => ::}",
+    "{green:❯} ",
+)
 
 # The look-alikes: the groups "Why Comic Caret" tells apart, large enough to see how.
 LOOKALIKES = ("Il1|", "O0o", "ij", ":;", "()[]{}")
 
-# The specimen: a large Aa beside spaced-out rows of samples, above a terminal whose prompt,
-# progress bar and table show the symbols at work. Terminal lines mark colored spans as
-# {class:text}.
+# The specimen: a large Aa beside spaced-out rows of samples.
 SAMPLES = (
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     "abcdefghijklmnopqrstuvwxyz",
@@ -67,22 +79,6 @@ ITALIC_SAMPLES = (
 # comments in the italic, as editors set them; the shapes, box drawing and boxes in the last
 # row keep the regular's weight.
 BOLD_SAMPLES = ITALIC_SAMPLES
-TERMINAL = (
-    "{blue:~/comic-caret} {muted:on} {purple:main} {muted:⇡1 ⇣2}",
-    "{green:❯} cargo test",
-    "{blue:⠹} Compiling naïve-café v0.1.0",
-    "{purple:━━━━━━━━━━━━━━━━╸}{muted:━━━━━━━━━}  58%",
-    "{green:✔} 41 passed  {red:✖} 1 failed",
-    "{yellow:⚠} 3 warnings  {blue:ℹ} 2 skipped",
-)
-TABLE = (  # right of the terminal lines, its lines drawn muted
-    "╭───────────┬─────────╮",
-    "│ city      │ load    │",
-    "├───────────┼─────────┤",
-    "│ Łódź      │ ▂▄▆█▇▅▃ │",
-    "│ São Paulo │ ▁▃▅▇█▆▄ │",
-    "╰───────────┴─────────╯",
-)
 
 # The ligatures: each group's sequences above the characters typed for them, then code that
 # uses them.
@@ -156,13 +152,14 @@ def tenth(value):
     return f"{round(value, 1) + 0.0:.1f}".removesuffix(".0")  # + 0.0: no -0
 
 
-def stylesheet(classes):
+def stylesheet(classes, stops):
     """Glyphs take the text color, or their class's color, from the viewer's scheme; so do
-    panels."""
+    panels and a gradient's stops."""
     colors = {"svg": (LIGHT, DARK)} | {f".{name}": COLORS[name] for name in classes}
 
     def rules(scheme):
         css = "".join(f"{selector}{{fill:{pair[scheme]}}}" for selector, pair in colors.items())
+        css += "".join(f"stop.{name}{{stop-color:{COLORS[name][scheme]}}}" for name in stops)
         return css + ".panel{" + ";".join(f"{k}:{v[scheme]}" for k, v in PANEL.items()) + "}"
 
     return f"<style>{rules(0)}@media (prefers-color-scheme:dark){{{rules(1)}}}</style>"
@@ -172,7 +169,7 @@ class Layout:
     """Lines of glyphs placed freely, each glyph defined once and drawn scaled to its size."""
 
     def __init__(self):
-        self.paths, self.drawn, self.classes = {}, [], {}
+        self.paths, self.drawn, self.classes, self.stops = {}, [], {}, {}
 
     def line(self, x, baseline, text, size, gap=0, calt=False, classes=None, font=FONT):
         """Draw one line of `text` from x on the baseline, `gap` px between cells. `classes`
@@ -196,12 +193,6 @@ class Layout:
             if keep(cluster):
                 self.glyph(path, x + cell * pitch, baseline, size, classes[cluster])
 
-    def spans(self, x, baseline, spans, size):
-        """Draw (class or None, text) spans one after another."""
-        text = "".join(chars for _, chars in spans)
-        self.line(x, baseline, text, size,
-                  classes=[name for name, chars in spans for _ in chars])
-
     def glyph(self, path, x, baseline, size, name):
         glyph_id = self.paths.setdefault(path, f"g{len(self.paths)}")
         if name:
@@ -209,6 +200,35 @@ class Layout:
         attribute = f' class="{name}"' if name else ""
         self.drawn.append(f'<use xlink:href="#{glyph_id}" transform="translate({tenth(x)} '
                           f'{tenth(baseline)}) scale({size / 1000:g})"{attribute}/>')
+
+    def shaded(self, x, baseline, text, size, hues, font=FONT):
+        """Draw one line of `text` in a gradient through `hues`, names in COLORS, that runs
+        from its first cell to its last. The glyphs clip a rectangle that holds the gradient:
+        as a fill, it would start again in every glyph."""
+        start = len(self.drawn)  # names this line's clip and gradient
+        self.line(x, baseline, text, size, font=font)
+        glyphs = "".join(self.drawn[start:])
+        self.stops.update(dict.fromkeys(hues))
+        stops = "".join(f'<stop offset="{i / (len(hues) - 1):g}" class="{hue}"/>'
+                        for i, hue in enumerate(hues))
+        width = len(text) * ADVANCE * size / 1000
+        del self.drawn[start:]
+        self.drawn.append(
+            f'<clipPath id="clip{start}">{glyphs}</clipPath>'
+            f'<linearGradient id="shade{start}" gradientUnits="userSpaceOnUse" x1="{tenth(x)}" '
+            f'x2="{tenth(x + width)}">{stops}</linearGradient>'
+            f'<rect x="{tenth(x)}" y="{tenth(baseline - ASCENT * LINE * size)}" '
+            f'width="{tenth(width)}" height="{tenth(LINE * size)}" fill="url(#shade{start})" '
+            f'clip-path="url(#clip{start})"/>')
+
+    def cursor(self, x, baseline, size):
+        """A block cursor at x, in the text color: half a cell wide and a little taller than
+        the capitals, as a terminal draws one over the text's height."""
+        over = 0.06 * size
+        self.drawn.append(f'<rect x="{tenth(x)}" y="{tenth(baseline - CAP_HEIGHT * size - over)}" '
+                          f'width="{tenth(0.5 * ADVANCE * size / 1000)}" '
+                          f'height="{tenth(CAP_HEIGHT * size + 2 * over)}" '
+                          f'rx="{tenth(0.045 * size)}"/>')
 
     def panel(self, y, height):
         """A code block's rounded box across the image, from y down."""
@@ -221,20 +241,14 @@ class Layout:
         return (f'<svg xmlns="http://www.w3.org/2000/svg" '
                 f'xmlns:xlink="http://www.w3.org/1999/xlink" width="{WIDTH}" '
                 f'height="{round(height)}" viewBox="0 0 {WIDTH} {round(height)}">'
-                f'{stylesheet(self.classes)}<defs>{defs}</defs>' + "".join(self.drawn)
+                f'{stylesheet(self.classes, self.stops)}<defs>{defs}</defs>' + "".join(self.drawn)
                 + "</svg>\n")
 
 
 def marked(line):
-    """(class or None, text) spans of a TERMINAL line."""
+    """(class or None, text) spans of a SESSION line."""
     return [(span.group(1), span.group(2)) if span.group(1) else (None, span.group())
             for span in re.finditer(r"\{(\w+):([^}]*)\}|[^{]+", line)]
-
-
-def ruled(line):
-    """(class or None, text) spans of a TABLE line, its box drawing muted."""
-    return [("muted", rule) if rule else (None, text)
-            for rule, text in re.findall(r"([─-╿]+)|([^─-╿]+)", line)]
 
 
 def highlighted(line):
@@ -256,6 +270,36 @@ def emphasized(line):
     return [{"keyword": BOLD, "comment": ITALIC}.get(name, FONT) for name in highlighted(line)]
 
 
+def header():
+    """The README's header, as SVG: the name and the session, each centered in the window."""
+    layout = Layout()
+    lines = [marked(line) for line in SESSION]
+    texts = ["".join(chars for _, chars in spans) for spans in lines]
+
+    size, lead = 18, 30
+    title = 64
+    baseline = MARGIN + 2 * PADDING + CAP_HEIGHT * title
+    top = baseline + 1.5 * PADDING  # of the session's lines
+    layout.panel(MARGIN, top + len(lines) * lead + PADDING - MARGIN)
+    dot = 24  # the window's buttons
+    layout.line(MARGIN + PADDING, MARGIN + PADDING + CAP_HEIGHT * dot, "●●●", dot, gap=4,
+                classes=["red", "yellow", "green"])
+    layout.shaded((WIDTH - len(NAME) * ADVANCE * title / 1000) / 2, baseline, NAME, title,
+                  GRADIENT, font=BOLD)
+
+    cell = ADVANCE * size / 1000
+    x = (WIDTH - max(map(len, texts)) * cell) / 2
+    for i, (spans, text) in enumerate(zip(lines, texts)):
+        fonts = [FONT] * len(text)
+        for style, font in (("Italic", ITALIC), ("Bold", BOLD)):  # a style's name, in that style
+            if (start := text.find(style)) >= 0:
+                fonts[start:start + len(style)] = [font] * len(style)
+        layout.styled(x, top + ASCENT * lead + i * lead, text, size, fonts, calt=True,
+                      classes=[name for name, chars in spans for _ in chars])
+    layout.cursor(x + len(texts[-1]) * cell, top + ASCENT * lead + (len(lines) - 1) * lead, size)
+    return layout.svg(top + len(lines) * lead + PADDING + MARGIN)
+
+
 def lookalikes():
     """The look-alikes image, as SVG: each group spaced out a little, the row centered like
     the images are on the page."""
@@ -273,8 +317,7 @@ def lookalikes():
 def specimen():
     """The README's specimen, as SVG."""
     layout = Layout()
-    right = WIDTH - MARGIN - PADDING  # where the table, and the longest row, end
-
+    right = WIDTH - MARGIN - PADDING  # where the longest row ends
     size, lead = 21, 34
     top = MARGIN + 10  # the rows' cap height starts here
     first = top + CAP_HEIGHT * size
@@ -285,19 +328,7 @@ def specimen():
     gap = (right - x) / max(map(len, SAMPLES)) - ADVANCE * size / 1000
     for i, row in enumerate(SAMPLES):
         layout.line(x, first + i * lead, row, size, gap)
-
-    # Lines 1.45 em apart, within the reach of box drawing's verticals, so the table joins.
-    size, lead = 18, 26
-    top = last + 2 * PADDING
-    height = 2 * PADDING + len(TERMINAL) * lead
-    layout.panel(top, height)
-    baseline = top + PADDING + ASCENT * lead
-    for i, line in enumerate(TERMINAL):
-        layout.spans(MARGIN + PADDING, baseline + i * lead, marked(line), size)
-    x = right - len(TABLE[0]) * ADVANCE * size / 1000
-    for i, line in enumerate(TABLE):
-        layout.spans(x, baseline + i * lead, ruled(line), size)
-    return layout.svg(top + height + MARGIN)
+    return layout.svg(last + MARGIN)
 
 
 def ligatures():
@@ -366,8 +397,8 @@ def bold():
     return style_image(BOLD_SAMPLES, BOLD, emphasized)
 
 
-IMAGES = {"specimen": specimen, "lookalikes": lookalikes, "ligatures": ligatures,
-          "italic": italic, "bold": bold}
+IMAGES = {"header": header, "specimen": specimen, "lookalikes": lookalikes,
+          "ligatures": ligatures, "italic": italic, "bold": bold}
 
 
 def main():
