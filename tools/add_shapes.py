@@ -6,7 +6,7 @@ Each frame is cut or built from the font's own ○ ● ☐ ■ ◦ ✶ and strok
 frames share one centre and box and it turns without pulsing:
 
 - ◐ ◑ ◒ ◓ and ◴ ◵ ◶ ◷ are ○ with a half or a quarter of ● inside; ◜ ◝ ◞ ◟ ◠ ◡ are pieces
-  of ○; ◰ ◱ ◲ ◳ are ☐ with a quarter of ■; ◢ ◣ ◤ ◥ are ■ cut corner to corner; ▯ is ☐
+  of ○; ◰ ◱ ◲ ◳ are ☐ with a quarter of ■; ◢ ◣ ◤ ◥ are ■'s halves, rounded; ▯ is ☐
   narrowed and ▮ is it filled.
 - ◎ ⦾ are ○ over ◦, ⊙ is ○ over ∙ (the period on the math axis) and ⦿ is ◉; ◌ is ○ in
   eight dashes and ◍ is ○ with bars inside; ⧆ ⧇ are ☐ over a small `*` and ◦.
@@ -43,6 +43,7 @@ SQUARE_QUARTERS = dict(zip(SQUARE_QUADRANTS, ("square.upperleft", "square.lowerl
                                               "square.lowerright", "square.upperright")))
 OVERLAPPING_REFERENCES = 0x4
 QUARTER_INSET = 6  # the quarters' edges under ☐'s stroke, so none coincides with its outline
+CORNER = 40  # the radius of ■'s corners
 ARCS = {0x25DC: QUADRANTS["upper left"], 0x25DD: QUADRANTS["upper right"],
         0x25DE: QUADRANTS["lower right"], 0x25DF: QUADRANTS["lower left"],
         0x25E0: {"y0": AXIS}, 0x25E1: {"y1": AXIS}}
@@ -168,6 +169,36 @@ def ring_and_fill(points, stroke):
     return ring, geo.outer(ring)
 
 
+def rounded(points, r):
+    """A clockwise polygon with every corner rounded to radius `r`, as `ring_and_fill` fills
+    it. Drawn arc by arc: FontForge's stroke draws some right angles with a miter."""
+    centres = inset(points, r)
+    n = len(centres)
+    contour = fontforge.contour()
+    for i, (cx, cy) in enumerate(centres):
+        (px, py), (qx, qy) = centres[i - 1], centres[(i + 1) % n]
+        start = math.atan2(cx - px, -(cy - py))  # the outward normal of the edge coming in
+        sweep = math.atan2(qx - cx, -(qy - cy)) - start
+        end = start + (sweep + math.pi) % (2 * math.pi) - math.pi  # clockwise, so below start
+        # one cubic per quarter, broken where the arc is level or upright, at its extrema
+        quarter = math.pi / 2
+        stops = [*(m * quarter for m in range(math.ceil(start / quarter - 1e-9) - 1,
+                                              math.floor(end / quarter + 1e-9), -1)), end]
+        a = start
+        point = (cx + r * math.cos(a), cy + r * math.sin(a))
+        contour.lineTo(*point) if i else contour.moveTo(*point)
+        for b in stops:
+            k = 4 / 3 * math.tan((b - a) / 4) * r
+            to = (cx + r * math.cos(b), cy + r * math.sin(b))
+            contour.cubicTo((point[0] - k * math.sin(a), point[1] + k * math.cos(a)),
+                            (to[0] + k * math.sin(b), to[1] - k * math.cos(b)), to)
+            a, point = b, to
+    contour.closed = True
+    layer = fontforge.layer()
+    layer += contour
+    return layer
+
+
 def circle_cuts(font):
     ring, disc = measure.ink(font, f"uni{CIRCLE:04X}"), measure.ink(font, f"uni{DISC:04X}")
     out = {}
@@ -189,12 +220,12 @@ def square_cuts(font):
     for code, cut in SQUARE_QUADRANTS.items():
         out[SQUARE_QUARTERS[code]] = geo.cleanup(geo.trim(shrunk, **cut))
         out[code] = Ref((f"uni{BOX:04X}", psMat.identity()), (SQUARE_QUARTERS[code], psMat.identity()))
-    # ■ cut along its diagonal from the top right to the bottom left, by a triangle that
-    # reaches well past it. ■ is square, so the triangle's long side runs corner to corner
-    # whatever `far` is; `far` only keeps the other two sides off ■'s outline.
-    far = 200
-    corner = geo.polygon([(x1 + far, y1 + far), (x1 + far, y0 - far), (x0 - far, y0 - far)])
-    lower_right = geo.cleanup(geo.clip(square, corner))
+    # ◢: ■'s lower right half with every corner rounded as ■'s are, as ▲ ▶ ◆ are. Its sharp
+    # corners stand out past ■'s box by the radius times √2, so the rounded ones reach the
+    # box: cut from ■ corner to corner, they fell 11 short of it, and stayed sharp.
+    reach = CORNER * math.sqrt(2)
+    lower_right = rounded([(x0 - reach, y0), (x1, y1 + reach), (x1, y0)], CORNER)
+    lower_right.round()
     out[LOWER_RIGHT] = lower_right
     out[LOWER_LEFT] = geo.mirrored_x(lower_right, CX)
     out[UPPER_LEFT] = Ref((f"uni{LOWER_RIGHT:04X}", geo.turned(CX, AXIS)))

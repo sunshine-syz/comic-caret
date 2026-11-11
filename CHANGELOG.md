@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `◢ ◣ ◤ ◥` are round at every corner, as `■ ▲ ▶ ◆` are. Two of their corners were sharp, and they were 491 units across where `■` is 502; they now fill `■`'s box. In 2.6 too.
 - In the bold, `⚠ ℹ �` keep their white marks open: the bold grew the black into them, and `⚠`'s white `!` closed to a stroke 46 units wide, so it read as a solid triangle at 12–16 px. They are now drawn as in the regular, as Maple Mono Bold keeps its `⚠`. In 2.6 too.
 - `☆` reads as a white star: its ring was as heavy as `-`, which filled the star's narrow arms, so it held 87% of `★`'s ink and read as `★` at 12–13 px (bold 12–16). Its ring is now 55 units, 68% of `★`'s ink, as the other white shapes hold 53–71%. The bold keeps `★ ☆` as drawn, as it keeps `● ■ ◆ ▲`, where it grew them wider than those and left a spike in `☆`'s counter. In 2.6 too.
 - `▯` and `◎` stay open at 12–14 px: `▯`'s counter was 104 units across, under Fira Code's 125, and is now 125, `▮ ▯` 287 wide; `◎`'s white between its rings was 51 at the sides, under Maple Mono's 57, so it read as `◉`, and is now 60. `⦾` follows `◎`. In 2.6 too.

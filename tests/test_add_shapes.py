@@ -145,14 +145,11 @@ class FrameTest(unittest.TestCase):
     def test_triangles_are_the_squares_corners(self):
         # ◢ fills ■'s lower right half: its box is ■'s, and its ink covers the corner and
         # not the opposite one. ◣ is ◢ mirrored and ◤ ◥ are ◢ ◣ turned (test_consistency
-        # and test_symbols). Where the diagonal cuts ■'s rounded corners, alike at both ends,
-        # ◢'s box falls short of ■'s by as far as ■'s ink lies in from the corner along it.
+        # and test_symbols). Its corners are round as ■'s are, and still reach ■'s box.
         x0, y0, x1, y1 = box(self.font, "■")
-        square, ink = self.ink("■"), self.ink("◢")
-        inset = next(d for d in range(round(x1 - x0))
-                     if any(a <= x0 + d <= b for a, b in measure.spans_at_y(square, y0 + d)))
+        ink = self.ink("◢")
         for got, want in zip(ink.boundingBox(), (x0, y0, x1, y1)):
-            self.assertAlmostEqual(got, want, delta=inset + ROUNDING)
+            self.assertAlmostEqual(got, want, delta=ROUNDING)
         near = (x1 - x0) / 10
         self.assertTrue(any(a <= x1 - near <= b for a, b in measure.spans_at_y(ink, y0 + near)))
         self.assertFalse(any(a <= x0 + near <= b for a, b in measure.spans_at_y(ink, y1 - near)))

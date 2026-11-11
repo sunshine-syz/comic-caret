@@ -85,6 +85,9 @@ around. Read this before writing code that edits the SFD.
 - `layer.intersect()` can fail when the box's edge runs exactly through outline points, as
   where a stroked end's round cap meets the stroke: it leaves the outline uncut, empty, or the
   box itself behind. Cut a hair inside the line and round (`HAIR` in `tools/make_bold.py`).
+- `stroke()` with round joins can draw a corner with a miter: the right angle of a closed
+  right triangle stays sharp, while a square's round. Draw such a polygon's round corners
+  as arcs (`rounded()` in `tools/add_shapes.py`).
 - A polygon built from points, and a path `stroke()` draws, can run counter-clockwise, and
   `removeOverlap()` then takes them for holes; turn them clockwise (`lig_geometry.clockwise`;
   `lig_geometry.polygon` and `stroked` already do) before a union.

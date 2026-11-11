@@ -435,6 +435,9 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   and the box moves back by half, so ☑'s check keeps its place against the top and right walls.
   ☒'s quarters move out and its cross's arms lengthen along their diagonals, to 505.
   `add_shapes.py` rebuilds the frames on ☐ ■ (◰ ◱ ◲ ◳ ⧆ ⧇ ▮ ▯ ◢ ◣ ◤ ◥ ☖ ☗ ▰ ▱).
+  ◢ ◣ ◤ ◥ are ■'s halves with every corner rounded to ■'s radius, 40, as ▲ ▶ ◆ are round
+  at every corner. Their sharp corners stand past ■'s box, so the round ones fill it: cut
+  from ■ corner to corner, they stopped 11 short of it.
 - **ŀ.** The dot moves 34 right and ends 18 past the l's foot, where the bold puts it.
 - **The `~~~` run.** Each half-wave of the run, a fall from crest to trough or the rise back,
   is a third of the cell: 200 units. The pieces spread `~`'s own fall across 200 about its
