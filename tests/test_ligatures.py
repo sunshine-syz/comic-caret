@@ -75,12 +75,17 @@ def seam(layer, x):
 
 def unmet(edges, other, x, inward, cover):
     """The flat `edges` of one piece that the `other` piece, cut at x, neither repeats edge for
-    edge nor covers, just inside its cut (x + inward), with a stroke reaching `cover` past both
-    ends."""
+    edge nor meets, just inside its cut (x + inward), with one stroke at both ends. The stroke
+    meets an end where its own edge lies level with it, so the edge runs on, or where it
+    reaches `cover` past it, so the end is hidden: the inner head of the bold ->> runs on
+    level under the shaft and hides its top."""
+    def met(end, edge, past):
+        return abs(edge - end) <= ROUNDING or past * (edge - end) >= cover
+
     repeated = seam(other, x)
     spans = spans_at_x(other, x + inward)
     return [(y0, y1) for y0, y1 in edges if (y0, y1) not in repeated
-            and not any(a <= y0 - cover and b >= y1 + cover for a, b in spans)]
+            and not any(met(y0, a, -1) and met(y1, b, 1) for a, b in spans)]
 
 
 def pieces(first, middle, last, count):
@@ -570,8 +575,8 @@ class SeamTest(unittest.TestCase):
     def test_joined_pieces_meet_without_a_step(self):
         # A piece that runs on is cut flat at its cell's edge, and the next begins with the
         # same edge or covers it; any step between them shows as a notch in the stroke.
-        # A stroke hides an edge when it reaches a quarter of a stroke past both its ends, as
-        # the inner head of ->> does the shaft's end.
+        # A stroke hides an edge's end when it reaches a quarter of a stroke past it, as the
+        # inner head of ->> does the shaft's.
         _, y0, _, y1 = self.font["hyphen"].boundingBox()
         cover = (y1 - y0) / 4
         for text in LIGATED:

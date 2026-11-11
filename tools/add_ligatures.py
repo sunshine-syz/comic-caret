@@ -91,7 +91,7 @@ ANGLE_WIDTH_GAIN = 94
 # The centres of the round ends of >'s arms, upper then lower, as end_centre() measures them.
 # The hand-drawn arms differ, so each has its own. < is > turned 180° about the middle of the
 # cell on the axis, so its ends are these turned.
-GREATER_ENDS = ((144, 490), (147, 63))
+GREATER_ENDS = ((141, 494), (142, 61))
 ARM_ENDS = {"greater": GREATER_ENDS,
             "less": tuple((ADVANCE - x, 2 * AXIS - y) for x, y in reversed(GREATER_ENDS))}
 HYPHEN_SPAN = 281      # distance between the centres of the hyphen's two end caps

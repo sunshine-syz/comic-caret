@@ -232,6 +232,15 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   Shanns' depth (the references' reach −172…−244). The brackets stay: lengthened to the
   descenders, they would stand taller than every reference's and drag `⟨ ⟩` and `/ \` with
   them.
+- `<` `>` are drawn with a stroke of 84, between the letters' stems (88) and `-` `=` `+`
+  (75–80); they were 95, heavier than any letter and 27% over `=`, where Fira Code and Intel
+  One Mono draw them at their operators' weight (77 against 74, 70 against 72). The user chose
+  84 on proof (2026-11-10) over 88. Each point of the outline moved 6 inward along its normal,
+  so the hand's points stay: an inset by FontForge's stroker redrew the arms' round ends, and
+  under ttfautohint the `<` pieces' bars then left `-`'s pixel rows at ten sizes. The point
+  stays at 513 and the arms are 12 longer, so the width stays Fira Code's 425. The arrow
+  ligatures' heads, built from `>`, follow; in the bold `->>` the inner head's lower arm now
+  meets the shaft a little inside the seam, where the shaft's edge runs on level.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
