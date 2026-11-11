@@ -502,6 +502,9 @@ def not_equal(font, cells):
     bars = equal_bars(font, cells)
     _, by0, _, by1 = bars.boundingBox()
     centre = ((ADVANCE - span) / 2, (by0 + by1) / 2)
+    # Weighed where !='s two bars leave it showing, so !== takes the same slash: past three
+    # bars only the swelling ends show, and weighed there it came out 4% lighter.
+    _, ey0, _, ey1 = equal_bars(font, 2).boundingBox()
     slash = outline(font, "slash")
 
     def across(layer, heights):
@@ -526,8 +529,8 @@ def not_equal(font, cells):
         cut = geo.moved(cut, centre[0] - (cx0 + cx1) / 2, centre[1] - (cy0 + cy1) / 2)
         shorter -= (cy1 - cy0 - SLASH_HEIGHT) * (lx1 - lx0) / (y1 - y0)
         top, bottom = centre[1] + SLASH_HEIGHT / 2, centre[1] - SLASH_HEIGHT / 2
-        ends = (*range(round(bottom + SLASH_END), round(by0), 10),
-                *range(round(by1) + 10, round(top - SLASH_END), 10))
+        ends = (*range(round(bottom + SLASH_END), round(ey0), 10),
+                *range(round(ey1) + 10, round(top - SLASH_END), 10))
         thin *= middle / across(cut, ends)
     return geo.union(bars, cut)
 
