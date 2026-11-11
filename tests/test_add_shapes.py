@@ -35,6 +35,12 @@ HOLDS = {"◐": "○", "◑": "○", "◒": "○", "◓": "○", "◴": "○", "
 TRIGRAMS = {"☰": "", "☱": "top", "☲": "middle", "☳": "top middle", "☴": "bottom",
             "☵": "top bottom", "☶": "middle bottom", "☷": "top middle bottom"}
 STARS = {"✷": 8, "✸": 8, "✹": 12, "✺": 16}  # points
+# The white between ◎'s rings: at least Maple Mono's 57 at our size, the narrowest reference's
+# (Fira Code's 78); narrower, ◎ reads as ◉ at 12-14 px.
+BULLSEYE_WHITE = 57
+# The white across ▯: at least Fira Code's 125.0, x scaled to our advance, the only reference
+# with ▯.
+WHITE_BAR_COUNTER = 125
 
 
 def box(font, char):
@@ -187,10 +193,33 @@ class FrameTest(unittest.TestCase):
             with self.subTest(glyph=char):
                 refs = self.references(char)
                 self.assertEqual(set(refs), parts)
-                for matrix in refs.values():
+                for name, matrix in refs.items():
+                    if char == "◎" and name == bullet:
+                        continue  # ◦ smaller: test_bullseye_keeps_white_between_its_rings
                     self.assertEqual(matrix, psMat.identity())
         name, matrix = self.only_reference("⦿")
         self.assertEqual((name, matrix), (self.font[ord("◉")].glyphname, psMat.identity()))
+
+    def test_bullseye_keeps_white_between_its_rings(self):
+        # ◦ scaled about its own centre inside ○, so ◎ keeps both centred and its white open.
+        bullet = self.font[ord("◦")]
+        matrix = self.references("◎")[bullet.glyphname]
+        self.assertEqual(matrix[1:3], (0, 0))
+        self.assertEqual(matrix[0], matrix[3])
+        x0, y0, x1, y1 = bullet.boundingBox()
+        for centre, moved in zip(((x0 + x1) / 2, (y0 + y1) / 2), matrix[4:], strict=True):
+            self.assertAlmostEqual(centre * matrix[0] + moved, centre, delta=ROUNDING)
+        ring = measure.ink(self.font, self.font[ord("◎")].glyphname)
+        _, inner, outer, _ = (x for span in measure.spans_at_y(ring, AXIS)[:2] for x in span)
+        self.assertGreaterEqual(outer - inner, BULLSEYE_WHITE)
+
+    def test_white_bar_keeps_its_counter(self):
+        layer = self.font[ord("▯")].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        for y in (y0 + (y1 - y0) * k for k in (0.3, 0.5, 0.7)):
+            with self.subTest(y=round(y)):
+                (_, inner), (outer, _) = measure.spans_at_y(layer, y)
+                self.assertGreaterEqual(outer - inner, WHITE_BAR_COUNTER)
 
     def test_bullet_operator_is_the_period_on_the_axis(self):
         name, matrix = self.only_reference("∙")

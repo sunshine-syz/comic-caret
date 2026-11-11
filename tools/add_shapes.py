@@ -48,8 +48,15 @@ ARCS = {0x25DC: QUADRANTS["upper left"], 0x25DD: QUADRANTS["upper right"],
         0x25E0: {"y0": AXIS}, 0x25E1: {"y1": AXIS}}
 LOWER_RIGHT, LOWER_LEFT, UPPER_LEFT, UPPER_RIGHT = 0x25E2, 0x25E3, 0x25E4, 0x25E5
 BLACK_BAR, WHITE_BAR = 0x25AE, 0x25AF
-NARROW = 0.527  # ▮'s width over its height in Fira Code, the only reference with ▮ ▯
+# ▮ ▯'s width, at which ▯'s counter is Fira Code's, the only reference with them: 125 across,
+# x scaled to our advance (its ▯ is 285). Fira Code's width over height times ☐'s height,
+# 264, left 104: ☐'s stroke stays while the box is smaller than Fira Code's.
+BAR_WIDTH = 287
 BULLSEYE, CIRCLED_BULLET, CIRCLED_WHITE_BULLET, DOTTED, FILLED = 0x25CE, 0x2299, 0x29BE, 0x25CC, 0x25CD
+# The white between ◎'s rings at the sides: over Maple Mono's 57 at our size, the narrowest
+# reference's (Fira Code's 78), by the hand's wobble. ◦ whole left 53, and ◎ read as ◉ at
+# 12-14 px.
+BULLSEYE_WHITE = 60
 FISHEYE, CIRCLED_FISHEYE, BULLET_OPERATOR = 0x25C9, 0x29BF, 0x2219
 SQUARED_ASTERISK, SQUARED_CIRCLE = 0x29C6, 0x29C7
 # ⧆ is references to ☐ and to `*` made small, a component of its own; its parts don't
@@ -193,8 +200,7 @@ def square_cuts(font):
     out[UPPER_LEFT] = Ref((f"uni{LOWER_RIGHT:04X}", geo.turned(CX, AXIS)))
     out[UPPER_RIGHT] = Ref((f"uni{LOWER_LEFT:04X}", geo.turned(CX, AXIS)))
     # ▯: ☐ with the straight middle of its top and bottom shrunk, its corners kept.
-    width = round(NARROW * (y1 - y0))
-    narrow = geo.centred(geo.stretch_span(box, x0 + 100, x1 - 100, width - (x1 - x0)), CX, AXIS)
+    narrow = geo.centred(geo.stretch_span(box, x0 + 100, x1 - 100, BAR_WIDTH - (x1 - x0)), CX, AXIS)
     out[WHITE_BAR] = geo.cleanup(narrow)
     out[BLACK_BAR] = geo.outer(out[WHITE_BAR])
     return out
@@ -204,7 +210,15 @@ def rings(font):
     ring, disc = measure.ink(font, f"uni{CIRCLE:04X}"), measure.ink(font, f"uni{DISC:04X}")
     circle_name, box_name = f"uni{CIRCLE:04X}", f"uni{BOX:04X}"
     bullet_name = f"uni{WHITE_BULLET:04X}"
-    out = {BULLSEYE: Ref((circle_name, psMat.identity()), (bullet_name, psMat.identity())),
+    # ◎: ◦ inside ○, scaled about its centre until the white between them at the sides, where
+    # ○'s counter is narrowest, is BULLSEYE_WHITE.
+    bullet = measure.ink(font, bullet_name)
+    (_, inner), _ = measure.spans_at_y(ring, AXIS)[:2]
+    bx0, by0, bx1, by1 = bullet.boundingBox()
+    shrink = (bx1 - bx0 - 2 * (BULLSEYE_WHITE - (bx0 - inner))) / (bx1 - bx0)
+    *scale, dx, dy = geo.about(psMat.scale(shrink), (bx0 + bx1) / 2, (by0 + by1) / 2)
+    centre = (*scale, round(dx), round(dy))  # offsets in whole units, as ◉'s
+    out = {BULLSEYE: Ref((circle_name, psMat.identity()), (bullet_name, centre)),
            CIRCLED_WHITE_BULLET: Ref((f"uni{BULLSEYE:04X}", psMat.identity())),  # drawn alike everywhere
            CIRCLED_FISHEYE: Ref((f"uni{FISHEYE:04X}", psMat.identity())),
            SQUARED_CIRCLE: Ref((box_name, psMat.identity()), (bullet_name, psMat.identity()))}

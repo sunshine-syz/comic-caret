@@ -678,8 +678,12 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   counter is scaled 1.12 about its incentre to 54, Maple Mono's 53 at our figure height.
 - **■ □.** They are 502 against Fira Code's 540. They follow ☐, Intel One Mono's 502, so the
   boxes stay one size.
-- **▮ ▯.** They are 264 against Fira Code's 285, the one reference with them: ☐'s height
-  times Fira Code's width over height (`add_shapes.NARROW`), so they follow ☐ as ■ □ do.
+- **▮ ▯.** They are 287 wide, at which ▯'s counter is Fira Code's, the one reference with them:
+  125 across, x scaled to our advance (`add_shapes.BAR_WIDTH`; Fira Code's ▯ is 285). ☐'s
+  height times Fira Code's width over height, 264, left 104, since ☐'s stroke stays while the
+  box is smaller than Fira Code's. ◎'s ◦ is scaled 0.93 about its centre, so the white between
+  the rings is 60 at the sides (Maple Mono 57, Fira Code 78); ◦ whole left 51, and ◎ read as ◉
+  at 12–14 px.
 - **The italic ↦ ⁄.** They slant past the cell, ↦ to −5..579 and ⁄ to −47..664, as Maple Mono
   Italic's do (−53..565 and −73..642).
 
