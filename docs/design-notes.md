@@ -576,17 +576,16 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   would stand inside the point as a notch, and the point's round end would come 15 short and
   blunt. The bar's outer edge stays 295 into its own
   cell, 2 past Fira Code's 293 and 20 past JetBrains Mono's 275 at a 600 cell.
-- **`->>`.** `HEAD_PITCH` (369) leaves 171 of white between the two heads, near the 550
+- **`->>`.** `HEAD_PITCH` (361) leaves 171 of white between the two heads, near the 550
   cell's, since the heads kept their size; Fira Code, the one reference that draws `->>`,
-  leaves 145 at a 600 cell. The inner head's crotch then lies 38 inside its cell, so the
-  shaft's cut end at the seam lies on the open shaft, as in `->`. A pitch from 382 to 423 puts
-  the crotch onto that cut end, which then shows as a flat, and 426, which keeps the inner head
-  where the 550 cell had it, leaves 215 between the heads. At 375 the inner head stands 6
-  nearer the cell's edge, and FreeType's hinting sets the piece's bar a pixel row off the next
-  piece's at 8 to 35 px. The bold's pen grows the heads to 143 apart, under Fira Code Bold's
+  leaves 145 at a 600 cell. With the lighter `<` `>` (2026-11-10), the old pitch, 369, left
+  177. The inner head's crotch lies 68 inside its cell, so the shaft's cut end at the seam lies
+  on the open shaft, as in `->`. From a pitch of 399 the crotch reaches that cut end, which
+  then shows as a flat, and 426, which keeps the inner head where the 550 cell had it, leaves
+  219 between the heads. The bold's pen grows the heads to 144 apart, under Fira Code Bold's
   155, so there the inner head moves along its shaft until the white is Fira Code Bold's
-  (`make_bold.HEADS_APART`); a pitch that wide, about 387, would take the regular's white to
-  184, further from Fira Code's 145.
+  (`make_bold.HEADS_APART`); a pitch that wide, about 376, would take the regular's white to
+  182, further from Fira Code's 145.
 - **Tight pairs.** `TIGHT_KEEP` states, for each glyph of a tightened pair (`::` `&&` `++`
   `//` `<<` …), the side bearing it keeps toward its partner, not how far it moves. The white
   between the pair is the sum of the two kept side bearings, so it stays when the cell grows or

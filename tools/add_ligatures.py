@@ -133,12 +133,10 @@ THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "
 
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one. The white
 # between the two, 171, goes with the heads' size, not the cell's: more than Fira Code's (145
-# at our cell), the one reference that draws ->>. The inner head's crotch then lies inside its
-# cell, clear of the shaft's cut end at the cell's edge; a pitch from 382 to 423 brings the
-# crotch onto that end, which then shows in it. At 375 the inner head stands 6 nearer the
-# cell's edge, and FreeType's hinting sets the piece's bar a pixel row off the next piece's at
-# 8 to 35 px.
-HEAD_PITCH = 369
+# at our cell), the one reference that draws ->>. The inner head's crotch then lies 68 inside
+# its cell, clear of the shaft's cut end at the cell's edge; from a pitch of 399 the crotch
+# reaches that end, which then shows in it.
+HEAD_PITCH = 361
 
 # The > and < heads of a wave arrow (~~> <~): the wave ends here in the head's cell, 3 past
 # where the arms' inner edges meet (429), so its cut end lies inside the point; for < mirrored,
