@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover tests
 """
+import itertools
 import math
 import pathlib
 import sys
@@ -11,7 +12,7 @@ import fontforge
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "tools"))
 import add_ligatures
-from make_bold import HEAD_WHITE
+from make_bold import HEAD_WHITE, PEN
 from measure import gap, horizontal_edges, ink, spans_at_x, spans_at_y, vertical_edges
 from project import ADVANCE, AXIS, BOLD_SFD, OVERLAP, ROUNDING, SFD, WOBBLE
 
@@ -34,10 +35,10 @@ OR_EQUAL_WHITE, BOLD_OR_EQUAL_WHITE = 106, 85
 # |> <|'s ink in x-heights, tall then wide: Fira Code's is 1603 by 1306 of 1053 (1.52, 1.240),
 # JetBrains Mono's 835 by 685 of 550 (1.52, 1.245).
 PIPE_HEIGHT, PIPE_WIDTHS = 1.52, (1.240, 1.245)
-# A straight upright or level edge this long is a stroke cut flat. The cut is as long as the
-# stroke is wide, 70 or more (the slash of !=), and the generated glyphs' other straight bits
-# run 3 at most.
-CUT_EDGE = 20
+# A straight upright or level edge this long is a stroke cut flat, whole or where part of the cut
+# shows past the stroke it runs into. A whole cut is as long as the stroke is wide, 70 or more
+# (the slash of !=), and the generated glyphs' other straight bits run 3 at most.
+CUT_EDGE = 5
 
 
 def widths_at(layer, y):
@@ -221,6 +222,35 @@ class TwoWayHeadsTest(unittest.TestCase):
 
 
 class BoldTwoWayHeadsTest(TwoWayHeadsTest):
+    sfd = BOLD_SFD
+
+
+class WaveArrowTest(unittest.TestCase):
+    """~~> <~: the wave runs into the head without a crack beside the arm it runs along."""
+    sfd = SFD
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font = fontforge.open(str(cls.sfd))
+
+    def test_no_crack_beside_an_arm(self):
+        # A white narrower across than the bold pen is wide, running on for twice that, is a
+        # crack the pen all but shut, a hairline once the strokes are large. Where the wave meets
+        # the arm, and under its crest, the white narrows over a shorter way.
+        for glyph in ("greater.warrow", "greater.warrow.low", "less.warrow"):
+            layer = self.font[glyph].foreground
+            _, y0, _, y1 = layer.boundingBox()
+            longest = run = 0
+            for y in range(math.ceil(y0) + 1, math.floor(y1)):
+                spans = spans_at_y(layer, y)
+                narrow = any(b - a < PEN[0] for (_, a), (b, _) in itertools.pairwise(spans))
+                run = run + 1 if narrow else 0
+                longest = max(longest, run)
+            with self.subTest(glyph=glyph):
+                self.assertLess(longest, 2 * PEN[0])
+
+
+class BoldWaveArrowTest(WaveArrowTest):
     sfd = BOLD_SFD
 
 

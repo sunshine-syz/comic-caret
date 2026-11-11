@@ -26,7 +26,8 @@ The offset grows every edge alike, so - stays centred on the math axis and the l
 pieces still match at their seams; a piece's flat cut end past the cell is trimmed back to
 the regular's. Not FontForge's changeWeight(): in its LCG mode it grows a level stroke upward
 only, which takes - off the axis. The pen opens no white: a notch whose mouth it shuts is
-filled (notches_filled()).
+filled (notches_filled()), and so is a crack it all but shuts where a wave runs along an arrow's
+arm (PLUGGED).
 
 The pen must not push ink out of the cell, or past the regular's own overhang; nor any glyph
 but a letter or figure nearer the cell's sides than SYMBOL_SIDE (side_bounds()), so two
@@ -310,6 +311,13 @@ LIFTED = {"uni21EA": "uni21E7"}
 # white from 171 to 184, past 1.7.0's 173.
 HEADS_APART = ("greater.twohead", "less.twohead")
 HEAD_WHITE = 309.7 * ADVANCE / 1200  # Fira Code Bold's, 309.7 of its 1200 cell
+# The wave arrows' heads, ~~> <~: the wave runs into the head along one arm, 35 to 41 from it
+# in the regular. The pen grows both into that white and leaves a crack 7 to 36 across, shut
+# at the point and open at the other end. Plugged there, the crack is a notch, and filled
+# (plugged()).
+PLUGGED = ("greater.warrow", "greater.warrow.low", "less.warrow")
+INTO = 2  # how far a crack's fill reaches into the strokes on either side
+FILLET_BACK = 10  # rows between the open end of a crack and its fill's arc, and to measure its lean
 
 # A cut exactly on a piece's cut line runs through the points where the pen's round end meets
 # the stroke, and intersect() then fails, leaving the stroke uncut or the cutting box behind;
@@ -522,6 +530,104 @@ def notches_filled(layer, outline):
     return out
 
 
+def plugged(layer, pen):
+    """The grown `layer` with each crack the pen left filled: a white between two strokes
+    narrower across than the pen is wide, over at least twice that in height (crack_fill())."""
+    narrow, tall = pen[0], 2 * pen[0]
+
+    def gaps_at(y):
+        spans = spans_at_y(layer, y)
+        return [(a, b) for (_, a), (b, _) in itertools.pairwise(spans)]
+
+    def opens(y, gap):
+        # The white beyond the crack's end runs on wider, where the strokes beside it part.
+        return any(b - a >= narrow and abs(a + b - sum(gap)) < 2 * pen[0] for a, b in gaps_at(y))
+
+    _, y0, _, y1 = layer.boundingBox()
+    cracks, run = [], []
+    for y in range(math.ceil(y0) + 1, math.floor(y1)):
+        gaps = [(a, b) for a, b in gaps_at(y) if b - a < narrow]
+        # A crack runs on while one narrow gap a row stays beside the last row's.
+        if len(gaps) == 1 and run and abs(sum(gaps[0]) - sum(run[-1][1])) < pen[0]:
+            run.append((y, gaps[0]))
+            continue
+        cracks.append(run)
+        run = [(y, gaps[0])] if len(gaps) == 1 else []
+    cracks.append(run)
+    fills = [crack_fill(crack, opens(crack[0][0] - 1, crack[0][1]),
+                        opens(crack[-1][0] + 1, crack[-1][1]))
+             for crack in cracks if len(crack) >= tall]
+    return geo.union(layer, *fills) if fills else layer
+
+
+def crack_fill(crack, open_below, open_above):
+    """An outline over the crack given as (y, (left, right)) a row, bottom to top, reaching
+    INTO the strokes on either side. At an end where the strokes meet beyond it, it crosses
+    flat; at an end where the crack opens out, it stops on an arc that fits the crack, so the
+    white beyond ends round."""
+    def middle(k):
+        y, (a, b) = crack[max(0, min(len(crack) - 1, k))]
+        return (a + b) / 2, y
+
+    def arc_end(k, inward):
+        """(left, the arc's path to right): the arc's centre lies on the crack's middle at row
+        k; the crack leans, so the arc fits it square to that lean, not along a row."""
+        (x0, y0), (x1, y1) = middle(k - inward * FILLET_BACK), middle(k + inward * FILLET_BACK)
+        length = math.hypot(x1 - x0, y1 - y0)
+        out = ((x0 - x1) / length, (y0 - y1) / length)  # toward the end the crack opens at
+        across = (abs(out[1]), -out[0] * math.copysign(1, out[1]))  # from left wall to right
+        cx, cy = middle(k)
+        _, (a, b) = crack[k]
+        r = (b - a) * across[0] / 2 + INTO / 2
+        q = geo.KAPPA * r
+        left = (cx - r * across[0], cy - r * across[1])
+        right = (cx + r * across[0], cy + r * across[1])
+        bottom = (cx - r * out[0], cy - r * out[1])
+        return left, right, [((left[0] - q * out[0], left[1] - q * out[1]),
+                              (bottom[0] - q * across[0], bottom[1] - q * across[1]), bottom),
+                             ((bottom[0] + q * across[0], bottom[1] + q * across[1]),
+                              (right[0] - q * out[0], right[1] - q * out[1]), right)]
+
+    def reversed_path(start, path):
+        """The cubic `path` from `start`, drawn the other way: (its end, the path back)."""
+        points = [start] + [p for segment in path for p in segment]
+        points.reverse()
+        return points[0], [tuple(points[i:i + 3]) for i in range(1, len(points), 3)]
+
+    low, high = crack[0], crack[-1]
+    if open_below:
+        below_left, below_right, below = arc_end(FILLET_BACK, 1)
+    else:
+        below_left, below_right, below = (low[1][0] - INTO, low[0]), (low[1][1] + INTO, low[0]), []
+    if open_above:
+        above_left, above_right, above = arc_end(len(crack) - 1 - FILLET_BACK, -1)
+    else:
+        above_left, above_right, above = ((high[1][0] - INTO, high[0]),
+                                          (high[1][1] + INTO, high[0]), [])
+    contour = fontforge.contour()
+    contour.moveTo(*below_left)
+    for y, (a, _) in crack:
+        if below_left[1] < y < above_left[1]:
+            contour.lineTo(a - INTO, y)
+    contour.lineTo(*above_left)
+    for segment in above:
+        contour.cubicTo(*segment)
+    if not above:
+        contour.lineTo(*above_right)
+    for y, (_, b) in reversed(crack):
+        if below_right[1] < y < above_right[1]:
+            contour.lineTo(b + INTO, y)
+    contour.lineTo(*below_right)
+    if below:
+        _, back = reversed_path(below_left, below)
+        for segment in back:
+            contour.cubicTo(*segment)
+    contour.closed = True
+    layer = fontforge.layer()
+    layer += contour
+    return geo.clockwise(layer)
+
+
 def with_counters(layer, outline):
     """The grown `layer`'s outer contours with the counters of `outline`, the regular's, in
     place of its own (OUTWARD)."""
@@ -582,7 +688,10 @@ def emboldened(name, outline, scratch, pen, outward=False):
     """
     cuts = cut_ends(name, outline)
     for overlap in ("layer", "none"):
-        layer = notches_filled(offset(outline, overlap, pen), outline)
+        layer = offset(outline, overlap, pen)
+        if name in PLUGGED:
+            layer = plugged(layer, pen)
+        layer = notches_filled(layer, outline)
         if name in OUTWARD or outward:
             layer = with_counters(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
@@ -1024,7 +1133,7 @@ def build(font):
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "OUTWARD_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT",
                    "LIFTED",
-                   "HEAVY", "HEADS_APART", "TIGHT", "TICKED"):
+                   "HEAVY", "HEADS_APART", "PLUGGED", "TIGHT", "TICKED"):
         for name in globals()[listed]:
             if classes.get(name) != BOLDER:
                 sys.exit(f"make_bold.{listed}: {name} is no bolder glyph of the regular")

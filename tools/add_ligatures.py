@@ -140,9 +140,11 @@ THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "
 # 8 to 35 px.
 HEAD_PITCH = 369
 
-# The > and < heads of a wave arrow (~~> <~): the wave ends here in the head's cell, where its
-# crest (or trough) lies inside the upper (or lower) arm; for < mirrored, at ADVANCE - WAVE_END.
-WAVE_END = 411
+# The > and < heads of a wave arrow (~~> <~): the wave ends here in the head's cell, 3 past
+# where the arms' inner edges meet (429), so its cut end lies inside the point; for < mirrored,
+# at ADVANCE - WAVE_END. Short of that, a crest or trough a little off an arm's middle shows
+# the end past the arm's edge, and from 440 on the crest reaches past the upper arm's.
+WAVE_END = 432
 SPECK = 90  # the stem weight: a hole no wider than a stroke reads as a blot, not a counter
 
 

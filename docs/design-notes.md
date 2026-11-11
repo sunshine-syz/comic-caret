@@ -265,9 +265,15 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   84 on proof (2026-11-10) over 88. Each point of the outline moved 6 inward along its normal,
   so the hand's points stay: an inset by FontForge's stroker redrew the arms' round ends, and
   under ttfautohint the `<` pieces' bars then left `-`'s pixel rows at ten sizes. The point
-  stays at 513 and the arms are 12 longer, so the width stays Fira Code's 425. The arrow
-  ligatures' heads, built from `>`, follow; in the bold `->>` the inner head's lower arm now
-  meets the shaft a little inside the seam, where the shaft's edge runs on level.
+  stays at 513 and the arms are 12 longer, so the width stays Fira Code's 425: the points left
+  of x = 300 moved left. Two points of the outer edge lie just right of that line, and each
+  handle beside them keeps its offset from its point, so the edge stays smooth there (a
+  handle moved alone turned it 12–14°, a bump on every arrow head). The arrow ligatures'
+  heads, built from `>`, follow; in the bold `->>` the inner head's lower arm now meets the
+  shaft a little inside the seam, where the shaft's edge runs on level. The lighter arms meet
+  inside the point at 429, where the heavier met at 413, so a wave arrow's wave ends at 432
+  (`WAVE_END`), past that: at 411 the end of a trough a little off the lower arm's middle
+  showed beside it, a flat of 10 and a barb.
   The arrows follow, so `→` beside `->` stays one arrow: `→ ⇒` are their ligature heads again,
   moved 61 to the arrow's point and welded to the arrow's own shaft end, and `← ⇐` are those
   mirrored; in `↑ ↔ ↕ ⇑ ⇞ ⇡ ↯` the points of every stroke heavier than 84 moved inward by half
@@ -794,6 +800,11 @@ are in `build/cache/reference/bold/`.
   - FontForge's `changeWeight()`, in its LCG mode, keeps the letters' heights but grows a level
     stroke upward only. `-`'s top moved from 311 to 341, off the axis. The `--` pieces stopped
     matching at their seams (351 against 341).
+- **Cracks.** Where a wave arrow's wave (`~~>` `<~` `~~~>`) runs into the head along an arm,
+  the regular leaves 35 to 41 of white between them. The pen grows both into it and leaves a
+  crack 7 to 36 across, shut at the point and open at the other end: a hairline from 32 px
+  (2.6's `~~~>` had one too). `make_bold.PLUGGED` fills it, from the point to where it opens
+  out wider than the pen, and the white beyond ends round, on an arc that fits it.
 - **Small parts, a smaller pen.** The superscripts, fraction figures and ™'s letters grow by
   the pen scaled by the small `1`'s stem over `1`'s. So do the parts drawn as light as them:
   the fraction bar, the ordinals' bar and © ®'s ring. A bold superscript is then as much
