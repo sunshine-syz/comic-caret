@@ -111,6 +111,8 @@ DOUBLES = {"″": ("′", 117), "‖": ("|", 98), "‼": ("!", 120),
 BALLOT_UNDER_X = 100
 # The white between ‼'s dots: at least Maple Mono's, the only reference's, at our em.
 EXCLAMATION_DOTS = 93
+# The white between ⇪'s arrow and its bar: Maple Mono's 73.2 at our cap height (Fira Code's 97.4).
+CAPS_LOCK_WHITE = 73
 
 # The bold's floors, measured from the reference bolds as the ones above were from the
 # regulars, scaled as tools/compare_glyphs.py scales: x to our advance, y to the bold's cap
@@ -123,6 +125,7 @@ BOLD_SLASH_HEIGHT = 767
 BOLD_BROKEN_BAR_GAP = 164  # Maple Mono's 164.2 (Fira Code's 182)
 # ∞'s holes: Fira Code's 134 wide (Maple Mono's 149), Maple Mono's 172 tall (Fira Code's 193).
 BOLD_INFINITY_HOLE = (134, 172)
+BOLD_CAPS_LOCK_WHITE = 73  # Maple Mono Bold's 74.0 (Fira Code Bold's 98.3)
 # %: Monaspace Radon's 75.0 wide (Monaspace Neon's 86.1, Fira Code's 80.0, Maple Mono's 100.0,
 # Intel One Mono's 130.0) and Monaspace Neon's 134.1 tall (Monaspace Radon's 136.3, Maple Mono's
 # 147.8, Fira Code's 153.9, Intel One Mono's 207.1). ‰: Fira Code's 66.5 by 128.6 (Monaspace
@@ -853,6 +856,7 @@ class LetterlikeTest(unittest.TestCase):
 class KeyHintTest(unittest.TestCase):
     """⇦ ⇨ ⇩ are ⇧ turned (TURNED); ⇪ is ⇧ lifted over a bar; ⇞ ⇟ are ↑ ↓ with two bars."""
     sfd = SFD
+    caps_lock_white = CAPS_LOCK_WHITE
 
     @classmethod
     def setUpClass(cls):
@@ -875,7 +879,7 @@ class KeyHintTest(unittest.TestCase):
         _, y0, _, y1 = up.boundingBox()
         (l0, l1), *_, (_, r1) = measure.spans_at_y(up, y0 + (y1 - y0) / 4)
         bx0, by0, bx1, by1 = bar.boundingBox()
-        self.assertLess(by1, arrow.boundingBox()[1])
+        self.assertGreaterEqual(arrow.boundingBox()[1] - by1, self.caps_lock_white)
         self.assertAlmostEqual(by1 - by0, l1 - l0, delta=self.weight)
         self.assertAlmostEqual(bx0, l0, delta=WOBBLE)
         self.assertAlmostEqual(bx1, r1, delta=WOBBLE)
@@ -1111,6 +1115,7 @@ class BoldLetterlikeTest(LetterlikeTest):
 
 class BoldKeyHintTest(KeyHintTest):
     sfd = BOLD_SFD
+    caps_lock_white = BOLD_CAPS_LOCK_WHITE
 
 
 class BoldCurrencyTest(CurrencyTest):

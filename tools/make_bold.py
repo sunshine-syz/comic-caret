@@ -299,9 +299,11 @@ BLUNT = ("uni20A9", "uni20A6", "uni20B1")
 
 # The outlines that are another glyph's outline moved, over a bar: ⇪, ⇧ lifted. The bold draws
 # that piece as the bold ⇧ moved as far, so it stays ⇧ (tests/test_symbols.py), lifted a little
-# further when its bar, grown as heavy as ⇧'s shaft walls (ROUND), comes within twice
-# SYMBOL_SIDE of it.
+# further when its bar, grown as heavy as ⇧'s shaft walls (ROUND), comes within LIFTED_WHITE
+# of it: Maple Mono Bold's white between ⇪'s arrow and bar, the narrowest reference bold's
+# (Fira Code Bold's 98). The pens grow the two 25 toward each other, from the regular's 89.
 LIFTED = {"uni21EA": "uni21E7"}
+LIFTED_WHITE = 73
 
 # The arrows with two heads, ->> <<-: the pen grows the heads toward each other, leaving 144
 # between them, under Fira Code Bold's 155, the one reference bold that draws ->>. The inner
@@ -1233,7 +1235,7 @@ def build(font):
         rise, rest = lifted[name]
         bar = fitted(name, rest, bounds[name], scratch, pen_of(name, grows_by))
         piece = geo.moved(font[base].foreground, 0, rise)
-        if (further := clearance(piece, bar, UP, seam)) is None:
+        if (further := clearance(piece, bar, UP, max(seam, LIFTED_WHITE))) is None:
             sys.exit(f"{name}: its {base} can't rise clear of the rest")
         font[name].foreground = geo.cleanup(geo.union(geo.moved(piece, 0, further), bar))
         font[name].autoHint()

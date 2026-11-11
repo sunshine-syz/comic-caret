@@ -1008,7 +1008,9 @@ what it does to them:
 - `DASHED`: ⇡ ⇣'s dashes shorten at their top by twice the pen's height. So each gap stays as
   much wider than the stroke as the regular's and stays open at 12 px.
 - `LIFTED`: ⇪'s ⇧ is the bold ⇧, lifted as far as the regular lifts it. It lifts a little
-  further where the bar comes within twice `SYMBOL_SIDE` of it.
+  further where the bar comes within `LIFTED_WHITE` (73) of it, Maple Mono Bold's white between
+  ⇪'s arrow and bar: the pens grow the two 25 toward each other, from the regular's 89. The
+  regular lifts ⇧ 155, to the cap height, where 111 left 46 (Maple Mono 73, Fira Code 97).
 - `RAISED`: Ħ's upper bar moves up its stems by the pen's height. So the white between its
   bars stays the regular's. Unmoved, it would come 81 from the lower bar, under the bold
   hyphen's 93.

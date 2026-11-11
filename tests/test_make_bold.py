@@ -62,7 +62,7 @@ MOVED_FURTHER = {("dieresistonos", "dieresis")}
 SHUT_COUNTERS = ("uni20A6", "uni20A9")
 # Known exception to how far an outline may grow up: ⇪'s ⇧, the bold ⇧ lifted clear of its bar
 # (make_bold.LIFTED), which grows round, as heavy as ⇧'s shaft walls. Past what the pen grows ⇧
-# itself, it rises by no more than it needs to keep twice SYMBOL_SIDE from the bar: the
+# itself, it rises by no more than it needs to keep make_bold.LIFTED_WHITE from the bar: the
 # regular's white between the two, less what the pens grow them toward each other, the round
 # bar's reach up and ⇧'s down.
 LIFTED_FURTHER = ("uni21EA",)
@@ -236,7 +236,7 @@ class BoldTest(unittest.TestCase):
                 white = gap(geo.moved(self.regular[base].foreground, 0, rise), rest)
                 level = make_bold.reach((*PEN, 0))[1]
                 toward = make_bold.reach(pen)[1] + level
-                needed = max(0, 2 * SYMBOL_SIDE - (white - toward))
+                needed = max(0, max(2 * SYMBOL_SIDE, make_bold.LIFTED_WHITE) - (white - toward))
                 limits[1] = level + needed + ROUNDING
             if axis == 0 and name in HEADS_FURTHER:
                 shaft = 0 if regular.boundingBox()[0] < 0 else 1  # the side it runs on into

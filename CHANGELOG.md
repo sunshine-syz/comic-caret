@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `⇪` reads apart from `⇧`: its arrow stood 46 units over its bar (bold 31), so up to about 21 px (bold 32) it read as a taller `⇧`. The arrow now rises to the cap height, 89 over the bar (bold 73; Maple Mono 73, Fira Code 97). In 2.6 too.
 - `¢` and `®` stay open in the bold at 12–14 px. `¢`'s stroke stood near the bowl's left side, 84 units from it (bold 49); it moves to the middle of the counter, 106 (bold 72). `®`'s `R` had a bowl too small for its strokes, 65 across (bold 52); its bar moves down and the bowl holds 81 (bold 64). In 2.6 too.
 - `⁰ ₀` read as zeros at text sizes: the slash filled the small zero, which showed as a solid dot up to about 24 px. It is now a ring with a dot in it, its counter 87 units across where the halves were 57–59. `⁴`'s counter opens from 48 to 54, in `¼ ¾ ⅘` too (in 2.6 too).
 - `⁶ ⁹ ₆ ₉ ⅙ ⅚` top with the other small figures, where their `6` and `9` stood 7 units higher, and `¥` stands on `Y`'s row, where its foot ended 19 units higher: both left behind when `6 9 Y` moved to their rows.
