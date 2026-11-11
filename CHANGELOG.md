@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- `<-` `<==` `<~` `<<-` `<=<` carry `←`'s head, `->` `==>` `~>` `->>` `>=>`'s mirrored. They were built from `<`, which is `>` turned, so the hand-drawn arms swapped places: 11–13% of the head differed from `←`'s, seen from about 100 px (in 2.6 too).
 - `|>` `<|` `<|>` turn their corners as one round end. The bar leans a little, as `|` does, and the head stood upright, so one arm end stood 6–9 units out of the bar's edge as a step, seen from about 150 px (in 2.6 too). The head now leans with the bar.
 - The tails of `→ ← ⇒ ⇐ ↑ ↓ ⇑ ⇓ ⇞ ⇟` end in the round end of `-` and `=`, as `-->` and `==>` do. Their own ends were narrower than the shaft, with square shoulders 3–10 units across, seen from about 100 px.
 - The arrow heads are smooth: `→ ← ⇒ ⇐ ⇥ ⇤ ↦` and the arrow ligatures (`->` `=>` `<-` `->>` `~~>` `<!--` and the rest). Their heads are `>`'s arms, shortened. Shortening squeezed the hand's gentle bends along each arm into bumps, and turning the arms apart left a notch in the point, both seen from about 150 px. Each arm's straight part is now one smooth curve, a little lighter where the hand swelled, and the point is one round end. Inside the head, the white comes to one clean point, where a tick stood beside it in `⇒ ⇐ =>` (in 2.6 too).

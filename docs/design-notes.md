@@ -476,11 +476,14 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   moves the bars of `<<-` and `<=<`. Measured with freetype-py 2.5.1 (FreeType 2.13.2) at
   8–36 px; `LigatureSeamTest` in `tests/test_built.py` checks every piece. The autohinter
   pairs two level edges that face each other over the same columns as the two edges of one
-  stem, and places the glyph's other stems from its lowest: the ends of `<=<`'s tail stood
-  one over the other, so the bold tail's bars were placed from its arms' ends and stood a
-  pixel under `=`'s at 8, 11–12, 20–23 and 28–33 px. Lifting or lowering the ends only moved
-  those sizes. The tail's arms lean 3° about the axis (`TAIL_LEAN`), which sets the ends
-  apart across.
+  stem, and places the glyph's other stems from its lowest. The `<` pieces of the arrows
+  (`<-` `<==` `<~` `<<-` `<=<`) are the `>` pieces mirrored, as ← is →. Built from `<`, `>`
+  turned, their heads swapped the hand-drawn arms, 11–13% of the head's area apart from ←'s,
+  and `<=<`'s tail ended its arms one over the other, so the bold tail's bars stood a pixel
+  under `=`'s at 8, 11–12, 20–23 and 28–33 px. The mirror rounds a few TrueType points the
+  other way, and with its inner head level `<<-`'s bar stood a row off `-`'s at 15, 18 and
+  19 px: the inner head of `->>` and `<<-` stands 2 under the outer (`INNER_DROP`); 1 either
+  way still did.
 - **The TTF's hints.** FontForge writes no TrueType hints, so `tools/generate.py` gives each
   TTF ttfautohint's, with its default options and one control instruction (below). Without
   them every renderer that runs a font's own hints drew the TTF unhinted: FreeType's native

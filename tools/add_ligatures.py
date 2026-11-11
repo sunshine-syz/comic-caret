@@ -28,11 +28,6 @@ STRETCH = 600    # pushes a stroke's cap past any cut the pieces need
 # from level, and reaching as high and low as → ←. The steeper arms end nearer the point, so
 # → ← ⇒ ⇐, which carry these heads in one cell, keep a shaft.
 HEAD_TURN = math.radians(14.4)
-# <=<'s tail: the arms of < end one over the other, where the autohinter pairs the ends' level
-# edges as the two edges of one stem and places the bars from it, a pixel off ='s in the bold
-# at 8, 11-12, 20-23 and 28-33 px. Leaning the arms this much about the axis moves the ends
-# apart across. >'s tail meets = as drawn; LigatureSeamTest guards both.
-TAIL_LEAN = math.radians(3)
 
 # The names of everything this script makes, and of nothing else in the font.
 GENERATED = re.compile(r"LIG|colon\.eq|.+\.(sta|mid|end|mid\.low|end\.low|arrow|darrow"
@@ -144,6 +139,11 @@ THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "
 # its cell, clear of the shaft's cut end at the cell's edge; from a pitch of 399 the crotch
 # reaches that end, which then shows in it.
 HEAD_PITCH = 361
+# ->> <<-: the inner head stands this much under the outer one. Level, <<-, the exact mirror
+# of ->>, had its bar set a pixel row off -'s by the TTF's hinting at 15, 18 and 19 px: the
+# mirrored outline rounds a few of its TrueType points the other way, and the autohinter then
+# places the bar from the inner head's ends differently. One unit either way still did.
+INNER_DROP = 2
 
 # The > and < heads of a wave arrow (~~> <~): the wave ends here in the head's cell, 3 past
 # where the arms' inner edges meet (429), so its cut end lies inside the point; for < mirrored,
@@ -392,15 +392,12 @@ def open_crotch(angle, name, upper, lower):
 
 
 def rounded_point(angle, name):
-    """`angle`, < or > with its arms turned steeper, with its point redrawn as one round end.
+    """`angle`, > with its arms turned steeper, with its point redrawn as one round end.
 
     Each arm turns about the tip with its half of the round point, so the halves part at the
     axis in a notch. From POINT_BACK in, each arm's outer edge runs on straight in its own
     direction to an arc that meets both and reaches the tip where it was.
     """
-    if name == "less":  # drawn as > and mirrored back
-        mirrored = geo.mirrored_x(angle, ADVANCE / 2)
-        return geo.mirrored_x(rounded_point(mirrored, "greater"), ADVANCE / 2)
     tight = angle.dup()
     tight.addExtrema("all")  # else the box reaches to the control points
     tip = tight.boundingBox()[2]
@@ -450,8 +447,12 @@ def rounded_point(angle, name):
 
 def arrowhead(font, name):
     """> or < as the head of → or ←: its arms turned HEAD_TURN steeper and reaching as high and
-    low as that arrow, so → beside -> reads as the same arrow."""
-    _, y0, _, y1 = font["arrowright" if name == "greater" else "arrowleft"].boundingBox()
+    low as that arrow, so → beside -> reads as the same arrow. <'s is >'s mirrored, as ← is
+    → mirrored: < is > turned, so built from its own arms the head's hand-drawn arms would swap
+    places and <- would not carry ←'s head."""
+    if name == "less":
+        return geo.mirrored_x(arrowhead(font, "greater"), ADVANCE / 2)
+    _, y0, _, y1 = font["arrowright"].boundingBox()
     return rounded_point(longer_angle(font, name, (y0, y1), HEAD_TURN), name)
 
 
@@ -460,12 +461,14 @@ def arrowheads(font):
         return level(geo.union(arrowhead(font, name), stroke(font, shaft, x0, x1)),
                      [y for bar in RUNS[shaft] for y in bar.profile])
 
-    left, right = TIP["less"], TIP["greater"]
+    right = TIP["greater"]
+    arrow = head("greater", "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD)
+    darrow = head("greater", "equal", -OVERLAP, right - BARS_INTO_HEAD)
     return {
-        "less.arrow": head("less", "hyphen", left + SHAFT_INTO_HEAD, ADVANCE + OVERLAP),
-        "greater.arrow": head("greater", "hyphen", -OVERLAP, right - SHAFT_INTO_HEAD),
-        "less.darrow": head("less", "equal", left + BARS_INTO_HEAD, ADVANCE + OVERLAP),
-        "greater.darrow": head("greater", "equal", -OVERLAP, right - BARS_INTO_HEAD),
+        "less.arrow": geo.mirrored_x(arrow, ADVANCE / 2),
+        "greater.arrow": arrow,
+        "less.darrow": geo.mirrored_x(darrow, ADVANCE / 2),
+        "greater.darrow": darrow,
     }
 
 
@@ -677,12 +680,10 @@ def end_centre(angle, above):
     return ax + reach * math.cos(direction), ay + reach * math.sin(direction)
 
 
-def tail(font, name):
-    """> or < as the tail of a double arrow (>=> <=<): each arm runs into an = bar, and the bars
+def tail(font):
+    """> as the tail of >=>, and mirrored, of <=<: each arm runs into an = bar, and the bars
     carry on into the next cell, so the point between them stays open."""
-    angle = arrowhead(font, name)
-    if name == "less":
-        angle = geo.transformed(angle, geo.about(psMat.skew(-TAIL_LEAN), 0, AXIS))
+    angle = arrowhead(font, "greater")
     parts, joins = [], []
     for bar in RUNS["equal"]:
         bottom, top = bar.profile
@@ -691,23 +692,21 @@ def tail(font, name):
         parts.append(geo.trim(angle, y0=inner) if upper else geo.trim(angle, y1=inner))
         # The bar starts where the arm's edge crosses the bar's inner edge, so the arm's edge
         # runs on into the bar's with no step, and the bar's flat end lies inside the arm.
-        x0, x1 = span_at(angle, inner)
-        cut = (x0, ADVANCE + OVERLAP) if name == "greater" else (-OVERLAP, x1)
-        parts.append(geo.trim(stroke(font, "equal", *cut), y0=bar.band[0], y1=bar.band[1]))
-        joins.append(x0 if name == "greater" else x1)
+        x0, _ = span_at(angle, inner)
+        parts.append(geo.trim(stroke(font, "equal", x0, ADVANCE + OVERLAP),
+                              y0=bar.band[0], y1=bar.band[1]))
+        joins.append(x0)
     # The bars are level out to where they meet the arms; the arms' own curves stay as drawn.
-    reach = WOBBLE / 2 * OUTWARD[name]
-    span = (min(joins) + reach, geo.FAR) if name == "greater" else (-geo.FAR, max(joins) + reach)
-    return level(geo.union(*parts), [y for bar in RUNS["equal"] for y in bar.profile], *span)
+    return level(geo.union(*parts), [y for bar in RUNS["equal"] for y in bar.profile],
+                 min(joins) - WOBBLE / 2, geo.FAR)
 
 
-def two_heads(font, name):
-    """The end of ->> or <<-: a second head HEAD_PITCH inside the first, where the shaft ends."""
-    head = arrowhead(font, name)
-    inner = geo.moved(head, OUTWARD[name] * HEAD_PITCH, 0)
-    end = TIP[name] + OUTWARD[name] * (HEAD_PITCH + SHAFT_INTO_HEAD)
-    shaft = (stroke(font, "hyphen", -OVERLAP, end) if name == "greater"
-             else stroke(font, "hyphen", end, ADVANCE + OVERLAP))
+def two_heads(font):
+    """The end of ->>, and mirrored, of <<-: a second head HEAD_PITCH inside the first, where
+    the shaft ends."""
+    head = arrowhead(font, "greater")
+    inner = geo.moved(head, -HEAD_PITCH, -INNER_DROP)
+    shaft = stroke(font, "hyphen", -OVERLAP, TIP["greater"] - HEAD_PITCH - SHAFT_INTO_HEAD)
     return level(geo.union(head, inner, shaft), RUNS["hyphen"][0].profile)
 
 
@@ -720,13 +719,13 @@ def wave_arrows(font):
     point, which is filled.
     """
     tildes = tilde_pieces(font)
-    right, left = (arrowhead(font, name) for name in ("greater", "less"))
+    head = arrowhead(font, "greater")
     high = geo.trim(tildes["asciitilde.mid"], x1=WAVE_END)
     low = geo.trim(tildes["asciitilde.mid.low"], x1=WAVE_END)
-    return {"greater.warrow": geo.without_specks(geo.union(right, high), SPECK),
-            "greater.warrow.low": geo.without_specks(geo.union(right, low), SPECK),
-            "less.warrow": geo.without_specks(geo.union(left, geo.mirrored_x(high, ADVANCE / 2)),
-                                              SPECK)}
+    right = geo.without_specks(geo.union(head, high), SPECK)
+    return {"greater.warrow": right,
+            "greater.warrow.low": geo.without_specks(geo.union(head, low), SPECK),
+            "less.warrow": geo.mirrored_x(right, ADVANCE / 2)}
 
 
 def comment_open(font):
@@ -766,10 +765,11 @@ def build(font):
         for name in THREE_ENDS[side]:
             glyphs[f"{name}.{side}"] = [(name, sign * tight_shift(font, name), 0)]
     glyphs["less_bar_greater.liga"] = pipes(font)
+    glyphs["greater.dtail"] = tail(font)
+    glyphs["less.dtail"] = geo.mirrored_x(glyphs["greater.dtail"], ADVANCE / 2)
+    glyphs["greater.twohead"] = two_heads(font)
+    glyphs["less.twohead"] = geo.mirrored_x(glyphs["greater.twohead"], ADVANCE / 2)
     for name in ("greater", "less"):
-        glyphs[f"{name}.dtail"] = tail(font, name)
-    for name in ("greater", "less"):
-        glyphs[f"{name}.twohead"] = two_heads(font, name)
         glyphs[f"{name}.shaft"] = [("hyphen.mid", 0, 0)]  # a > or < inside ->> <<-
     glyphs.update(wave_arrows(font))
     glyphs["less.comment"], bang = comment_open(font)
