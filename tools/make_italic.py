@@ -26,6 +26,12 @@ Every glyph of the regular falls in one of three sets, decided by classify():
   sheared. f runs its stem below the baseline, as deep as j, ending in a
   short flick to the left (proofed against ƒ's hook, which Maple Mono's f has, and against
   a plain straight descender).
+- MIRRORED: ‘, the italic's ’ mirrored, as the regular's is, about the slanted middle of the
+  cell. Sheared, ‘ leaned −11° beside ’'s +34°, so “ stood near upright beside ” and the pair
+  looked lopsided.
+- AGAINST: `, which leans against the slant: the regular's ` mirrored, slanted and mirrored
+  back, standing where the shear puts it. The mirrored ‘ leans as the sheared ` did, −32°;
+  this keeps the two 16° apart, as in the regular.
 
 A composite keeps its references, each matrix conjugated by the shear, so it equals the shear
 of the regular's composite exactly: a turned ¿ stays ? turned, and an accent moves right by
@@ -43,7 +49,7 @@ import psMat
 import lig_geometry as geo
 import project
 from add_ligatures import GENERATED
-from project import AXIS, ITALIC_SFD, SFD, run_generator, validation_errors
+from project import ADVANCE, AXIS, ITALIC_SFD, SFD, run_generator, validation_errors
 
 ANGLE = 12  # degrees: between Maple Mono's 10 and Intel One Mono's 16, next to Monaspace's 11
 SLANT = math.tan(math.radians(ANGLE))
@@ -66,7 +72,10 @@ FLAT_TURN = 30  # degrees: a point where the outline turns more is a corner
 FLAT_NEAR = 0.4  # a point moves at most this share of the way to the next point on its contour
 REACH = 2 * EVEN * STEEP  # no point moves further
 
-SLANTED, UPRIGHT, CURSIVE = "slanted", "upright", "cursive"
+SLANTED, UPRIGHT, CURSIVE, MIRRORED, AGAINST = (
+    "slanted", "upright", "cursive", "mirrored", "against")
+MIRRORS = {"quoteleft": "quoteright"}  # glyph: the italic glyph it mirrors
+AGAINST_SLANT = ("grave",)
 
 # The blocks that stay upright: Miscellaneous Technical (⏺ ⏵ ⏸ ⏹ ⎿ ⌘ ⌥ ⌃ ⌫ ⌦ ⎋ ⏎), Box Drawing
 # through Dingbats (the block elements, geometric shapes, ☐ ☑ ☒ ⚠ and ✓ ✗ ✶), Braille,
@@ -160,7 +169,8 @@ def classify(font):
     is an operator's and slants. Any other unencoded glyph nothing references stops the
     generator: only the generators' glyphs are known to slant, so it has to be classed.
     """
-    known = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE)}
+    known = {".notdef": UPRIGHT, **dict.fromkeys(CURSIVE_LETTERS, CURSIVE),
+             **dict.fromkeys(MIRRORS, MIRRORED), **dict.fromkeys(AGAINST_SLANT, AGAINST)}
     return project.classify(font, known, encoded_style, unused_style)
 
 
@@ -291,8 +301,22 @@ def build(font):
             for name, *_ in glyph.references:
                 glyph.unlinkRef(name)  # one reference per call; slant() rehints it
     for glyph in font.glyphs():
-        if styles[glyph.glyphname] != UPRIGHT:
+        if styles[glyph.glyphname] == AGAINST:
+            _, y0, _, y1 = glyph.boundingBox()
+            glyph.foreground = geo.mirrored_x(glyph.foreground, ADVANCE / 2)
             slant(glyph)
+            back = geo.mirrored_x(glyph.foreground, ADVANCE / 2)
+            glyph.foreground = geo.moved(back, round((y0 + y1 - 2 * AXIS) * SLANT), 0)
+            glyph.autoHint()
+        elif styles[glyph.glyphname] != UPRIGHT:
+            slant(glyph)
+    for name, pair in MIRRORS.items():
+        # about the cell's middle where the shear moves it at the quote's height, so the
+        # quote stands where the shear put it
+        _, y0, _, y1 = font[pair].boundingBox()
+        middle = ADVANCE / 2 + ((y0 + y1) / 2 - AXIS) * SLANT
+        font[name].foreground = geo.mirrored_x(font[pair].foreground, round(2 * middle) / 2)
+        font[name].autoHint()
     font.italicangle = -ANGLE
     font.fontname, font.fullname = FONTNAME, FULLNAME
     font.os2_stylemap = ITALIC_BIT

@@ -809,6 +809,13 @@ drawn by hand. The choices, proofed on 2026-09-30 against Maple Mono 7.9, Intel 
   its place, and a point moves at most 0.4 of the way to its neighbour: else handles a unit
   from their point folded `æ`, the small `3` and the small `5`. From `STEEP` 0.7 on, the
   italic's `<<-` has its bar a pixel row off `-`'s under the TTF's hinting at 15, 18 and 19 px.
+- **Quotes and the backtick.** Sheared, `‘` leaned −11° beside `’`'s +34°, so `“` stood near
+  upright beside `”`. The reference italics lean both quotes the same way and part them by a
+  6 or 9 shape, which ours don't have. So `‘ “` are `’ ”` mirrored, as in the regular, about
+  the cell's middle as the shear moves it at their height, so they stand where the shear put
+  them. That leans `‘` as the sheared `` ` `` did (−34° and −32°); `` ` `` leans against the
+  slant instead, the regular's mirrored, slanted and mirrored back: −47°, 13° from `‘`, where
+  the regular keeps 16°.
 - **What slants**: letters, figures, the combining marks, punctuation, brackets, quotes,
   currency, superscripts, operators, arrows and the ligatures. Maple Mono and Intel One Mono
   slant all of these, Maple Mono its arrows included; keeping → upright while `->` slants

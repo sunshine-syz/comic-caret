@@ -20,7 +20,7 @@ import lig_geometry as geo
 import make_italic
 from helpers import assert_lookups_carry_over
 from make_italic import CURSIVE, CURSIVE_LETTERS, REACH, SHEAR, SLANT, SLANTED, STEM_CUT, UPRIGHT
-from measure import area, ink, spans_at_y
+from measure import area, ink, slant, spans_at_y
 from project import ADVANCE, AXIS, ITALIC_SFD, ROOT, ROUNDING, SFD
 from sfd_files import rerun_differences
 
@@ -64,7 +64,8 @@ class GeneratorTest(unittest.TestCase):
         font = fontforge.open(str(SFD))
         styles = make_italic.classify(font)
         self.assertEqual(sorted(styles), sorted(g.glyphname for g in font.glyphs()))
-        self.assertLessEqual(set(styles.values()), {SLANTED, UPRIGHT, CURSIVE})
+        self.assertLessEqual(set(styles.values()),
+                            {SLANTED, UPRIGHT, CURSIVE, make_italic.MIRRORED, make_italic.AGAINST})
 
     def test_unencoded_unreferenced_glyph_must_be_classed(self):
         # Only the generators' glyphs are known to slant; any other one has to be classed.
@@ -100,8 +101,10 @@ class ItalicTest(unittest.TestCase):
         # points where the slant moved an extremum. The contours are the same, and the
         # outline's box within the same reach.
         wrong = {}
+        # A glyph built on ‘ or ` follows it through its reference (“ ʻ).
+        unsheared = {*make_italic.MIRRORS, *make_italic.AGAINST_SLANT}
         for name, style in self.styles.items():
-            if style != SLANTED:
+            if style != SLANTED or {ref for ref, *_ in self.regular[name].references} & unsheared:
                 continue
             expected = geo.transformed(ink(self.regular, name), SHEAR)
             found = ink(self.italic, name)
@@ -126,6 +129,29 @@ class ItalicTest(unittest.TestCase):
         rounding = abs(gain("bar"))
         self.assertGreater(gain("slash"), rounding)
         self.assertLess(gain("backslash"), -rounding)
+
+    def test_left_quote_mirrors_the_right(self):
+        # As in the regular: sheared, ‘ leaned −11° beside ’'s +34°. Mirrored about the
+        # cell's middle as the shear moves it at their height, so ‘ stands where it did.
+        for name, pair in make_italic.MIRRORS.items():
+            with self.subTest(glyph=name):
+                right = ink(self.italic, pair)
+                _, y0, _, y1 = right.boundingBox()
+                middle = ADVANCE / 2 + ((y0 + y1) / 2 - AXIS) * SLANT
+                mirrored = geo.mirrored_x(right, round(2 * middle) / 2)
+                self.assertEqual(unmatched(points(mirrored), points(ink(self.italic, name))), [])
+
+    def test_backtick_leans_apart_from_the_left_quote(self):
+        # ` and ‘ lean the same way and part by their lean, as in the regular; the mirrored ‘
+        # takes the sheared `'s lean, so ` leans against the slant. They keep at least half
+        # the regular's difference: a sheared ` left 2°.
+        def apart(font):
+            return abs(slant(ink(font, "grave")) - slant(ink(font, "quoteleft")))
+        self.assertGreaterEqual(apart(self.italic), apart(self.regular) / 2)
+        for name in make_italic.AGAINST_SLANT:
+            with self.subTest(glyph=name):
+                expected = geo.transformed(ink(self.regular, name), SHEAR)
+                self.assertTrue(unmatched(points(expected), points(ink(self.italic, name))))
 
     def test_cursive_letters_differ_from_the_shear(self):
         # So the list can't name a letter the shear alone would give.

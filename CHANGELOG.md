@@ -2,6 +2,7 @@
 
 ## 2.7 (unreleased)
 
+- In the italic, `‘ “` lean left as far as `’ ”` lean right, as in the regular. Slanting leaned `‘` only 11°, so `“` stood near upright beside `”` and quoted text looked lopsided. `` ` `` now leans a little flatter, against the slant, so it stays apart from `‘`. In 2.6 too.
 - `!=` and `!==` have a slash as heavy as `≠`'s. It was `/` scaled down, 70 units across beside bars of 78, and the italic thinned it to 68. It is now `/`'s own stroke, shortened, in the same place and length. In 2.6 too.
 - In the italic, the two arms of `< >` are closer in weight: 14% apart, where slanting left them 18% (Maple Mono's italic 14%). The arrow heads and `<= >=` gain a little. In 2.6 too.
 - `↔ ⇔ ↕ ⇕` have heads as heavy as `→ ⇒ ↑ ⇑`'s. Their arms were `>` drawn small, 76–80 units across where the other arrows' are 84, so they looked lighter beside them at large sizes. Each arm is now 84 across, in the same place and size. In 2.6 too.
