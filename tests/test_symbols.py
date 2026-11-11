@@ -848,7 +848,7 @@ class KeyHintTest(unittest.TestCase):
         # The shaft, a quarter of the way in from the tail: the head's arms reach past the middle.
         for char, plain, tail in (("⇞", "↑", 0.25), ("⇟", "↓", 0.75)):
             with self.subTest(arrow=char):
-                layer = self.font[ord(char)].foreground
+                layer = measure.ink(self.font, ord(char))  # ⇟ is a reference: ⇞ turned
                 arrow = self.font[ord(plain)].foreground
                 self.assertGreaterEqual(measure.covered(arrow, layer), 0.99)
                 _, y0, _, y1 = arrow.boundingBox()

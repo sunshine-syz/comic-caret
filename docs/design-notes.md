@@ -241,6 +241,13 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   stays at 513 and the arms are 12 longer, so the width stays Fira Code's 425. The arrow
   ligatures' heads, built from `>`, follow; in the bold `->>` the inner head's lower arm now
   meets the shaft a little inside the seam, where the shaft's edge runs on level.
+  The arrows follow, so `→` beside `->` stays one arrow: `→ ⇒` are their ligature heads again,
+  moved 61 to the arrow's point and welded to the arrow's own shaft end, and `← ⇐` are those
+  mirrored; in `↑ ↔ ↕ ⇑ ⇞ ⇡ ↯` the points of every stroke heavier than 84 moved inward by half
+  the excess, and the head's points then back out to the old box, so each arrow keeps its
+  place and length (96 to 84 in `↑`). `↓` is `↑` turned, as before, and `⇟` is now a reference
+  to `⇞` turned, as `⇣` is to `⇡`: as an outline its bold came out with a doubled segment a
+  unit long. `⇤ ⇥` keep their 94: moved, `⇥` kept an extremum off its points.
 - `/` and `\` reach from −110 to 765: 875 tall, within the references' 867–885, and centred on
   the brackets' middle. Each turned 1.5° steeper about its middle and lengthened along its
   stroke, so it keeps its weight; it spans 503, within Maple Mono's 418 and Intel One Mono's
