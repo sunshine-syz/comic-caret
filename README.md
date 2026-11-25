@@ -102,8 +102,9 @@ own cell, so columns line up and the cursor moves one character at a time.
 - `!=` `!==` as ≠ ≢, `<=` `>=` as ⩽ ⩾, and `:=` with the colon centered on the `=`
 - `|>` `<|` `<|>` as triangles, and `<!--` with an arrowhead like `-->`'s
 - Pulled together: `::` `..` `...` `&&` `++` `//` `/*` `*/` `<<` `>>` `??` `||` `?.` `?:` `!!`
-  `;;`, and `<<<` `>>>` `|||` `&&&` `+++` `>>=` `<<=` `>>>=` `&&=` `||=` `??=` `//=` `=<<`
-  `<$>` `<*>` `<+>` `<=>` `..=` `..<`
+  `;;`, and `<<<` `>>>` `|||` `&&&` `+++` `=<<` `<$>` `<*>` `<+>` `<=>` `..<`. In an assignment
+  such as `&&=` `>>=` `//=`, and in `..=`, the pair or three is pulled together and `=` stays
+  as typed
 
 Sequences that run into other operators stay as separate characters, for example `->>>`,
 `<<<-`, `==<`, `<<==` or `https://`. So do two `-` or `_`, as in `--help`, `i--` and

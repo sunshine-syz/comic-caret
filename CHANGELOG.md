@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8 (unreleased)
+
+- In an assignment such as `&&=` `||=` `??=` `<<=` `>>=` `>>>=` `//=`, and in `..=`, the pair or three is pulled together and `=` stays as typed, whatever follows, as in Maple Mono. So `x&&=-1` and `x||=!ok` look as `x&&= -1` and `x||= !ok` do; before, a sign or a not right after the `=` left all three characters as typed, and a space pulled them together.
+
 ## 2.7 (2026-11)
 
 - In the italic, `‘ “` lean left as far as `’ ”` lean right, as in the regular. Slanting leaned `‘` only 11°, so `“` stood near upright beside `”` and quoted text looked lopsided. `` ` `` now leans a little flatter, against the slant, so it stays apart from `‘`. In 2.6 too.

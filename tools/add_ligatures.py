@@ -132,11 +132,13 @@ COLON_LIFT = 36        # raises the colon's centre (236) to the = centre (272)
 TIGHT_KEEP = {"colon": 107, "period": 107, "ampersand": 15, "plus": -5.5, "slash": -41.5,
               "asterisk": -4.5, "less": 54.5, "greater": 54.5, "question": 53, "bar": 131,
               "equal": 20.5, "exclam": 113, "semicolon": 74.5}
-# The outer glyphs of a tightened three beside a copy of themselves (/// ... &&& +++ <<< >>> |||,
-# and ..= ??= <<= >>= =<< ||= &&= //=): the middle glyph stays in place, so each moves twice a
+# The glyphs each side of a tightened pair or three moves. = moves only to open =<<: an
+# assignment keeps its = as typed. A three's outer glyphs sit beside a copy of themselves (///
+# ... &&& +++ <<< >>> |||, and ..< =<<): the middle glyph stays in place, so each moves twice a
 # pair's shift and the three keeps its pair's white.
-THREE_ENDS = {"tight_r2": ("slash", "period", "ampersand", "plus", "question", "less", "greater",
-                           "bar"),
+TIGHT_ENDS = {"tight_r": tuple(TIGHT_KEEP),
+              "tight_l": tuple(name for name in TIGHT_KEEP if name != "equal"),
+              "tight_r2": ("slash", "period", "ampersand", "plus", "less", "greater", "bar"),
               "tight_l2": ("slash", "period", "ampersand", "plus", "less", "greater", "bar")}
 
 # ->> <<-: the inner head sits this much closer to the shaft than the outer one. The white
@@ -799,12 +801,8 @@ def build(font):
     glyphs["less_equal.liga"] = geo.mirrored_x(glyphs["greater_equal.liga"], 0)
     glyphs["bar_greater.liga"] = pipe(font, "greater")
     glyphs["less_bar.liga"] = pipe(font, "less")
-    for name in TIGHT_KEEP:
-        shift = tight_shift(font, name)
-        glyphs[f"{name}.tight_r"] = [(name, shift, 0)]
-        glyphs[f"{name}.tight_l"] = [(name, -shift, 0)]
-    for side, sign in (("tight_r2", 2), ("tight_l2", -2)):
-        for name in THREE_ENDS[side]:
+    for side, sign in (("tight_r", 1), ("tight_l", -1), ("tight_r2", 2), ("tight_l2", -2)):
+        for name in TIGHT_ENDS[side]:
             glyphs[f"{name}.{side}"] = [(name, sign * tight_shift(font, name), 0)]
     glyphs["less_bar_greater.liga"] = pipes(font)
     glyphs["greater.dtail"] = tail(font)

@@ -114,7 +114,7 @@ class MeasurementTest(unittest.TestCase):
             # white, and +++ its pair's overlap.
             for suffix, sign in (("tight_r", 1), ("tight_l", -1), ("tight_r2", 2),
                                  ("tight_l2", -2)):
-                if suffix.endswith("2") and name not in add_ligatures.THREE_ENDS[suffix]:
+                if name not in add_ligatures.TIGHT_ENDS[suffix]:
                     continue
                 with self.subTest(glyph=f"{name}.{suffix}"):
                     [(base, matrix, *_)] = self.font[f"{name}.{suffix}"].references

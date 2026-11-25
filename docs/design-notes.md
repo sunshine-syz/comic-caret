@@ -647,9 +647,11 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   those of `::` and keep 214 (Maple Mono 189, Fira Code 238). No pair or three but `++`
   `+++`, whose bars join, keeps less than two symbols side by side, twice `SYMBOL_SIDE`
   (`tests/test_ligatures.py`). A three's middle glyph stays in place, so an outer glyph
-  beside a copy of itself moves twice a pair's shift (`THREE_ENDS`), and `...` `///` `<<<`
-  `|||` keep their pair's white, and `+++` its pair's overlap; `>>>=`, four glyphs, keeps a
-  pair's shifts. `/**` opens as `/*` does, its second asterisk moved with the first, so its
+  beside a copy of itself moves twice a pair's shift (`TIGHT_ENDS`), and `...` `///` `<<<`
+  `|||` keep their pair's white, and `+++` its pair's overlap. An assignment (`&&=` `>>=`
+  `>>>=` ...) and `..=` keep `=` as typed after their pair or three, whatever follows, as
+  Maple Mono does: pulled in only without a sign or a not after it, `x&&=-1` looked unlike
+  `x&&= -1`. `/**` opens as `/*` does, its second asterisk moved with the first, so its
   asterisks keep a plain `**`'s white. So a doc comment opens as tightly as a plain one.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
   have 25 more room on each side. So the pen pushes none of @ # ∞ « » Æ œ K ✔ ➜ past its side
@@ -1004,9 +1006,8 @@ what it does to them:
   - A three's outer glyph moves back its pen's whole width, as its unmoved middle glyph grows
     toward it too.
   - A glyph tightened toward an unmoved one of another kind moves back only its own half. Such
-    are `=` in `&&=` and `>>=`, and `<` `>` in `<$>` `<=>` `..<`. The unmoved glyph grows
-    toward it as toward any neighbour. So the bold keeps about 16 less white there (`||=` 24,
-    by `|`'s wider pen).
+    are `=` in `=<<`, and `<` `>` in `<$>` `<=>` `..<`. The unmoved glyph grows toward it as
+    toward any neighbour. So the bold keeps about 16 less white there.
   - Each operator still groups as typed. Keeping the white would take a piece of its own for
     each glyph beside an unmoved one, as `<` `>` share theirs with `<<` `>>`.
 - `OWN_BOX`: ™'s T and M, Θ's bar, ⌥ and the caron of ď ľ Ľ are condensed to keep their own

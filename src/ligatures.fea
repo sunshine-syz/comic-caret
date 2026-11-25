@@ -26,9 +26,8 @@ languagesystem latn dflt;
   asterisk.tight_r less.tight_r greater.tight_r question.tight_r bar.tight_r equal.tight_r
   exclam.tight_r
   colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
-  exclam.tight_l
-  slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2 question.tight_r2
+  asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l exclam.tight_l
+  slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2
   less.tight_r2 greater.tight_r2 bar.tight_r2 slash.tight_l2 period.tight_l2 ampersand.tight_l2
   plus.tight_l2 less.tight_l2 greater.tight_l2 bar.tight_l2];
 
@@ -119,16 +118,15 @@ lookup lig_tight_r {
        exclam.tight_r semicolon.tight_r];
 } lig_tight_r;
 lookup lig_tight_l {
-  sub [colon period ampersand plus slash asterisk less greater question bar equal exclam
-       semicolon]
+  sub [colon period ampersand plus slash asterisk less greater question bar exclam semicolon]
    by [colon.tight_l period.tight_l ampersand.tight_l plus.tight_l slash.tight_l
-       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l equal.tight_l
-       exclam.tight_l semicolon.tight_l];
+       asterisk.tight_l less.tight_l greater.tight_l question.tight_l bar.tight_l exclam.tight_l
+       semicolon.tight_l];
 } lig_tight_l;
 lookup lig_tight_r2 {
-  sub [slash period ampersand plus question less greater bar]
-   by [slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2 question.tight_r2
-       less.tight_r2 greater.tight_r2 bar.tight_r2];
+  sub [slash period ampersand plus less greater bar]
+   by [slash.tight_r2 period.tight_r2 ampersand.tight_r2 plus.tight_r2 less.tight_r2
+       greater.tight_r2 bar.tight_r2];
 } lig_tight_r2;
 lookup lig_tight_l2 {
   sub [slash period ampersand plus less greater bar]
@@ -395,12 +393,12 @@ feature calt {
     ignore sub @Op less' bar;
     ignore sub less' bar @OpOrMark;
     sub less' lookup lig_spacer bar' lookup lig_less_bar;
-    ignore sub @Op bar' bar [bar equal];
-    ignore sub bar' bar [bar equal] @OpOrMark;
+    ignore sub @Op bar' bar bar;
+    ignore sub bar' bar bar @OpOrMark;
     sub bar' lookup lig_tight_r2 bar bar' lookup lig_tight_l2;
-    sub bar' lookup lig_tight_r2 bar equal' lookup lig_tight_l;
     ignore sub @Op bar' bar;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l @Prefix @OperandStart;
+    sub bar' lookup lig_tight_r bar' lookup lig_tight_l equal;
     ignore sub bar' bar @OpOrMark;
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
@@ -409,9 +407,10 @@ feature calt {
   #    then tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a
   #    pair, so the three keeps the pair's white; /** opens as /* does, its second asterisk
   #    moved with the first, so ** keeps its plain white. The longer ones come first: a pair's
-  #    ignore rules would claim them. An = may close << >> >>> && || ?? // (<<= >>= >>>= &&= ||=
-  #    ??= //=) or open << (=<<), as in C's, JavaScript's and Python's assignments and
-  #    Haskell's binds; /// and /** open doc comments, so they tighten as // and /* do, and a
+  #    ignore rules would claim them. An assignment (<<= >>= >>>= &&= ||= ??= //=, and ..=)
+  #    tightens its pair or three as it stands alone and keeps its = as typed, whatever
+  #    follows, as Maple Mono does, so x&&=-1 reads as x&&= -1. An = may open << (=<<), as
+  #    Haskell's bind does; /// and /** open doc comments, so they tighten as // and /* do, and a
   #    comment opener tightens before the ! or < that marks a doc comment (//! /*! ///< /**<).
   #    None tightens beside a @Word where it is no operator there. .. tightens in a range or a
   #    slice: after a name, a number, a closing quote or a bracket, or before a name, a number,
@@ -419,11 +418,10 @@ feature calt {
   #    and Python's relative import (from .. import) stay as typed; ... also after the > of a
   #    placeholder, as in a usage line's <FILE>....
   lookup lig_tight {
-    ignore sub @Op slash' slash [slash equal];
+    ignore sub @Op slash' slash slash;
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2 [exclam less];
-    ignore sub slash' slash [slash equal] @OpOrMark;
+    ignore sub slash' slash slash @OpOrMark;
     sub slash' lookup lig_tight_r2 slash slash' lookup lig_tight_l2;
-    sub slash' lookup lig_tight_r2 slash equal' lookup lig_tight_l;
     ignore sub @Word slash' asterisk asterisk;
     ignore sub @Op slash' asterisk asterisk;
     sub slash' lookup lig_tight_r asterisk' lookup lig_tight_l asterisk' lookup lig_tight_l
@@ -443,40 +441,32 @@ feature calt {
       space;
     ignore sub period' period period space;
     sub period' lookup lig_tight_r2 period period' lookup lig_tight_l2;
-    ignore sub @Op period' period [equal less];
-    ignore sub period' period [equal less] @OpOrMark;
-    sub period' lookup lig_tight_r2 period [equal less]' lookup lig_tight_l;
-    ignore sub @Op ampersand' ampersand [ampersand equal];
-    ignore sub ampersand' ampersand [ampersand equal] @OpOrMark;
+    ignore sub @Op period' period less;
+    ignore sub period' period less @OpOrMark;
+    sub period' lookup lig_tight_r2 period less' lookup lig_tight_l;
+    ignore sub @Op ampersand' ampersand ampersand;
+    ignore sub ampersand' ampersand ampersand @OpOrMark;
     sub ampersand' lookup lig_tight_r2 ampersand ampersand' lookup lig_tight_l2;
-    sub ampersand' lookup lig_tight_r2 ampersand equal' lookup lig_tight_l;
     ignore sub @Op plus' plus plus;
     ignore sub plus' plus plus @OpOrMark;
     sub plus' lookup lig_tight_r2 plus plus' lookup lig_tight_l2;
-    ignore sub @Op question' question equal;
-    ignore sub question' question equal @OpOrMark;
-    sub question' lookup lig_tight_r2 question equal' lookup lig_tight_l;
-    ignore sub @Op less' less [less equal];
-    ignore sub less' less [less equal] @OpOrMark;
+    ignore sub @Op less' less less;
+    ignore sub less' less less @OpOrMark;
     # A here-string and PHP's heredoc open as typed, as << does before a name or a quote:
     # <<<"$x" <<<EOT.
     sub @Operand less' lookup lig_tight_r2 less less' lookup lig_tight_l2
       [@Word quotedbl quotesingle];
     ignore sub less' less less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r2 less less' lookup lig_tight_l2;
-    sub less' lookup lig_tight_r2 less equal' lookup lig_tight_l;
-    ignore sub @Op greater' greater greater equal;
-    ignore sub greater' greater greater equal @OpOrMark;
-    sub greater' lookup lig_tight_r greater greater equal' lookup lig_tight_l;
-    ignore sub @Op greater' greater [greater equal];
-    ignore sub greater' greater [greater equal] @OpOrMark;
+    ignore sub @Op greater' greater greater;
+    sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 equal;
+    ignore sub greater' greater greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
     ignore sub @Operand greater' greater greater;
     # A prompt, as ... above; after a name the rule above already keeps it as typed.
     sub @SpaceOrOpen greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 space;
     ignore sub greater' greater greater space;
     sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2;
-    sub greater' lookup lig_tight_r2 greater equal' lookup lig_tight_l;
     ignore sub @Op equal' less less;
     ignore sub equal' less less @OpOrMark;
     sub equal' lookup lig_tight_r less less' lookup lig_tight_l2;
@@ -487,6 +477,7 @@ feature calt {
     # A quote after a name closes a string, as in 'a'..'z'; any other opens one, as in "..".
     ignore sub period' period [slash backslash @Mark];
     ignore sub [@Op backslash] period' period;
+    sub period' lookup lig_tight_r period' lookup lig_tight_l equal;
     sub @Word [quotedbl quotesingle] period' lookup lig_tight_r period' lookup lig_tight_l;
     ignore sub [quotedbl quotesingle] period' period;
     sub [@Operand bracketleft parenleft] period' lookup lig_tight_r period' lookup lig_tight_l;
@@ -509,13 +500,14 @@ feature calt {
     sub semicolon' lookup lig_tight_r semicolon' lookup lig_tight_l;
     ignore sub @Op ampersand' ampersand;
     sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l @Prefix @OperandStart;
+    sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l equal;
     ignore sub ampersand' ampersand @OpOrMark;
     sub ampersand' lookup lig_tight_r ampersand' lookup lig_tight_l;
     ignore sub @Op plus' plus;
     ignore sub plus' plus @OpOrMark;
     sub plus' lookup lig_tight_r plus' lookup lig_tight_l;
     ignore sub @Op slash' slash;
-    sub slash' lookup lig_tight_r slash' lookup lig_tight_l [exclam less];
+    sub slash' lookup lig_tight_r slash' lookup lig_tight_l [exclam less equal];
     ignore sub slash' slash @OpOrMark;
     sub slash' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Word slash' asterisk;
@@ -528,6 +520,9 @@ feature calt {
     ignore sub asterisk' slash @Word;
     sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Op less' less;
+    # After < or >, = joins no run of its own, so <<== and <<=> are no assignment.
+    ignore sub less' less equal [equal less greater];
+    sub less' lookup lig_tight_r less' lookup lig_tight_l equal;
     ignore sub less' less @OpOrMark;
     # An Erlang or Elixir binary opens as typed, as it closes (<<1>> <<"a">>), and so does a
     # heredoc, as <<-EOF does (cat <<EOF). A shift without spaces still tightens: x<<1.
@@ -535,6 +530,8 @@ feature calt {
     ignore sub less' less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r less' lookup lig_tight_l;
     ignore sub @Op greater' greater;
+    ignore sub greater' greater equal [equal less greater];
+    sub greater' lookup lig_tight_r greater' lookup lig_tight_l equal;
     ignore sub greater' greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r greater' lookup lig_tight_l @Word;
     ignore sub @Operand greater' greater;
@@ -544,6 +541,7 @@ feature calt {
     sub greater' lookup lig_tight_r greater' lookup lig_tight_l;
     ignore sub @Op question' question;
     sub question' lookup lig_tight_r question' lookup lig_tight_l @Prefix @OperandStart;
+    sub question' lookup lig_tight_r question' lookup lig_tight_l equal;
     ignore sub question' question @OpOrMark;
     sub question' lookup lig_tight_r question' lookup lig_tight_l;
     # ?. tightens after a name too, as JavaScript's optional chaining a?.b does; Rust's x?.y,

@@ -60,7 +60,7 @@ import psMat
 
 import lig_geometry as geo
 import project
-from add_ligatures import GENERATED, THREE_ENDS, TIGHT_KEEP
+from add_ligatures import GENERATED, TIGHT_ENDS
 from add_marks import MARKS
 from add_shapes import CODES
 from measure import (
@@ -201,17 +201,16 @@ APART = {"ldot": ("periodcentered", RIGHT), "dcaron": ("caron.alt", RIGHT),
 # One moving alone would take the mark off the cell's middle.
 DOUBLES = ("quotedblleft", "quotedblright", "quotedblbase", "second", "uni2016", "uni203C")
 
-# The glyphs of a tightened pair or three (add_ligatures.TIGHT_KEEP, THREE_ENDS), each with the
+# The glyphs of a tightened pair or three (add_ligatures.TIGHT_ENDS), each with the
 # way and the share of its pen's width it moves back out. The pen grows the two of a pair
 # toward each other by half its width each, which would merge && into one shape and all but
 # close ??; each moves back that far, so the pair keeps the regular's white, and ++'s bars
 # their overlap. A three's middle glyph stays in place, so its outer glyphs move back the
 # pen's whole width.
-TIGHT = ({f"{name}.{side}": (way, 0.5) for name in TIGHT_KEEP
-          for side, way in (("tight_r", LEFT), ("tight_l", RIGHT))}
-         | {f"{name}.{side}": (way, 1)
-            for side, way in (("tight_r2", LEFT), ("tight_l2", RIGHT))
-            for name in THREE_ENDS[side]})
+TIGHT = {f"{name}.{side}": (way, share)
+         for side, way, share in (("tight_r", LEFT, 0.5), ("tight_l", RIGHT, 0.5),
+                                  ("tight_r2", LEFT, 1), ("tight_l2", RIGHT, 1))
+         for name in TIGHT_ENDS[side]}
 
 # The outlines condensed to keep their own regular box, where the pen would grow them into
 # their neighbours or wider than the reference bolds draw them: ™'s T and M, 23 apart, which

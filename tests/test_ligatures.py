@@ -320,13 +320,9 @@ LIGATED = {
                 "parenright"],
     "[... ]": ["bracketleft", "period.tight_r2", "period", "period.tight_l2", "space",
                "bracketright"],
-    ">>=": ["greater.tight_r2", "greater", "equal.tight_l"],
-    "m >>= f": ["m", "space", "greater.tight_r2", "greater", "equal.tight_l", "space", "f"],
-    "m>>=f": ["m", "greater.tight_r2", "greater", "equal.tight_l", "f"],
     "a>>>0": ["a", "greater.tight_r2", "greater", "greater.tight_l2", "zero"],
     "///<": ["slash.tight_r2", "slash", "slash.tight_l2", "less"],
     "/**<": ["slash.tight_r", "asterisk.tight_l", "asterisk.tight_l", "less"],
-    "<<=": ["less.tight_r2", "less", "equal.tight_l"],
     "f <<< g": ["f", "space", "less.tight_r2", "less", "less.tight_l2", "space", "g"],
     "=<<": ["equal.tight_r", "less", "less.tight_l2"],
     "<$>": ["less.tight_r", "dollar", "greater.tight_l"],
@@ -335,20 +331,31 @@ LIGATED = {
     "f<*>x": ["f", "less.tight_r", "asterisk", "greater.tight_l", "x"],
     "<+>": ["less.tight_r", "plus", "greater.tight_l"],
     "a <+> b": ["a", "space", "less.tight_r", "plus", "greater.tight_l", "space", "b"],
-    "0..=9": ["zero", "period.tight_r2", "period", "equal.tight_l", "nine"],
     "0..<n": ["zero", "period.tight_r2", "period", "less.tight_l", "n"],
-    # An assignment that closes a tightened pair, as <<= and >>= do
-    "||=": ["bar.tight_r2", "bar", "equal.tight_l"],
-    "&&=": ["ampersand.tight_r2", "ampersand", "equal.tight_l"],
-    "??=": ["question.tight_r2", "question", "equal.tight_l"],
-    "x ??= 1": ["x", "space", "question.tight_r2", "question", "equal.tight_l", "space", "one"],
-    # Python's floor-division assignment
-    "//=": ["slash.tight_r2", "slash", "equal.tight_l"],
-    "a//=b": ["a", "slash.tight_r2", "slash", "equal.tight_l", "b"],
-    "n //= 2": ["n", "space", "slash.tight_r2", "slash", "equal.tight_l", "space", "two"],
-    ">>>=": ["greater.tight_r", "greater", "greater", "equal.tight_l"],
-    "y >>>= 1": ["y", "space", "greater.tight_r", "greater", "greater", "equal.tight_l", "space",
-                 "one"],
+    # An assignment tightens its pair or three as it stands alone and keeps its = as typed,
+    # whatever follows, as Maple Mono does: x&&=-1 reads as x&&= -1 does. ..= is a range, but
+    # it tightens the same way.
+    "||=": ["bar.tight_r", "bar.tight_l", "equal"],
+    "&&=": ["ampersand.tight_r", "ampersand.tight_l", "equal"],
+    "??=": ["question.tight_r", "question.tight_l", "equal"],
+    "<<=": ["less.tight_r", "less.tight_l", "equal"],
+    ">>=": ["greater.tight_r", "greater.tight_l", "equal"],
+    "//=": ["slash.tight_r", "slash.tight_l", "equal"],
+    ">>>=": ["greater.tight_r2", "greater", "greater.tight_l2", "equal"],
+    "x ??= 1": ["x", "space", "question.tight_r", "question.tight_l", "equal", "space", "one"],
+    "m >>= f": ["m", "space", "greater.tight_r", "greater.tight_l", "equal", "space", "f"],
+    "m>>=f": ["m", "greater.tight_r", "greater.tight_l", "equal", "f"],
+    "a//=b": ["a", "slash.tight_r", "slash.tight_l", "equal", "b"],
+    "n //= 2": ["n", "space", "slash.tight_r", "slash.tight_l", "equal", "space", "two"],
+    "y >>>= 1": ["y", "space", "greater.tight_r2", "greater", "greater.tight_l2", "equal",
+                 "space", "one"],
+    "0..=9": ["zero", "period.tight_r", "period.tight_l", "equal", "nine"],
+    "x&&=-1": ["x", "ampersand.tight_r", "ampersand.tight_l", "equal", "hyphen", "one"],
+    "x||=!ok": ["x", "bar.tight_r", "bar.tight_l", "equal", "exclam", "o", "k"],
+    "x??=-1": ["x", "question.tight_r", "question.tight_l", "equal", "hyphen", "one"],
+    "x<<=-1": ["x", "less.tight_r", "less.tight_l", "equal", "hyphen", "one"],
+    "x>>=-1": ["x", "greater.tight_r", "greater.tight_l", "equal", "hyphen", "one"],
+    "x//=-1": ["x", "slash.tight_r", "slash.tight_l", "equal", "hyphen", "one"],
     # :: before a turbofish, a glob, a destructor or a negative step
     "a::<T>": ["a", "colon.tight_r", "colon.tight_l", "less", "T", "greater"],
     # :: after generics close, before a name
@@ -422,8 +429,6 @@ PLAIN = [
     "https://", "....", "..", "<||", "|>>", "||||", "&&&&", "...=",
     "?..", "??.", "**", "a**b", "/**/", "++++", "+++=", "<+>=", "!!!", "!!=", "!!:p", "a&&!!b",
     ";;;", ";;;;", ";;&",
-    # An assignment three before a sign, as x&&=-1 is
-    "x//=-1",
     # A sign or a not that no operand follows
     "x!=-", "a&&!", "a&&!=b", "x<=--", "a??-=",
     # .. in a path, quoted or not, and Python's relative imports
@@ -604,8 +609,6 @@ class TightPairTest(unittest.TestCase):
     # ++'s and +++'s bars join, as Fira Code's and Maple Mono's do
     JOINED = frozenset({("plus.tight_r", "plus.tight_l"), ("plus.tight_r2", "plus"),
                         ("plus", "plus.tight_l2")})
-    # >>>= moves only its outer glyphs, so its middle two keep a plain >>'s white.
-    UNEVEN = frozenset({">>>=", "y >>>= 1"})
 
     @classmethod
     def setUpClass(cls):
@@ -634,7 +637,7 @@ class TightPairTest(unittest.TestCase):
         # The middle glyph of a three stays in place, so ... reads as tight as .., and /// and
         # &&& as // and &&. Each glyph's offset is rounded to a whole unit. ** stays plain, so
         # an asterisk has no pair.
-        shaped = {text: names(REGULAR, text) for text in LIGATED.keys() - self.UNEVEN}
+        shaped = {text: names(REGULAR, text) for text in LIGATED}
         pairs = {name: self.white(f"{name}.tight_r", f"{name}.tight_l") for name in TIGHT_KEEP
                  if any((f"{name}.tight_r", f"{name}.tight_l") in itertools.pairwise(glyphs)
                         for glyphs in shaped.values())}
