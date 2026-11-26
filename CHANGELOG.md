@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.8 (unreleased)
+## 2.8 (2026-11)
 
 - Box-drawing lines meet across lines 1.5 em apart where the editor rounds the line up to whole pixels, as VS Code on macOS does at odd sizes: 11 px gets 17 px lines, 1.545 em. The verticals ran 85 past the line box and left a lighter row at every seam (0.69–0.78 of full ink at 11, 13 and 15 px); they now run 108 and meet in full ink from 9 to 20 px.
 - In the bold, the dot of `⁰` and `₀` stands clear of the ring, 25 units on each side as in the regular. The pen grew the two until they all but touched, 3 apart, and the small zero read as `θ`. The ring's halves now move apart before they grow, so the bold `⁰` is wider, and the dot stays as heavy as the ring, which FreeType's autohinter needs to hint the other bold superscripts and subscripts at their weight.
