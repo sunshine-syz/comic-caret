@@ -435,6 +435,10 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   (`ONE_LENGTH` in `tests/test_consistency.py`).
 - **Doubled marks.** The copies of ″ “ ” „ stand 6 to 8 further apart and ‖'s 2, so the white
   between them stays at least the narrowest reference's at the wider cell.
+- **`` ` ``.** It turns 6.6° flatter about its middle, to 243 (bold 279): it was 224, and the
+  bold 259, 21 under Fira Code Bold's 280. Lengthened instead, it would have topped out at 819,
+  where it already stood highest of the four fonts (808; Fira Code 763). Flatter, it tops at
+  800 and leans further from `‘`.
 - **⁄ and the fractions.** ⁄ turns 5.9° flatter about its middle and lengthens, its ends at
   their heights, to Fira Code's 565. The fractions' own slash turns 3.8° flatter, each numerator
   moves 25 left and each denominator 25 right: ¼ ½ ¾ are 576, Maple Mono's ¼ ½.
@@ -690,6 +694,11 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   their `j`, ours 51. Ĵ is 425 against Fira Code's 440: the references' circumflex reaches 16
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
+- **͵.** It is 167 (bold 202) against Fira Code's 180 (bold 224). Intel One Mono has no ͵,
+  and Maple Mono's is 279. Ours is ʹ moved, as Fira Code's
+  is, and ʹ (with ′ ″ ʹ) is within its references, 124–184. Widened to 180, ʹ would either
+  turn flatter, to within 1° of `’`'s lean, where `′` must stay apart from `’`, or lengthen
+  and top out at 742, past every reference's 724.
 - **˚.** It is 196 against Fira Code's 222: a proof of both, round, chose 196. The 1000 line
   top would hold 222 over Å too.
 - **Superscripts and subscripts.** ⁰–⁹ ₀–₉ (207–219) stay against the references' 276–306,

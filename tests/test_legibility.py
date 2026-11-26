@@ -437,6 +437,8 @@ WIDTHS = {
     "▹": (310, 310),  # Maple Mono; Fira Code has none
     "◂": (310, 310),  # Maple Mono; Fira Code has none
     "◃": (310, 310),  # Maple Mono; Fira Code has none
+    "`": (230, 280),  # Fira Code, Maple Mono
+    "ʹ": (124, 184),  # Intel One Mono, Maple Mono; ′ ″ ʹ ͵ are references to it
     "✗": (538, 538),  # Maple Mono; Fira Code has none
     "✘": (550, 550),  # Maple Mono; Fira Code has none
     # Intel One Mono has none of these letters.
@@ -560,6 +562,8 @@ BOLD_WIDTHS = {
     "ϗ": (472, 536),  # Monaspace Radon, Monaspace Neon
     "ĸ": (468, 532),  # Maple Mono, Monaspace Neon
     "Ĳ": (444, 548),  # Monaspace Neon, Fira Code
+    "`": (280, 348),  # Fira Code, Monaspace Radon
+    "ʹ": (178, 224),  # Intel One Mono, Fira Code; Monaspace has none
 }
 
 
