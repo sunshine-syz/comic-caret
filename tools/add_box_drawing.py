@@ -35,8 +35,8 @@ LINE_HEIGHT = LINE_TOP - LINE_BOTTOM
 # Verticals run this far past the line box, so they still meet at 1.5 em line spacing, which
 # apps get by adding space evenly above and below, also where an editor rounds that line up to
 # whole pixels: at 11 px, VS Code on macOS sets 17 px, 1.545 em, the most of the sizes from
-# 10 px up (13 px: 20 px, 1.538 em). At 1.5 em exactly, the seam row there held 0.68-0.77 of
-# full ink.
+# 10 px up (13 px: 20 px, 1.538 em). Reaching only as far as 1.5 em needs, they left the seam
+# row 0.69-0.78 of full ink at 11, 13 and 15 px.
 REACH = math.ceil((17 / 11 * 1000 - LINE_HEIGHT) / 2) + OVERLAP
 # Horizontals run this far into the next cell, as Intel One Mono's and Maple Mono's do. At
 # OVERLAP, a grid that rounds the cell up to whole pixels showed a light notch at every seam.

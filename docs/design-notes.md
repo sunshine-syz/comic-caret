@@ -220,8 +220,8 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
 - Box-drawing strokes overlap their neighbours: verticals span −458…1108, so they meet up to
   1.545 em, the 1.5 em line an editor rounds up to whole pixels at 11 px (VS Code on macOS: 17
   px; 13 px gets 20 px, 1.538 em). Spanning 1.52 em, they left the seam row 0.69–0.78 of full
-  ink at 11, 13 and 15 px; Fira Code's, 1.539 em, leave 0.77–0.88. Horizontals span −20…620, as in Intel One Mono and Maple Mono (Fira Code's
-  run 5). The ligatures' lines run 10 into each neighbour, as Fira Code's and Maple Mono's do.
+  ink at 11, 13 and 15 px; Fira Code's, 1.539 em, leave 0.77–0.88. Horizontals span −20…620,
+  as in Intel One Mono and Maple Mono (Fira Code's run 5). The ligatures' lines run 10 into each neighbour, as Fira Code's and Maple Mono's do.
   With 10, on a grid that rounds the cell up to whole pixels, ─ showed a light notch at every
   seam at 11, 16 and 21 px; with 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they
   reach 148 past the line box: the font's furthest ink. The win ascent and descent are the
@@ -663,9 +663,10 @@ Monaspace widens every letter. Comic Caret doesn't, as its letters start fuller 
   (`tests/test_ligatures.py`). A three's middle glyph stays in place, so an outer glyph
   beside a copy of itself moves twice a pair's shift (`TIGHT_ENDS`), and `...` `///` `<<<`
   `|||` keep their pair's white, and `+++` its pair's overlap. An assignment (`&&=` `>>=`
-  `>>>=` ...) and `..=` keep `=` as typed after their pair or three, whatever follows, as
-  Maple Mono does: pulled in only without a sign or a not after it, `x&&=-1` looked unlike
-  `x&&= -1`. `/**` opens as `/*` does, its second asterisk moved with the first, so its
+  `>>>=` ...) and `..=` keep `=` as typed after their pair or three, whatever starts the value
+  after it, as Maple Mono does: pulled in only without a sign or a not after it, `x&&=-1`
+  looked unlike `x&&= -1`. Unlike Maple Mono's, `<<==` `>>==` `>>>==` and `<<=>` stay as typed,
+  as `=` joins no run after `<` or `>`. `/**` opens as `/*` does, its second asterisk moved with the first, so its
   asterisks keep a plain `**`'s white. So a doc comment opens as tightly as a plain one.
 - **The bold's wide characters.** Moved to the middle of the wider cell, the regular's glyphs
   have 25 more room on each side. So the pen pushes none of @ # ∞ « » Æ œ K ✔ ➜ past its side
@@ -697,8 +698,8 @@ Where a glyph stays under the width rule's floor, the reason and the measurement
   (Fira Code), 109 (Maple Mono) and 141 (Intel One Mono) past their `J`, ours 0. Our `J` is at
   Fira Code's floor.
 - **͵.** It is 167 (bold 202) against Fira Code's 180 (bold 224). Intel One Mono has no ͵,
-  and Maple Mono's is 279. Ours is ʹ moved, as Fira Code's
-  is, and ʹ (with ′ ″ ʹ) is within its references, 124–184. Widened to 180, ʹ would either
+  and Maple Mono's is 279. Ours is ʹ moved, as Fira Code's is, and ʹ (with ′ ″ ʹ) is within
+  its references, 124–184. Widened to 180, ʹ would either
   turn flatter, to within 1° of `’`'s lean, where `′` must stay apart from `’`, or lengthen
   and top out at 742, past every reference's 724.
 - **˚.** It is 196 against Fira Code's 222: a proof of both, round, chose 196. The 1000 line
@@ -1000,7 +1001,7 @@ what it does to them:
   pen, so its counter stays 112 across, over Fira Code Bold's 89.
 - `DOTTED`: the small zero of ⁰ ₀ grows its ring outward only, as `OUTWARD` does, and keeps
   the regular's dot. Grown both ways, the dot stood 3 from the ring, where the regular keeps
-  24, and ⁰ read as θ. It is 257 wide, 17 to 28 wider than the other bold small figures.
+  25, and ⁰ read as θ. It is 257 wide, 17 to 28 wider than the other bold small figures.
 - `BLUNT`: ₩ ₦ ₱'s bars run 43 to 127 past their letter on both sides. The pen lengthens their
   round ends. This tapers the bars' run clear of the letter, so the bars would reach the
   hyphen's weight only near it. So the sign keeps its regular box, condensed. A second pen, as

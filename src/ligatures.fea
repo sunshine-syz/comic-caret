@@ -403,13 +403,15 @@ feature calt {
     sub bar' lookup lig_tight_r bar' lookup lig_tight_l;
   } lig_pipes;
 
-  # 6. Tightened threes and >>>=, their outer glyphs moved in and the middle ones left in place,
-  #    then tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a
+  # 6. Tightened threes, their outer glyphs moved in and the middle ones left in place, then
+  #    tightened pairs. An outer glyph beside a copy of itself moves twice as far as in a
   #    pair, so the three keeps the pair's white; /** opens as /* does, its second asterisk
   #    moved with the first, so ** keeps its plain white. The longer ones come first: a pair's
   #    ignore rules would claim them. An assignment (<<= >>= >>>= &&= ||= ??= //=, and ..=)
-  #    tightens its pair or three as it stands alone and keeps its = as typed, whatever
-  #    follows, as Maple Mono does, so x&&=-1 reads as x&&= -1. An = may open << (=<<), as
+  #    tightens its pair or three as it stands alone and keeps its = as typed, whatever starts
+  #    the value after it, as Maple Mono does, so x&&=-1 reads as x&&= -1. Where its = opens a
+  #    run of its own (&&== ||=>), or follows < or > before = < > (<<== >>>=>), it is no
+  #    assignment and stays as typed. An = may open << (=<<), as
   #    Haskell's bind does; /// and /** open doc comments, so they tighten as // and /* do, and a
   #    comment opener tightens before the ! or < that marks a doc comment (//! /*! ///< /**<).
   #    None tightens beside a @Word where it is no operator there. .. tightens in a range or a
@@ -459,6 +461,7 @@ feature calt {
     ignore sub less' less less [@Word quotedbl quotesingle];
     sub less' lookup lig_tight_r2 less less' lookup lig_tight_l2;
     ignore sub @Op greater' greater greater;
+    ignore sub greater' greater greater equal [equal less greater];
     sub greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 equal;
     ignore sub greater' greater greater @OpOrMark;
     sub @Operand greater' lookup lig_tight_r2 greater greater' lookup lig_tight_l2 @Word;
@@ -520,7 +523,7 @@ feature calt {
     ignore sub asterisk' slash @Word;
     sub asterisk' lookup lig_tight_r slash' lookup lig_tight_l;
     ignore sub @Op less' less;
-    # After < or >, = joins no run of its own, so <<== and <<=> are no assignment.
+    # After < or >, = joins no run of its own, so <<== and <<=> are no assignment (>>>= too).
     ignore sub less' less equal [equal less greater];
     sub less' lookup lig_tight_r less' lookup lig_tight_l equal;
     ignore sub less' less @OpOrMark;

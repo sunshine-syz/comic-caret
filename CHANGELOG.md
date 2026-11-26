@@ -6,7 +6,7 @@
 - In the bold, the dot of `⁰` and `₀` stands clear of the ring, 25 units on each side as in the regular. The pen grew the two until they all but touched, 3 apart, and the small zero read as `θ`. Its ring now grows outward only.
 - `` ` `` leans 6.6° flatter, so it is 243 wide (bold 279) and stands further from `‘`. The bold `` ` `` was 259, narrower than every reference's backtick (Fira Code Bold 280).
 - `c` is more open, so it reads apart from `e` at 10–12 px. Its ends curled in until the white between them was 160 units, under Intel One Mono's 229, the narrowest of the reference fonts; each end is now cut back along the bowl and rounded again, and the white is 230. `c` keeps its width and height. `ç` and `¢` follow, and so do the bold, where the white grew from 144 to 216, and the italic.
-- In an assignment such as `&&=` `||=` `??=` `<<=` `>>=` `>>>=` `//=`, and in `..=`, the pair or three is pulled together and `=` stays as typed, whatever follows, as in Maple Mono. So `x&&=-1` and `x||=!ok` look as `x&&= -1` and `x||= !ok` do; before, a sign or a not right after the `=` left all three characters as typed, and a space pulled them together.
+- In an assignment such as `&&=` `||=` `??=` `<<=` `>>=` `>>>=` `//=`, and in `..=`, the pair or three is pulled together and `=` stays as typed, whatever starts the value after it, as in Maple Mono. So `x&&=-1` and `x||=!ok` look as `x&&= -1` and `x||= !ok` do; before, a sign or a not right after the `=` left all three characters as typed, and a space pulled them together.
 
 ## 2.7 (2026-11)
 

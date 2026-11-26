@@ -43,11 +43,11 @@ right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
 instead: parts move apart (APART, DOUBLES, TIGHT); a ring's dot keeps the regular's white
-(DOTTED); an outline keeps its own box (OWN_BOX, ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
-SLASHES, LIGHT_PIECES, OUTWARD_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
-stems (RAISED) or keeps its ends (BLUNT). A mark rises by as much as the pen grew it and its
-letter toward each other (raise_clear()). Widths, anchors and the lookups carry over as they
-are.
+(DOTTED); an outline keeps its own box (OWN_BOX, ACROSS_AS_UP); parts grow on their own
+(MERGED); pieces give way to each other (PIECES_APART, SLASHES, LIGHT_PIECES, OUTWARD_PIECES,
+SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its stems (RAISED) or keeps
+its ends (BLUNT). A mark rises by as much as the pen grew it and its letter toward each other
+(raise_clear()). Widths, anchors and the lookups carry over as they are.
 """
 import collections
 import itertools
@@ -170,7 +170,7 @@ TURNED = {"tonos": math.radians(25)}
 OUTWARD = ("circle.copyright", "ring")
 
 # The rings with a dot in their counter, which the pen would grow toward each other: the small
-# zero of ⁰ ₀, its dot 24 from the ring in the regular, which the pen left 3, so it read as θ.
+# zero of ⁰ ₀, its dot 25 from the ring in the regular, which the pen left 3, so it read as θ.
 # The ring grows outward only, as an OUTWARD ring does, and the dot keeps the regular's
 # outline, so the white between them stays the regular's (with_dot()).
 DOTTED = ("zero.small",)

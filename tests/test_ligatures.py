@@ -394,7 +394,7 @@ LIGATED = {
 PLAIN = [
     "-", "=", "a-b", "x=y", "- -", "= =",
     # Malformed arrows: a head pointing inward, tripled or in the middle, at any length
-    ">-", "-<", "=<", ">==", "==<", "=>=", "=>>", "<<==", "->>>", "<<<-", "->>-", "-<<",
+    ">-", "-<", "=<", ">==", "==<", "=>=", "=>>", "<<==", ">>==", ">>>==", ">>>=>", ">>>=<", "->>>", "<<<-", "->>-", "-<<",
     "------<", ">------", "=====<", "-->-", "->->", "-><-", "<-<", "<==<", ">=>=", ">==>",
     # A shell heredoc's <<-, whatever letter its delimiter starts with
     "cat <<-EOF", "<<-'EOF'", '<<-"EOF"', "<<-\\EOF", "cat <<-ARGS", "<<-abc",

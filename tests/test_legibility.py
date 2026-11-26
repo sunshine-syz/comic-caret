@@ -447,7 +447,7 @@ WIDTHS = {
     "◂": (310, 310),  # Maple Mono; Fira Code has none
     "◃": (310, 310),  # Maple Mono; Fira Code has none
     "`": (230, 280),  # Fira Code, Maple Mono
-    "ʹ": (124, 184),  # Intel One Mono, Maple Mono; ′ ″ ʹ ͵ are references to it
+    "ʹ": (124, 184),  # Intel One Mono, Maple Mono; ′ ″ ʹ ͵ are references to it
     "✗": (538, 538),  # Maple Mono; Fira Code has none
     "✘": (550, 550),  # Maple Mono; Fira Code has none
     # Intel One Mono has none of these letters.
