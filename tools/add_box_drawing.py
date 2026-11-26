@@ -33,8 +33,11 @@ CODES = range(0x2500, 0x25A0)
 
 LINE_HEIGHT = LINE_TOP - LINE_BOTTOM
 # Verticals run this far past the line box, so they still meet at 1.5 em line spacing, which
-# apps get by adding space evenly above and below.
-REACH = (1500 - LINE_HEIGHT) // 2 + OVERLAP
+# apps get by adding space evenly above and below, also where an editor rounds that line up to
+# whole pixels: at 11 px, VS Code on macOS sets 17 px, 1.545 em, the most of the sizes from
+# 10 px up (13 px: 20 px, 1.538 em). At 1.5 em exactly, the seam row there held 0.68-0.77 of
+# full ink.
+REACH = math.ceil((17 / 11 * 1000 - LINE_HEIGHT) / 2) + OVERLAP
 # Horizontals run this far into the next cell, as Intel One Mono's and Maple Mono's do. At
 # OVERLAP, a grid that rounds the cell up to whole pixels showed a light notch at every seam.
 SIDE_REACH = 20
@@ -233,8 +236,8 @@ def lines(sides):
 def dashes(count, weight, orientation):
     """`count` dashes per cell, evenly spaced across cells. A row's cells take half a gap at
     each side. A column's take half a dash at the top and the bottom and run it on into the
-    overlap as far as the verticals reach (REACH), so lines spaced up to 1.5 em apart still
-    meet in one dash; it never runs past half a dash, where at the font's own line height the
+    overlap as far as the verticals reach (REACH), so lines spaced as far apart as those meet
+    still meet in one dash; it never runs past half a dash, where at the font's own line height the
     next line's first gap starts."""
     half, gap = HALF[weight], DASH_GAP[count]
     if orientation == "HORIZONTAL":

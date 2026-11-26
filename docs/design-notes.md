@@ -217,8 +217,10 @@ tops, the ascenders and the feet at 8–24 px, in the TTF and the OTF.
   rotated about the cell center.
 - `tests/test_legibility.py` holds the rules for confusable characters, the colon and
   semicolon, brackets and letter widths; read it before changing them.
-- Box-drawing strokes overlap their neighbours: verticals span −435…1085 (they meet up to
-  1.5 em line height), horizontals −20…620, as in Intel One Mono and Maple Mono (Fira Code's
+- Box-drawing strokes overlap their neighbours: verticals span −458…1108, so they meet up to
+  1.545 em, the 1.5 em line an editor rounds up to whole pixels at 11 px (VS Code on macOS: 17
+  px; 13 px gets 20 px, 1.538 em). Spanning 1.52 em, they left the seam row 0.69–0.78 of full
+  ink at 11, 13 and 15 px; Fira Code's, 1.539 em, leave 0.77–0.88. Horizontals span −20…620, as in Intel One Mono and Maple Mono (Fira Code's
   run 5). The ligatures' lines run 10 into each neighbour, as Fira Code's and Maple Mono's do.
   With 10, on a grid that rounds the cell up to whole pixels, ─ showed a light notch at every
   seam at 11, 16 and 21 px; with 36 the seams turn dark. ╱ ╲ ╳ run on as far as ─, so they

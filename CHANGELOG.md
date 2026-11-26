@@ -2,6 +2,7 @@
 
 ## 2.8 (unreleased)
 
+- Box-drawing lines meet across lines 1.5 em apart where the editor rounds the line up to whole pixels, as VS Code on macOS does at odd sizes: 11 px gets 17 px lines, 1.545 em. The verticals ran 85 past the line box and left a lighter row at every seam (0.69–0.78 of full ink at 11, 13 and 15 px); they now run 108 and meet in full ink from 9 to 20 px.
 - In the bold, the dot of `⁰` and `₀` stands clear of the ring, 25 units on each side as in the regular. The pen grew the two until they all but touched, 3 apart, and the small zero read as `θ`. Its ring now grows outward only.
 - `` ` `` leans 6.6° flatter, so it is 243 wide (bold 279) and stands further from `‘`. The bold `` ` `` was 259, narrower than every reference's backtick (Fira Code Bold 280).
 - `c` is more open, so it reads apart from `e` at 10–12 px. Its ends curled in until the white between them was 160 units, under Intel One Mono's 229, the narrowest of the reference fonts; each end is now cut back along the bowl and rounded again, and the white is 230. `c` keeps its width and height. `ç` and `¢` follow, and so do the bold, where the white grew from 144 to 216, and the italic.

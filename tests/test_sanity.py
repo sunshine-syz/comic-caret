@@ -7,6 +7,7 @@ what breaking would show as clipped, overlapping or broken text. test_consistenc
 the rules classes of glyphs share, and test_built.py the built fonts', which it runs through
 ots; test_fontbakery.py runs Font Bakery on them.
 """
+import math
 import pathlib
 import shutil
 import sys
@@ -38,8 +39,10 @@ from project import (
 )
 
 # Box-drawing verticals run this far past the line box, so they still overlap the next line's
-# by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below.
-BOX_REACH = (1500 - (LINE_TOP - LINE_BOTTOM)) // 2 + OVERLAP
+# by 10 units at a 1.5 em line height, which apps get by adding space evenly above and below,
+# also where an editor rounds that line up to whole pixels: at 11 px, VS Code on macOS sets
+# 17 px, 1.545 em, the most of the sizes from 10 px up.
+BOX_REACH = math.ceil((17 / 11 * 1000 - (LINE_TOP - LINE_BOTTOM)) / 2) + OVERLAP
 # Box-drawing horizontals run at least this far into the next cell: Intel One Mono's and Maple
 # Mono's run 20. At 10, a grid that rounds the cell up to whole pixels showed a light notch at
 # every seam of ─ ━ ═ at 11, 16 and 21 px.
