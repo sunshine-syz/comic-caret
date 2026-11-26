@@ -42,12 +42,12 @@ turned a quarter (⋮ on …) grows as the glyph's outline. A left glyph the reg
 right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
-instead: parts move apart (APART, DOUBLES, TIGHT); a ring's dot keeps the regular's white
-(DOTTED); an outline keeps its own box (OWN_BOX, ACROSS_AS_UP); parts grow on their own
-(MERGED); pieces give way to each other (PIECES_APART, SLASHES, LIGHT_PIECES, OUTWARD_PIECES,
-SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its stems (RAISED) or keeps
-its ends (BLUNT). A mark rises by as much as the pen grew it and its letter toward each other
-(raise_clear()). Widths, anchors and the lookups carry over as they are.
+instead: parts move apart (APART, DOUBLES, TIGHT); a ring moves clear of its dot (DOTTED); an
+outline keeps its own box (OWN_BOX, ACROSS_AS_UP); parts grow on their own (MERGED); pieces give
+way to each other (PIECES_APART, SLASHES, LIGHT_PIECES, OUTWARD_PIECES, SHRUNK, OPENED, DASHED,
+LIFTED, HEADS_APART, TICKED); a bar moves up its stems (RAISED) or keeps its ends (BLUNT). A
+mark rises by as much as the pen grew it and its letter toward each other (raise_clear()).
+Widths, anchors and the lookups carry over as they are.
 """
 import collections
 import itertools
@@ -171,8 +171,9 @@ OUTWARD = ("circle.copyright", "ring")
 
 # The rings with a dot in their counter, which the pen would grow toward each other: the small
 # zero of ⁰ ₀, its dot 25 from the ring in the regular, which the pen left 3, so it read as θ.
-# The ring grows outward only, as an OUTWARD ring does, and the dot keeps the regular's
-# outline, so the white between them stays the regular's (with_dot()).
+# The ring's halves move apart by the pen's width first, so the white stays the regular's
+# (ring_apart()). The dot grows as heavy as the ring: FreeType's autohinter takes the stem of
+# every superscript and subscript from ⁰ ₀'s narrowest, and a lighter dot hinted them light.
 DOTTED = ("zero.small",)
 
 # The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
@@ -410,7 +411,7 @@ def pen_of(name, grows_by):
     width, height = grows_by.get(name, PEN)
     width *= NARROW.get(name, 1)
     height = width if name in ROUND else height
-    grow = 2 if name in OUTWARD or name in DOTTED else 1
+    grow = 2 if name in OUTWARD else 1
     return grow * width, grow * height, TURNED.get(name, 0)
 
 
@@ -648,17 +649,20 @@ def with_counters(layer, outline):
     return out
 
 
-def with_dot(layer, outline):
-    """The grown `layer`'s ring with the counter and the dot of `outline`, the regular's, in
-    place of its own (DOTTED)."""
-    def ring(contours):
-        return max((c for c in contours if c.isClockwise()), key=lambda c: c.boundingBox()[2])
-    out = fontforge.layer()
-    out += ring(layer)
-    regular = ring(outline)
+def ring_apart(outline, by):
+    """`outline`, a ring with a dot in its counter, with the ring's halves moved `by` apart from
+    its middle each way and the dot left in place (DOTTED)."""
+    outer = max((c for c in outline if c.isClockwise()), key=lambda c: c.boundingBox()[2])
+    ring, dot = fontforge.layer(), fontforge.layer()
     for contour in outline:
-        if contour is not regular:
-            out += contour
+        if contour is outer or not contour.isClockwise():
+            ring += contour
+        else:
+            dot += contour
+    x0, _, x1, _ = ring.boundingBox()
+    middle = (x0 + x1) / 2
+    out = geo.stretch(geo.stretch(ring, middle, by), middle, -by)
+    out += dot
     return out
 
 
@@ -710,6 +714,8 @@ def emboldened(name, outline, scratch, pen, outward=False):
     `scratch`, a glyph of another font, so the bold's own glyphs save without validate()'s
     marks.
     """
+    if name in DOTTED:
+        outline = ring_apart(outline, pen[0])
     cuts = cut_ends(name, outline)
     for overlap in ("layer", "none"):
         layer = offset(outline, overlap, pen)
@@ -718,8 +724,6 @@ def emboldened(name, outline, scratch, pen, outward=False):
         layer = notches_filled(layer, outline)
         if name in OUTWARD or outward:
             layer = with_counters(layer, outline)
-        if name in DOTTED:
-            layer = with_dot(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
             layer = geo.trim(layer, x0=cuts[0] + HAIR, x1=cuts[1] - HAIR)
         # The pen can pinch a counter's narrow corner off into a speck of white (p's).

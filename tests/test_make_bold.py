@@ -215,8 +215,9 @@ class BoldTest(unittest.TestCase):
         the regular's it grew from, along `axis` (0 across, 1 up and down), by more than its
         pen's reach (make_bold.pen_of(): the small parts' is lighter, the heavy marks' heavier,
         the tonos's turned) and a unit of rounding: a stem grows half the pen's width on each
-        side, a level stroke half its height; ⇪'s top further (LIFTED_FURTHER), and ->> <<-'s
-        inner head along its shaft (HEADS_FURTHER). Covers a trim or an overlap removal that
+        side, a level stroke half its height; ⇪'s top further (LIFTED_FURTHER), ->> <<-'s
+        inner head along its shaft (HEADS_FURTHER), and ⁰ ₀'s ring by the pen's width more on
+        each side, as it moves clear of its dot (DOTTED). Covers a trim or an overlap removal that
         failed and left its box, and a condensed outline, which takes in each side by at most
         the pen it then grows by."""
         # make_bold's own pens: test_small_parts_are_as_much_bolder_as_the_letters,
@@ -241,6 +242,8 @@ class BoldTest(unittest.TestCase):
             if axis == 0 and name in HEADS_FURTHER:
                 shaft = 0 if regular.boundingBox()[0] < 0 else 1  # the side it runs on into
                 limits[shaft] += PEN[0]
+            if axis == 0 and name in make_bold.DOTTED:
+                limits = [limit + pen[0] for limit in limits]
             box, regular_box = bold.boundingBox(), regular.boundingBox()
             if any(abs(box[side] - regular_box[side]) > limit
                    for side, limit in zip((axis, axis + 2), limits, strict=True)):
@@ -341,6 +344,15 @@ class BoldTest(unittest.TestCase):
             return b - a, d - c
         for bold, regular in zip(whites(self.bold), whites(self.regular), strict=True):
             self.assertGreaterEqual(bold, regular - ROUNDING)
+
+    def test_small_zero_dot_is_as_heavy_as_its_ring(self):
+        # FreeType's autohinter takes the stem of every superscript and subscript from ⁰ or ₀,
+        # the narrowest it finds there, so a lighter dot hints the bold ¹ ² ³ ₁ ₂ ₃ ª º as
+        # light. It merges stems within 1/100 em of each other (af_sort_and_quantize_widths()).
+        layer = self.bold["zero.small"].foreground
+        _, y0, _, y1 = layer.boundingBox()
+        left, dot, right = (b - a for a, b in spans_at_y(layer, (y0 + y1) / 2))
+        self.assertGreaterEqual(dot, min(left, right) - self.bold.em / 100)
 
     def test_per_mille_and_percent_slashes_grow_by_the_pen(self):
         # ‰'s slash shortens until it clears the zero under it (make_bold.SLASHES). Shortened

@@ -999,9 +999,13 @@ what it does to them:
   heavy as its letter and the letter keeps its room. Grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©. The ring of å ů grows outward only too, by the full
   pen, so its counter stays 112 across, over Fira Code Bold's 89.
-- `DOTTED`: the small zero of ⁰ ₀ grows its ring outward only, as `OUTWARD` does, and keeps
-  the regular's dot. Grown both ways, the dot stood 3 from the ring, where the regular keeps
-  25, and ⁰ read as θ. It is 257 wide, 17 to 28 wider than the other bold small figures.
+- `DOTTED`: the halves of ⁰ ₀'s ring move apart by the pen's width before the pen grows the
+  ring and the dot, so the dot keeps the regular's 25 of white to the ring. Grown in place,
+  the dot stood 3 from the ring and ⁰ read as θ. The dot grows as heavy as the ring, 76:
+  FreeType's autohinter takes the stem of every superscript and subscript from ⁰ ₀'s
+  narrowest, so with the regular's dot, 54, the forced autohinter drew the bold `¹ ² ³ ₁ ₂ ₃
+  ª º` 0.2–0.4 px light at 12–17 px. The bold ⁰ is 279 wide, 1.17 times `¹`, within the
+  references' 1.12 (Intel One Mono Bold) to 1.30 (Fira Code Bold).
 - `BLUNT`: ₩ ₦ ₱'s bars run 43 to 127 past their letter on both sides. The pen lengthens their
   round ends. This tapers the bars' run clear of the letter, so the bars would reach the
   hyphen's weight only near it. So the sign keeps its regular box, condensed. A second pen, as
