@@ -643,6 +643,9 @@ class LetterFollowUpTest(unittest.TestCase):
     # One Mono's, the least of the references' (Fira Code 0.099, Maple Mono 0.139).
     S_end_under_bar = 0.053
     S_opening = 0.256  # under that end: Maple Mono's, the narrowest (Fira 0.326, Intel 0.414)
+    # In cap heights, the white between c's ends: Intel One Mono's, the narrowest reference's
+    # (Maple Mono 0.384, Fira Code 0.455).
+    c_opening = 0.342
 
     @classmethod
     def setUpClass(cls):
@@ -692,6 +695,16 @@ class LetterFollowUpTest(unittest.TestCase):
     def test_S_stays_open_under_its_top_end(self):
         # An end that hangs too far closes S's upper half into 8's.
         self.assertGreaterEqual(self.top_end("S")[1], self.S_opening)
+
+    def test_c_stays_open_between_its_ends(self):
+        # Ends that curl in close c up, and at 10-12 px it reads as e. The shortest white
+        # between the right halves of its upper and lower strokes.
+        cap = self.font["H"].boundingBox()[3]
+        c = self.font["c"].foreground
+        x0, y0, x1, y1 = c.boundingBox()
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        white = measure.gap(geo.trim(c, x0=cx, y0=cy), geo.trim(c, x0=cx, y1=cy))
+        self.assertGreaterEqual(white / cap, self.c_opening)
 
     def test_five_bowl_ends_low(self):
         # The references' lower terminals top out at 73-113; one curled higher nearly closes
@@ -817,6 +830,8 @@ class BoldLetterFollowUpTest(LetterFollowUpTest):
     # Intel One Mono Bold's, the least (Fira Code 0.065, Maple Mono 0.114, Monaspace 0.134).
     S_end_under_bar = 0.043
     S_opening = 0.204  # Maple Mono Bold's, the narrowest (Monaspace Neon 0.218, Fira 0.277)
+    # Monaspace Radon Bold's, the narrowest reference bold's (Monaspace Neon 0.206, Intel 0.231).
+    c_opening = 0.184
 
 
 class BoldDotsTest(DotsTest):

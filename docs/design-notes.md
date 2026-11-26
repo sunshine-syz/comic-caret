@@ -100,6 +100,14 @@ them. The exceptions:
   bold's is 0.216 (Maple Mono Bold 0.204). `5` keeps its round corner, as `E` and `F` have,
   where Fira Code and Intel One Mono draw a square one. `$` is its own outline and keeps its
   level end.
+- **`c`**'s ends are cut back along its bowl, to set it apart from `e` at 10–12 px. Its ends
+  curled in, so the white between them was 0.24 of the cap height, under every reference's:
+  Intel One Mono 0.342, Maple Mono 0.384, Fira Code 0.455. Each end is cut along a ray from the
+  bowl's middle and capped round again, as wide as the stroke there, and the bowl's top and
+  bottom lengthen at the middle back to `c`'s width, 425, the floor of the width rule. The
+  opening is now 0.345 (230), Intel One Mono's; the bold's is 0.32, inside the reference bolds'
+  0.184–0.338. The user picked it on proof (2026-11-25) over Maple Mono's 257 and 284, at which
+  the longer top and bottom read flat. `ç` and `¢` are the new `c` with their cedilla and bar.
 - **`5`**'s ends are tidied (2026-11-10, picked on proof over round ends alone). Its bar
   ended in a cut, a flat underside and a corner, and now ends in a round cap; the bar's left
   end stood 10 left of the stem as a bump, and the stem now runs straight up into the round
