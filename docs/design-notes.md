@@ -996,6 +996,9 @@ what it does to them:
   heavy as its letter and the letter keeps its room. Grown both ways, it came 35 from ®'s R,
   under Fira Code Bold's 41 around its ©. The ring of å ů grows outward only too, by the full
   pen, so its counter stays 112 across, over Fira Code Bold's 89.
+- `DOTTED`: the small zero of ⁰ ₀ grows its ring outward only, as `OUTWARD` does, and keeps
+  the regular's dot. Grown both ways, the dot stood 3 from the ring, where the regular keeps
+  24, and ⁰ read as θ. It is 257 wide, 17 to 28 wider than the other bold small figures.
 - `BLUNT`: ₩ ₦ ₱'s bars run 43 to 127 past their letter on both sides. The pen lengthens their
   round ends. This tapers the bars' run clear of the letter, so the bars would reach the
   hyphen's weight only near it. So the sign keeps its regular box, condensed. A second pen, as

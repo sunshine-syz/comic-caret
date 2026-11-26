@@ -201,6 +201,10 @@ FLOORS = {
     "B": [(0.25, 257), (0.75, 237)],  # Maple Mono, Fira Code
     "eight": [(0.25, 281), (0.75, 244)],  # Intel One Mono
     "R": [(0.75, 254)],  # Fira Code
+    "section": [(0.4, 190)],  # Fira Code; the eye between §'s hooks
+    # Maple Mono; the white between ¢'s bowl and its bar. Intel One Mono keeps 147, and Fira
+    # Code's bar stops short of the bowl.
+    "cent": [(0.35, 102)],
 }
 # n's and h's right stems end in a foot that curls out, as Comic Shanns draws them, and the curl
 # counts in their ink width, already the references' widest (Intel One Mono's 417): a counter
@@ -212,6 +216,11 @@ BOLD_FLOORS = {
     "n": [(0.5, 144)], "h": [(0.5, 144)], "u": [(0.5, 144)], "d": [(0.5, 169)],
     "H": [(0.25, 168)], "N": [(0.5, 72)], "U": [(0.5, 186)], "D": [(0.5, 188)],
     "B": [(0.25, 176), (0.75, 154)], "eight": [(0.25, 196), (0.75, 160)], "R": [(0.75, 165)],
+    "section": [(0.4, 129)],
+    # From the pen: the regular's floor, less the pen's width, which grows ¢'s bowl and bar
+    # toward each other by half of it each. Maple Mono Bold keeps 72, and the other reference
+    # bolds' bars stop short of the bowl.
+    "cent": [(0.35, 102 - make_bold.PEN[0])],
 }
 
 

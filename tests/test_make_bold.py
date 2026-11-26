@@ -331,6 +331,17 @@ class BoldTest(unittest.TestCase):
         for bold, regular in zip(whites(self.bold), whites(self.regular), strict=True):
             self.assertGreaterEqual(bold, regular - ROUNDING)
 
+    def test_small_zero_dot_keeps_the_regulars_white(self):
+        # The pen grows ⁰ ₀'s dot and ring toward each other, which all but joins them into θ;
+        # the dot stands as clear of the ring as in the regular.
+        def whites(font):
+            layer = font["zero.small"].foreground
+            _, y0, _, y1 = layer.boundingBox()
+            (_, a), (b, c), (d, _) = spans_at_y(layer, (y0 + y1) / 2)
+            return b - a, d - c
+        for bold, regular in zip(whites(self.bold), whites(self.regular), strict=True):
+            self.assertGreaterEqual(bold, regular - ROUNDING)
+
     def test_per_mille_and_percent_slashes_grow_by_the_pen(self):
         # ‰'s slash shortens until it clears the zero under it (make_bold.SLASHES). Shortened
         # along its length, it keeps its weight, so the pen grows it as it grows %'s: square to

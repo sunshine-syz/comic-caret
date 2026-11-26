@@ -42,8 +42,8 @@ turned a quarter (⋮ on …) grows as the glyph's outline. A left glyph the reg
 right one mirrored is the bold right one mirrored (mirror_pairs()).
 
 Where the pen alone would break a rule the regular keeps, a name list says what the bold does
-instead: parts move apart (APART, DOUBLES, TIGHT); an outline keeps its own box (OWN_BOX,
-ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
+instead: parts move apart (APART, DOUBLES, TIGHT); a ring's dot keeps the regular's white
+(DOTTED); an outline keeps its own box (OWN_BOX, ACROSS_AS_UP); parts grow on their own (MERGED); pieces give way to each other (PIECES_APART,
 SLASHES, LIGHT_PIECES, OUTWARD_PIECES, SHRUNK, OPENED, DASHED, LIFTED, HEADS_APART, TICKED); a bar moves up its
 stems (RAISED) or keeps its ends (BLUNT). A mark rises by as much as the pen grew it and its
 letter toward each other (raise_clear()). Widths, anchors and the lookups carry over as they
@@ -168,6 +168,12 @@ TURNED = {"tonos": math.radians(25)}
 # grown both ways, the ring came 35 from ®'s R, under Fira Code Bold's 41 around its ©. And
 # the ring of å ů, whose counter must stay at least Fira Code Bold's (tests/test_legibility.py).
 OUTWARD = ("circle.copyright", "ring")
+
+# The rings with a dot in their counter, which the pen would grow toward each other: the small
+# zero of ⁰ ₀, its dot 24 from the ring in the regular, which the pen left 3, so it read as θ.
+# The ring grows outward only, as an OUTWARD ring does, and the dot keeps the regular's
+# outline, so the white between them stays the regular's (with_dot()).
+DOTTED = ("zero.small",)
 
 # The outlines whose bar above a counter the pen would grow to less than a stroke from the bar
 # below it: Ħ, 81 apart against the bold hyphen's 93 (tests/test_latin.py). The bar moves up
@@ -404,7 +410,7 @@ def pen_of(name, grows_by):
     width, height = grows_by.get(name, PEN)
     width *= NARROW.get(name, 1)
     height = width if name in ROUND else height
-    grow = 2 if name in OUTWARD else 1
+    grow = 2 if name in OUTWARD or name in DOTTED else 1
     return grow * width, grow * height, TURNED.get(name, 0)
 
 
@@ -642,6 +648,20 @@ def with_counters(layer, outline):
     return out
 
 
+def with_dot(layer, outline):
+    """The grown `layer`'s ring with the counter and the dot of `outline`, the regular's, in
+    place of its own (DOTTED)."""
+    def ring(contours):
+        return max((c for c in contours if c.isClockwise()), key=lambda c: c.boundingBox()[2])
+    out = fontforge.layer()
+    out += ring(layer)
+    regular = ring(outline)
+    for contour in outline:
+        if contour is not regular:
+            out += contour
+    return out
+
+
 def raised(name, outline, rise):
     """The outline of glyph `name` with the bar above its counter moved up by `rise` along its
     stems (RAISED): the stems' straight part beside the counter lengthened by `rise`, and above
@@ -698,6 +718,8 @@ def emboldened(name, outline, scratch, pen, outward=False):
         layer = notches_filled(layer, outline)
         if name in OUTWARD or outward:
             layer = with_counters(layer, outline)
+        if name in DOTTED:
+            layer = with_dot(layer, outline)
         if cuts != (-geo.FAR, geo.FAR):
             layer = geo.trim(layer, x0=cuts[0] + HAIR, x1=cuts[1] - HAIR)
         # The pen can pinch a counter's narrow corner off into a speck of white (p's).
@@ -1133,7 +1155,7 @@ def build(font):
     # would pass unseen. So each list must name bolder glyphs, no two of the ways below may
     # name one glyph, as only the first would grow it, and SLASHES and LIGHT_PIECES must name
     # glyphs of PIECES_APART, as only pieces_apart() reads them, as must OUTWARD_PIECES.
-    for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "RAISED",
+    for listed in ("LIGHT_PARTS", "ROUND", "NARROW", "TURNED", "OUTWARD", "DOTTED", "RAISED",
                    "APART", "DOUBLES", "OWN_BOX", "ACROSS_AS_UP", "MERGED", "PIECES_APART",
                    "SLASHES", "LIGHT_PIECES", "OUTWARD_PIECES", "SHRUNK", "OPENED", "DASHED", "BLUNT",
                    "LIFTED",

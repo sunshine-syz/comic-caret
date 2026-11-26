@@ -44,7 +44,7 @@ from project import (
 ROWS = {
     "baseline": (("ABCDEFGHIJKLMNOPRSTUVWXYZÆŒÐÞŁĦŦǷẞØĐĲĿꝚabcdefhiklmnorstuvwxzıĸß0123456789"
                   "¼½¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞æœðøđħŀłŧſꝛ"
-                  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ❯❮❰❱"), 1),
+                  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαδεθικλνοπστυω₽₩₦₱ℓ❯❮❰❱℃℉℮"), 1),
     "x-height": ("acemnoqrsuvwxzıĸµŋæœøȷꝛαγεηικνοπρσςτυφχψω", 3),
     "cap height": (("ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒÐÞŁĦŦŊǷẞØĐĲĿꝚ0123456789¼½¾™⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞"
                     "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϏ₹₽₩₦₱❯❮❰❱"), 3),
@@ -69,7 +69,7 @@ CENTERED = ("AHIMNOSTUVWXYZosvwxz08!¡|:.'\"*+-=^~_×÷±−≠≈≡∞↔↕�
             "✕✖✘❯❮⇕○●◉▷▶▹▸►◀◁◂◃◄▲△▴▵▼▽▾▿◇◆☆★☐☒⚠ℹ⋯⋮"
             "✢✳✶✻✽⏵⏸⏺⧉∴※◯■□▪▫◦❰❱⌘⌥⌃⇧⌫⌦⎋⏎␣⍽↹⇥⇤↵↩↪↳↲↰↱⇑⇓⇦⇨⇩⇪↦"
             "◐◑◒◓◴◵◶◷◠◡◰◱◲◳▮▯◎⊙⦾⦿◌◍⧆⧇☰☱☲☳☴☵☶☷✷✸✹✺⊶⊷☖☗▰▱∙‼⣿"
-            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ◻◼◈⏹"
+            "·¤¦¬†‡©®↑↓⇡⇣‚„΄΅´¨¯¸˘˙˚˛˜˝ˆˇ◻◼◈⏹–—¥™ªº‣➜"
             "\uE0A0\uE0A1\uE0A2")  # the Powerline branch, line number and padlock
 # Centered on the hyphen, as the ligatures join them; the symbols line up with them.
 ON_AXIS = ("+−=±×÷≠≈≡~<>≤≥←→↔↖↗↘↙⇐⇒⇔↦•◦"
@@ -82,7 +82,7 @@ ON_AXIS_GLYPHS = ("less_equal.liga", "greater_equal.liga")
 # references that have them.
 SMALL_ON_AXIS = {"¹": "⁺⁻⁼⁽⁾", "₁": "₊₋₌₍₎"}
 MIRRORED = ("<>", "≤≥", "←→", "⇐⇒", "↖↗", "«»", "‹›", "/\\", "╱╲", "❮❯", "❰❱", "◀▶", "◁▷", "◂▸", "◃▹",
-            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩", "⇦⇨", "◣◢", "◜◝", "◟◞",
+            "◄►", "⇤⇥", "↲↳", "↰↱", "↩↪", "⌫⌦", "⁽⁾", "₍₎", "⟨⟩", "⇦⇨", "◣◢", "◤◥", "◜◝", "◟◞",
             "⊶⊷", "‘’", "“”")
 # Left glyphs of MIRRORED that are their right one mirrored exactly, as an outline, since
 # validate() flags a mirrored reference.
